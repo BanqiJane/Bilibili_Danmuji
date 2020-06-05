@@ -3,4 +3,5 @@ cmd java BilibilidanmujiApplication.java run  or  ide run BilibilidanmujiApplica
 控制台命令行java BilibilidanmujiApplication.java 运行  或者 ide 运行BilibilidanmujiApplication.java</br>
 change roomid in ClientService.java</br>
 在ClientService.java文件更改房间号</br>
-by <a href="http://blogs.acproject.xyz/" target="_blank">SaKazaKiJane</a> 20:31 2020/5/11</br>
+由< 一个 HREF = “ http://blogs.acproject.xyz/ ”  目标 = “_blank” > SaKazaKiJane </ 一> 20点31 2020年5月11日</br>
+项目现在重构中    敬请期待
