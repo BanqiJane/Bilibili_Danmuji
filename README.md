@@ -6,11 +6,39 @@ java version "1.8.0_121"
 ```
 **Bootstrap4 放弃了对 IE8 以及 iOS 6 的支持，现在仅仅支持 IE9 以上 以及 iOS 7 以上版本的浏览器。**<br/>
 **以最新版本浏览器示例:**
-
-|   | Chrome  |  Firefox |  Internet Explorer | Microsoft Edge  | Opera  | Safari  |
-| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
-| Mac  |  支持 | N/A | N/A |  支持 |  支持 |  支持 |
-| Windows  |  支持 | 支持  |  支持 |  支持 | 支持  | 支持  |
+<table>
+    <thead>
+        <tr>
+            <td></td>
+            <th>Chrome</th>
+            <th>Firefox</th>
+            <th>Internet Explorer</th>
+            <th>Microsoft Edge</th>
+            <th>Opera</th>
+            <th>Safari</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Mac</th>
+            <td>支持</td>
+            <td>支持</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>支持</td>
+            <td>支持</td>
+        </tr>
+        <tr>
+            <th>Windows</th>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>支持</td>
+            <td>不支持</td>
+        </tr>
+    </tbody>
+</table>
 
 # 简介
 
