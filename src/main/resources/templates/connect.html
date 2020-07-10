@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>弹幕姬连接</title>
+<link rel="stylesheet" href="../../css/style.css"
+	th:href="@{/css/style.css}" type="text/css" media="all">
+<link rel="stylesheet" href="../../css/bootstrap.min.css"
+	th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
+<script type="text/javascript" src="../../js/jquery.min.js"
+	th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" src="../../js/popper.min.js"
+	th:src="@{/js/popper.min.js}"></script>
+<script type="text/javascript" src="../../js/bootstrap.min.js"
+	th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" src="../../js/style.js"
+	th:src="@{/js/style.js}"></script>
+</head>
+
+<body>
+	<div class="app">
+		<div
+			class="row align-items-center justify-content-center center-wrapper">
+			<div class="col-md-6 m-3">
+				<div class="card border-second">
+					<div class="card-header">
+						<h2>
+							<span>弹幕姬连接</span>
+							<iframe
+								src="https://ghbtns.com/github-btn.html?user=BanqiJane&amp;repo=Bilibili_Danmuji&amp;type=star&amp;count=true&amp;size=large"
+								frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+						</h2>
+					</div>
+					<div class="card-body">
+						<div class="input-group mb-3">
+							<div class="input-group-append">
+								<span class="input-group-text">房间号</span>
+							</div>
+							<input type="number" id="room_id" class="form-control"
+								placeholder="需要连接的房间号" min="1"
+								οninput="if(value.length>5)value=value.slice(0,5)"
+								style="ime-mode: Disabled"
+								onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+								th:value="${ROOMID}!=null?${ROOMID}:1">
+						</div>
+					</div>
+					<div class="card-footer">
+						<button type="button" class="btn btn-primary" id="connect">连接</button>
+						<button type="button" class="btn btn-danger disabled"
+							id="disconnect">断开连接</button>
+						<a th:href="@{/}" class="btn btn-link" style="float: right;">返回弹幕姬中心面板</a>
+						<span class="notice-message"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

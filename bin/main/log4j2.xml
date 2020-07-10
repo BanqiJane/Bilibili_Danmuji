@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!-- status log4j2内部日志级别 -->
+<configuration status="INFO">
+    <!-- 全局参数 -->
+    <Properties>
+        <Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n</Property>
+        <Property name="displayName">DanMuJiInfo</Property>
+    </Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+        </Console>
+        <!-- 文件 每次运行程序会自动清空，由append属性决定-->
+        <File name="error" fileName="log/${displayName}_error.log" append="false">
+            <!-- 指定error 级别的日志 -->
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT"
+                onMismatch="DENY" />
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+        </File>
+        <!-- 滚动文件 -->
+        <RollingFile name="rollingFile" fileName="log/${displayName}.log"
+            filePattern="${displayName}_%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+            <!-- 按大小划分 -->
+            <SizeBasedTriggeringPolicy size="500 MB" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR" 
+            /> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN" 
+            /> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN" 
+            /> -->
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="xyz.acproject" level="DEBUG"/>
+        <Logger name="org.thymeleaf" level="INFO"/>
+        <Root level="DEBUG">
+            <AppenderRef ref="console"></AppenderRef>
+            <AppenderRef ref="error"></AppenderRef>
+            <AppenderRef ref="rollingFile"></AppenderRef>
+        </Root>
+    </Loggers>
+</configuration>

@@ -1,0 +1,50 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'xyz.acproject.danmuji'
+version = '1.0.2beta'
+sourceCompatibility = '1.8'
+
+repositories {
+	//mavenCentral()
+	maven{
+	      name "aliyunmaven"
+	      url "http://maven.aliyun.com/nexus/content/groups/public/"
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+    // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
+    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.0'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.3.0.RELEASE' 
+    // https://mvnrepository.com/artifact/com.alibaba/fastjson
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.70'
+    // https://mvnrepository.com/artifact/joda-time/joda-time
+    compile group: 'joda-time', name: 'joda-time', version: '2.10.5'
+    // https://mvnrepository.com/artifact/com.google.zxing/core
+    compile group: 'com.google.zxing', name: 'core', version: '3.4.0'
+    // https://mvnrepository.com/artifact/net.glxn/qrgen
+    compile group: 'net.glxn', name: 'qrgen', version: '1.4'
+    
+    
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+}
+configurations {
+	//remove default logger
+	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+test {
+	useJUnitPlatform()
+}

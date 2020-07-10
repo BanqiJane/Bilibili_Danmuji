@@ -1,0 +1,89 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="never">
+<meta name="renderer" content="webkit">
+<meta
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+	name="viewport">
+<title>弹幕姬登录</title>
+<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}" type="text/css" media="all">
+<link rel="stylesheet" href="../../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
+<script type="text/javascript" src="../../js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script type="text/javascript" src="../../js/popper.min.js" th:src="@{/js/popper.min.js}"></script>
+<script type="text/javascript" src="../../js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+		url: '../qrcodeUrl',
+		async: false,
+		cache: false,
+		type: 'POST',
+		dataType: 'json',
+		success: function (data) {
+			if(data.code=="200"){
+				var url = data.result;
+			$('#qrcodeImg').attr('src','../qrcode?url='+ url);
+			}
+		}
+	});
+ time=setInterval(getApi,3000);
+});
+function getApi() {
+    //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间 
+   // setTimeout(getApi,3*1000);
+    $.ajax({
+        url: '../loginCheck',
+        async: false,
+		cache: false,
+		type: 'POST',
+		dataType: 'json',
+        success: function (data) {
+        	var status = data.status;
+        	if(status==true){
+        		 clearInterval(time);
+        		window.location.replace("/");
+        	} 
+        }
+    })
+}
+$(document).on('click','#qrcodeImg',function(){
+	$.ajax({
+		url: '../qrcodeUrl',
+		async: false,
+		cache: false,
+		type: 'POST',
+		dataType: 'json',
+		success: function (data) {
+			if(data.code=="200"){
+				var url = data.result;
+			$('#qrcodeImg').attr('src','../qrcode?url='+ url);
+			}
+		}
+	});
+});
+</script>
+</head>
+
+<body>
+	<div class="app">
+		<div class="row align-items-center justify-content-center center-wrapper">
+			<div class="col-md-8 m-3">
+				<div class="card border-primary">
+					<div class="card-header"><h2><span>弹幕姬登录</span></h2></div>
+					<div class="card-body">
+						<div class="login-body"><a th:href="@{/}">暂且不登录，登录后享有更多操作</a></div>
+						<div class="login-qrcode-wrapper">
+							<div class="qrcode-image">
+								<img id="qrcodeImg" src="#" data-url="null" alt>
+								<span class="qrcode-text">登录二维码，点击刷新</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
