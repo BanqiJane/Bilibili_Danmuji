@@ -42,16 +42,16 @@ java version "1.8.0_121"
 
 # 简介
 
-**Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.<br/>
+**Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.**<br/>
 **本软件基于控制台 项目控制台运行，弹幕在控制台显示(也可以在网页查看弹幕).**<br/>
 **本软件基于web设置 必须在浏览器上设置.**
 
 ## 现有功能
 - **弹幕显示**
-1.舰爷房管勋章ul的设置显示
-2.禁言欢迎信息显示
-3.礼物显示
-4.新关注显示
+1. 舰爷房管勋章ul的设置显示
+2. 禁言欢迎信息显示
+3. 礼物显示
+4. 新关注显示
 - **弹幕保存本地**
 - **网页弹幕显示**
 - **扫码登录**
