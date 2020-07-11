@@ -40,7 +40,7 @@ $(function() {
 						switch (num) {
 						case 1:
 							$(".thankgift_thank").val(
-									method.getSet().thank_gift.thank);
+									method.replaceThanko(method.getSet().thank_gift.thank));
 							$(".thankgift_thank").attr('placeholder',
 									"感谢%uName%%Type%的%GiftName% x%Num%~");
 							$(".thankgift_thank")
@@ -49,7 +49,7 @@ $(function() {
 											'感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
 							break;
 						case 2:
-							$(".thankgift_thank").val(method.getSet().thank_gift.thank);
+							$(".thankgift_thank").val(method.replaceThankt(method.getSet().thank_gift.thank));
 							$(".thankgift_thank").attr('placeholder',
 									"感謝%uName%贈送的%Gifts%~");
 							$(".thankgift_thank")
@@ -57,12 +57,10 @@ $(function() {
 											'感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
 							break
 						case 3:
-							$(".thankgift_thank").val(method.getSet().thank_gift.thank);
+							$(".thankgift_thank").val(method.replaceThankts(method.getSet().thank_gift.thank));
+							$(".thankgift_thank").attr('data-original-title','感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
 							$(".thankgift_thank").attr('placeholder',
-									"感謝%uNames%贈送的%Gifts%~");
-							$(".thankgift_thank")
-									.attr('data-original-title',
-											'感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+									"感謝%uNames%贈送的%Gifts%~");					
 							break
 						default:
 							break;
@@ -378,8 +376,8 @@ const method = {
 				$(".thankgift_thank").attr('placeholder',
 						"感謝%uNames%贈送的%Gifts%~");
 				$(".thankgift_thank")
-						.attr(
-								'感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+				.attr('data-original-title',
+						'感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
 				break
 			default:
 				break;
@@ -495,6 +493,21 @@ const method = {
 			}
 		});
 		return ip;
+	},
+	replaceThanko:function(s){
+		s=s.replace(/uNames/g,"uName");
+		s=s.replace(/%Gifts%/g,"%Num%个%GiftName%");
+		return s;
+	},
+	replaceThankt:function(s){
+		s=s.replace(/uNames/g,"uName");
+		s=s.replace(/%Num%个%GiftName%/g,"%Gifts%");
+		return s;
+	},
+	replaceThankts:function(s){
+		s=s.replace(/uName/g,"uNames");
+		s=s.replace(/%Num%个%GiftName%/g,"%Gifts%");
+		return s;
 	},
 };
 function openSocket(socket,ip) {
