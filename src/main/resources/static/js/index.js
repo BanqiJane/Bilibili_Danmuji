@@ -61,7 +61,7 @@ $(function() {
 							$(".thankgift_thank").attr('placeholder',
 									"感謝%uNames%贈送的%Gifts%~");
 							$(".thankgift_thank")
-									.attr(
+									.attr('data-original-title',
 											'感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
 							break
 						default:
