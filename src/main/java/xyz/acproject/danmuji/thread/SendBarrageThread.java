@@ -62,8 +62,7 @@ public class SendBarrageThread extends Thread {
 
 //					if (PublicDataConf.ROOMID == 5067) {
 						try {
-							if (HttpUserData.httpGetSendBarrage(barrageStr) != null) {
-							}
+							if (HttpUserData.httpGetSendBarrage(barrageStr) != null) {}
 						} catch (Exception e) {
 //							LOGGER.error("发送弹幕线程抛出v:" + e);
 							// TODO: handle exception

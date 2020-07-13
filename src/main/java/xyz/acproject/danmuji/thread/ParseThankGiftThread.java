@@ -135,11 +135,18 @@ public class ParseThankGiftThread extends Thread {
 								for (Entry<String, Vector<Gift>> entry : PublicDataConf.thankGiftConcurrentHashMap
 										.entrySet()) {
 									gifts = entry.getValue();
-									for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
-										Gift gift = iterator.next();
-										thankGiftStr = getThankGiftString().replaceAll("%uNames%", entry.getKey());
-										stringBuilder.append(gift.getNum()).append("个").append(gift.getGiftName());
+									for (int i = 0; i < gifts.size(); i += getNum()) {
+										for (int j = i; j < i + getNum(); j++) {
+											if (j >= gifts.size()) {
+												break;
+											}
+											thankGiftStr = getThankGiftString().replaceAll("%uNames%", entry.getKey());
+											stringBuilder.append(gifts.get(j).getNum()).append("个")
+													.append(gifts.get(j).getGiftName()).append(",");
+										}
+										stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 										thankGiftStr = thankGiftStr.replaceAll("%Gifts%", stringBuilder.toString());
+										stringBuilder.delete(0, stringBuilder.length());
 										if (PublicDataConf.sendBarrageThread != null
 												&& !PublicDataConf.sendBarrageThread.FLAG) {
 											PublicDataConf.barrageString.add(thankGiftStr);
@@ -147,7 +154,7 @@ public class ParseThankGiftThread extends Thread {
 												PublicDataConf.sendBarrageThread.notify();
 											}
 										}
-										stringBuilder.delete(0, stringBuilder.length());
+										thankGiftStr = getThankGiftString();
 									}
 									stringBuilder.delete(0, stringBuilder.length());
 								}

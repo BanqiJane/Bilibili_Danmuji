@@ -220,6 +220,7 @@ public class ParseMessageThread extends Thread {
 						}
 						stringBuilder.delete(0, stringBuilder.length());
 					} else {
+						if(PublicDataConf.sendBarrageThread!=null) {
 						if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
 							jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
 							gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
@@ -229,6 +230,7 @@ public class ParseMessageThread extends Thread {
 									jsonObject.getLong("timestamp"), jsonObject.getString("action"),
 									jsonObject.getInteger("price"), jsonObject.getString("coin_type"),
 									jsonObject.getLong("total_coin"));
+						}
 						}
 					}
 					// 感谢礼物处理
@@ -289,15 +291,11 @@ public class ParseMessageThread extends Thread {
 							}
 						}
 						stringBuilder.delete(0, stringBuilder.length());
-					} else {
-						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
-							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-						}
 					}
 					if (getMessageControlMap().get(ShieldMessage.is_giftThank) != null
 							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
 						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
-
+							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
 							gift = new Gift();
 							gift.setGiftName(guard.getGift_name());
 							gift.setNum(guard.getNum());
@@ -305,10 +303,13 @@ public class ParseMessageThread extends Thread {
 							gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
 							gift.setTimestamp(guard.getStart_time());
 							gift.setAction("赠送");
+							gift.setCoin_type("gold");
 							gift.setUname(guard.getUsername());
 							gift.setUid(guard.getUid());
-
+							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
+							if(gift!=null) {
 							parseGiftSetting(gift);
+							}
 							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
 								String report = getGuardReport().replaceAll("\n", "\\\\r\\\\n");
@@ -352,7 +353,6 @@ public class ParseMessageThread extends Thread {
 
 				// 醒目留言
 				case "SUPER_CHAT_MESSAGE":
-//					LOGGER.debug("有人发了醒目留言让我们看看他说了什么:::" + message);
 					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
 							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
 						superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
@@ -379,6 +379,30 @@ public class ParseMessageThread extends Thread {
 							}
 						}
 
+						stringBuilder.delete(0, stringBuilder.length());
+					}
+					if (getMessageControlMap().get(ShieldMessage.is_giftThank) != null
+							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
+						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
+							superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
+							gift = new Gift();
+							stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
+							stringBuilder.append("秒");
+							stringBuilder.append(superChat.getGift().getGift_name());
+							gift.setGiftName(stringBuilder.toString());
+							gift.setNum(superChat.getGift().getNum());
+							gift.setPrice(superChat.getPrice() * 1000);
+							gift.setTotal_coin((long)superChat.getPrice() * 1000l);
+							gift.setTimestamp(superChat.getStart_time()*1000);
+							gift.setAction("赠送");
+							gift.setCoin_type("gold");
+							gift.setUname(superChat.getUser_info().getUname());
+							gift.setUid(superChat.getUid());
+							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
+							if(gift!=null) {
+							parseGiftSetting(gift);
+							}
+						}
 						stringBuilder.delete(0, stringBuilder.length());
 					}
 					break;

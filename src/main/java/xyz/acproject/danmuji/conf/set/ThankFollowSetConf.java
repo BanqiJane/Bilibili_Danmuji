@@ -12,17 +12,18 @@ public class ThankFollowSetConf implements Serializable{
 	//分段回复
 	private short num = 1;
 	private String follows="谢谢%uNames%的关注~";
+	private short max_num=250;
 	public ThankFollowSetConf() {
 		super();
 		// TODO 自动生成的构造函数存根
 	}
-	public ThankFollowSetConf(boolean is_open, boolean is_live_open, short num,
-			String follows) {
+	public ThankFollowSetConf(boolean is_open, boolean is_live_open, short num, String follows, short max_num) {
 		super();
 		this.is_open = is_open;
 		this.is_live_open = is_live_open;
 		this.num = num;
 		this.follows = follows;
+		this.max_num = max_num;
 	}
 	public boolean isIs_open() {
 		return is_open;
@@ -47,6 +48,12 @@ public class ThankFollowSetConf implements Serializable{
 	}
 	public void setFollows(String follows) {
 		this.follows = follows;
+	}
+	public short getMax_num() {
+		return max_num;
+	}
+	public void setMax_num(short max_num) {
+		this.max_num = max_num;
 	}
 	
 	

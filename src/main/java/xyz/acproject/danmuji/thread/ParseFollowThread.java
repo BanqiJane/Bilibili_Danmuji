@@ -22,6 +22,8 @@ public class ParseFollowThread extends Thread {
 	private ConcurrentHashMap<Long, String> followsConcurrentHashMap = new ConcurrentHashMap<Long, String>(251);
 	private Short num = 1;
 	private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
+	private Boolean isPrintFollow = false;
+	private Short max_num = 250;
 
 	@Override
 	public void run() {
@@ -78,6 +80,7 @@ public class ParseFollowThread extends Thread {
 			followsConcurrentHashMap.putAll(followConcurrentHashMap);
 
 			if (oldConcurrentHashMap.size() > 0 && followConcurrentHashMap.size() > 0) {
+				//筛选出新关注
 				for (Iterator<Map.Entry<Long, String>> iterator = followConcurrentHashMap.entrySet()
 						.iterator(); iterator.hasNext();) {
 					mid = iterator.next().getKey();
@@ -88,6 +91,8 @@ public class ParseFollowThread extends Thread {
 					}
 				}
 				page = (int) Math.ceil((double) followConcurrentHashMap.size() / (double) getNum());
+				if(getIsPrintFollow()) {
+				//关注打印 
 				for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
 					stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
 							.append(entry.getValue()).append(" 关注了直播间");
@@ -105,6 +110,10 @@ public class ParseFollowThread extends Thread {
 						}
 					}
 					stringBuilder.delete(0, stringBuilder.length());
+				}
+				}
+				if(followConcurrentHashMap.size()>getMax_num()) {
+					followConcurrentHashMap.clear();
 				}
 				if (getNum() > 1 && followConcurrentHashMap.size() > 1) {
 					// 多个关注test 代码
@@ -136,8 +145,10 @@ public class ParseFollowThread extends Thread {
 				}
 
 			} else if (oldConcurrentHashMap.size() < 1 && followConcurrentHashMap.size() > 0) {
-				System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				page = (int) Math.ceil((double) followConcurrentHashMap.size() / (double) getNum());
+				
+				if(getIsPrintFollow()) {
+				//关注打印 
 				for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
 					stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
 							.append(entry.getValue()).append(" 关注了直播间");
@@ -156,6 +167,12 @@ public class ParseFollowThread extends Thread {
 					}
 					stringBuilder.delete(0, stringBuilder.length());
 				}
+				}
+				
+				if(followConcurrentHashMap.size()>getMax_num()) {
+					followConcurrentHashMap.clear();
+				}
+				
 				if (getNum() > 1 && followConcurrentHashMap.size() > 1) {
 					// 多个关注test 代码
 					for (int i = 0; i < page; i++) {
@@ -240,6 +257,22 @@ public class ParseFollowThread extends Thread {
 
 	public void setFollowsConcurrentHashMap(ConcurrentHashMap<Long, String> followsConcurrentHashMap) {
 		this.followsConcurrentHashMap = followsConcurrentHashMap;
+	}
+
+	public Boolean getIsPrintFollow() {
+		return isPrintFollow;
+	}
+
+	public void setIsPrintFollow(Boolean isPrintFollow) {
+		this.isPrintFollow = isPrintFollow;
+	}
+
+	public Short getMax_num() {
+		return max_num;
+	}
+
+	public void setMax_num(Short max_num) {
+		this.max_num = max_num;
 	}
 
 }

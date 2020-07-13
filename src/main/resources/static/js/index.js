@@ -150,6 +150,7 @@ $(document).on(
 			set.follow.is_live_open = $(".follow_is_live_open").is(':checked');
 			set.follow.num = Number($(".follow_num").val());
 			set.follow.follows = $(".follow_follows").val();
+			set.follow.max_num= Number($(".follow_mnum").val());
 			if ($(".follow_is_open").is(':checked')) {
 				if ($(".follow_follows").val().trim() !== null
 						&& $(".follow_follows").val().trim() !== "") {
@@ -256,7 +257,7 @@ $(document)
 				function() {
 					$(".shieldgifts-tbody")
 							.append(
-									"<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
+									"<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于)' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
 				});
 $(document).on('click', '.shieldgift_delete', function() {
 	$(this).parent().parent().remove();
@@ -343,6 +344,7 @@ const method = {
 			$(".follow_is_live_open").prop('checked', set.follow.is_live_open);
 			$(".follow_num").val(set.follow.num);
 			$(".follow_follows").val(set.follow.follows);
+			$(".follow_mnum").val(set.follow.max_num);
 			if (Number($(".thankgift_shield_status")
 					.children("option:selected").val()) !== 1) {
 				$(".thankgift_shield").hide();
@@ -414,6 +416,7 @@ const method = {
 				$(".follow_follows").attr("disabled", true);
 				$(".shieldgift_delete").attr("disabled", true);
 				$(".thankgift_barrageReport").attr("disabled",true);
+				$(".follow_mnum").attr("disabled",true);
 			}
 		}
 	},
@@ -450,13 +453,13 @@ const method = {
 		if(s!=""){
 			if(s.indexOf("，")>=0){
 			var ss = s.split("，");
-			for(var gs in ss){
+			for(let gs in ss){
 				if(ss[gs].trim()!=""){
 					lists.push(ss[gs]);	
 				}
 			}
 			}else{
-				list.push(s);
+				lists.push(s);
 			}
 		}
 		return lists;
@@ -464,14 +467,14 @@ const method = {
 	shieldgifts_each : function(lists) {
 		if (lists != null) {
 			$(".shieldgifts-tbody").children('tr').remove();
-			for ( var i in lists) {
+			for (let i in lists) {
 				$(".shieldgifts-tbody")
 						.append(
-								"<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' value='"
+								"<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' value='"
 										+ lists[i].gift_name
-										+ "' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' value='"
+										+ "' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' value='"
 										+ lists[i].num
-										+ "' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
+										+ "' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
 				$(".shieldgifts_open").eq(i).prop('checked', lists[i].is_open);
 				$(".shieldgifts_status").eq(i).find("option").eq(
 						lists[i].status).prop('selected', true);

@@ -162,11 +162,13 @@ public class ThreadConf {
 	 * @param thankFollowString
 	 * @return
 	 */
-	public static boolean startFollowThread(boolean is_thankFollow, String thankFollowString, short num) {
+	public static boolean startFollowThread(boolean is_thankFollow, String thankFollowString, short num,boolean is_PrintFollow,short max_num) {
 		if (PublicDataConf.parsefollowThread != null) {
 			PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
 			PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
 			PublicDataConf.parsefollowThread.setNum(num);
+			PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
+			PublicDataConf.parsefollowThread.setMax_num(max_num);
 			return false;
 		}
 		PublicDataConf.parsefollowThread = new ParseFollowThread();
@@ -174,6 +176,8 @@ public class ThreadConf {
 		PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
 		PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
 		PublicDataConf.parsefollowThread.setNum(num);
+		PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
+		PublicDataConf.parsefollowThread.setMax_num(max_num);
 		PublicDataConf.parsefollowThread.start();
 		if (PublicDataConf.parsefollowThread.getIsThankFollow()) {
 			startSendBarrageThread();
@@ -388,11 +392,13 @@ public class ThreadConf {
 	 * @param thankFollowString
 	 * @param num
 	 */
-	public static void setFollowThread(boolean is_thankFollow, String thankFollowString, short num) {
+	public static void setFollowThread(boolean is_thankFollow, String thankFollowString, short num,boolean is_PrintFollow,short max_num) {
 		if(PublicDataConf.parsefollowThread!=null) {
 			PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
 			PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
 			PublicDataConf.parsefollowThread.setNum(num);
+			PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
+			PublicDataConf.parsefollowThread.setMax_num(max_num);
 		}
 	}
 	

@@ -208,7 +208,7 @@
 											type="checkbox"
 											class="form-check-input thankgift_is_tx_shield"> <span
 											class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否屏蔽天选礼物">屏蔽天选</span>
+											data-placement="top" title="" data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
 										</label>
 									</div>
 									<div class="custom-control-inline input-margin-s">
@@ -247,7 +247,7 @@
 										<input type="number" min="0"
 											class="small-input thankgift_delaytime"
 											placeholder="delay time(s)" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="延迟多少秒发送"
+											data-placement="top" title="" data-html="true" data-original-title="延迟多少秒发送 <br/>，最小值为0"
 											value="0">
 									</div>
 									<div class="custom-control custom-radio custom-control-inline">
@@ -316,6 +316,17 @@
 											placeholder="多少人" data-toggle="tooltip" data-placement="top"
 											title="" data-html="true" data-original-title="每次感谢多少个人"
 											value="1">
+									</div>
+									<div
+										class="custom-control-inline small-input-wrap input-margin-s">
+										<input type="number" min="0" max="300" class="small-input follow_mnum"
+											οninput="if(value.length>5)value=value.slice(0,5)"
+											style="ime-mode: Disabled"
+											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+											placeholder="最大多少人" data-toggle="tooltip" data-placement="top"
+											title="" data-html="true"
+											data-original-title="每次感谢不超过多少人<br/>该功能可以防止天选时刻刷屏<br/>最大值为300，最小值为0"
+											value="0">
 									</div>
 								</div>
 								<div class="form-group footer-set">
@@ -410,7 +421,7 @@
 								placeholder="礼物名称" data-toggle="tooltip" data-placement="top"
 								title="" data-html="true" data-original-title="礼物名称"></td>
 							<td><select class="custom-select-sm shieldgift_status"
-								data-toggle="tooltip" data-placement="top" title=""
+								data-toggle="tooltip" data-placement="top" title="选择类型"
 								data-html="true" data-original-title="选择类型">
 									<option value="1" selected="selected">数量</option>
 									<option value="2">瓜子</option>
@@ -421,7 +432,7 @@
 								style="ime-mode: Disabled"
 								onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
 								placeholder="num" value="0" data-toggle="tooltip"
-								data-placement="top" title="" data-html="true"
+								data-placement="top" title="大于多少(不得小于)" data-html="true"
 								data-original-title="大于多少(不得小于)"></td>
 							<td><button type="button"
 									class="btn btn-danger btn-sm shieldgift_delete">删除</button></td>

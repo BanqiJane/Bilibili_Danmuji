@@ -165,27 +165,9 @@ public class SetMethodCode {
 		boolean is_thankFollow = centerSetConf.getFollow().isIs_open();
 		String thankFollowString = centerSetConf.getFollow().getFollows();
 		short numf = centerSetConf.getFollow().getNum();
-		if (centerSetConf.isIs_follow()) {
-			if (centerSetConf.getFollow().isIs_live_open()) {
-				if (PublicDataConf.lIVE_STATUS != 1) {
-					ThreadConf.startFollowThread(false, thankFollowString, numf);
-				} else {
-					if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-						ThreadConf.startFollowThread(is_thankFollow, thankFollowString, numf);
-					} else {
-						ThreadConf.startFollowThread(false, thankFollowString, numf);
-					}
-				}
-			} else {
-				if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-					ThreadConf.startFollowThread(is_thankFollow, thankFollowString, numf);
-				} else {
-					ThreadConf.startFollowThread(false, thankFollowString, numf);
-				}
-			}
-		} else {
-			ThreadConf.closeFollowThread();
-		}
+		short maxnum = centerSetConf.getFollow().getMax_num();
+		
+		ThreadConf.startFollowThread(false, thankFollowString, numf,is_thankFollow,maxnum);
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			short as = centerSetConf.getAdvert().getStatus();
 			short secondsa = centerSetConf.getAdvert().getTime();
@@ -212,29 +194,19 @@ public class SetMethodCode {
 
 			if (centerSetConf.getFollow().isIs_live_open()) {
 				if (PublicDataConf.lIVE_STATUS != 1) {
-					if (PublicDataConf.parsefollowThread != null) {
-						PublicDataConf.parsefollowThread.setIsThankFollow(false);
-					}
+					ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
 				} else {
 					if (centerSetConf.getFollow().isIs_open()) {
-						if (PublicDataConf.parsefollowThread != null) {
-							PublicDataConf.parsefollowThread.setIsThankFollow(true);
-						}
+						ThreadConf.startFollowThread(true, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
 					} else {
-						if (PublicDataConf.parsefollowThread != null) {
-							PublicDataConf.parsefollowThread.setIsThankFollow(false);
-						}
+						ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
 					}
 				}
 			} else {
 				if (centerSetConf.getFollow().isIs_open()) {
-					if (PublicDataConf.parsefollowThread != null) {
-						PublicDataConf.parsefollowThread.setIsThankFollow(true);
-					}
+					ThreadConf.startFollowThread(true, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
 				} else {
-					if (PublicDataConf.parsefollowThread != null) {
-						PublicDataConf.parsefollowThread.setIsThankFollow(false);
-					}
+					ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
 				}
 			}
 			if (StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
@@ -246,7 +218,11 @@ public class SetMethodCode {
 				ThreadConf.closeUserOnlineThread();
 			}
 		} else {
-			ThreadConf.startFollowThread(false, thankFollowString, numf);
+			if(centerSetConf.isIs_follow()) {
+			ThreadConf.startFollowThread(false, thankFollowString, numf,true,maxnum);
+			}else {
+				ThreadConf.closeFollowThread();
+			}
 			PublicDataConf.COOKIE = null;
 			PublicDataConf.USER = null;
 			PublicDataConf.USERCOOKIE = null;
@@ -259,7 +235,10 @@ public class SetMethodCode {
 			ThreadConf.closeGiftShieldThread();
 			ThreadConf.closeSendBarrageThread();
 		}
-		if (PublicDataConf.advertThread == null && !PublicDataConf.parsefollowThread.getIsThankFollow()
+		if(!centerSetConf.isIs_follow()&&!centerSetConf.getFollow().isIs_open()) {
+			ThreadConf.closeFollowThread();
+		}
+		if (PublicDataConf.advertThread == null && !handleFollow()
 				&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)) {
 			ThreadConf.closeSendBarrageThread();
 		} else {
@@ -276,5 +255,10 @@ public class SetMethodCode {
 			ThreadConf.closeGiftShieldThread();
 		}
 	}
-	
+	public static boolean handleFollow() {
+		if(PublicDataConf.parsefollowThread==null) {
+			return false;
+		}
+		return PublicDataConf.parsefollowThread.getIsThankFollow();
+	}
 }
