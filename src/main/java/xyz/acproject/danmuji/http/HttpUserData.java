@@ -422,6 +422,7 @@ public class HttpUserData {
 			}else{
 				LOGGER.debug(jsonObject.toString());
 				LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+				code = -402;
 			}
 		} else if (code == -111) {
 			LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));

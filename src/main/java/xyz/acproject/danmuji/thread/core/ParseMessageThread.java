@@ -149,7 +149,7 @@ public class ParseMessageThread extends Thread {
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_medal)) {
 							// 勋章+勋章等级
 							if (!StringUtils.isEmpty(barrage.getMedal_name())) {
-								stringBuilder.append("[").append(barrage.getMedal_name())
+								stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
 										.append(barrage.getMedal_level()).append("]");
 							}
 						}
