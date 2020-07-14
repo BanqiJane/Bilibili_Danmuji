@@ -144,7 +144,7 @@ Window下：<br/>
 <p>修复了若干bug(ke neng zhi zao le geng duo bug)</p>
 <p>新功能：</p>
 <p>增加了感谢关注姬感谢人数上限，以防止感谢刷屏 和 有效屏蔽天选时刻下的感谢关注</p>
-<p>留言加入感谢  格式为 感谢name赠送的n个xx秒留言</p>
+<p>留言加入感谢  格式嵌套进入感谢格式里面 礼物名称为 second秒醒目留言，屏蔽建议：60秒醒目留言，替换秒数屏蔽相应秒数的留言感谢</p>
 </blockquote>
 <blockquote>
 <h2>Beta1.0.2</h2>
