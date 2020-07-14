@@ -143,6 +143,10 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
 <blockquote>
+<h2>Beta1.0.4</h2>
+<p>修复了若干bug(maybe make more bug)</p>
+</blockquote>
+<blockquote>
 <h2>Beta1.0.3</h2>
 <p>修复了若干bug(ke neng zhi zao le geng duo bug)</p>
 <p>新功能：</p>
