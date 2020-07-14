@@ -92,16 +92,19 @@ java version "1.8.0_121"
 
 - **优化上舰私信**
 
-# 如何运行(环境配置好的前提下)
+# 如何运行(环境配置好的前提下，绿色版本不用配置环境64位系统下)
 ### 发布版本
 项目目录下控制台执行：
 ```bash
 $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 ```
-Window下：<br/>
+如果Window系统还可以：<br/>
 运行目录下run.bat
-### 新增window绿色版本
-直接运行run.bat
+### 新增绿色版本
+**绿色版本不用配置环境64位系统下**
+解压java-se-8u41-ri.rar（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）
+解压完成确定文件结构没问题直接运行run.bat就行啦（window下）记得允许网络
+其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-1.0.3beta.jar 即可运行
 ### 注意
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
