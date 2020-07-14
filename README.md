@@ -4,8 +4,8 @@
 $ java -version
 java version "1.8.0_121"
 ```
-<br/>
-**！！！：1.0.3+版本增加window64绿色版本，再也不用配置安装java环境了**<br/><br/>
+
+**！！！：1.0.3+版本增加window64绿色版本，再也不用配置安装java环境了**<br/><br/><br/>
 **Bootstrap4 放弃了对 IE8 以及 iOS 6 的支持，现在仅仅支持 IE9 以上 以及 iOS 7 以上版本的浏览器。**<br/>
 **以最新版本浏览器示例:**
 <table>
