@@ -123,7 +123,7 @@ public class CheckService {
 				PublicDataConf.COOKIE=null;
 			}
 			if (PublicDataConf.ROOMID != null) {
-				SetMethodCode.start(PublicDataConf.centerSetConf);
+				SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 			}
 		}
 		base64Encoder=null;
@@ -148,7 +148,7 @@ public class CheckService {
 					new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
 					CenterSetConf.class);
 			if (PublicDataConf.ROOMID != null) {
-				SetMethodCode.start(centerSetConf);
+				SetMethodCode.modifySet(centerSetConf);
 			}
 			LOGGER.debug("保存配置文件成功");
 		} catch (Exception e) {
@@ -171,6 +171,6 @@ public class CheckService {
 		ThreadConf.closeUserOnlineThread();
 		ThreadConf.closeGiftShieldThread();
 		ThreadConf.closeSendBarrageThread();
-		SetMethodCode.start(PublicDataConf.centerSetConf);
+		SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 	}
 }

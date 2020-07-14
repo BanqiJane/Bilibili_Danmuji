@@ -122,7 +122,7 @@ public class WebController {
 		boolean flag = false;
 		if (null == PublicDataConf.webSocketProxy || !PublicDataConf.webSocketProxy.isOpen()) {
 			try {
-				clientService.startService(roomid);
+				clientService.startConnService(roomid);
 			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();

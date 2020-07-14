@@ -844,7 +844,7 @@ public class ParseMessageThread extends Thread {
 //					room_id = jsonObject.getLong("roomid");
 //					if (room_id == PublicDataConf.ROOMID) {
 					// 仅在直播有效 广告线程 改为配置文件
-					SetMethodCode.start(PublicDataConf.centerSetConf);
+					SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 					PublicDataConf.IS_ROOM_POPULARITY = true;
 //					LOGGER.debug("直播开启:::" + message);
 					break;
@@ -862,7 +862,7 @@ public class ParseMessageThread extends Thread {
 				// 直播准备中(或者是关闭直播)
 				case "PREPARING":
 					PublicDataConf.lIVE_STATUS = 0;
-					SetMethodCode.start(PublicDataConf.centerSetConf);
+					SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 					PublicDataConf.IS_ROOM_POPULARITY = false;
 //					LOGGER.debug("直播准备中(或者是关闭直播):::" + message);
 					break;

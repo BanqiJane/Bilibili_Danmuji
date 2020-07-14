@@ -129,7 +129,7 @@ public class SetMethodCode {
 		return messageConcurrentHashMap;
 	}
 
-	public static void start(CenterSetConf centerSetConf) {
+	public static void modifySet(CenterSetConf centerSetConf) {
 		if (PublicDataConf.ROOMID == null) {
 			return;
 		}

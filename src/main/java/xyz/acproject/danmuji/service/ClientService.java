@@ -20,7 +20,7 @@ import xyz.acproject.danmuji.utils.ByteUtils;
 
 @Service
 public class ClientService {
-	public void startService(long roomid) throws Exception {
+	public void startConnService(long roomid) throws Exception {
 		if (roomid < 1) {
 			return;
 		}
@@ -65,7 +65,7 @@ public class ClientService {
 		PublicDataConf.webSocketProxy.send(req);
 		PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
 		ThreadConf.startHeartByteThread();
-		SetMethodCode.start(PublicDataConf.centerSetConf);
+		SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 		if (PublicDataConf.centerSetConf!=null&&PublicDataConf.centerSetConf.getThank_gift().isIs_tx_shield()) {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				CheckTx checkTx = HttpRoomData.httpGetCheckTX();
@@ -114,7 +114,7 @@ public class ClientService {
 			PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
 			ThreadConf.startHeartByteThread();
 			if (PublicDataConf.webSocketProxy.isOpen()) {
-				SetMethodCode.start(PublicDataConf.centerSetConf);
+				SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 			}
 		}
 	}
