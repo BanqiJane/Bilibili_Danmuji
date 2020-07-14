@@ -4,7 +4,7 @@
 $ java -version
 java version "1.8.0_121"
 ```
-**！！！：1.0.3以后版本增加绿色版本，再也不用配置安装java环境了，只要你是64为系统**
+**！！！：1.0.3+版本增加window64绿色版本，再也不用配置安装java环境了**<br/>
 **Bootstrap4 放弃了对 IE8 以及 iOS 6 的支持，现在仅仅支持 IE9 以上 以及 iOS 7 以上版本的浏览器。**<br/>
 **以最新版本浏览器示例:**
 <table>
@@ -54,7 +54,8 @@ java version "1.8.0_121"
 
 **Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.**<br/>
 **本软件基于控制台 项目控制台运行，弹幕在控制台显示(也可以在网页查看弹幕).**<br/>
-**本软件基于web设置 必须在浏览器上设置.**
+**本软件基于web设置 必须在浏览器上设置.**<br/>
+**关于绿色版本：使用为开源的openjdk8 jre。![官网](https://jdk.java.net/java-se-ri/8-MR3 "官网")**
 
 ## 现有功能
 - **弹幕显示**
@@ -89,18 +90,17 @@ java version "1.8.0_121"
 - **模拟在线(老爷可增加在线经验)**
 - **断线自动重连(实验性)**
 <br/><br/>
-# 如何运行(环境配置好的前提下，绿色版本不用配置环境64位系统下)<br/>
-### 发布版本<br/>
+# 如何运行<br/>
+### 发布版本(环境配置好的前提下）<br/>
 项目目录下控制台执行：
 ```bash
 $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 ```
 如果Window系统还可以：<br/>
 运行目录下run.bat<br/>
-### 新增绿色版本<br/>
-**绿色版本不用配置环境64位系统下**<br/>
-解压java-se-8u41-ri.rar（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）<br/>
-解压完成确定文件结构没问题直接运行run.bat就行啦（window下）记得允许网络<br/>
+### 1.0.3+新增win64绿色版本（不用配置环境)<br/>
+解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）<br/>
+解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络<br/>
 其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-1.0.3beta.jar 即可运行<br/>
 ### 注意<br/>
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
