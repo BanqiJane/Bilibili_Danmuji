@@ -102,7 +102,7 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 ### 1.0.3+新增win64绿色版本（不用配置环境)<br/>
 解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）<br/>
 解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络<br/>
-其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-1.0.3beta.jar 即可运行<br/>
+其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-1.0.3beta.jar 即可运行<br/><br/>
 ### 注意<br/>
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
@@ -110,7 +110,7 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 - **首次开启日志 会在项目目录下生成Danmuji_log文件夹 用来存放弹幕**<br/>
 - **生成的用于存放弹幕文件名命名规则为 当天时间+房间号**<br/>
 - **localhost:23333/connect 连接房间地址**<br/>
-- **localhost:23333/login 扫码登录地址**<br/>
+- **localhost:23333/login 扫码登录地址**<br/><br/>
 
 ## 项目提示或教程
 - **光标悬浮在相应位置出现提示**<br/><br/>
