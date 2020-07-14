@@ -99,7 +99,9 @@ java version "1.8.0_121"
 $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 ```
 Window下：<br/>
-双击执行项目目录下run.bat
+运行目录下run.bat
+### 新增window绿色版本
+直接运行run.bat
 ### 注意
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
