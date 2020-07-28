@@ -143,8 +143,16 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
 <blockquote>
+<h2>Beta1.0.5</h2>
+<p>修复了若干bug(maybe make more bug)</p>
+<p>加强关注姬的逻辑</p>
+<p>改变勋章等级显示ul</p>
+</blockquote>
+<blockquote>
 <h2>Beta1.0.4</h2>
 <p>修复了若干bug(maybe make more bug)</p>
+<p>已知bug：</p>
+<p>用户排名低于50000时登录失败，从而导致软件启动不了</p>
 </blockquote>
 <blockquote>
 <h2>Beta1.0.3</h2>
