@@ -39,7 +39,7 @@ public class ParseFollowThread extends Thread {
 			if (FLAG) {
 				return;
 			}
-			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+			if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
 				return;
 			}
 			if (PublicDataConf.FANSNUM > 0) {
@@ -53,10 +53,18 @@ public class ParseFollowThread extends Thread {
 					}
 				} else {
 					oldConcurrentHashMap.clear();
+					if(followsConcurrentHashMap.size()<0) {
+						followsConcurrentHashMap.putAll(HttpRoomData.httpGetFollowers());
+					}
 					oldConcurrentHashMap.putAll(followsConcurrentHashMap);
 				}
 			} else {
-				oldConcurrentHashMap.clear();
+				if (HttpRoomData.httpGetFollowersNum() < 1) {
+					oldConcurrentHashMap.clear();
+				} else {
+					oldConcurrentHashMap.clear();
+					oldConcurrentHashMap.putAll(followsConcurrentHashMap);
+				}
 			}
 			try {
 				Thread.sleep(30000);
@@ -69,6 +77,10 @@ public class ParseFollowThread extends Thread {
 				followConcurrentHashMap.putAll(HttpRoomData.httpGetFollowers());
 			} catch (Exception e) {
 				// TODO: handle exception
+				try {
+					followConcurrentHashMap.putAll(HttpRoomData.httpGetFollowers());
+				} catch (Exception e1) {
+				}
 //				LOGGER.debug("关注线程抛出异常" + e);
 			}
 			if (followsConcurrentHashMap.size() > 0) {
@@ -80,7 +92,7 @@ public class ParseFollowThread extends Thread {
 			followsConcurrentHashMap.putAll(followConcurrentHashMap);
 
 			if (oldConcurrentHashMap.size() > 0 && followConcurrentHashMap.size() > 0) {
-				//筛选出新关注
+				// 筛选出新关注
 				for (Iterator<Map.Entry<Long, String>> iterator = followConcurrentHashMap.entrySet()
 						.iterator(); iterator.hasNext();) {
 					mid = iterator.next().getKey();
@@ -91,30 +103,33 @@ public class ParseFollowThread extends Thread {
 					}
 				}
 				page = (int) Math.ceil((double) followConcurrentHashMap.size() / (double) getNum());
-				if(getIsPrintFollow()) {
-				//关注打印 
-				for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
-					stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
-							.append(entry.getValue()).append(" 关注了直播间");
-					try {
-						danmuWebsocket.sendMessage(stringBuilder.toString());
-					} catch (Exception e) {
-						// TODO 自动生成的 catch 块
+
+				// 关注打印
+				if (getIsPrintFollow()) {
+					for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
+						stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
+								.append(entry.getValue()).append(" 关注了直播间");
+						try {
+							danmuWebsocket.sendMessage(stringBuilder.toString());
+						} catch (Exception e) {
+							// TODO 自动生成的 catch 块
 //						e.printStackTrace();
-					}
-					System.out.println(stringBuilder.toString());
-					if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-						PublicDataConf.logString.add(stringBuilder.toString());
-						synchronized (PublicDataConf.logThread) {
-							PublicDataConf.logThread.notify();
 						}
+						System.out.println(stringBuilder.toString());
+						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+							PublicDataConf.logString.add(stringBuilder.toString());
+							synchronized (PublicDataConf.logThread) {
+								PublicDataConf.logThread.notify();
+							}
+						}
+						stringBuilder.delete(0, stringBuilder.length());
 					}
-					stringBuilder.delete(0, stringBuilder.length());
 				}
-				}
-				if(followConcurrentHashMap.size()>getMax_num()) {
+				// 大于设置上限则清除
+				if (followConcurrentHashMap.size() > getMax_num()) {
 					followConcurrentHashMap.clear();
 				}
+
 				if (getNum() > 1 && followConcurrentHashMap.size() > 1) {
 					// 多个关注test 代码
 					for (int i = 0; i < page; i++) {
@@ -146,33 +161,34 @@ public class ParseFollowThread extends Thread {
 
 			} else if (oldConcurrentHashMap.size() < 1 && followConcurrentHashMap.size() > 0) {
 				page = (int) Math.ceil((double) followConcurrentHashMap.size() / (double) getNum());
-				
-				if(getIsPrintFollow()) {
-				//关注打印 
-				for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
-					stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
-							.append(entry.getValue()).append(" 关注了直播间");
-					try {
-						danmuWebsocket.sendMessage(stringBuilder.toString());
-					} catch (Exception e) {
-						// TODO 自动生成的 catch 块
-//						e.printStackTrace();
-					}
-					System.out.println(stringBuilder.toString());
-					if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-						PublicDataConf.logString.add(stringBuilder.toString());
-						synchronized (PublicDataConf.logThread) {
-							PublicDataConf.logThread.notify();
-						}
-					}
-					stringBuilder.delete(0, stringBuilder.length());
-				}
-				}
-				
-				if(followConcurrentHashMap.size()>getMax_num()) {
+				if(followConcurrentHashMap.size()==250) {
 					followConcurrentHashMap.clear();
 				}
-				
+				// 关注打印
+				if (getIsPrintFollow()) {
+					for (Entry<Long, String> entry : followConcurrentHashMap.entrySet()) {
+						stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
+								.append(entry.getValue()).append(" 关注了直播间");
+						try {
+							danmuWebsocket.sendMessage(stringBuilder.toString());
+						} catch (Exception e) {
+							// TODO 自动生成的 catch 块
+//						e.printStackTrace();
+						}
+						System.out.println(stringBuilder.toString());
+						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+							PublicDataConf.logString.add(stringBuilder.toString());
+							synchronized (PublicDataConf.logThread) {
+								PublicDataConf.logThread.notify();
+							}
+						}
+						stringBuilder.delete(0, stringBuilder.length());
+					}
+				}
+				if (followConcurrentHashMap.size() > getMax_num()) {
+					followConcurrentHashMap.clear();
+				}
+
 				if (getNum() > 1 && followConcurrentHashMap.size() > 1) {
 					// 多个关注test 代码
 					for (int i = 0; i < page; i++) {

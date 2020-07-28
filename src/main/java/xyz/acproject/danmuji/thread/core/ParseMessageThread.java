@@ -220,17 +220,17 @@ public class ParseMessageThread extends Thread {
 						}
 						stringBuilder.delete(0, stringBuilder.length());
 					} else {
-						if(PublicDataConf.sendBarrageThread!=null) {
-						if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
-							jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
-							gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
-									jsonObject.getString("giftName"), jsonObject.getInteger("num"),
-									jsonObject.getString("uname"), jsonObject.getString("face"),
-									jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
-									jsonObject.getLong("timestamp"), jsonObject.getString("action"),
-									jsonObject.getInteger("price"), jsonObject.getString("coin_type"),
-									jsonObject.getLong("total_coin"));
-						}
+						if (PublicDataConf.sendBarrageThread != null) {
+							if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
+								jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
+								gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
+										jsonObject.getString("giftName"), jsonObject.getInteger("num"),
+										jsonObject.getString("uname"), jsonObject.getString("face"),
+										jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
+										jsonObject.getLong("timestamp"), jsonObject.getString("action"),
+										jsonObject.getInteger("price"), jsonObject.getString("coin_type"),
+										jsonObject.getLong("total_coin"));
+							}
 						}
 					}
 					// 感谢礼物处理
@@ -307,8 +307,8 @@ public class ParseMessageThread extends Thread {
 							gift.setUname(guard.getUsername());
 							gift.setUid(guard.getUid());
 							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
-							if(gift!=null) {
-							parseGiftSetting(gift);
+							if (gift != null) {
+								parseGiftSetting(gift);
 							}
 							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
@@ -392,15 +392,15 @@ public class ParseMessageThread extends Thread {
 							gift.setGiftName(stringBuilder.toString());
 							gift.setNum(superChat.getGift().getNum());
 							gift.setPrice(superChat.getPrice() * 1000);
-							gift.setTotal_coin((long)superChat.getPrice() * 1000l);
-							gift.setTimestamp(superChat.getStart_time()*1000);
+							gift.setTotal_coin((long) superChat.getPrice() * 1000l);
+							gift.setTimestamp(superChat.getStart_time() * 1000);
 							gift.setAction("赠送");
 							gift.setCoin_type("gold");
 							gift.setUname(superChat.getUser_info().getUname());
 							gift.setUid(superChat.getUid());
 							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
-							if(gift!=null) {
-							parseGiftSetting(gift);
+							if (gift != null) {
+								parseGiftSetting(gift);
 							}
 						}
 						stringBuilder.delete(0, stringBuilder.length());
@@ -582,7 +582,7 @@ public class ParseMessageThread extends Thread {
 //					LOGGER.debug("直播间许愿瓶消息推送更新:::" + message);
 					break;
 
-				// 广播小电视类抽奖信息推送,包括本房间的舰长礼物包括,本直播间所在小时榜榜单主播信息的推送 需要unicode转义
+				// 广播小电视类抽奖信息推送,包括本房间的舰长礼物包括,本直播间所在小时榜榜单主播信息的推送 需要unicode转义 免费辣条再见！！！！
 				case "NOTICE_MSG":
 //					message = ByteUtils.unicodeToString(message);
 //					LOGGER.debug("小电视类抽奖信息推送:::" + message);
@@ -769,11 +769,11 @@ public class ParseMessageThread extends Thread {
 //					LOGGER.debug("热门房间推送消息:::" + message);
 					break;
 
-			    //小时榜面板消息推送
+				// 小时榜面板消息推送
 				case "PANEL":
 //					LOGGER.debug("热小时榜面板消息推送:::" + message);	
 					break;
-					
+
 				// 星之耀宝箱使用 n
 				case "ROOM_BOX_USER":
 //					LOGGER.debug("星之耀宝箱使用:::" + message);
@@ -871,7 +871,12 @@ public class ParseMessageThread extends Thread {
 				case "LITTLE_TIPS":
 //					LOGGER.debug("勋章亲密度达到上每日上限:::" + message);		
 					break;
-
+					
+				//互动词？？
+				case "INTERACT_WORD":
+//				     LOGGER.debug("互动发生:::" + message);		
+				     break;
+				
 				default:
 //					LOGGER.debug("其他未处理消息:" + message);
 					break;
