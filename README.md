@@ -145,8 +145,9 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 # 版本详细<br/>
 <blockquote>
 <h2>Beta1.0.6</h2>
-<p>修改了部分title提示，更加易懂？(luo suo)</p>>
+<p>修改了部分title提示，更加易懂？(luo suo)</p>
 <p>增加了上舰后舰长信息保存本地的选项用于判断重复发送私信 只统计uid uname(注意：这个功能只统计弹幕姬开启时间的上舰，详细看上面教程)</p>
+<p>增加了保存最后一次连接房间的房间(下次打开就不用麻烦输入直播间了)</p>
 </blockquote>
 <blockquote>
 <h2>Beta1.0.5</h2>
