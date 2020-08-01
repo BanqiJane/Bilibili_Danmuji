@@ -39,12 +39,14 @@
 							<span class="unlogin" th:if="!(${USER}?exists)">你还没有登陆，<a
 								th:href="@{/login}">去登陆</a>
 							</span><span class="logined" th:if="${USER}?exists">用户名：<span
-								th:text="${USER.uname}"></span>，uid：<span th:text="${USER.uid}"></span>；<a th:href="@{/quit}">退出登录</a>
+								th:text="${USER.uname}" class="user-name"></span>，uid：<span
+								th:text="${USER.uid}" class="user-id"></span>；<a
+								th:href="@{/quit}">退出登录</a>
 							</span>&nbsp;&nbsp; <span class="room-data" th:if="${ROOMID}!=null">已连接至主播房间：<span
-								th:text="${ROOMID}"></span>，<span><a
+								th:text="${ROOMID}" class="room-id"></span>，<span><a
 									th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
-									th:text="${ANAME}"></a></span>，人气值：<span th:text="${POPU}"
-								class="popu"></span></span> <span class="room-data"
+									th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
+								th:text="${POPU}" class="popu"></span></span> <span class="room-data"
 								th:if="${ROOMID}==null">未连接到任何房间</span>
 						</div>
 						<div class="input-group mb-3">
@@ -134,7 +136,8 @@
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_log"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="是否写入日志">日志</span>
+										data-placement="top" title="" data-html="true"
+										data-original-title="弹幕是否保存本地<br/>本地弹幕文件夹位置：<br/>本项目根目录下Danmuji_log文件夹">本地</span>
 									</label>
 								</div>
 							</div>
@@ -178,8 +181,9 @@
 								</div>
 								<div class="form-group footer-set">
 									<textarea class="form-control advert_adverts"
-										placeholder="以回车为分割每段语句" data-toggle="tooltip"
-											data-placement="top" data-html="true"  title="" data-original-title="注意以回车为分割每段语句<br/>注意每段语句不要超出自己能发送的弹幕长度<br/>超出长度弹幕姬会自动分段发送"></textarea>
+										placeholder="多条语句下以回车为分割每条语句" data-toggle="tooltip"
+										data-placement="top" data-html="true" title=""
+										data-original-title="多条语句时候注意以回车为分割每条语句<br/>注意每条语句不要超出自己能发送的弹幕长度<br/>超出长度弹幕姬会自动分段发送"></textarea>
 								</div>
 							</div>
 
@@ -208,7 +212,8 @@
 											type="checkbox"
 											class="form-check-input thankgift_is_tx_shield"> <span
 											class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
+											data-placement="top" title=""
+											data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
 										</label>
 									</div>
 									<div class="custom-control-inline input-margin-s">
@@ -225,7 +230,7 @@
 									<div class="custom-control-inline input-margin-s">
 										<select class="custom-select-sm thankgift_thank_status"
 											data-toggle="tooltip" data-placement="top" data-html="true"
-											title="" data-original-title="感谢礼物模式<br/>切换模式注意修改参数!">
+											title="" data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span>">
 											<option value="1" selected>单人单种</option>
 											<option value="2">单人多种</option>
 											<option value="3">多人多种</option>
@@ -239,7 +244,7 @@
 											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
 											placeholder="多少种" data-toggle="tooltip" data-placement="top"
 											title="" data-html="true"
-											data-original-title="每次感谢同一个人最多可以多少种礼物<br/>仅在单人多种和多人多种模式下使用"
+											data-original-title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/>仅在单人多种和多人多种模式下使用"
 											value="2">
 									</div>
 									<div
@@ -247,17 +252,9 @@
 										<input type="number" min="0"
 											class="small-input thankgift_delaytime"
 											placeholder="delay time(s)" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true" data-original-title="延迟多少秒发送 <br/>，最小值为0"
+											data-placement="top" title="" data-html="true"
+											data-original-title="延迟多少秒发送 <br/>,最小值为0<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
 											value="0">
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label is_guard_report_click">
-											<input type="checkbox"
-											class="form-check-input thankgift_is_guard_report"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title=""
-											data-original-title="是否开启上舰后发送私信">上舰长私信</span>
-										</label>
 									</div>
 									<div class="custom-control-inline">
 										<button class="btn btn-primary btn-sm" id="gift-shield-btn">礼物自定义规则屏蔽设置</button>
@@ -277,14 +274,41 @@
 											data-placement="top" title="" data-html="true" data-original-title="感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开">
 								     <input class="form-control somes_people input-margin-b thankgift_thank" placeholder="感謝%uNames%贈送的%Gifts%~" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true" data-original-title="感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开"> -->
+
+								</div>
+								<h6 data-toggle="tooltip" data-placement="top" title=""
+									data-html="true"
+									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/>如介意请选择稳定的1.0.5版本">上舰私信姬</h6>
+								<div class="header-set">
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label is_guard_report_click">
+											<input type="checkbox"
+											class="form-check-input thankgift_is_guard_local"> <span
+											class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="是否开启舰长储存在本地<br/>如在开启上舰私信的情况下：不开启既为有人上舰都私信<br/>主要用于防止重复发送私信<br/>本地文件夹guardFile下<br/><span class='red-font'>注意变动该配置都需要重启弹幕姬</span>">舰长存储本地</span>
+										</label>
+									</div>
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label is_guard_report_click">
+											<input type="checkbox"
+											class="form-check-input thankgift_is_guard_report"> <span
+											class="_description" data-toggle="tooltip"
+											data-placement="top" title=""
+											data-original-title="是否开启上舰后发送私信">上舰长私信(需要登录)</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_report"
-										placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称" data-toggle="tooltip" data-html="true" data-placement="top" title="" 
+										placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称"
+										data-toggle="tooltip" data-html="true" data-placement="top"
+										title=""
 										data-original-title="回车为换行，不能超过破站官方规定的500字<br/>可选参数%uName%，刚刚上舰的人的名称"></textarea>
 									<input
 										class="form-control input-margin-b thankgift_barrageReport"
-										placeholder=""
-										data-toggle="tooltip" data-placement="top" title=""
-										data-html="true"
+										placeholder="" data-toggle="tooltip" data-placement="top"
+										title="" data-html="true"
 										data-original-title="上舰私信发送成功后，发送的自定义弹幕，默认空不发送">
 								</div>
 							</div>
@@ -307,6 +331,13 @@
 											data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
 										</label>
 									</div>
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label"> <input
+											type="checkbox" class="form-check-input follow_tx_shield">
+											<span class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="是否屏蔽天选状态下的关注">天选</span>
+										</label>
+									</div>
 									<div
 										class="custom-control-inline small-input-wrap input-margin-s">
 										<input type="number" min="1" class="small-input follow_num"
@@ -319,14 +350,12 @@
 									</div>
 									<div
 										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="0" max="300" class="small-input follow_mnum"
-											οninput="if(value.length>5)value=value.slice(0,5)"
-											style="ime-mode: Disabled"
-											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											placeholder="最大多少人" data-toggle="tooltip" data-placement="top"
-											title="" data-html="true"
-											data-original-title="累计感谢集合不超过多少人<br/>该功能可以防止天选时刻刷屏<br/>最大值为300，最小值为0"
-											value="50">
+										<input type="number" min="0"
+											class="small-input thankfollow_delaytime"
+											placeholder="delay time(s)" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="延迟多少秒发送 <br/>,最小值为0<br/><span class='red-font'>PS:可统计延时关注数内,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+											value="0">
 									</div>
 								</div>
 								<div class="form-group footer-set">
@@ -364,14 +393,14 @@
 								target="_blank" data-toggle="tooltip" data-placement="top"
 								title=""
 								data-original-title="https://github.com/BanqiJane/Bilibili_Danmuji">
-								GitHub仓库 </a>|<a href="mailto:zjianf2014@outlook.com"
+								GitHub仓库(查看更新) </a>|<a href="mailto:zjianf2014@outlook.com"
 								data-toggle="tooltip" data-placement="top" title=""
-								data-original-title="zjianf2014@outlook.com"> 联系我 </a>| <a
-								href="https://live.bilibili.com/1000" target="_blank"
+								data-original-title="zjianf2014@outlook.com(有什么建议或反馈bug)">
+								联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
 								data-toggle="tooltip" data-placement="top" title=""
 								data-original-title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
 								href="javascript:;" data-toggle="tooltip" data-placement="top"
-								title="" data-original-title="版本号:1.0.4beta">版本号</a>
+								title="" data-original-title="版本号:1.0.6beta">版本号</a>
 						</div>
 					</div>
 				</div>
@@ -447,6 +476,9 @@
 		$(function() {
 			$("[data-toggle='tooltip']").tooltip();
 		});
+		$.each($("textarea"), function(i, n) {
+			$(n).css("height", n.scrollHeight + 20 + "px");
+		})
 	</script>
 </body>
 </html>

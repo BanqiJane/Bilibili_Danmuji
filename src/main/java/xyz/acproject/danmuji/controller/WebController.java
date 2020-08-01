@@ -51,7 +51,7 @@ public class WebController {
 
 	@RequestMapping(value = "/connect")
 	public String connect(Model model) {
-		model.addAttribute("ROOMID", PublicDataConf.ROOMID);
+		model.addAttribute("ROOMID", PublicDataConf.centerSetConf.getRoomid());
 		return "connect";
 	}
 
@@ -127,6 +127,10 @@ public class WebController {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
 			}
+			if(PublicDataConf.ROOMID!=null) {
+				PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID);
+		    }
+			checkService.connectSet(PublicDataConf.centerSetConf);
 		}
 		if (PublicDataConf.webSocketProxy != null) {
 			if (PublicDataConf.webSocketProxy.isOpen()) {

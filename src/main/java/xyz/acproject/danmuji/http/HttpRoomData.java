@@ -399,10 +399,10 @@ public class HttpRoomData {
 		if (page == 0) {
 			page = 1;
 		}
-		while (page > 0) {
+		for (int i=1;i<=page;i++) {
 			try {
 				String urlString = "https://api.live.bilibili.com/xlive/app-room/v1/guardTab/topList?roomid="
-						+ PublicDataConf.ROOMID + "&page=" + page + "&ruid=" + PublicDataConf.AUID + "&page_size=29";
+						+ PublicDataConf.ROOMID + "&page=" + i + "&ruid=" + PublicDataConf.AUID + "&page_size=29";
 				url = new URL(urlString);
 				httpURLConnection = (HttpURLConnection) url.openConnection();
 				httpURLConnection.setRequestMethod("GET");
@@ -435,9 +435,15 @@ public class HttpRoomData {
 			if (code == 0) {
 				jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
 				for (Object object : jsonArray) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						// TODO 自动生成的 catch 块
+						e.printStackTrace();
+					}
 					hashtable.put(((JSONObject) object).getLong("uid"), ((JSONObject) object).getString("username"));
 				}
-				if (page == 1) {
+				if (i == 1) {
 					jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("top3");
 					for (Object object : jsonArray) {
 						hashtable.put(((JSONObject) object).getLong("uid"),
@@ -447,7 +453,6 @@ public class HttpRoomData {
 			} else {
 				LOGGER.error("直播房间号不存在，或者未知错误，请尝试更换房间号,原因:" + jsonObject.getString("message"));
 			}
-			page--;
 		}
 		return hashtable;
 	}

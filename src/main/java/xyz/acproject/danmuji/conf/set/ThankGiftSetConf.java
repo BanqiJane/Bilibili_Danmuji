@@ -32,6 +32,8 @@ public class ThankGiftSetConf implements Serializable{
 	private String thank ="感谢%uName%大佬%Type%的%GiftName% x%Num%~";
 	//是否舰长私信
 	private boolean is_guard_report =false;
+	//是否开启本地存储舰长
+	private boolean is_guard_local=false;
 	//舰长私信语
 	private String report;
 	//舰长私信成功后发送弹幕
@@ -41,9 +43,12 @@ public class ThankGiftSetConf implements Serializable{
 		// TODO 自动生成的构造函数存根
 	}
 	
+	
+
 	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status,
 			HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num,
-			double delaytime, String thank, boolean is_guard_report, String report, String report_barrage) {
+			double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, String report,
+			String report_barrage) {
 		super();
 		this.is_open = is_open;
 		this.is_live_open = is_live_open;
@@ -56,9 +61,12 @@ public class ThankGiftSetConf implements Serializable{
 		this.delaytime = delaytime;
 		this.thank = thank;
 		this.is_guard_report = is_guard_report;
+		this.is_guard_local = is_guard_local;
 		this.report = report;
 		this.report_barrage = report_barrage;
 	}
+
+
 
 	public boolean isIs_open() {
 		return is_open;
@@ -86,6 +94,18 @@ public class ThankGiftSetConf implements Serializable{
 	}
 	
 	
+	public boolean isIs_guard_local() {
+		return is_guard_local;
+	}
+
+
+
+	public void setIs_guard_local(boolean is_guard_local) {
+		this.is_guard_local = is_guard_local;
+	}
+
+
+
 	public HashSet<String> getGiftStrings() {
 		return giftStrings;
 	}

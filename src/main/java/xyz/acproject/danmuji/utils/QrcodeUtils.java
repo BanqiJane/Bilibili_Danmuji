@@ -47,7 +47,6 @@ public class QrcodeUtils {
     /**
      * image流数据处理
      *
-     * @author ianly
      */
     public static BufferedImage toBufferedImage(BitMatrix matrix) {
         int width = matrix.getWidth();

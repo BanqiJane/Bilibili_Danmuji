@@ -4,12 +4,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.acproject.danmuji.entity.RoomBarrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
+import xyz.acproject.danmuji.entity.danmu_data.Interact;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
 import xyz.acproject.danmuji.thread.AdvertThread;
+import xyz.acproject.danmuji.thread.FollowShieldThread;
 import xyz.acproject.danmuji.thread.GiftShieldThread;
 import xyz.acproject.danmuji.thread.LogThread;
-import xyz.acproject.danmuji.thread.ParseFollowThread;
+import xyz.acproject.danmuji.thread.ParseThankFollowThread;
 import xyz.acproject.danmuji.thread.ParseThankGiftThread;
 import xyz.acproject.danmuji.thread.SendBarrageThread;
 import xyz.acproject.danmuji.thread.core.HeartByteThread;
@@ -44,6 +46,8 @@ public class PublicDataConf {
 	public static UserBarrageMsg USERBARRAGEMESSAGE = null;
 	//天选礼物屏蔽
 	public static String SHIELDGIFTNAME = null;
+	//天选是否正在屏蔽关注
+	public static Boolean ISSHIELDFOLLOW = false;
 	//设置
 	public static CenterSetConf centerSetConf;
 	
@@ -68,12 +72,14 @@ public class PublicDataConf {
 	public final static Vector<String> barrageString = new Vector<String>();
 	//log日志待写入集合
 	public final static Vector<String> logString = new Vector<String>();
+	//待发送感谢关注集合
+	public final static Vector<Interact> interacts = new Vector<Interact>();
 	
 	
 	//日志线程
 	public static LogThread logThread;
 	//处理关注数刷新线程
-	public static ParseFollowThread parsefollowThread;
+	public static ParseThankFollowThread parsethankFollowThread = new ParseThankFollowThread();
 	//广告姬线程
 	public static AdvertThread advertThread;
 	//感谢礼物数据集线程
@@ -82,6 +88,8 @@ public class PublicDataConf {
 	public static SendBarrageThread sendBarrageThread;
 	//屏蔽天选礼物线程
 	public static GiftShieldThread giftShieldThread = new GiftShieldThread();
+	//屏蔽天选关注线程
+	public static FollowShieldThread followShieldThread = new FollowShieldThread();
 	
 	//用户在线线程集
 	public static HeartBeatThread heartBeatThread;

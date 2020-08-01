@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.conf.SetMethodCode;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.enums.ShieldGift;
@@ -37,7 +38,7 @@ public class ParseThankGiftThread extends Thread {
 				if (TFLAG) {
 					return;
 				}
-				if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+				if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
 					return;
 				}
 				long nowTime = System.currentTimeMillis();
@@ -48,8 +49,12 @@ public class ParseThankGiftThread extends Thread {
 							gifts = entry.getValue();
 							for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
 								Gift gift = iterator.next();
-								if(ShieldGiftTools.shieldGift(gift, ShieldGift.CUSTOM_RULE, null, getThankGiftRuleSets())==null) {
-									iterator.remove();
+								if (SetMethodCode.getGiftShieldStatus(PublicDataConf.centerSetConf.getThank_gift()
+										.getShield_status()) == ShieldGift.CUSTOM_RULE) {
+									if (ShieldGiftTools.shieldGift(gift, ShieldGift.CUSTOM_RULE, null,
+											getThankGiftRuleSets()) == null) {
+										iterator.remove();
+									}
 								}
 							}
 //							gifts.sort((g1,g2)->g1.getTimestamp().compareTo(g2.getTimestamp()));
@@ -94,7 +99,7 @@ public class ParseThankGiftThread extends Thread {
 									}
 									thankGiftStr = getThankGiftString();
 								}
-                                //已删除传统没有手动选择几种的写法 即全部打印
+								// 已删除传统没有手动选择几种的写法 即全部打印
 //								thankGiftStr = getThankGiftString().replaceAll("%uName%", entry.getKey());
 //								for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
 //									Gift gift = iterator.next();
@@ -115,7 +120,7 @@ public class ParseThankGiftThread extends Thread {
 						}
 						// 多人(uNames)多种(Gifts)礼物感谢 最多多少个人及多种(num)礼物 延迟内(delaytime) end beta版
 						if (getThankGiftStatus() == ThankGiftStatus.some_peoples) {
-							//多次
+							// 多次
 							int page = (int) Math.ceil(
 									(double) PublicDataConf.thankGiftConcurrentHashMap.size() / (double) getNum());
 							if (getNum() > 1 && PublicDataConf.thankGiftConcurrentHashMap.size() > 1) {
@@ -123,15 +128,15 @@ public class ParseThankGiftThread extends Thread {
 									if (PublicDataConf.sendBarrageThread != null
 											&& !PublicDataConf.sendBarrageThread.FLAG) {
 										PublicDataConf.barrageString
-												.add(somePeoplesHandle(PublicDataConf.thankGiftConcurrentHashMap, getNum(),
-														getThankGiftString()));
+												.add(somePeoplesHandle(PublicDataConf.thankGiftConcurrentHashMap,
+														getNum(), getThankGiftString()));
 										synchronized (PublicDataConf.sendBarrageThread) {
 											PublicDataConf.sendBarrageThread.notify();
 										}
 									}
 								}
 							} else {
-								//单次
+								// 单次
 								for (Entry<String, Vector<Gift>> entry : PublicDataConf.thankGiftConcurrentHashMap
 										.entrySet()) {
 									gifts = entry.getValue();
@@ -238,5 +243,5 @@ public class ParseThankGiftThread extends Thread {
 	public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
 		this.thankGiftRuleSets = thankGiftRuleSets;
 	}
-	
+
 }

@@ -1,5 +1,8 @@
 package xyz.acproject.danmuji.service;
 
+import java.util.Hashtable;
+import java.util.Map.Entry;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.buf.HexUtils;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import xyz.acproject.danmuji.entity.server_data.Conf;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.tools.CommonTools;
+import xyz.acproject.danmuji.tools.GuardFileTools;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
 @Service
@@ -66,7 +70,8 @@ public class ClientService {
 		PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
 		ThreadConf.startHeartByteThread();
 		SetMethodCode.modifySet(PublicDataConf.centerSetConf);
-		if (PublicDataConf.centerSetConf!=null&&PublicDataConf.centerSetConf.getThank_gift().isIs_tx_shield()) {
+		// 登录发现天选屏蔽礼物
+		if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().isIs_tx_shield()) {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				CheckTx checkTx = HttpRoomData.httpGetCheckTX();
 				if (checkTx != null) {
@@ -74,6 +79,35 @@ public class ClientService {
 						if (checkTx.getTime() > 0) {
 							ThreadConf.startGiftShieldThread(checkTx.getGift_name(), checkTx.getTime());
 						}
+					}
+				}
+			}
+		}
+		// 登录发现天选屏蔽关注
+		if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().isIs_tx_shield()) {
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+				CheckTx checkTx = HttpRoomData.httpGetCheckTX();
+				if (checkTx != null) {
+					if (checkTx.getTime() > 0) {
+						// do something
+						ThreadConf.startFollowShieldThread(checkTx.getTime());
+					}
+				}
+			}
+		}
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			if (PublicDataConf.centerSetConf != null
+					&& PublicDataConf.centerSetConf.getThank_gift().isIs_guard_local()) {
+				if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
+				} else {
+					Hashtable<Long, String> guards = HttpRoomData.httpGetGuardList();
+					if (guards != null && guards.size() > 0) {
+						for (Entry<Long, String> entry : guards.entrySet()) {
+							GuardFileTools.write(entry.getKey() + "," + entry.getValue());
+						}
+					}
+					if (guards != null) {
+						guards.clear();
 					}
 				}
 			}
@@ -88,11 +122,11 @@ public class ClientService {
 			ThreadConf.closeHeartByteThread();
 			ThreadConf.closeParseMessageThread();
 			ThreadConf.closeUserOnlineThread();
-			ThreadConf.closeFollowThread();
 			ThreadConf.closeAdvertThread();
 			ThreadConf.closeSendBarrageThread();
 			ThreadConf.closeLogThread();
 			ThreadConf.closeGiftShieldThread();
+			ThreadConf.closeFollowShieldThread();
 			Room room = HttpRoomData.httpGetRoomData(PublicDataConf.ROOMID);
 			Conf conf = HttpRoomData.httpGetConf();
 			PublicDataConf.FANSNUM = HttpRoomData.httpGetFollowersNum();
@@ -137,16 +171,17 @@ public class ClientService {
 				ThreadConf.closeHeartByteThread();
 				ThreadConf.closeParseMessageThread();
 				ThreadConf.closeUserOnlineThread();
-				ThreadConf.closeFollowThread();
 				ThreadConf.closeAdvertThread();
 				ThreadConf.closeSendBarrageThread();
 				ThreadConf.closeLogThread();
 				ThreadConf.closeGiftShieldThread();
+				ThreadConf.closeFollowShieldThread();
 				PublicDataConf.SHIELDGIFTNAME = null;
 				PublicDataConf.resultStrs.clear();
 				PublicDataConf.thankGiftConcurrentHashMap.clear();
 				PublicDataConf.barrageString.clear();
 				PublicDataConf.logString.clear();
+				PublicDataConf.interacts.clear();
 				PublicDataConf.ROOMID = null;
 				PublicDataConf.ANCHOR_NAME = null;
 				PublicDataConf.AUID = null;

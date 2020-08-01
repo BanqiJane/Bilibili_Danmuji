@@ -68,7 +68,7 @@ public class Websocket extends WebSocketClient {
 	@Override
 	public void onError(Exception ex) {
 		// TODO 自动生成的方法存根
-		LOGGER.error("[错误信息，开启debug模式抓取一阵子并将日志发给管理员]websocket connect error,message:" + ex.getMessage());
+		LOGGER.error("[错误信息，请将log文件下的日志发送给管理员]websocket connect error,message:" + ex.getMessage());
 	}
 
 	@Override

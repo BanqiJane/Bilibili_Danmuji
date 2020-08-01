@@ -55,7 +55,7 @@ public class SetMethodCode {
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 			short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
-				11);
+				16);
 		if (centerSetConf.isIs_barrage_guardAndvip()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guardAndvip, true);
 		} else {
@@ -81,6 +81,11 @@ public class SetMethodCode {
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_block, false);
 		}
+		if (centerSetConf.isIs_follow()) {
+			messageConcurrentHashMap.put(ShieldMessage.is_follow, true);
+		} else {
+			messageConcurrentHashMap.put(ShieldMessage.is_follow, false);
+		}
 		if (centerSetConf.isIs_gift()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_gift, true);
 		} else {
@@ -96,6 +101,11 @@ public class SetMethodCode {
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_giftShield, false);
 		}
+		if (centerSetConf.getFollow().isIs_tx_shield()) {
+			messageConcurrentHashMap.put(ShieldMessage.is_followShield, true);
+		} else {
+			messageConcurrentHashMap.put(ShieldMessage.is_followShield, false);
+		}
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			if (centerSetConf.getThank_gift().isIs_guard_report()) {
 				messageConcurrentHashMap.put(ShieldMessage.is_guard_report, true);
@@ -104,6 +114,36 @@ public class SetMethodCode {
 			}
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_guard_report, false);
+		}
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			if(centerSetConf.getFollow().isIs_live_open()) {
+				if(live_status!=1) {
+					messageConcurrentHashMap.put(ShieldMessage.is_followThank, false);
+				}else {
+					if (centerSetConf.getFollow().isIs_open()) {
+						messageConcurrentHashMap.put(ShieldMessage.is_followThank, true);
+					} else {
+						messageConcurrentHashMap.put(ShieldMessage.is_followThank, false);
+					}
+				}
+			}else {
+				if (centerSetConf.getFollow().isIs_open()) {
+					messageConcurrentHashMap.put(ShieldMessage.is_followThank, true);
+				} else {
+					messageConcurrentHashMap.put(ShieldMessage.is_followThank, false);
+				}
+			}
+		}else {
+			messageConcurrentHashMap.put(ShieldMessage.is_followThank, false);
+		}
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			if (centerSetConf.getThank_gift().isIs_guard_local()) {
+				messageConcurrentHashMap.put(ShieldMessage.is_guard_local, true);
+			} else {
+				messageConcurrentHashMap.put(ShieldMessage.is_guard_local, false);
+			}
+		}else {
+			messageConcurrentHashMap.put(ShieldMessage.is_guard_local, false);
 		}
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			if (centerSetConf.getThank_gift().isIs_live_open()) {
@@ -139,14 +179,6 @@ public class SetMethodCode {
 		if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
 			return;
 		}
-		HashSet<String> giftStrings = centerSetConf.getThank_gift().getGiftStrings();
-		double secondst = centerSetConf.getThank_gift().getDelaytime();
-		String thankGiftString = centerSetConf.getThank_gift().getThank();
-		short numt = centerSetConf.getThank_gift().getNum();
-		short sg = centerSetConf.getThank_gift().getShield_status();
-		short st = centerSetConf.getThank_gift().getThank_status();
-		String guardReport = centerSetConf.getThank_gift().getReport();
-		String barrageReport = centerSetConf.getThank_gift().getReport_barrage();
 		HashSet<ThankGiftRuleSet> thankGiftRuleSets = centerSetConf.getThank_gift().getThankGiftRuleSets();
 		for (Iterator<ThankGiftRuleSet> iterator = thankGiftRuleSets.iterator(); iterator.hasNext();) {
 			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
@@ -154,20 +186,15 @@ public class SetMethodCode {
 				iterator.remove();
 			}
 		}
+		centerSetConf.getThank_gift().setThankGiftRuleSets(thankGiftRuleSets);
 		ThreadConf.startParseMessageThread(getMessageConcurrentHashMap(centerSetConf, PublicDataConf.lIVE_STATUS),
-				getGiftShieldStatus(sg), giftStrings, secondst, getThankGiftStatus(st), thankGiftString, numt,
-				thankGiftRuleSets, guardReport, barrageReport);
+				centerSetConf);
 		if (centerSetConf.isIs_log()) {
 			ThreadConf.startLogThread();
 		} else {
 			ThreadConf.closeLogThread();
 		}
-		boolean is_thankFollow = centerSetConf.getFollow().isIs_open();
-		String thankFollowString = centerSetConf.getFollow().getFollows();
-		short numf = centerSetConf.getFollow().getNum();
-		short maxnum = centerSetConf.getFollow().getMax_num();
 		
-		ThreadConf.startFollowThread(false, thankFollowString, numf,is_thankFollow,maxnum);
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			short as = centerSetConf.getAdvert().getStatus();
 			short secondsa = centerSetConf.getAdvert().getTime();
@@ -191,54 +218,23 @@ public class SetMethodCode {
 					ThreadConf.closeAdvertThread();
 				}
 			}
-
-			if (centerSetConf.getFollow().isIs_live_open()) {
-				if (PublicDataConf.lIVE_STATUS != 1) {
-					ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
-				} else {
-					if (centerSetConf.getFollow().isIs_open()) {
-						ThreadConf.startFollowThread(true, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
-					} else {
-						ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
-					}
-				}
-			} else {
-				if (centerSetConf.getFollow().isIs_open()) {
-					ThreadConf.startFollowThread(true, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
-				} else {
-					ThreadConf.startFollowThread(false, thankFollowString, numf,centerSetConf.isIs_follow(),maxnum);
-				}
-			}
-			if (StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				PublicDataConf.parsefollowThread.setIsThankFollow(false);
-			}
 			if (centerSetConf.isIs_online()) {
 				ThreadConf.startUserOnlineThread();
 			} else {
 				ThreadConf.closeUserOnlineThread();
 			}
 		} else {
-			if(centerSetConf.isIs_follow()) {
-			ThreadConf.startFollowThread(false, thankFollowString, numf,true,maxnum);
-			}else {
-				ThreadConf.closeFollowThread();
-			}
+		
 			PublicDataConf.COOKIE = null;
 			PublicDataConf.USER = null;
 			PublicDataConf.USERCOOKIE = null;
 			PublicDataConf.USERBARRAGEMESSAGE = null;
 			ThreadConf.closeAdvertThread();
-			if (PublicDataConf.parsefollowThread != null) {
-				PublicDataConf.parsefollowThread.setIsThankFollow(false);
-			}
 			ThreadConf.closeUserOnlineThread();
 			ThreadConf.closeGiftShieldThread();
 			ThreadConf.closeSendBarrageThread();
 		}
-		if(!centerSetConf.isIs_follow()&&!centerSetConf.getFollow().isIs_open()) {
-			ThreadConf.closeFollowThread();
-		}
-		if (PublicDataConf.advertThread == null && !handleFollow()
+		if (PublicDataConf.advertThread == null && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
 				&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)) {
 			ThreadConf.closeSendBarrageThread();
 		} else {
@@ -248,17 +244,11 @@ public class SetMethodCode {
 			ThreadConf.closeHeartByteThread();
 			ThreadConf.closeParseMessageThread();
 			ThreadConf.closeUserOnlineThread();
-			ThreadConf.closeFollowThread();
+			ThreadConf.closeFollowShieldThread();
 			ThreadConf.closeAdvertThread();
 			ThreadConf.closeSendBarrageThread();
 			ThreadConf.closeLogThread();
 			ThreadConf.closeGiftShieldThread();
 		}
-	}
-	public static boolean handleFollow() {
-		if(PublicDataConf.parsefollowThread==null) {
-			return false;
-		}
-		return PublicDataConf.parsefollowThread.getIsThankFollow();
 	}
 }

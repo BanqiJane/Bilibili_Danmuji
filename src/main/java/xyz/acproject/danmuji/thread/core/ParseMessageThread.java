@@ -1,6 +1,6 @@
 package xyz.acproject.danmuji.thread.core;
 
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +14,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.SetMethodCode;
-import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
+import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
+import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.controller.DanmuWebsocket;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeGuard;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeVip;
@@ -22,18 +23,20 @@ import xyz.acproject.danmuji.entity.danmu_data.Barrage;
 import xyz.acproject.danmuji.entity.danmu_data.BlockMessage;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Guard;
+import xyz.acproject.danmuji.entity.danmu_data.Interact;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
-import xyz.acproject.danmuji.enums.ThankGiftStatus;
 import xyz.acproject.danmuji.http.HttpUserData;
+import xyz.acproject.danmuji.thread.FollowShieldThread;
 import xyz.acproject.danmuji.thread.GiftShieldThread;
+import xyz.acproject.danmuji.thread.ParseThankFollowThread;
 import xyz.acproject.danmuji.thread.ParseThankGiftThread;
+import xyz.acproject.danmuji.tools.GuardFileTools;
 import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
-import xyz.acproject.danmuji.utils.SpringUtils;
-
+import xyz.acproject.danmuji.utils.SpringUtils;  
 /**
  * @author banqijane
  *
@@ -42,16 +45,10 @@ public class ParseMessageThread extends Thread {
 	private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
 	public volatile boolean FLAG = false;
 	private ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap;
-	private ShieldGift shieldGift = ShieldGift.OPTIONAL; // 给予默认值
-	private Long delaytime = 0L; // 给予默认值
-	private String thankGiftString = "感谢%uName%大佬%Type%的%GiftName% x%Num%";// 给予默认值
-	private HashSet<String> giftStrings;
-	private ThankGiftStatus thankGiftStatus = ThankGiftStatus.one_people;
-	private short num = 2;
-	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
-	private String guardReport;
 	private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
-	private String barrageReport;
+
+	private ThankGiftSetConf thankGiftSetConf;
+	private ThankFollowSetConf thankFollowSetConf;
 
 	@Override
 	public void run() {
@@ -71,6 +68,7 @@ public class ParseMessageThread extends Thread {
 //		GiftFile giftFile = null;
 		String message = "";
 		String cmd = "";
+		short msg_type = 0;
 		StringBuilder stringBuilder = new StringBuilder(200);
 		while (!FLAG) {
 			if (FLAG) {
@@ -108,6 +106,22 @@ public class ParseMessageThread extends Thread {
 						}
 					}
 				}
+//				if (is_guardOne) {
+//					if (getMessageControlMap().get(ShieldMessage.is_guard_local) != null
+//							&& getMessageControlMap().get(ShieldMessage.is_guard_local)) {
+//						if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
+//						} else {
+//							Hashtable<Long, String> guards = HttpRoomData.httpGetGuardList();
+//							if (guards != null && guards.size() > 0) {
+//								for (Entry<Long, String> entry : guards.entrySet()) {
+//									GuardFileTools.write(entry.getKey() + "," + entry.getValue());
+//								}
+//							}
+//							guards.clear();
+//							is_guardOne = false;
+//						}
+//					}
+//				}
 				cmd = parseCmd(cmd);
 				switch (cmd) {
 				// 弹幕
@@ -237,8 +251,11 @@ public class ParseMessageThread extends Thread {
 					if (gift != null && getMessageControlMap().get(ShieldMessage.is_giftThank) != null
 							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
 						if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
-							if (getShieldGift() != ShieldGift.CUSTOM_RULE) {
-								gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
+							if (SetMethodCode.getGiftShieldStatus(
+									getThankGiftSetConf().getShield_status()) != ShieldGift.CUSTOM_RULE) {
+								gift = ShieldGiftTools.shieldGift(gift,
+										SetMethodCode.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
+										getThankGiftSetConf().getGiftStrings(), null);
 							}
 							if (gift != null) {
 								if (!StringUtils.isEmpty(PublicDataConf.SHIELDGIFTNAME)) {
@@ -306,29 +323,43 @@ public class ParseMessageThread extends Thread {
 							gift.setCoin_type("gold");
 							gift.setUname(guard.getUsername());
 							gift.setUid(guard.getUid());
-							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
+							gift = ShieldGiftTools.shieldGift(gift,
+									SetMethodCode.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
+									getThankGiftSetConf().getGiftStrings(), null);
 							if (gift != null) {
 								parseGiftSetting(gift);
 							}
+						}
+					}
+					if (getMessageControlMap().get(ShieldMessage.is_guard_local) != null
+							&& getMessageControlMap().get(ShieldMessage.is_guard_local)) {
+						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+						Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
+						if(guardHashtable_local==null) {
+						guardHashtable_local = new Hashtable<Long, String>();	
+						}
+						if (!guardHashtable_local.containsKey(guard.getUid())) {
+							GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
 							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
-								String report = getGuardReport().replaceAll("\n", "\\\\r\\\\n");
+								String report = getThankGiftSetConf().getReport().replaceAll("\n", "\\\\r\\\\n");
 								report = report.replaceAll("%uName%", guard.getUsername());
 								try {
 //									if (PublicDataConf.ROOMID == 5067) {
-									if (!StringUtils.isEmpty(getBarrageReport().trim())) {
-										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-											PublicDataConf.barrageString.add(getBarrageReport());
+										if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+											if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+												PublicDataConf.barrageString
+														.add(getThankGiftSetConf().getReport_barrage());
+											}
+											synchronized (PublicDataConf.sendBarrageThread) {
+												PublicDataConf.sendBarrageThread.notify();
+											}
+										} else {
+											HttpUserData.httpPostSendMsg(guard.getUid(), report);
 										}
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
-										}
-									} else {
-										HttpUserData.httpPostSendMsg(guard.getUid(), report);
-									}
-//									}else {
+//									} else {
 //										LOGGER.debug(report);
-//										LOGGER.debug(getBarrageReport());
+//										LOGGER.debug(getThankGiftSetConf().getReport_barrage());
 //									}
 								} catch (Exception e) {
 									// TODO: handle exception
@@ -336,8 +367,34 @@ public class ParseMessageThread extends Thread {
 								}
 							}
 						}
+					} else {
+						if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
+								&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
+							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+							String report = getThankGiftSetConf().getReport().replaceAll("\n", "\\\\r\\\\n");
+							report = report.replaceAll("%uName%", guard.getUsername());
+							try {
+//								if (PublicDataConf.ROOMID == 5067) {
+									if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+											PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
+										}
+										synchronized (PublicDataConf.sendBarrageThread) {
+											PublicDataConf.sendBarrageThread.notify();
+										}
+									} else {
+										HttpUserData.httpPostSendMsg(guard.getUid(), report);
+									}
+//								} else {
+//									LOGGER.debug(report);
+//									LOGGER.debug(getThankGiftSetConf().getReport_barrage());
+//								}
+							} catch (Exception e) {
+								// TODO: handle exception
+								LOGGER.error("发送舰长私信失败，原因：" + e);
+							}
+						}
 					}
-
 //					LOGGER.debug("有人上舰长啦:::" + message);
 					break;
 
@@ -398,7 +455,9 @@ public class ParseMessageThread extends Thread {
 							gift.setCoin_type("gold");
 							gift.setUname(superChat.getUser_info().getUname());
 							gift.setUid(superChat.getUid());
-							gift = ShieldGiftTools.shieldGift(gift, getShieldGift(), getGiftStrings(), null);
+							gift = ShieldGiftTools.shieldGift(gift,
+									SetMethodCode.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
+									getThankGiftSetConf().getGiftStrings(), null);
 							if (gift != null) {
 								parseGiftSetting(gift);
 							}
@@ -600,29 +659,52 @@ public class ParseMessageThread extends Thread {
 
 				// 本房间主播开启了天选时刻
 				case "ANCHOR_LOT_START":
-					if (getMessageControlMap().get(ShieldMessage.is_giftShield) == null
-							&& !getMessageControlMap().get(ShieldMessage.is_giftShield)) {
-						break;
-					}
-					if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG
-							&& !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
-						String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
-						int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-						if (!StringUtils.isEmpty(giftName)) {
-							if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
-									|| PublicDataConf.giftShieldThread.getState().toString().equals("NEW")) {
-								PublicDataConf.giftShieldThread = new GiftShieldThread();
-								PublicDataConf.giftShieldThread.FLAG = false;
-								PublicDataConf.giftShieldThread.setGiftName(giftName);
-								PublicDataConf.giftShieldThread.setTime(ParseIndentityTools.parseTime(time));
-								PublicDataConf.giftShieldThread.start();
-							} else {
-								PublicDataConf.giftShieldThread.setTime(time);
-								PublicDataConf.giftShieldThread.setGiftName(giftName);
+					try {
+						if (getMessageControlMap().get(ShieldMessage.is_giftShield) != null
+								&& getMessageControlMap().get(ShieldMessage.is_giftShield)) {
+							if (PublicDataConf.parsethankGiftThread != null
+									&& !PublicDataConf.parsethankGiftThread.TFLAG
+									&& !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
+								String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
+								int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+								if (!StringUtils.isEmpty(giftName)) {
+									if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
+											|| PublicDataConf.giftShieldThread.getState().toString().equals("NEW")) {
+										PublicDataConf.giftShieldThread = new GiftShieldThread();
+										PublicDataConf.giftShieldThread.FLAG = false;
+										PublicDataConf.giftShieldThread.setGiftName(giftName);
+										PublicDataConf.giftShieldThread.setTime(ParseIndentityTools.parseTime(time));
+										PublicDataConf.giftShieldThread.start();
+									} else {
+										PublicDataConf.giftShieldThread.setTime(time);
+										PublicDataConf.giftShieldThread.setGiftName(giftName);
+									}
+								}
 							}
 						}
+						if (getMessageControlMap().get(ShieldMessage.is_followShield) != null
+								&& getMessageControlMap().get(ShieldMessage.is_followShield)) {
+							if (PublicDataConf.parsethankFollowThread != null
+									&& !PublicDataConf.parsethankFollowThread.FLAG
+									&& !PublicDataConf.followShieldThread.getState().toString().equals("RUNNABLE")) {
+								int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+								if (PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")
+										|| PublicDataConf.followShieldThread.getState().toString().equals("NEW")) {
+									PublicDataConf.followShieldThread = new FollowShieldThread();
+									PublicDataConf.followShieldThread.FLAG = false;
+									PublicDataConf.followShieldThread.setTime(time);
+									PublicDataConf.followShieldThread.start();
+								} else {
+									PublicDataConf.followShieldThread.setTime(time);
+								}
+							}
+						}
+
+					} catch (Exception e) {
+						// TODO: handle exception
+						e.printStackTrace();
 					}
-					LOGGER.debug("本房间主播开启了天选时刻:::" + message);
+//					LOGGER.debug("本房间主播开启了天选时刻:::" + message);
 					break;
 
 				// 本房间天选时刻结束
@@ -871,12 +953,47 @@ public class ParseMessageThread extends Thread {
 				case "LITTLE_TIPS":
 //					LOGGER.debug("勋章亲密度达到上每日上限:::" + message);		
 					break;
-					
-				//互动词？？
+
+				// msg_type 1 为进入直播间 2 为关注 3为分享直播间
 				case "INTERACT_WORD":
-//				     LOGGER.debug("互动发生:::" + message);		
-				     break;
-				
+					// 关注
+					if (getMessageControlMap().get(ShieldMessage.is_follow) != null
+							&& getMessageControlMap().get(ShieldMessage.is_follow)) {
+						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+						if (msg_type == 2) {
+							Interact interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+							stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
+									.append(interact.getUname()).append(" 关注了直播间");
+							System.out.println(stringBuilder.toString());
+							if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+								PublicDataConf.logString.add(stringBuilder.toString());
+								synchronized (PublicDataConf.logThread) {
+									PublicDataConf.logThread.notify();
+								}
+							}
+							try {
+								danmuWebsocket.sendMessage(stringBuilder.toString());
+							} catch (Exception e) {
+								// TODO 自动生成的 catch 块
+								e.printStackTrace();
+							}
+							stringBuilder.delete(0, stringBuilder.length());
+						}
+					}
+					if (getMessageControlMap().get(ShieldMessage.is_followThank) != null
+							&& getMessageControlMap().get(ShieldMessage.is_followThank)) {
+						if (!PublicDataConf.ISSHIELDFOLLOW) {
+							msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+							if (msg_type == 2) {
+								Interact interact = JSONObject.parseObject(jsonObject.getString("data"),
+										Interact.class);
+								parseFollowSetting(interact);
+							}
+						}
+					}
+//				     LOGGER.debug("直播间信息:::" + message);		
+					break;
+
 				default:
 //					LOGGER.debug("其他未处理消息:" + message);
 					break;
@@ -895,30 +1012,34 @@ public class ParseMessageThread extends Thread {
 					}
 				}
 			}
-
 		}
 
 	}
 
-	public void DelayTimeSetting() {
+	public void DelayGiftTimeSetting() {
 		synchronized (PublicDataConf.parsethankGiftThread) {
 			if (PublicDataConf.parsethankGiftThread != null) {
 				if (PublicDataConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
 						|| PublicDataConf.parsethankGiftThread.getState().toString().equals("NEW")) {
 					PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
-					PublicDataConf.parsethankGiftThread.setDelaytime(getDelaytime());
+					PublicDataConf.parsethankGiftThread
+							.setDelaytime((long) (1000 * getThankGiftSetConf().getDelaytime()));
 					PublicDataConf.parsethankGiftThread.start();
 					PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
-					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftString());
-					PublicDataConf.parsethankGiftThread.setThankGiftStatus(getThankGiftStatus());
-					PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(getThankGiftRuleSets());
-					PublicDataConf.parsethankGiftThread.setNum(getNum());
+					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftSetConf().getThank());
+					PublicDataConf.parsethankGiftThread.setThankGiftStatus(
+							SetMethodCode.getThankGiftStatus(getThankGiftSetConf().getThank_status()));
+					PublicDataConf.parsethankGiftThread
+							.setThankGiftRuleSets(getThankGiftSetConf().getThankGiftRuleSets());
+					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
 				} else {
 					PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
-					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftString());
-					PublicDataConf.parsethankGiftThread.setThankGiftStatus(getThankGiftStatus());
-					PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(getThankGiftRuleSets());
-					PublicDataConf.parsethankGiftThread.setNum(getNum());
+					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftSetConf().getThank());
+					PublicDataConf.parsethankGiftThread.setThankGiftStatus(
+							SetMethodCode.getThankGiftStatus(getThankGiftSetConf().getThank_status()));
+					PublicDataConf.parsethankGiftThread
+							.setThankGiftRuleSets(getThankGiftSetConf().getThankGiftRuleSets());
+					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
 				}
 			}
 		}
@@ -943,13 +1064,13 @@ public class ParseMessageThread extends Thread {
 										if (giftChild.getGiftName().equals(gift.getGiftName())) {
 											giftChild.setNum(num1 + num2);
 											giftChild.setTotal_coin(total_coin1 + total_coin2);
-											DelayTimeSetting();
+											DelayGiftTimeSetting();
 											flagNum++;
 										}
 									}
 									if (flagNum == 0) {
 										gifts.add(gift);
-										DelayTimeSetting();
+										DelayGiftTimeSetting();
 									}
 								}
 							}
@@ -957,49 +1078,65 @@ public class ParseMessageThread extends Thread {
 							Vector<Gift> gifts = new Vector<Gift>();
 							gifts.add(gift);
 							PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-							DelayTimeSetting();
+							DelayGiftTimeSetting();
 						}
 					} else {
 						Vector<Gift> gifts = new Vector<Gift>();
 						gifts.add(gift);
 						PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-						DelayTimeSetting();
+						DelayGiftTimeSetting();
 					}
 				}
 			}
 		}
 	}
 
-	public ShieldGift getShieldGift() {
-		return shieldGift;
+	public void DelayFollowTimeSetting() {
+		synchronized (PublicDataConf.parsethankFollowThread) {
+			if (PublicDataConf.parsethankFollowThread != null) {
+				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
+						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
+					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
+					PublicDataConf.parsethankFollowThread
+							.setDelaytime((long) (1000 * getThankFollowSetConf().getDelaytime()));
+					PublicDataConf.parsethankFollowThread.start();
+					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
+					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
+					PublicDataConf.parsethankFollowThread.setNum(getThankGiftSetConf().getNum());
+				} else {
+					PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
+					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
+					PublicDataConf.parsethankFollowThread.setNum(getThankGiftSetConf().getNum());
+				}
+			}
+		}
 	}
 
-	public void setShieldGift(ShieldGift shieldGift) {
-		this.shieldGift = shieldGift;
+	public synchronized void parseFollowSetting(Interact interact) {
+		if (interact != null) {
+			if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankFollowThread != null) {
+				if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankFollowThread.FLAG) {
+					PublicDataConf.interacts.add(interact);
+					DelayFollowTimeSetting();
+				}
+			}
+		}
 	}
 
-	public Long getDelaytime() {
-		return delaytime;
+	public ThankGiftSetConf getThankGiftSetConf() {
+		return thankGiftSetConf;
 	}
 
-	public void setDelaytime(Long delaytime) {
-		this.delaytime = delaytime;
+	public void setThankGiftSetConf(ThankGiftSetConf thankGiftSetConf) {
+		this.thankGiftSetConf = thankGiftSetConf;
 	}
 
-	public String getThankGiftString() {
-		return thankGiftString;
+	public ThankFollowSetConf getThankFollowSetConf() {
+		return thankFollowSetConf;
 	}
 
-	public void setThankGiftString(String thankGiftString) {
-		this.thankGiftString = thankGiftString;
-	}
-
-	public HashSet<String> getGiftStrings() {
-		return giftStrings;
-	}
-
-	public void setGiftStrings(HashSet<String> giftStrings) {
-		this.giftStrings = giftStrings;
+	public void setThankFollowSetConf(ThankFollowSetConf thankFollowSetConf) {
+		this.thankFollowSetConf = thankFollowSetConf;
 	}
 
 	public ConcurrentHashMap<ShieldMessage, Boolean> getMessageControlMap() {
@@ -1008,46 +1145,6 @@ public class ParseMessageThread extends Thread {
 
 	public void setMessageControlMap(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap) {
 		this.messageControlMap = messageControlMap;
-	}
-
-	public ThankGiftStatus getThankGiftStatus() {
-		return thankGiftStatus;
-	}
-
-	public void setThankGiftStatus(ThankGiftStatus thankGiftStatus) {
-		this.thankGiftStatus = thankGiftStatus;
-	}
-
-	public short getNum() {
-		return num;
-	}
-
-	public void setNum(short num) {
-		this.num = num;
-	}
-
-	public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
-		return thankGiftRuleSets;
-	}
-
-	public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
-		this.thankGiftRuleSets = thankGiftRuleSets;
-	}
-
-	public String getGuardReport() {
-		return guardReport;
-	}
-
-	public void setGuardReport(String guardReport) {
-		this.guardReport = guardReport;
-	}
-
-	public String getBarrageReport() {
-		return barrageReport;
-	}
-
-	public void setBarrageReport(String barrageReport) {
-		this.barrageReport = barrageReport;
 	}
 
 	public static String parseCmd(String cmd) {
@@ -1225,4 +1322,5 @@ public class ParseMessageThread extends Thread {
 
 		return cmd;
 	}
+	
 }

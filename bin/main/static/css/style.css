@@ -264,3 +264,7 @@ div#danmu .danmu-child a{
 	vertical-align:middle!important;
 	height:30px!important;
 }
+.red-font{
+	color:red;
+	font-weight:1000;
+}

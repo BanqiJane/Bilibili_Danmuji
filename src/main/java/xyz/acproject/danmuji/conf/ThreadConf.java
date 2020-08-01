@@ -1,19 +1,15 @@
 package xyz.acproject.danmuji.conf;
 
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.enums.AdvertStatus;
-import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
-import xyz.acproject.danmuji.enums.ThankGiftStatus;
 import xyz.acproject.danmuji.thread.AdvertThread;
+import xyz.acproject.danmuji.thread.FollowShieldThread;
 import xyz.acproject.danmuji.thread.GiftShieldThread;
 import xyz.acproject.danmuji.thread.LogThread;
-import xyz.acproject.danmuji.thread.ParseFollowThread;
 import xyz.acproject.danmuji.thread.SendBarrageThread;
 import xyz.acproject.danmuji.thread.core.HeartByteThread;
 import xyz.acproject.danmuji.thread.core.ParseMessageThread;
@@ -27,49 +23,28 @@ import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
  */
 public class ThreadConf {
 
+	
 	/**
-	 * 
 	 * core 处理弹幕信息线程 中心线程
 	 * 
 	 * @param messageControlMap
-	 * @param shieldGift
-	 * @param parseGiftString
-	 * @param seconds
-	 * @param thankGiftStatus
-	 * @param thankGiftString
+	 * @param centerSetConf
 	 * @return
 	 */
 	public static boolean startParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,
-			ShieldGift shieldGift, HashSet<String> giftStrings, Double seconds, ThankGiftStatus thankGiftStatus,
-			String thankGiftString,short num,HashSet<ThankGiftRuleSet> thankGiftRuleSets,String guardReport,String barrageReport) {
+			CenterSetConf centerSetConf) {
 		if (PublicDataConf.parseMessageThread != null) {
 			PublicDataConf.parseMessageThread.setMessageControlMap(messageControlMap);
-			PublicDataConf.parseMessageThread.setShieldGift(shieldGift);
-			PublicDataConf.parseMessageThread.setGiftStrings(giftStrings);
-			PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
-			PublicDataConf.parseMessageThread.setDelaytime((long) (1000 * seconds));
-			PublicDataConf.parseMessageThread.setThankGiftStatus(thankGiftStatus);
-			PublicDataConf.parseMessageThread.setNum(num);
-			PublicDataConf.parseMessageThread.setGuardReport(guardReport);
-//			PublicData.parseMessageThread.setThankGiftString("感谢【%uName%】大佬%Type%的%Num%个%GiftName%~");
-			PublicDataConf.parseMessageThread.setThankGiftString(thankGiftString);
-			PublicDataConf.parseMessageThread.setBarrageReport(barrageReport);
+			PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
+			PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
 			return false;
 		}
 		PublicDataConf.parseMessageThread = new ParseMessageThread();
 		PublicDataConf.parseMessageThread.FLAG = false;
 		PublicDataConf.parseMessageThread.start();
 		PublicDataConf.parseMessageThread.setMessageControlMap(messageControlMap);
-		PublicDataConf.parseMessageThread.setShieldGift(shieldGift);
-		PublicDataConf.parseMessageThread.setGiftStrings(giftStrings);
-		PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
-		PublicDataConf.parseMessageThread.setDelaytime((long) (1000 * seconds));
-		PublicDataConf.parseMessageThread.setThankGiftStatus(thankGiftStatus);
-		PublicDataConf.parseMessageThread.setNum(num);
-		PublicDataConf.parseMessageThread.setGuardReport(guardReport);
-//		PublicData.parseMessageThread.setThankGiftString("感谢【%uName%】大佬%Type%的%Num%个%GiftName%~");
-		PublicDataConf.parseMessageThread.setThankGiftString(thankGiftString);
-		PublicDataConf.parseMessageThread.setBarrageReport(barrageReport);
+		PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
+		PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
 		if (PublicDataConf.parseMessageThread != null
 				&& !PublicDataConf.parseMessageThread.getState().toString().equals("TERMINATED")) {
 			return true;
@@ -154,55 +129,6 @@ public class ThreadConf {
 		}
 	}
 
-	/**
-	 * 
-	 * 开启关注线程
-	 * 
-	 * @param is_thankFollow
-	 * @param thankFollowString
-	 * @return
-	 */
-	public static boolean startFollowThread(boolean is_thankFollow, String thankFollowString, short num,boolean is_PrintFollow,short max_num) {
-		if (PublicDataConf.parsefollowThread != null) {
-			PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
-			PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
-			PublicDataConf.parsefollowThread.setNum(num);
-			PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
-			PublicDataConf.parsefollowThread.setMax_num(max_num);
-			return false;
-		}
-		PublicDataConf.parsefollowThread = new ParseFollowThread();
-		PublicDataConf.parsefollowThread.FLAG = false;
-		PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
-		PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
-		PublicDataConf.parsefollowThread.setNum(num);
-		PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
-		PublicDataConf.parsefollowThread.setMax_num(max_num);
-		PublicDataConf.parsefollowThread.start();
-		if (PublicDataConf.parsefollowThread.getIsThankFollow()) {
-			startSendBarrageThread();
-		}
-		if (PublicDataConf.parsefollowThread != null
-				&& !PublicDataConf.parsefollowThread.getState().toString().equals("TERMINATED")) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * 关闭关注 线程
-	 */
-	public static void closeFollowThread() {
-		if (PublicDataConf.parsefollowThread != null) {
-			PublicDataConf.parsefollowThread.FLAG = true;
-			PublicDataConf.parsefollowThread.interrupt();
-			PublicDataConf.parsefollowThread = null;
-		}
-		if (PublicDataConf.advertThread == null) {
-			closeSendBarrageThread();
-		}
-	}
 
 	/**
 	 * 
@@ -244,7 +170,7 @@ public class ThreadConf {
 			PublicDataConf.advertThread.interrupt();
 			PublicDataConf.advertThread = null;
 		}
-		if (PublicDataConf.parsefollowThread == null) {
+		if (PublicDataConf.parsethankFollowThread == null) {
 			closeSendBarrageThread();
 		}
 	}
@@ -359,49 +285,38 @@ public class ThreadConf {
 		}
 	}
 	
+	public static boolean startFollowShieldThread(int time) {
+		if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
+				|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
+			PublicDataConf.followShieldThread = new FollowShieldThread();
+			PublicDataConf.followShieldThread.FLAG =false;
+			PublicDataConf.followShieldThread.setTime(time);
+			PublicDataConf.followShieldThread.start();
+			return true;
+		}
+		return false;
+	}
+	
+	public static void closeFollowShieldThread() {
+		if (PublicDataConf.followShieldThread!=null&&!PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")) {
+			PublicDataConf.followShieldThread.FLAG =false;
+			PublicDataConf.followShieldThread.interrupt();
+		}
+	}
 	/**
 	 * 设置过滤信息线程信息
+	 * 
 	 * @param messageControlMap
-	 * @param shieldGift
-	 * @param parseGiftString
-	 * @param seconds
-	 * @param thankGiftStatus
-	 * @param thankGiftString
-	 * @param num
+	 * @param centerSetConf
 	 */
 	public static void setParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,
-			ShieldGift shieldGift, HashSet<String> giftStrings, Double seconds, ThankGiftStatus thankGiftStatus,
-			String thankGiftString,short num,HashSet<ThankGiftRuleSet> thankGiftRuleSets,String guardReport,String barrageReport) {
+			CenterSetConf centerSetConf) {
 		if(PublicDataConf.parseMessageThread!=null) {
 			PublicDataConf.parseMessageThread.setMessageControlMap(messageControlMap);
-			PublicDataConf.parseMessageThread.setShieldGift(shieldGift);
-			PublicDataConf.parseMessageThread.setGiftStrings(giftStrings);
-			PublicDataConf.parseMessageThread.setDelaytime((long) (1000 * seconds));
-			PublicDataConf.parseMessageThread.setThankGiftStatus(thankGiftStatus);
-			PublicDataConf.parseMessageThread.setNum(num);
-			PublicDataConf.parseMessageThread.setThankGiftString(thankGiftString);
-			PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
-			PublicDataConf.parseMessageThread.setGuardReport(guardReport);
-			PublicDataConf.parseMessageThread.setBarrageReport(barrageReport);
+			PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
+			PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
 		}
 	}
-	
-	/**
-	 * 设置感谢关注线程信息
-	 * @param is_thankFollow
-	 * @param thankFollowString
-	 * @param num
-	 */
-	public static void setFollowThread(boolean is_thankFollow, String thankFollowString, short num,boolean is_PrintFollow,short max_num) {
-		if(PublicDataConf.parsefollowThread!=null) {
-			PublicDataConf.parsefollowThread.setIsThankFollow(is_thankFollow);
-			PublicDataConf.parsefollowThread.setThankFollowString(thankFollowString);
-			PublicDataConf.parsefollowThread.setNum(num);
-			PublicDataConf.parsefollowThread.setIsPrintFollow(is_PrintFollow);
-			PublicDataConf.parsefollowThread.setMax_num(max_num);
-		}
-	}
-	
 	/**
 	 * 设置公告线程信息
 	 * @param advertStatus

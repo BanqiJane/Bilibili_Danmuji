@@ -135,6 +135,9 @@ public class CheckService {
 			LOGGER.debug("保存配置文件成功");
 			return;
 		}
+		if(PublicDataConf.ROOMID!=null) {
+			centerSetConf.setRoomid(PublicDataConf.ROOMID);
+	    }
 		Hashtable<String, String> hashtable = new Hashtable<String, String>();
 		BASE64Encoder base64Encoder = new BASE64Encoder();
 		if (PublicDataConf.USER != null) {
@@ -158,6 +161,30 @@ public class CheckService {
 		base64Encoder=null;
 		hashtable.clear();
 	}
+	public void connectSet(CenterSetConf centerSetConf) {
+		Hashtable<String, String> hashtable = new Hashtable<String, String>();
+		BASE64Encoder base64Encoder = new BASE64Encoder();
+		if (PublicDataConf.USER != null) {
+			hashtable.put(cookies,
+					base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+		}
+		hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+		ProFileTools.write(hashtable, "DanmujiProfile");
+		try {
+			PublicDataConf.centerSetConf = JSONObject.parseObject(
+					new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
+					CenterSetConf.class);
+			if (PublicDataConf.ROOMID != null) {
+				SetMethodCode.modifySet(centerSetConf);
+			}
+			LOGGER.debug("读取配置文件历史房间成功");
+		} catch (Exception e) {
+			// TODO: handle exception
+			LOGGER.error("读取配置文件历史房间失败:" + e);
+		}
+		base64Encoder=null;
+		hashtable.clear();
+	}
 
 	public void quit() {
 		PublicDataConf.COOKIE=null;
@@ -165,9 +192,6 @@ public class CheckService {
 		PublicDataConf.USERCOOKIE=null;
 		PublicDataConf.USERBARRAGEMESSAGE=null;
 		ThreadConf.closeAdvertThread();
-		if(PublicDataConf.parsefollowThread!=null) {
-			PublicDataConf.parsefollowThread.setIsThankFollow(false);
-		}
 		ThreadConf.closeUserOnlineThread();
 		ThreadConf.closeGiftShieldThread();
 		ThreadConf.closeSendBarrageThread();

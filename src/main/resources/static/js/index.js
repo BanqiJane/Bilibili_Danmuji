@@ -138,6 +138,8 @@ $(document).on(
 			set.thank_gift.thank = $(".thankgift_thank").val();
 			set.thank_gift.is_guard_report = $(".thankgift_is_guard_report")
 					.is(':checked');
+			set.thank_gift.is_guard_local = $(".thankgift_is_guard_local")
+			.is(':checked');
 			set.thank_gift.report = $(".thankgift_report").val();
 			set.thank_gift.report_barrage=$(".thankgift_barrageReport").val();
 			set.advert.is_open = $(".advert_is_open").is(':checked');
@@ -148,9 +150,10 @@ $(document).on(
 			set.advert.adverts = $(".advert_adverts").val();
 			set.follow.is_open = $(".follow_is_open").is(':checked');
 			set.follow.is_live_open = $(".follow_is_live_open").is(':checked');
+			set.follow.is_tx_shield = $(".follow_tx_shield").is(':checked');
 			set.follow.num = Number($(".follow_num").val());
 			set.follow.follows = $(".follow_follows").val();
-			set.follow.max_num= Number($(".follow_mnum").val());
+			set.follow.delaytime= Number($(".thankfollow_delaytime").val());
 			if ($(".follow_is_open").is(':checked')) {
 				if ($(".follow_follows").val().trim() !== null
 						&& $(".follow_follows").val().trim() !== "") {
@@ -332,6 +335,8 @@ const method = {
 			$(".thankgift_thank").val(set.thank_gift.thank);
 			$(".thankgift_is_guard_report").prop('checked',
 					set.thank_gift.is_guard_report);
+			$(".thankgift_is_guard_local").prop('checked',
+					set.thank_gift.is_guard_local);
 			$(".thankgift_report").val(set.thank_gift.report);
 			$(".thankgift_barrageReport").val(set.thank_gift.report_barrage);
 			$(".advert_is_open").prop('checked', set.advert.is_open);
@@ -342,9 +347,10 @@ const method = {
 			$(".advert_adverts").val(set.advert.adverts);
 			$(".follow_is_open").prop('checked', set.follow.is_open);
 			$(".follow_is_live_open").prop('checked', set.follow.is_live_open);
+			$(".follow_tx_shield").prop('checked', set.follow.is_tx_shield);
 			$(".follow_num").val(set.follow.num);
 			$(".follow_follows").val(set.follow.follows);
-			$(".follow_mnum").val(set.follow.max_num);
+			$(".thankfollow_delaytime").val(set.follow.delaytime);
 			if (Number($(".thankgift_shield_status")
 					.children("option:selected").val()) !== 1) {
 				$(".thankgift_shield").hide();
@@ -404,6 +410,7 @@ const method = {
 				$(".thankgift_delaytime").attr("disabled", true);
 				$(".thankgift_thank").attr("disabled", true);
 				$(".thankgift_is_guard_report").attr("disabled", true);
+				$(".thankgift_is_guard_local").attr("disabled", true);
 				$(".thankgift_report").attr("disabled", true);
 				$(".advert_is_open").attr("disabled", true);
 				$(".advert_is_live_open").attr("disabled", true);
@@ -414,9 +421,10 @@ const method = {
 				$(".follow_is_live_open").attr("disabled", true);
 				$(".follow_num").attr("disabled", true);
 				$(".follow_follows").attr("disabled", true);
+				$(".follow_tx_shield").attr("disabled",true);
+				$(".thankfollow_delaytime").attr("disabled",true);
 				$(".shieldgift_delete").attr("disabled", true);
 				$(".thankgift_barrageReport").attr("disabled",true);
-				$(".follow_mnum").attr("disabled",true);
 			}
 		}
 	},
