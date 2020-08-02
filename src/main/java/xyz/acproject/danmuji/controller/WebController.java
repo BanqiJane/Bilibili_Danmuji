@@ -18,6 +18,7 @@ import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
+import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.Response;
@@ -40,6 +41,7 @@ public class WebController {
 			}
 		}
 		model.addAttribute("ANAME", PublicDataConf.ANCHOR_NAME);
+		model.addAttribute("EDITION",PublicDataConf.EDITION);
 		model.addAttribute("ROOMID", PublicDataConf.ROOMID);
 		model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
 		if (PublicDataConf.USER != null) {
@@ -194,5 +196,23 @@ public class WebController {
 			return Response.success(null, req);
 		}
 		
+	}
+	@ResponseBody
+	@RequestMapping(value = "/checkupdate", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	public Response<?> checkUpdate(HttpServletRequest req) {
+		String edition = HttpOtherData.httpGetNewEdition();
+		if(!StringUtils.isEmpty(edition)) {
+			 if(edition.equals("获取公告失败")) {
+				 return Response.success(2, req);
+			 }else {
+				 if(!edition.equals(PublicDataConf.EDITION)) {
+					 return Response.success(0, req);
+				 }else {
+					 return Response.success(1, req);
+				 }	
+			 }
+		}else {
+			return Response.success(2, req);
+		}	
 	}
 }

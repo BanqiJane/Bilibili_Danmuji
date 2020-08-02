@@ -268,3 +268,20 @@ div#danmu .danmu-child a{
 	color:red;
 	font-weight:1000;
 }
+.tips-wrap{
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -245px;
+    margin-top: -300px;
+    background: #fff;
+    border-radius: 4px;
+    z-index:20;
+}
+.tips-wrap .tips-t{
+	text-align: center;
+    font-size: 22px;
+    color: red;
+    padding: 10px 20px;
+    border-bottom: 1px solid #eee;
+}

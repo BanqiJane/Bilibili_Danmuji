@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'xyz.acproject.danmuji'
-version = '1.0.6beta'
+version = '1.0.7beta'
 sourceCompatibility = '1.8'
 
 repositories {

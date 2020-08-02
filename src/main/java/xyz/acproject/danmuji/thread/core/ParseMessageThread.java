@@ -36,7 +36,8 @@ import xyz.acproject.danmuji.tools.GuardFileTools;
 import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
-import xyz.acproject.danmuji.utils.SpringUtils;  
+import xyz.acproject.danmuji.utils.SpringUtils;
+
 /**
  * @author banqijane
  *
@@ -335,8 +336,8 @@ public class ParseMessageThread extends Thread {
 							&& getMessageControlMap().get(ShieldMessage.is_guard_local)) {
 						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
 						Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
-						if(guardHashtable_local==null) {
-						guardHashtable_local = new Hashtable<Long, String>();	
+						if (guardHashtable_local == null) {
+							guardHashtable_local = new Hashtable<Long, String>();
 						}
 						if (!guardHashtable_local.containsKey(guard.getUid())) {
 							GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
@@ -346,17 +347,16 @@ public class ParseMessageThread extends Thread {
 								report = report.replaceAll("%uName%", guard.getUsername());
 								try {
 //									if (PublicDataConf.ROOMID == 5067) {
-										if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
-											if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-												PublicDataConf.barrageString
-														.add(getThankGiftSetConf().getReport_barrage());
-											}
+									if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+											PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
 											synchronized (PublicDataConf.sendBarrageThread) {
 												PublicDataConf.sendBarrageThread.notify();
 											}
-										} else {
-											HttpUserData.httpPostSendMsg(guard.getUid(), report);
 										}
+									} else {
+										HttpUserData.httpPostSendMsg(guard.getUid(), report);
+									}
 //									} else {
 //										LOGGER.debug(report);
 //										LOGGER.debug(getThankGiftSetConf().getReport_barrage());
@@ -375,16 +375,16 @@ public class ParseMessageThread extends Thread {
 							report = report.replaceAll("%uName%", guard.getUsername());
 							try {
 //								if (PublicDataConf.ROOMID == 5067) {
-									if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
-										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-											PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
-										}
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
-										}
-									} else {
-										HttpUserData.httpPostSendMsg(guard.getUid(), report);
+								if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+									if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+										PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
 									}
+									synchronized (PublicDataConf.sendBarrageThread) {
+										PublicDataConf.sendBarrageThread.notify();
+									}
+								} else {
+									HttpUserData.httpPostSendMsg(guard.getUid(), report);
+								}
 //								} else {
 //									LOGGER.debug(report);
 //									LOGGER.debug(getThankGiftSetConf().getReport_barrage());
@@ -1032,6 +1032,7 @@ public class ParseMessageThread extends Thread {
 					PublicDataConf.parsethankGiftThread
 							.setThankGiftRuleSets(getThankGiftSetConf().getThankGiftRuleSets());
 					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
+					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().isIs_num());
 				} else {
 					PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftSetConf().getThank());
@@ -1040,6 +1041,7 @@ public class ParseMessageThread extends Thread {
 					PublicDataConf.parsethankGiftThread
 							.setThankGiftRuleSets(getThankGiftSetConf().getThankGiftRuleSets());
 					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
+					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().isIs_num());
 				}
 			}
 		}
@@ -1322,5 +1324,5 @@ public class ParseMessageThread extends Thread {
 
 		return cmd;
 	}
-	
+
 }

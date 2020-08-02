@@ -408,6 +408,7 @@ public class HttpUserData {
 			}
 		}
 		jsonObject = JSONObject.parseObject(data);
+//		System.out.println(jsonObject.toJSONString().toString());
 		if(jsonObject!=null) {
 		code = jsonObject.getShort("code");
 		if (code == 0) {

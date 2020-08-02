@@ -3,6 +3,7 @@ $(function() {
 	$(".notice-message").hide();
 	$(".success-message").hide();
 	$(".shieldgifts-mask").hide();
+	$(".tips-wrap").hide();
 	var time;
 	var socket;
 	time = setInterval(heartBeat, 30000);
@@ -117,6 +118,7 @@ $(document).on(
 					':checked');
 			set.thank_gift.is_tx_shield = $(".thankgift_is_tx_shield").is(
 					':checked');
+			set.thank_gift.is_num = $(".thankgift_is_num").is(':checked');
 			set.thank_gift.shield_status = Number($(".thankgift_shield_status")
 					.find("option:selected").val()) - 1;
 			set.thank_gift.giftStrings =method.giftStrings_handle(set.thank_gift.giftStrings,$(".thankgift_shield").val());
@@ -265,6 +267,23 @@ $(document)
 $(document).on('click', '.shieldgift_delete', function() {
 	$(this).parent().parent().remove();
 });
+$(document).on('click','#checkupdate',function(){
+	$(".tips-wrap").show();
+	$(".tips-t").html("<span>连接中<img src='../img/loading-1.gif'></span>");
+	$.when(method.checkUpdate()).done(function(data) {
+		var num = Number(data.result);
+		if(num===0){
+			$(".tips-t").html("有新版本更新，请前往github获取更新");
+		}else if(num===1){
+			$(".tips-t").html("当前为最新版本，无需更新");
+		}else{
+			$(".tips-t").html("服务器无响应，获取更新失败");
+		}
+		setTimeout(function(){
+			$(".tips-wrap").hide();
+		},1000)
+	});
+});
 const method = {
 	getSet : function() {
 		"use strict";
@@ -322,6 +341,8 @@ const method = {
 					set.thank_gift.is_live_open);
 			$(".thankgift_is_tx_shield").prop('checked',
 					set.thank_gift.is_tx_shield);
+			$(".thankgift_is_num").prop('checked',
+					set.thank_gift.is_num);
 			$(".thankgift_shield_status").find("option").eq(
 					set.thank_gift.shield_status).prop('selected', true);
 			$(".thankgift_shield").val(method.giftStrings_metod(set.thank_gift.giftStrings));
@@ -425,6 +446,7 @@ const method = {
 				$(".thankfollow_delaytime").attr("disabled",true);
 				$(".shieldgift_delete").attr("disabled", true);
 				$(".thankgift_barrageReport").attr("disabled",true);
+				$(".thankgift_is_num").attr("disabled",true);
 			}
 		}
 	},
@@ -516,9 +538,26 @@ const method = {
 		return s;
 	},
 	replaceThankts:function(s){
+		if(s.indexOf("uNames")===-1){
 		s=s.replace(/uName/g,"uNames");
+		}
 		s=s.replace(/%Num%个%GiftName%/g,"%Gifts%");
 		return s;
+	},
+	checkUpdate:function() {
+		"use strict";
+		var deferred = $.Deferred();
+		$.ajax({
+			url : '../checkupdate',
+			async : false,
+			cache : false,
+			type : 'GET',
+			dataType : 'json',
+			success : function(data) {
+				deferred.resolve(data);
+			}
+		});
+		return deferred.promise();
 	},
 };
 function openSocket(socket,ip) {

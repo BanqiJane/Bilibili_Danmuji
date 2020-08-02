@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,6 +70,9 @@ public class HttpRoomData {
 				httpURLConnection.disconnect();
 			}
 		}
+		if(StringUtils.isEmpty(data)) {
+			return conf;
+		}
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -128,6 +132,9 @@ public class HttpRoomData {
 			}
 		}
 //		LOGGER.debug("获取到的room:" + data);
+		if(StringUtils.isEmpty(data)) {
+			return room;
+		}
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -179,6 +186,9 @@ public class HttpRoomData {
 			}
 		}
 //		LOGGER.debug("获取到的room:" + data);
+		if(StringUtils.isEmpty(data)) {
+			return roomInit;
+		}
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {

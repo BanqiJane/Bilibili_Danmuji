@@ -40,6 +40,9 @@ public class ClientService {
 		}
 		PublicDataConf.ROOMID = roomInit.getRoom_id();
 		Conf conf = HttpRoomData.httpGetConf();
+		if(conf==null) {
+			return;
+		}
 		PublicDataConf.AUID = roomInit.getUid();
 		PublicDataConf.FANSNUM = HttpRoomData.httpGetFollowersNum();
 

@@ -17,6 +17,7 @@ import xyz.acproject.danmuji.conf.set.AdvertSetConf;
 import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
 import xyz.acproject.danmuji.tools.ProFileTools;
@@ -126,6 +127,20 @@ public class CheckService {
 				SetMethodCode.modifySet(PublicDataConf.centerSetConf);
 			}
 		}
+		System.out.println();
+		System.out.println();
+		System.out.println("最新公告："+HttpOtherData.httpGetNewAnnounce());
+		String edition=HttpOtherData.httpGetNewEdition();
+		if(!StringUtils.isEmpty(edition)) {
+			if(!edition.equals(PublicDataConf.EDITION)) {
+				System.out.println("查询最新版本："+edition+"目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
+			}else {
+				System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
+			}
+		}else {
+			System.out.println("查询最新版本失败,打印目前版本："+PublicDataConf.EDITION);
+		}
+		System.out.println();
 		base64Encoder=null;
 		hashtable.clear();
 	}

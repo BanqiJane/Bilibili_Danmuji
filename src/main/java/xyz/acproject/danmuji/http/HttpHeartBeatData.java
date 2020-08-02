@@ -67,6 +67,9 @@ public class HttpHeartBeatData {
 				httpURLConnection.disconnect();
 			}
 		}
+		if(StringUtils.isEmpty(data)) {
+			return;
+		}
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -142,6 +145,9 @@ public class HttpHeartBeatData {
 			if (httpURLConnection != null) {
 				httpURLConnection.disconnect();
 			}
+		}
+		if(StringUtils.isEmpty(data)) {
+			return;
 		}
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");

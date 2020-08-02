@@ -27,7 +27,7 @@ public class ThankGiftSetConf implements Serializable{
 	//最多多种 仅在感谢模式1 2下有用
 	private short num = 2;
 	//发送感谢语延迟时间
-	private double delaytime = 0;
+	private double delaytime = 3;
 	//感谢语 默认感谢模式0下的
 	private String thank ="感谢%uName%大佬%Type%的%GiftName% x%Num%~";
 	//是否舰长私信
@@ -38,17 +38,18 @@ public class ThankGiftSetConf implements Serializable{
 	private String report;
 	//舰长私信成功后发送弹幕
 	private String report_barrage;
+	//是否开启感谢数量显示
+	private boolean is_num=true;
 	public ThankGiftSetConf() {
 		super();
 		// TODO 自动生成的构造函数存根
 	}
 	
-	
 
 	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status,
 			HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num,
 			double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, String report,
-			String report_barrage) {
+			String report_barrage, boolean is_num) {
 		super();
 		this.is_open = is_open;
 		this.is_live_open = is_live_open;
@@ -64,9 +65,8 @@ public class ThankGiftSetConf implements Serializable{
 		this.is_guard_local = is_guard_local;
 		this.report = report;
 		this.report_barrage = report_barrage;
+		this.is_num = is_num;
 	}
-
-
 
 	public boolean isIs_open() {
 		return is_open;
@@ -160,11 +160,11 @@ public class ThankGiftSetConf implements Serializable{
 	public void setReport_barrage(String report_barrage) {
 		this.report_barrage = report_barrage;
 	}
-	
-	
 
-	
-
-	
-	
+	public boolean isIs_num() {
+		return is_num;
+	}
+	public void setIs_num(boolean is_num) {
+		this.is_num = is_num;
+	}
 }

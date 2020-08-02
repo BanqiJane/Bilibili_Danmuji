@@ -25,6 +25,7 @@ public class ParseThankGiftThread extends Thread {
 	private ThankGiftStatus thankGiftStatus;
 	private Short num = 2;
 	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
+	private boolean is_num = true;
 
 	@Override
 	public void run() {
@@ -84,8 +85,12 @@ public class ParseThankGiftThread extends Thread {
 											break;
 										}
 										thankGiftStr = getThankGiftString().replaceAll("%uName%", entry.getKey());
-										stringBuilder.append(gifts.get(j).getNum()).append("个")
-												.append(gifts.get(j).getGiftName()).append(",");
+										if (isIs_num()) {
+											stringBuilder.append(gifts.get(j).getNum()).append("个")
+													.append(gifts.get(j).getGiftName()).append(",");
+										} else {
+											stringBuilder.append(gifts.get(j).getGiftName()).append(",");
+										}
 									}
 									stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 									thankGiftStr = thankGiftStr.replaceAll("%Gifts%", stringBuilder.toString());
@@ -146,8 +151,12 @@ public class ParseThankGiftThread extends Thread {
 												break;
 											}
 											thankGiftStr = getThankGiftString().replaceAll("%uNames%", entry.getKey());
-											stringBuilder.append(gifts.get(j).getNum()).append("个")
-													.append(gifts.get(j).getGiftName()).append(",");
+											if (isIs_num()) {
+												stringBuilder.append(gifts.get(j).getNum()).append("个")
+														.append(gifts.get(j).getGiftName()).append(",");
+											} else {
+												stringBuilder.append(gifts.get(j).getGiftName()).append(",");
+											}
 										}
 										stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 										thankGiftStr = thankGiftStr.replaceAll("%Gifts%", stringBuilder.toString());
@@ -166,6 +175,10 @@ public class ParseThankGiftThread extends Thread {
 							}
 						}
 					}
+//					for (Iterator<Entry<String, Vector<Gift>>> iterator = PublicDataConf.thankGiftConcurrentHashMap.entrySet()
+//							.iterator(); iterator.hasNext();) {
+//						iterator.remove();
+//					}
 					PublicDataConf.thankGiftConcurrentHashMap.clear();
 					break;
 				}
@@ -173,7 +186,7 @@ public class ParseThankGiftThread extends Thread {
 		}
 	}
 
-	public String somePeoplesHandle(ConcurrentHashMap<String, Vector<Gift>> hashMap, int max, String giftString) {
+	private String somePeoplesHandle(ConcurrentHashMap<String, Vector<Gift>> hashMap, int max, String giftString) {
 		int i = 1;
 		StringBuilder stringBuilderName = new StringBuilder(150);
 		StringBuilder stringBuilderGifts = new StringBuilder(200);
@@ -181,7 +194,11 @@ public class ParseThankGiftThread extends Thread {
 			Map.Entry<String, Vector<Gift>> entryMap = iterator.next();
 			stringBuilderName.append(entryMap.getKey()).append(",");
 			for (Gift gift : entryMap.getValue()) {
+				if(isIs_num()) {
 				stringBuilderGifts.append(gift.getNum()).append("个").append(gift.getGiftName()).append(",");
+				}else {
+					stringBuilderGifts.append(gift.getGiftName()).append(",");
+				}
 			}
 			i++;
 			iterator.remove();
@@ -242,6 +259,14 @@ public class ParseThankGiftThread extends Thread {
 
 	public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
 		this.thankGiftRuleSets = thankGiftRuleSets;
+	}
+
+	public boolean isIs_num() {
+		return is_num;
+	}
+
+	public void setIs_num(boolean is_num) {
+		this.is_num = is_num;
 	}
 
 }

@@ -216,6 +216,15 @@
 											data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
 										</label>
 									</div>
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label"> <input
+											type="checkbox"
+											class="form-check-input thankgift_is_num"> <span
+											class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">显示礼物数量</span>
+										</label>
+									</div>
 									<div class="custom-control-inline input-margin-s">
 										<select class="custom-select-sm thankgift_shield_status"
 											data-toggle="tooltip" data-placement="top" data-html="true"
@@ -230,7 +239,8 @@
 									<div class="custom-control-inline input-margin-s">
 										<select class="custom-select-sm thankgift_thank_status"
 											data-toggle="tooltip" data-placement="top" data-html="true"
-											title="" data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span>">
+											title=""
+											data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span>">
 											<option value="1" selected>单人单种</option>
 											<option value="2">单人多种</option>
 											<option value="3">多人多种</option>
@@ -244,7 +254,7 @@
 											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
 											placeholder="多少种" data-toggle="tooltip" data-placement="top"
 											title="" data-html="true"
-											data-original-title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/>仅在单人多种和多人多种模式下使用"
+											data-original-title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/><span class='red-font'>仅在单人多种和多人多种模式下使用</span>"
 											value="2">
 									</div>
 									<div
@@ -253,7 +263,7 @@
 											class="small-input thankgift_delaytime"
 											placeholder="delay time(s)" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true"
-											data-original-title="延迟多少秒发送 <br/>,最小值为0<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
+											data-original-title="延迟多少秒发送 <br/>,最小值为0,默认为3<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
 											value="0">
 									</div>
 									<div class="custom-control-inline">
@@ -335,7 +345,8 @@
 										<label class="form-check-label"> <input
 											type="checkbox" class="form-check-input follow_tx_shield">
 											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否屏蔽天选状态下的关注">天选</span>
+											data-placement="top" title=""
+											data-original-title="是否屏蔽天选状态下的关注">天选</span>
 										</label>
 									</div>
 									<div
@@ -354,7 +365,7 @@
 											class="small-input thankfollow_delaytime"
 											placeholder="delay time(s)" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true"
-											data-original-title="延迟多少秒发送 <br/>,最小值为0<br/><span class='red-font'>PS:可统计延时关注数内,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+											data-original-title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
 											value="0">
 									</div>
 								</div>
@@ -399,8 +410,8 @@
 								联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
 								data-toggle="tooltip" data-placement="top" title=""
 								data-original-title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
-								href="javascript:;" data-toggle="tooltip" data-placement="top"
-								title="" data-original-title="版本号:1.0.6beta">版本号</a>
+								href="javascript:;" data-toggle="tooltip" id="checkupdate" data-placement="top"
+								title="" th:data-original-title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a>
 						</div>
 					</div>
 				</div>
@@ -470,15 +481,26 @@
 				</table>
 			</div>
 		</div>
-
+	</div>
+	<div class="tips-wrap">
+	<div class="tips-t"></div>
 	</div>
 	<script type="text/javascript">
 		$(function() {
 			$("[data-toggle='tooltip']").tooltip();
+			$(document).click(".btn-secondary",function(){
+				if($('#set').hasClass("show")){
+					
+				}else{
+					setTimeout(function(){$.each($("textarea"), function(i, n) {
+						$(n).css("height", n.scrollHeight + "px");
+					})},10)
+				}
+				
+			})
 		});
-		$.each($("textarea"), function(i, n) {
-			$(n).css("height", n.scrollHeight + 20 + "px");
-		})
+		
+		
 	</script>
 </body>
 </html>

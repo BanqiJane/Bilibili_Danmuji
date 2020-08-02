@@ -98,6 +98,10 @@ public class PublicDataConf {
 
 	//是否显示人气
 	public static Boolean IS_ROOM_POPULARITY =false;
+	
+	
+	
+	public static String EDITION ="1.0.7";
 
 	
 }

@@ -197,4 +197,5 @@ public class Gift implements Serializable,Cloneable{
 		this.total_coin = total_coin;
 	}
 
+
 }

@@ -10,7 +10,6 @@ import xyz.acproject.danmuji.http.HttpUserData;
 public class SendBarrageThread extends Thread {
 //	private Logger LOGGER = LogManager.getLogger(SendBarrageThread.class);
 	public volatile boolean FLAG = false;
-
 	@Override
 	public void run() {
 		// TODO 自动生成的方法存根
@@ -20,7 +19,7 @@ public class SendBarrageThread extends Thread {
 			if (FLAG) {
 				return;
 			}
-			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
+			if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
 				return;
 			}
 			if (null != PublicDataConf.barrageString && !PublicDataConf.barrageString.isEmpty()
@@ -32,15 +31,15 @@ public class SendBarrageThread extends Thread {
 					int num = (int) Math.ceil((float) maxLength / (float) strLength);
 					for (int i = 0; i <= num; i++) {
 //						if (PublicDataConf.ROOMID == 5067) {
-							try {
-								if (HttpUserData.httpGetSendBarrage(barrageStr.substring(i * maxLength,
-										strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength)) != 0) {
-									break;
-								}
-							} catch (Exception e) {
-//								LOGGER.error("发送弹幕线程抛出:" + e);
-								// TODO: handle exception
+						try {
+							if (HttpUserData.httpGetSendBarrage(barrageStr.substring(i * maxLength,
+									strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength)) != 0) {
+								break;
 							}
+						} catch (Exception e) {
+//								LOGGER.error("发送弹幕线程抛出:" + e);
+							// TODO: handle exception
+						}
 //						} else {
 //							LOGGER.debug(barrageStr.substring(i * maxLength,
 //									strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength));
@@ -61,14 +60,16 @@ public class SendBarrageThread extends Thread {
 //						}
 					}
 				} else {
-
+					
 //					if (PublicDataConf.ROOMID == 5067) {
-						try {
-							if (HttpUserData.httpGetSendBarrage(barrageStr) != null) {}
-						} catch (Exception e) {
+					try {
+									// TODO 自动生成的方法存根
+					HttpUserData.httpGetSendBarrage(barrageStr);
+						
+					} catch (Exception e) {
 //							LOGGER.error("发送弹幕线程抛出v:" + e);
-							// TODO: handle exception
-						}
+						// TODO: handle exception
+					}
 
 //					} else {
 //						LOGGER.debug(barrageStr);
@@ -81,6 +82,7 @@ public class SendBarrageThread extends Thread {
 					// TODO 自动生成的 catch 块
 //					LOGGER.debug("发送弹幕线程关闭:" + e);
 				}
+			
 			} else {
 				synchronized (PublicDataConf.sendBarrageThread) {
 					try {
