@@ -114,7 +114,8 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
 - **本地运行浏览器输入localhost:23333(主页地址) 打开配置页面 远程请输入：远程主机ip:23333**<br/>
-- **首次开启日志 会在项目目录下生成Danmuji_log文件夹 用来存放弹幕**<br/>
+- **首次开启本地 会在项目目录下生成Danmuji_log文件夹 用来存放弹幕**<br/>
+- **首次开启舰长保存本地 会在项目目录下生成guardFile文件夹 用来存放舰长uid和名称**<br/>
 - **生成的用于存放弹幕文件名命名规则为 当天时间+房间号**<br/>
 - **localhost:23333/connect 连接房间地址**<br/>
 - **localhost:23333/login 扫码登录地址**<br/><br/>
@@ -154,7 +155,7 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 <p>修复了若干bug(maybe make more bug)</p>
 <p>感谢弹幕姬新增加了可屏蔽礼物数量(仅在单人多种模式和多人多种模式下使用 如果是单人单种模式请去掉%Num%参数)</p>
 <p>增加了向服务器查询新版本和输送公告，新增了检查更新功能</p>
-<p>破站鉴于可发送重复弹幕的时间间隔的提高，修改了初始感谢弹幕姬配置的延迟时间为3s</p>
+<p>鉴于破站可发送重复弹幕的时间间隔的提高，修改了初始感谢弹幕姬配置的延迟时间为3s</p>
 </blockquote>
 <blockquote>
 <h2>Beta1.0.6</h2>
