@@ -115,6 +115,7 @@ $ java -jar BiliBili_Danmuji-1.0.2beta.jar
 解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）<br/>
 解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络<br/>
 其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-1.0.3beta.jar 即可运行<br/><br/>
+### 运行完后就可以打开浏览器 地址栏输入http://127.0.0.1:23333进行设置<br/><br/>
 ### 注意<br/>
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
