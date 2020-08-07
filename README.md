@@ -161,6 +161,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <blockquote>
 <h2>Beta2.0</h2>
 <p>修复了若干bug(maybe make more bug)</p>
+<p>重构了解析弹幕包关键算法，项目运行更快了</p>
 <p>增加自动回复姬与关键字封禁(内嵌与回复姬里面)</p>
 <p>增加window版本下开启项目 自动打开默认浏览器并进入配置页面</p>
 <p>增加自动连接选项，勾选后 下次打开项目自动连接上次连接的房间</p>
