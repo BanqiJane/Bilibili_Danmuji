@@ -92,12 +92,14 @@ table thead,
 	font-size:16px;
 	line-height:16px;
 	color: red;
+	display:none;
 }
 .success-message {
 	padding:10px;
 	font-size:16px;
 	line-height:16px;
 	color: green;
+	display:none;
 }
 
 .connect-title {
@@ -202,6 +204,7 @@ div#danmu .danmu-child a{
     height: 100%;
     background: rgba(0,0,0,.3);
     z-index: 10;
+    display:none;
 }
 .shieldgifts-wrap{
 	position: fixed;
@@ -217,7 +220,8 @@ div#danmu .danmu-child a{
     font-size: 16px;
     color: #222;
     padding:10px 20px;
-    border-bottom: 1px solid #eee;
+     border-bottom: 1px solid #AAAAAA;
+    background: rgba(238,238,238,0.9);
 }
 .shieldgifts-wrap .t .btn-close{
 	position: absolute;
@@ -272,11 +276,12 @@ div#danmu .danmu-child a{
 	position: fixed;
     top: 50%;
     left: 50%;
-    margin-left: -245px;
-    margin-top: -300px;
+    margin-left: -105px;
+    margin-top: -50px;
     background: #fff;
     border-radius: 4px;
     z-index:20;
+    display:none;
 }
 .tips-wrap .tips-t{
 	text-align: center;
@@ -284,4 +289,232 @@ div#danmu .danmu-child a{
     color: red;
     padding: 10px 20px;
     border-bottom: 1px solid #eee;
+}
+.replys-mask{
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.3);
+    z-index: 10;
+  display: none
+}
+.replys-wrap{
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -245px;
+    margin-top: -300px;
+    background: #fff;
+    border-radius: 4px;
+    width:540px
+}
+.replys-wrap .t{
+	text-align: center;
+    font-size: 16px;
+    color: #222;
+    padding:10px 20px;
+    border-bottom: 1px solid #AAAAAA;
+    background: rgba(238,238,238,0.9);
+    width:100%
+}
+.replys-wrap .t .btn-closer{
+	position: absolute;
+    width: 12px;
+    height: 12px;
+    right: 12px;
+    top: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .3s;
+}
+.replys-wrap .t .btn-closer:before{
+	content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    margin-top: -1px;
+    background: #aaa;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+}
+.replys-wrap .t .btn-closer:after{
+	content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    margin-top: -1px;
+    background: #aaa;
+    transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+}
+.replys-wrap .con{
+    background: white;
+    padding: 20px;
+}
+.replys-wrap .con ul{
+	padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow-y: scroll;
+}
+.replys-wrap .con ul li{
+	display: inline-block;
+    width: 100%;
+    height: 40px;
+    border: solid 1px rgba(187,187,187,0.637);
+    border-radius:5px;
+    margin-bottom:2px;
+    vertical-align: middle;
+}
+.replys-wrap ul li:hover{
+	cursor:pointer;
+    background-color: rgba(44, 122, 240, 0.774);
+    color: white;
+}
+.replys-wrap .con ul li .reply_open{
+	vertical-align: middle;
+	margin-left:8px;
+    height: 40px!important;
+    cursor: pointer;
+    
+}
+.replys-wrap .con ul li .small-input{
+	margin-left:5px;
+	vertical-align: middle;
+	width: 80px!important;
+	cursor: pointer;
+}
+.replys-wrap .con ul li .big-input{
+	margin-left:5px;
+	vertical-align: middle;
+	width: 150px!important;
+	cursor: pointer;
+}
+.replys-wrap .con ul li .reply-btns{
+	margin-left:5px;
+}
+.radd-mask{
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.3);
+    z-index: 19;
+    display: none
+}
+.radd-body{
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -600px;
+    margin-top: -200px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    width:1240px;
+    border:solid 1px #7792FF;
+    
+}
+.radd-body .t{
+	text-align: center;
+    font-size: 16px;
+    color: #222;
+    padding:10px 20px;
+    border-bottom: 1px solid #AAAAAA;
+    background: rgba(238,238,238,0.9);
+    width:100%
+}
+.radd-body .t .btn-closeri{
+	position: absolute;
+    width: 12px;
+    height: 12px;
+    right: 12px;
+    top: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .3s;
+}
+.radd-body .t .btn-closeri:before{
+	content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    margin-top: -1px;
+    background: #aaa;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+}
+.radd-body .t .btn-closeri:after{
+	content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    margin-top: -1px;
+    background: #aaa;
+    transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+}
+.radd-body .con{
+	background: white;
+    padding: 20px;
+}
+.radd-body .con ul{
+	padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 150px;
+}
+.radd-body .con ul li{
+	display: inline-block;
+    height: 150px;
+    margin-bottom:2px;
+    vertical-align: middle;
+}
+.radd-body .con ul li .reply_open_i{
+	vertical-align: middle;
+	margin:0 8px 0 8px;
+    height: 150px!important;
+    cursor: pointer;
+}
+.radd-body .con ul li textarea{
+	display: block;
+    width: 350px;
+    height: 150px;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    overflow:inherit!important;
+    resize: none!important;
+}
+.radd-body .con ul li textarea.reply_rs_i{
+	width: 400px;
+}
+.radd-body .con ul li .reply_delete_i{
+	vertical-align: middle;
+    height: 150px!important;
+    cursor: pointer;
 }

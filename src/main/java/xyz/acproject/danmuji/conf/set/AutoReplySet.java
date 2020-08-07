@@ -1,0 +1,51 @@
+package xyz.acproject.danmuji.conf.set;
+
+import java.io.Serializable;
+import java.util.HashSet;
+
+public class AutoReplySet implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 562887876061232840L;
+	private boolean is_open = false;
+	private HashSet<String> keywords;
+	private HashSet<String> shields;
+	private String reply;
+	public AutoReplySet() {
+		super();
+		// TODO 自动生成的构造函数存根
+	}
+	public AutoReplySet(boolean is_open, HashSet<String> keywords, HashSet<String> shields, String reply) {
+		super();
+		this.is_open = is_open;
+		this.keywords = keywords;
+		this.shields = shields;
+		this.reply = reply;
+	}
+	public boolean isIs_open() {
+		return is_open;
+	}
+	public void setIs_open(boolean is_open) {
+		this.is_open = is_open;
+	}
+	public HashSet<String> getKeywords() {
+		return keywords;
+	}
+	public void setKeywords(HashSet<String> keywords) {
+		this.keywords = keywords;
+	}
+	public HashSet<String> getShields() {
+		return shields;
+	}
+	public void setShields(HashSet<String> shields) {
+		this.shields = shields;
+	}
+	public String getReply() {
+		return reply;
+	}
+	public void setReply(String reply) {
+		this.reply = reply;
+	}
+	
+}

@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.tools;
+package xyz.acproject.danmuji.file;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -26,6 +26,7 @@ public class LogFileTools {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
 			path = path+"/Danmuji_log/";
 			File file = new File(path);
+			file.setWritable(true, false);
 			if (file.exists() == false)
 				file.mkdirs();
 			stringBuilder.append(JodaTimeUtils.getCurrentDateString());
@@ -33,6 +34,7 @@ public class LogFileTools {
 			stringBuilder.append(PublicDataConf.ROOMID);
 			stringBuilder.append(")");
 			file = new File(path+stringBuilder.toString()+".txt");
+			file.setWritable(true, false);
 			stringBuilder.delete(0, stringBuilder.length());
 			if (file.exists() == false)
 			try {

@@ -124,7 +124,7 @@ public class HttpHeartBeatData {
 			httpURLConnection.disconnect();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
+//			e.printStackTrace();
 		} finally {
 			if (out != null) {
 				try {

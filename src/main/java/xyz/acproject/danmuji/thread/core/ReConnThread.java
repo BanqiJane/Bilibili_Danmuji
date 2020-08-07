@@ -1,13 +1,13 @@
 package xyz.acproject.danmuji.thread.core;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.service.ClientService;
+import xyz.acproject.danmuji.service.impl.ClientServiceImpl;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
 public class ReConnThread extends Thread {
 	public volatile boolean RFLAG = false;
 	private volatile Integer num =0;
-	private ClientService clientService = SpringUtils.getBean(ClientService.class); 
+	private ClientServiceImpl clientService = SpringUtils.getBean(ClientServiceImpl.class); 
 
 	@Override
 	public synchronized void run() {

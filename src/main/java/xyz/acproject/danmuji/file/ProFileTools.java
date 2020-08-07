@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.tools;
+package xyz.acproject.danmuji.file;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,9 +20,11 @@ public class ProFileTools {
 			e1.printStackTrace();
 		}
 		File file = new File(path);
+		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
 		file = new File(path + "/" + filename);
+		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {
 				file.createNewFile();
@@ -73,9 +75,11 @@ public class ProFileTools {
 			e1.printStackTrace();
 		}
 		File file = new File(path);
+		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
 		file = new File(path + "/" + filename);
+		file.setWritable(true, false);
 		final StringBuffer stringBuffer = new StringBuffer();
 		try {
 			file.createNewFile();

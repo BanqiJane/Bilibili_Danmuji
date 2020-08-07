@@ -18,7 +18,7 @@ public class BarrageHeadHandle implements Serializable {
 	// 数据包头部长度 为char 为16
 	@StructField(order = 1)
 	private char packageHeadLength;
-	// 数据包协议版本 0未压缩的json格式数据 1客户端心跳通常为人气值 4字节整数 2为带zlib压缩过的json格式数据 数据包协议版本 为char 有0，1，2
+	// 数据包协议版本char 0未压缩的json格式数据 1客户端心跳通常为人气值 4字节整数 2为带zlib压缩过的json格式数据 数据包协议版本 为char 有0，1，2
 	@StructField(order = 2)
 	private char packageVersion;
 	// 数据包协议类型 int 目前已知有2，3，5，7，8
@@ -29,6 +29,14 @@ public class BarrageHeadHandle implements Serializable {
 	private int packageOther;
 	private BarrageHeadHandle() {}
 	public static BarrageHeadHandle getBarrageHeadHandle() {
+		return barrageHeadHandle;
+	}
+	public static BarrageHeadHandle getBarrageHeadHandle(int packageLength,char packageHeadLength,char packageVersion,int packageType,int packageOther) {
+		barrageHeadHandle.setPackageHeadLength(packageHeadLength);
+		barrageHeadHandle.setPackageLength(packageLength);
+		barrageHeadHandle.setPackageOther(packageOther);
+		barrageHeadHandle.setPackageType(packageType);
+		barrageHeadHandle.setPackageVersion(packageVersion);
 		return barrageHeadHandle;
 	}
 	public int getPackageLength() {

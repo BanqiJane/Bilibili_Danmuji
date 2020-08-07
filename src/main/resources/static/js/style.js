@@ -3,22 +3,23 @@ $(function() {
 
 	$(document).on('click', '#connect', function() {
 		if (!$('#connect').hasClass('disabled')) {
+			$('#connect').addClass('disabled');
 			var roomid = $('#room_id').val();
 			if (roomid !== null && roomid !== "") {
 				$('.notice-message').html("<span>连接中<img src='../img/loading-1.gif'></span>");
 				$.when(method.connectRoom(roomid)).done(function(data) {
 					if (data.code === "200") {
 						if (data.result) {
-							alert("成功连接");
-							$('.notice-message').html("连接成功");
 							$('#connect').addClass('disabled');
+							$('.notice-message').html("连接成功");
 							$('#disconnect').removeClass('disabled');
+							alert("成功连接");
 							window.location.replace("/");
 						} else {
-							alert("连接失败");
 							$('.notice-message').html("连接失败");
 							$('#disconnect').addClass('disabled');
 							$('#connect').removeClass('disabled');
+							alert("连接失败");
 						}
 					}
 					

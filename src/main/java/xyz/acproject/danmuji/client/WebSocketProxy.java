@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.conf;
+package xyz.acproject.danmuji.client;
 
 import java.net.URISyntaxException;
 

@@ -46,9 +46,9 @@ public class HttpRoomData {
 			httpURLConnection.setRequestProperty("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-//			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE) && PublicDataConf.USER != null) {
-//				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-//			}
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE) && PublicDataConf.USER != null) {
+				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
+			}
 			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
 			String msg = null;
 			while (null != (msg = bufferedReader.readLine())) {

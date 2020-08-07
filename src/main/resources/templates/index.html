@@ -71,12 +71,28 @@
 								<h4>显示设置</h4>
 							</div>
 							<div class="input-group mb-3 common-set">
-								<div class="custom-control custom-radio custom-control-inline">
+							<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_guardAndvip"> <span
+										class="form-check-input is_autoStart"> <span
+										class="_description" data-toggle="tooltip"
+										data-placement="top" title="" data-html="true"
+										data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置无需打开再网页进行手动连接</span>">自动</span>
+									</label>
+								</div>
+							<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
+										class="form-check-input is_barrage_guard"> <span
 										class="_description" data-toggle="tooltip"
 										data-placement="top" title=""
-										data-original-title="弹幕是否显示舰长和老爷图标">舰爷</span>
+										data-original-title="弹幕是否显示老爷图标">舰</span>
+									</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
+										class="form-check-input is_barrage_vip"> <span
+										class="_description" data-toggle="tooltip"
+										data-placement="top" title=""
+										data-original-title="弹幕是否显示舰长图标">爷</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
@@ -84,14 +100,14 @@
 										class="form-check-input is_barrage_manager"> <span
 										class="_description" data-toggle="tooltip"
 										data-placement="top" title=""
-										data-original-title="弹幕是否显示房管主播图标">管理</span>
+										data-original-title="弹幕是否显示房管主播图标">管</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_barrage_medal"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示勋章图标">勋章</span>
+										data-placement="top" title="" data-original-title="弹幕是否显示勋章图标">勋</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
@@ -218,9 +234,8 @@
 									</div>
 									<div class="custom-control custom-radio custom-control-inline">
 										<label class="form-check-label"> <input
-											type="checkbox"
-											class="form-check-input thankgift_is_num"> <span
-											class="_description" data-toggle="tooltip"
+											type="checkbox" class="form-check-input thankgift_is_num">
+											<span class="_description" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true"
 											data-original-title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">显示礼物数量</span>
 										</label>
@@ -288,7 +303,7 @@
 								</div>
 								<h6 data-toggle="tooltip" data-placement="top" title=""
 									data-html="true"
-									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/>如介意请选择稳定的1.0.5版本">上舰私信姬</h6>
+									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span></h6>
 								<div class="header-set">
 									<div class="custom-control custom-radio custom-control-inline">
 										<label class="form-check-label is_guard_report_click">
@@ -377,6 +392,43 @@
 								</div>
 							</div>
 							<div class="input-group mb-1">
+								<h5>自动回复姬设置(需要登录)</h5>
+							</div>
+							<div class="input-group mb-3 autoReply-set">
+								<div class="header-set">
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label"> <input
+											type="checkbox" class="form-check-input replys_is_open">
+											<span class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="是否打开">开关</span>
+										</label>
+									</div>
+									<div class="custom-control custom-radio custom-control-inline">
+										<label class="form-check-label"> <input
+											type="checkbox" class="form-check-input replys_is_live_open">
+											<span class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="仅在直播中有效">直播</span>
+										</label>
+									</div>
+									<div
+										class="custom-control-inline small-input-wrap input-margin-s">
+										<input type="number" min="1" class="small-input replys_time"
+											οninput="if(value.length>5)value=value.slice(0,5)"
+											style="ime-mode: Disabled"
+											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+											placeholder="间隔" data-toggle="tooltip" data-placement="top"
+											title="" data-html="true"
+											data-original-title="<span class='red-font'>间隔多少秒才识别弹幕并自动回复</span><br/>默认为3秒"
+											value="3">
+									</div>
+									<div class="custom-control-inline">
+										<button class="btn btn-primary btn-sm" id="replys-btn">自定义回复设置</button>
+									</div>
+								</div>
+							</div>
+							<div class="input-group mb-1">
 								<h5>实验性设置(需要登录)</h5>
 							</div>
 							<div class="input-group mb-3 other-set">
@@ -410,8 +462,9 @@
 								联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
 								data-toggle="tooltip" data-placement="top" title=""
 								data-original-title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
-								href="javascript:;" data-toggle="tooltip" id="checkupdate" data-placement="top"
-								title="" th:data-original-title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a>
+								href="javascript:;" data-toggle="tooltip" id="checkupdate"
+								data-placement="top" title=""
+								th:data-original-title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a>
 						</div>
 					</div>
 				</div>
@@ -482,25 +535,72 @@
 			</div>
 		</div>
 	</div>
+	<div class="replys-mask">
+		<div class="replys-wrap">
+			<div class="t">
+				请自定义弹幕姬自动回复规则<a href="javascript:;" class="replys_add"
+					data-toggle="tooltip" data-placement="top" title=""
+					data-html="true" data-original-title="新增回复规则">⊕</a> <i
+					class="btn-closer"> </i>
+			</div>
+			<div class="con">
+				<ul class="replys-ul" id="replys-ul" data-role="listview">
+					
+				</ul>
+			</div>
+		</div>
+		<div class="radd-mask">
+			<div class="radd-body">
+				<div class="t">
+					修改当前规则(关闭既为设置完成,别忘了最后保存配置)<i class="btn-closeri"
+						data-toggle="tooltip" data-placement="top" data-html="true"
+						title="关闭既为设置完成<br/>别忘了保存配置" data-original-title="关闭既为"> </i>
+				</div>
+				<div class="con">
+					<ul>
+						<li><input type="checkbox" class="reply_open_i"
+							data-toggle="tooltip" data-placement="top" title="是否开启"
+							data-original-title="是否开启"></li>
+						<li><textarea class="reply_keywords_i" placeholder="关键字"
+								data-toggle="tooltip" data-placement="top" title=""
+								data-html="true"
+								data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='red-font'>注意不能为空</span>"></textarea></li>
+						<li><textarea class="reply_shields_i" placeholder="屏蔽词"
+								data-toggle="tooltip" data-placement="top"
+								title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词" data-html="true"
+								data-original-title="屏蔽词"></textarea></li>
+						<li><textarea class="reply_rs_i" placeholder="回复语句"
+								data-toggle="tooltip" data-placement="top"
+								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目" data-html="true"
+								data-original-title="回复语句"></textarea></li>
+						<li><button type="button"
+								class="btn btn-danger btn-sm reply_delete_i">删除</button></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="tips-wrap">
-	<div class="tips-t"></div>
+		<div class="tips-t"></div>
 	</div>
 	<script type="text/javascript">
 		$(function() {
 			$("[data-toggle='tooltip']").tooltip();
-			$(document).click(".btn-secondary",function(){
-				if($('#set').hasClass("show")){
-					
-				}else{
-					setTimeout(function(){$.each($("textarea"), function(i, n) {
-						$(n).css("height", n.scrollHeight + "px");
-					})},10)
+			$(document).click(".btn-secondary", function() {
+				if ($('#set').hasClass("show")) {
+
+				} else {
+					setTimeout(function() {
+						$.each($("textarea"), function(i, n) {
+							if ($(n).hasClass('form-control')) {
+								$(n).css("height", n.scrollHeight + "px");
+							}
+						})
+					}, 10)
 				}
-				
+
 			})
 		});
-		
-		
 	</script>
 </body>
 </html>

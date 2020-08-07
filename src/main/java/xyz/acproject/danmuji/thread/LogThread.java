@@ -3,7 +3,7 @@ package xyz.acproject.danmuji.thread;
 import org.apache.commons.lang3.StringUtils;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.tools.LogFileTools;
+import xyz.acproject.danmuji.file.LogFileTools;
 
 public class LogThread extends Thread{
 //	@SuppressWarnings("unused")

@@ -6,7 +6,7 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 
 public class ParseThankFollowThread extends Thread {
-//	private Logger LOGGER = LogManager.getLogger(ParseFollowThread.class);
+//	private Logger LOGGER = LogManager.getLogger(ParseThankFollowThread.class);
 	public volatile boolean FLAG = false;
 	private String thankFollowString = "感谢 %uNames% 的关注";
 	private Short num = 1;
@@ -35,7 +35,7 @@ public class ParseThankFollowThread extends Thread {
 							for (int j = i; j < i + getNum(); j++) {
 								if (j >= interacts.size()) {
 									break;
-								}	
+								}
 								stringBuilder.append(interacts.get(j).getUname()).append(",");
 							}
 							stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());

@@ -1,13 +1,22 @@
 package xyz.acproject.danmuji.conf;
 
+import java.io.Serializable;
+
 import xyz.acproject.danmuji.conf.set.AdvertSetConf;
+import xyz.acproject.danmuji.conf.set.AutoReplySetConf;
 import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
-public class CenterSetConf {
+public class CenterSetConf implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1162255349476806991L;
 	//弹幕显示舰长和老爷图标
-	private boolean is_barrage_guardAndvip = true;
+	private boolean is_barrage_guard = true;
+	//弹幕显示舰长和老爷图标
+	private boolean is_barrage_vip = true;
 	//弹幕显示房管图标
 	private boolean is_barrage_manager = true;
 	//弹幕显示勋章图标
@@ -26,16 +35,20 @@ public class CenterSetConf {
 	private boolean is_log = false;
 	//房间号
 	private Long roomid =0l;
+	//是否自动连接
+	private boolean is_auto= false;
 	
 //-------------------------以下设置需要用户登录后----------------------------------------
 	//是否开启用户在线心跳线程
 	private boolean is_online = false;
-	//是否开启礼物感谢
+	//是否开启礼物感谢线程
 	private ThankGiftSetConf thank_gift;
 	//是否开启广告公告线程
 	private AdvertSetConf advert;
-	//是否开启感谢关注
+	//是否开启感谢关注线程
 	private ThankFollowSetConf follow;
+	//是否开启自动回复线程
+	private AutoReplySetConf reply;
 	
 	
 	public CenterSetConf() {
@@ -43,18 +56,23 @@ public class CenterSetConf {
 		// TODO 自动生成的构造函数存根
 	}
 	public CenterSetConf( ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow) {
+			ThankFollowSetConf follow,AutoReplySetConf reply) {
 		super();
 		this.thank_gift = thank_gift;
 		this.advert = advert;
 		this.follow = follow;
+		this.reply = reply;
 	}
-	public CenterSetConf(boolean is_barrage_guardAndvip, boolean is_barrage_manager, boolean is_barrage_medal,
-			boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_follow,
-			boolean is_log, Long roomid, boolean is_online, ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow) {
+	
+	
+	
+	public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager,
+			boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome,
+			boolean is_follow, boolean is_log, Long roomid, boolean is_auto, boolean is_online,
+			ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply) {
 		super();
-		this.is_barrage_guardAndvip = is_barrage_guardAndvip;
+		this.is_barrage_guard = is_barrage_guard;
+		this.is_barrage_vip = is_barrage_vip;
 		this.is_barrage_manager = is_barrage_manager;
 		this.is_barrage_medal = is_barrage_medal;
 		this.is_barrage_ul = is_barrage_ul;
@@ -64,16 +82,24 @@ public class CenterSetConf {
 		this.is_follow = is_follow;
 		this.is_log = is_log;
 		this.roomid = roomid;
+		this.is_auto = is_auto;
 		this.is_online = is_online;
 		this.thank_gift = thank_gift;
 		this.advert = advert;
 		this.follow = follow;
+		this.reply = reply;
 	}
-	public boolean isIs_barrage_guardAndvip() {
-		return is_barrage_guardAndvip;
+	public boolean isIs_barrage_guard() {
+		return is_barrage_guard;
 	}
-	public void setIs_barrage_guardAndvip(boolean is_barrage_guardAndvip) {
-		this.is_barrage_guardAndvip = is_barrage_guardAndvip;
+	public void setIs_barrage_guard(boolean is_barrage_guard) {
+		this.is_barrage_guard = is_barrage_guard;
+	}
+	public boolean isIs_barrage_vip() {
+		return is_barrage_vip;
+	}
+	public void setIs_barrage_vip(boolean is_barrage_vip) {
+		this.is_barrage_vip = is_barrage_vip;
 	}
 	public boolean isIs_barrage_manager() {
 		return is_barrage_manager;
@@ -154,7 +180,21 @@ public class CenterSetConf {
 	public void setRoomid(Long roomid) {
 		this.roomid = roomid;
 	}
+	
+	public AutoReplySetConf getReply() {
+		return reply;
+	}
+	public void setReply(AutoReplySetConf reply) {
+		this.reply = reply;
+	}
+	
+	public boolean isIs_auto() {
+		return is_auto;
+	}
+	public void setIs_auto(boolean is_auto) {
+		this.is_auto = is_auto;
+	}
 	public String toJson() {
-		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guardAndvip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log,roomid ,is_online, thank_gift, advert, follow));
+		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, roomid, is_auto, is_online, thank_gift, advert, follow, reply));
 	}
 }

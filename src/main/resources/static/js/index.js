@@ -1,9 +1,5 @@
 $(function() {
 	"use strict";
-	$(".notice-message").hide();
-	$(".success-message").hide();
-	$(".shieldgifts-mask").hide();
-	$(".tips-wrap").hide();
 	var time;
 	var socket;
 	time = setInterval(heartBeat, 30000);
@@ -94,16 +90,22 @@ $(document).on(
 			var c5 = false;
 			var c6 = false;
 			var c7 = false;
+			var c8 = false;
 			var set = {
 				"thank_gift" : {
 					"giftStrings" :[],
 					"thankGiftRuleSets" : []
 				},
 				"advert" : {},
-				"follow" : {}
+				"follow" : {},
+				"reply"  : {"autoReplySets":[]},
 			};
-			set.is_barrage_guardAndvip = $(".is_barrage_guardAndvip").is(
+			set.is_auto = $(".is_autoStart").is(
+			':checked');
+			set.is_barrage_guard = $(".is_barrage_guard").is(
 					':checked');
+			set.is_barrage_vip = $(".is_barrage_vip").is(
+			':checked');
 			set.is_barrage_manager = $(".is_barrage_manager").is(':checked');
 			set.is_barrage_medal = $(".is_barrage_medal").is(':checked');
 			set.is_barrage_ul = $(".is_barrage_ul").is(':checked');
@@ -133,6 +135,20 @@ $(document).on(
 					thankGiftRuleSet={};
 				});
 			}
+			if($(".replys-ul li").length>0){
+				var autoReplySet={};
+				$(".replys-ul li").each(function(i,v){
+					autoReplySet.is_open=$(".reply_open").eq(i).is(':checked');
+					var keywords =[];
+					var shields = [];
+					autoReplySet.keywords=method.giftStrings_handle(keywords,$(".reply_keywords").eq(i).val());
+					autoReplySet.shields=method.giftStrings_handle(shields,$(".reply_shields").eq(i).val());
+					autoReplySet.reply=$(".reply_rs").eq(i).val();
+					set.reply.autoReplySets.push(autoReplySet);
+					autoReplySet={};
+				});
+				
+			}
 			set.thank_gift.thank_status = Number($(".thankgift_thank_status")
 					.find("option:selected").val()) - 1;
 			set.thank_gift.num = Number($(".thankgift_num").val());
@@ -156,6 +172,9 @@ $(document).on(
 			set.follow.num = Number($(".follow_num").val());
 			set.follow.follows = $(".follow_follows").val();
 			set.follow.delaytime= Number($(".thankfollow_delaytime").val());
+			set.reply.is_open = $(".replys_is_open").is(':checked');
+			set.reply.is_live_open=$(".replys_is_live_open").is(':checked');
+			set.reply.time=Number($(".replys_time").val());
 			if ($(".follow_is_open").is(':checked')) {
 				if ($(".follow_follows").val().trim() !== null
 						&& $(".follow_follows").val().trim() !== "") {
@@ -207,8 +226,16 @@ $(document).on(
 					method.delay_method(".notice-message", "自定义规则不能为空");
 				}
 			})
+			$(".replys-ul").children("li").each(function(i,v){
+			if($(".reply_keywords").eq(i).val()===""||$(".reply_rs").eq(i).val()===""){
+				c8=true;
+				method.delay_method(".notice-message", "自动回复姬的关键字和回复语句都不能为空！！！");
+			}else{
+				
+			}
+		    });
 			if ($(".card-body").find(".logined").length > 0) {
-				if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6&&!c7) {
+				if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6&&!c7&&!c8) {
 					console.log(set);
 					method.initSet(set);
 					if (method.sendSet(set)) {
@@ -250,9 +277,39 @@ $(document).on('click', '#gift-shield-btn', function() {
 	}
 
 });
+$(document).on('click', '#replys-btn', function() {
+	if (!$(".replys-mask").is(":visible")) {
+		$(".replys-mask").show();
+	}
+
+});
 $(document).on('click', '.btn-close', function() {
+	var is_kong = false;
 	if ($(".shieldgifts-mask").is(":visible")) {
+		$(".shieldgifts-tbody").children("tr").each(function(i,v){
+			if($(".shieldgifts_name").eq(i).val().trim()==""){
+				alert("自定义规则礼物名称不能为空");
+				is_kong = true;
+				return false;
+			}
+		})
+		if(is_kong)return;
 		$(".shieldgifts-mask").hide();
+	}
+});
+
+$(document).on('click', '.btn-closer', function() {
+	var is_hide = true;
+	if ($(".replys-mask").is(":visible")) {
+		$(".replys-ul").children("li").each(function(i,v){
+			if($(".reply_keywords").eq(i).val()===""||$(".reply_rs").eq(i).val()===""){
+				alert("关键字和回复语句都不能为空！！！");
+				is_hide=false;
+			}
+			if(!is_hide)return false;
+		});
+		if(!is_hide)return;
+		$(".replys-mask").hide();
 	}
 });
 $(document)
@@ -262,10 +319,87 @@ $(document)
 				function() {
 					$(".shieldgifts-tbody")
 							.append(
-									"<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于)' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
+									`<tr>
+									<td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td>
+									<td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td>
+									<td>
+									<select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'>
+									<option value='1' selected='selected'>数量</option>
+									<option value='2'>瓜子</option></select>
+									</td>
+									<td>
+									<input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于)' data-html='true' data-original-title='大于多少(不得小于)'>
+									</td>
+									<td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td>
+									</tr>`);
 				});
+$(document)
+.on(
+		'click',
+		'.replys_add',
+		function() {
+			$(".replys-ul")
+					.append(
+							`<li><input type='checkbox' class='reply_open'
+						data-toggle='tooltip' data-placement='top' title='是否开启'
+						data-original-title='是否开启'> 
+						<input class='small-input reply_keywords' placeholder='关键字'
+						data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+						data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+						<input class='small-input reply_shields' placeholder='屏蔽词'
+						data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+						data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+						<input class='big-input reply_rs' placeholder='回复语句'
+						data-toggle='tooltip' data-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
+						data-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+						<span class='reply-btns'>
+						<button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button>
+						<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
+						</span>
+					</li>`);
+		});
+$(document).on('click', '.reply_delete', function() {
+	$(this).parent().parent().remove();
+});
 $(document).on('click', '.shieldgift_delete', function() {
 	$(this).parent().parent().remove();
+});
+$(document).on('click', '.reply_edit', function() {
+	var index = $(this).parent().parent().index();
+	var is_open = $(this).parent().parent().children(".reply_open").is(':checked');
+	var keywords = $(this).parent().parent().children(".reply_keywords").val();
+	var shields = $(this).parent().parent().children(".reply_shields").val();
+	var rs = $(this).parent().parent().children(".reply_rs").val();
+	$(".radd-mask").show();
+	$(".radd-body").find(".reply_open_i").prop('checked', is_open);
+	$(".radd-body").find(".reply_keywords_i").val(keywords);
+	$(".radd-body").find(".reply_shields_i").val(shields);
+	$(".radd-body").find(".reply_rs_i").val(rs);
+	$(".radd-body").find(".reply_delete_i").attr("z-index",index);
+});
+$(document).on('click', '.reply_delete_i', function(e) {
+	var index = $(this).attr("z-index");
+	$(".replys-ul").children("li").eq(index).remove();
+	e.stopPropagation();
+	$(".radd-mask").hide();
+});
+$(document).on('click', '.btn-closeri', function() {
+	if ($(".radd-mask").is(":visible")) {
+		var index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
+		var is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
+		var keywords = $(this).parent().parent().find(".reply_keywords_i").val();
+		var shields = $(this).parent().parent().find(".reply_shields_i").val();
+		var rs = $(this).parent().parent().find(".reply_rs_i").val();
+		$(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', is_open);
+		$(".replys-ul").children("li").eq(index).find(".reply_keywords").val(keywords);
+		$(".replys-ul").children("li").eq(index).find(".reply_shields").val(shields);
+		$(".replys-ul").children("li").eq(index).find(".reply_rs").val(rs);
+		if(keywords===null||keywords===""||rs===null||rs===""){
+			alert("关键字和回复语句都不能为空！！！");
+			return;
+		}
+		$(".radd-mask").hide();
+	}
 });
 $(document).on('click','#checkupdate',function(){
 	$(".tips-wrap").show();
@@ -325,8 +459,12 @@ const method = {
 	initSet : function(set) {
 		"use strict";
 		if (set != null) {
-			$(".is_barrage_guardAndvip").prop('checked',
-					set.is_barrage_guardAndvip);
+			$(".is_autoStart").prop('checked',
+					set.is_auto);
+			$(".is_barrage_guard").prop('checked',
+					set.is_barrage_guard);
+			$(".is_barrage_vip").prop('checked',
+					set.is_barrage_vip);
 			$(".is_barrage_manager").prop('checked', set.is_barrage_manager);
 			$(".is_barrage_medal").prop('checked', set.is_barrage_medal);
 			$(".is_barrage_ul").prop('checked', set.is_barrage_ul);
@@ -347,6 +485,7 @@ const method = {
 					set.thank_gift.shield_status).prop('selected', true);
 			$(".thankgift_shield").val(method.giftStrings_metod(set.thank_gift.giftStrings));
 			method.shieldgifts_each(set.thank_gift.thankGiftRuleSets);
+			method.replys_each(set.reply.autoReplySets);
 			// $(".thankgift_thankGiftRuleSets").val(
 			// set.thank_gift.thankGiftRuleSets);// test
 			$(".thankgift_thank_status").find("option").eq(
@@ -372,6 +511,11 @@ const method = {
 			$(".follow_num").val(set.follow.num);
 			$(".follow_follows").val(set.follow.follows);
 			$(".thankfollow_delaytime").val(set.follow.delaytime);
+			$(".replys_is_open").prop('checked',
+					set.reply.is_open);
+			$(".replys_is_live_open").prop('checked',
+					set.reply.is_live_open);
+			$(".replys_time").val(set.reply.time);
 			if (Number($(".thankgift_shield_status")
 					.children("option:selected").val()) !== 1) {
 				$(".thankgift_shield").hide();
@@ -433,6 +577,7 @@ const method = {
 				$(".thankgift_is_guard_report").attr("disabled", true);
 				$(".thankgift_is_guard_local").attr("disabled", true);
 				$(".thankgift_report").attr("disabled", true);
+				$("#gift-shield-btn").attr("disabled", true);
 				$(".advert_is_open").attr("disabled", true);
 				$(".advert_is_live_open").attr("disabled", true);
 				$(".advert_status").attr("disabled", true);
@@ -447,6 +592,10 @@ const method = {
 				$(".shieldgift_delete").attr("disabled", true);
 				$(".thankgift_barrageReport").attr("disabled",true);
 				$(".thankgift_is_num").attr("disabled",true);
+				$(".replys_is_open").attr("disabled",true);
+				$(".replys_is_live_open").attr("disabled",true);
+				$(".replys_time").attr("disabled",true);
+				$("#replys-btn").attr("disabled",true);
 			}
 		}
 	},
@@ -508,6 +657,45 @@ const method = {
 				$(".shieldgifts_open").eq(i).prop('checked', lists[i].is_open);
 				$(".shieldgifts_status").eq(i).find("option").eq(
 						lists[i].status).prop('selected', true);
+			}
+		}
+	},
+	replys_each:function(lists){
+		if(lists!=null){
+			$(".replys-ul").children("li").remove();
+			for(let i in lists){
+				$(".replys-ul")
+				.append(
+						`<li><input type='checkbox' class='reply_open'
+					data-toggle='tooltip' data-placement='top' title='是否开启'
+					data-original-title='是否开启'> 
+					<input class='small-input reply_keywords' placeholder='关键字'
+					data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+					data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+					<input class='small-input reply_shields' placeholder='屏蔽词'
+					data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+					data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+					<input class='big-input reply_rs' placeholder='回复语句'
+					data-toggle='tooltip' data-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
+					data-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+					<span class='reply-btns'>
+					<button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button>
+					<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
+					</span>
+				</li>`);
+//				$("#replys-ul").append(
+//						"<li><input type='checkbox' class='reply_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'> "
+//						+"<input class='small-input reply_keywords' placeholder='关键字' data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开' data-original-title='关键字' readonly='readonly' value='"
+//						+method.giftStrings_metod(lists[i].keywords)+"' disabled/>"
+//						+"<input class='small-input reply_shields' placeholder='屏蔽词' data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开' data-original-title='屏蔽词' readonly='readonly' value='"
+//						+method.giftStrings_metod(lists[i].shields)+"' disabled/>"
+//						+"<input class='big-input reply_rs' placeholder='回复语句' readonly='readonly' value='"
+//						+lists[i].reply+"' disabled/>"
+//						+"<span class='reply-btns'><button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button><button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button></span></li>");
+				$(".reply_open").eq(i).prop('checked', lists[i].is_open);
+				$(".reply_keywords").eq(i).val(method.giftStrings_metod(lists[i].keywords));
+				$(".reply_shields").eq(i).val(method.giftStrings_metod(lists[i].shields));
+				$(".reply_rs").eq(i).val(lists[i].reply);
 			}
 		}
 	},

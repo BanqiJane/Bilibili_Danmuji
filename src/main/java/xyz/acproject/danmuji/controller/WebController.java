@@ -22,14 +22,14 @@ import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.Response;
-import xyz.acproject.danmuji.service.CheckService;
 import xyz.acproject.danmuji.service.ClientService;
+import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.utils.QrcodeUtils;
 
 @Controller
 public class WebController {
 	@Autowired
-	private CheckService checkService;
+	private SetService checkService;
 	@Autowired
 	private ClientService clientService;
 
@@ -109,7 +109,7 @@ public class WebController {
 		jsonObject = JSONObject.parseObject(jsonString);
 		if (jsonObject != null) {
 			if (jsonObject.getBoolean("status")) {
-				checkService.start();
+				checkService.init();
 				if (PublicDataConf.USER != null) {
 					req.getSession().setAttribute("status", "login");
 				}
@@ -131,6 +131,7 @@ public class WebController {
 			}
 			if(PublicDataConf.ROOMID!=null) {
 				PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID);
+				PublicDataConf.ROOMID_SAFE=PublicDataConf.ROOMID;
 		    }
 			checkService.connectSet(PublicDataConf.centerSetConf);
 		}

@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.conf;
+package xyz.acproject.danmuji.client;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,9 +9,10 @@ import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
-import xyz.acproject.danmuji.tools.CommonTools;
+import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 
 public class Websocket extends WebSocketClient {
 	private static Logger LOGGER = LogManager.getLogger(Websocket.class);
@@ -32,11 +33,16 @@ public class Websocket extends WebSocketClient {
 	public void onMessage(ByteBuffer message) {
 		// TODO 自动生成的方法存根
 		if(PublicDataConf.parseMessageThread!=null&&!PublicDataConf.parseMessageThread.FLAG) {
-		CommonTools.handle_Message(message);
-		synchronized (PublicDataConf.parseMessageThread) {
-			PublicDataConf.parseMessageThread.notify();
+		try {
+			HandleWebsocketPackage.handle_Message(message);
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.debug("解析错误日志生成，请将log底下文件发给管理员,或github开issue发送错误"+e);
 		}
-	}
+//			synchronized (PublicDataConf.parseMessageThread) {
+//				PublicDataConf.parseMessageThread.notify();
+//			}
+		}
 	}
 
 	@Override

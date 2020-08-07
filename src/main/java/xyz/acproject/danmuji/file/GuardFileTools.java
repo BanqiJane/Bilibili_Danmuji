@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.tools;
+package xyz.acproject.danmuji.file;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,9 +24,11 @@ public class GuardFileTools {
 		}
 		path = path +"/guardFile/";
 		File file = new File(path);
+		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
 		file = new File(path + "/guards("+PublicDataConf.ROOMID +")"+ ".txt");
+		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {
 				file.createNewFile();
@@ -72,9 +74,11 @@ public class GuardFileTools {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
 			path = path+"/guardFile/";
 			File file = new File(path);
+			file.setWritable(true, false);
 			if (file.exists() == false)
 				file.mkdirs();
 			file = new File(path + "guards("+PublicDataConf.ROOMID +")"+ ".txt");
+			file.setWritable(true, false);
 			if (file.exists() == false)
 				try {
 					file.createNewFile();

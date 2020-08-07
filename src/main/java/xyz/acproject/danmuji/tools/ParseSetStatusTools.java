@@ -1,18 +1,17 @@
-package xyz.acproject.danmuji.conf;
+package xyz.acproject.danmuji.tools;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
+import xyz.acproject.danmuji.conf.CenterSetConf;
+import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.enums.AdvertStatus;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.enums.ThankGiftStatus;
 
-public class SetMethodCode {
+public class ParseSetStatusTools {
 	public static ShieldGift getGiftShieldStatus(short code) {
 		switch (code) {
 		case 0:
@@ -55,11 +54,16 @@ public class SetMethodCode {
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 			short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
-				16);
-		if (centerSetConf.isIs_barrage_guardAndvip()) {
-			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guardAndvip, true);
+				17);
+		if (centerSetConf.isIs_barrage_guard()) {
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, true);
 		} else {
-			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guardAndvip, false);
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, false);
+		}
+		if (centerSetConf.isIs_barrage_vip()) {
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_vip, true);
+		} else {
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_vip, false);
 		}
 		if (centerSetConf.isIs_barrage_manager()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_manager, true);
@@ -169,86 +173,4 @@ public class SetMethodCode {
 		return messageConcurrentHashMap;
 	}
 
-	public static void modifySet(CenterSetConf centerSetConf) {
-		if (PublicDataConf.ROOMID == null) {
-			return;
-		}
-		if (PublicDataConf.webSocketProxy == null) {
-			return;
-		}
-		if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
-			return;
-		}
-		HashSet<ThankGiftRuleSet> thankGiftRuleSets = centerSetConf.getThank_gift().getThankGiftRuleSets();
-		for (Iterator<ThankGiftRuleSet> iterator = thankGiftRuleSets.iterator(); iterator.hasNext();) {
-			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-			if (!thankGiftRuleSet.isIs_open()) {
-				iterator.remove();
-			}
-		}
-		centerSetConf.getThank_gift().setThankGiftRuleSets(thankGiftRuleSets);
-		ThreadConf.startParseMessageThread(getMessageConcurrentHashMap(centerSetConf, PublicDataConf.lIVE_STATUS),
-				centerSetConf);
-		if (centerSetConf.isIs_log()) {
-			ThreadConf.startLogThread();
-		} else {
-			ThreadConf.closeLogThread();
-		}
-		
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-			short as = centerSetConf.getAdvert().getStatus();
-			short secondsa = centerSetConf.getAdvert().getTime();
-			String advertBarrage = centerSetConf.getAdvert().getAdverts();
-			if (centerSetConf.getAdvert().isIs_live_open()) {
-				if (PublicDataConf.lIVE_STATUS != 1) {
-					ThreadConf.closeAdvertThread();
-				} else {
-					if (centerSetConf.getAdvert().isIs_open()) {
-						ThreadConf.startAdvertThread(getAdvertStatus(as), secondsa, advertBarrage);
-					} else {
-						ThreadConf.setAdvertThread(getAdvertStatus(as), secondsa, advertBarrage);
-						ThreadConf.closeAdvertThread();
-					}
-				}
-			} else {
-				if (centerSetConf.getAdvert().isIs_open()) {
-					ThreadConf.startAdvertThread(getAdvertStatus(as), secondsa, advertBarrage);
-				} else {
-					ThreadConf.setAdvertThread(getAdvertStatus(as), secondsa, advertBarrage);
-					ThreadConf.closeAdvertThread();
-				}
-			}
-			if (centerSetConf.isIs_online()) {
-				ThreadConf.startUserOnlineThread();
-			} else {
-				ThreadConf.closeUserOnlineThread();
-			}
-		} else {
-		
-			PublicDataConf.COOKIE = null;
-			PublicDataConf.USER = null;
-			PublicDataConf.USERCOOKIE = null;
-			PublicDataConf.USERBARRAGEMESSAGE = null;
-			ThreadConf.closeAdvertThread();
-			ThreadConf.closeUserOnlineThread();
-			ThreadConf.closeGiftShieldThread();
-			ThreadConf.closeSendBarrageThread();
-		}
-		if (PublicDataConf.advertThread == null && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
-				&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)) {
-			ThreadConf.closeSendBarrageThread();
-		} else {
-			ThreadConf.startSendBarrageThread();
-		}
-		if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
-			ThreadConf.closeHeartByteThread();
-			ThreadConf.closeParseMessageThread();
-			ThreadConf.closeUserOnlineThread();
-			ThreadConf.closeFollowShieldThread();
-			ThreadConf.closeAdvertThread();
-			ThreadConf.closeSendBarrageThread();
-			ThreadConf.closeLogThread();
-			ThreadConf.closeGiftShieldThread();
-		}
-	}
 }

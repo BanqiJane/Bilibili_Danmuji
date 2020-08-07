@@ -137,6 +137,44 @@ public class ByteUtils {
         }  
         return s;
     }
+	/**
+	 * byte[]转为zlib并解压成字符串
+	 * 
+	 * @param bs 待转byte数组
+	 * @return 
+	 */
+	public static String BytesTozlibInflateString(byte[] bs) { 
+		String s="";
+        try {  
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();  
+            InflaterOutputStream zos = new InflaterOutputStream(bos);  
+            zos.write(bs);
+            zos.close();  
+            s =new String(bos.toByteArray(),"utf-8");  
+        } catch (Exception ex) {  
+            ex.printStackTrace();  
+        }  
+        return s;
+    }
+	/**
+	 * byte[]的zlib解压
+	 * 
+	 * @param bs 待解压byte数组
+	 * @return b 解压完成的byte[]
+	 */
+	public static byte[] BytesTozlibInflate(byte[] bs) { 
+		byte[] b = null;
+        try {  
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();  
+            InflaterOutputStream zos = new InflaterOutputStream(bos);  
+            zos.write(bs);
+            zos.close();  
+           b = bos.toByteArray();
+        } catch (Exception ex) {  
+            ex.printStackTrace();  
+        }  
+        return b;
+    }
 	
 	/**
 	 * unicode转string字符串
@@ -285,5 +323,35 @@ public class ByteUtils {
             ex.printStackTrace();  
         }  
         return bs;
+    }
+	/**
+	 * byte[] 转long
+	 * 
+	 * @param bs
+	 * @return
+	 * @throws Exception
+	 */
+	public static long byteslong(byte[] bs)  throws Exception {
+        int bytes = bs.length;
+        if(bytes > 1) {
+        if((bytes % 2) != 0 || bytes > 8) {
+            throw new Exception("not support");
+        }}
+        switch(bytes) {
+        case 0:
+            return 0;
+        case 1:
+            return (long)((bs[0] & 0xff));
+        case 2:
+            return (long)((bs[0] & 0xff) <<8 | (bs[1] & 0xff));
+        case 4:
+            return (long)((bs[0] & 0xffL) <<24 | (bs[1] & 0xffL) << 16 | (bs[2] & 0xffL) <<8 | (bs[3] & 0xffL));
+        case 8:
+            return (long)((bs[0] & 0xffL) <<56 | (bs[1] & 0xffL) << 48 | (bs[2] & 0xffL) <<40 | (bs[3] & 0xffL)<<32 | 
+                    (bs[4] & 0xffL) <<24 | (bs[5] & 0xffL) << 16 | (bs[6] & 0xffL) <<8 | (bs[7] & 0xffL));
+        default:
+            throw new Exception("not support");     
+        }
+        //return 0;
     }
 }

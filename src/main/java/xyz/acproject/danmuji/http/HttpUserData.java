@@ -334,6 +334,12 @@ public class HttpUserData {
 
 	}
 
+	/**
+	 * 发送弹幕
+	 * 
+	 * @param msg 弹幕信息
+	 * @return
+	 */
 	public static Short httpGetSendBarrage(String msg) {
 		JSONObject jsonObject = null;
 		OutputStreamWriter out = null;
@@ -439,6 +445,13 @@ public class HttpUserData {
 		}
 		return code;
 	}
+	/**
+	 * 发送私聊
+	 * 
+	 * @param recId 接受人uid
+	 * @param msg 信息
+	 * @return 
+	 */
 	public static Short httpPostSendMsg(long recId,String msg) {
 		JSONObject jsonObject = null;
 		OutputStreamWriter out = null;
@@ -532,6 +545,104 @@ public class HttpUserData {
 		}
 		return code;
 	}
+	/**
+	 * 禁言
+	 * 
+	 * @param uid 被禁言人uid
+	 * @param hour 禁言时间 单位小时
+	 * @return
+	 */
+	public static Short httpPostAddBlock(long uid,short hour) {
+		JSONObject jsonObject = null;
+		OutputStreamWriter out = null;
+		BufferedReader bufferedReader = null;
+		HttpURLConnection httpURLConnection = null;
+		String data = null;
+		URL url = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String param = null;
+		if(hour<1) {
+			hour=1;
+		}
+		if(hour>720) {
+			hour=720;
+		}
+		try {
+			String urlString = "https://api.live.bilibili.com/banned_service/v2/Silent/add_block_user";
+			url = new URL(urlString);
+			httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+			httpURLConnection.setRequestProperty("USER-agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/"+PublicDataConf.ROOMID);
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
+			}
+			httpURLConnection.setUseCaches(false);
+			httpURLConnection.setInstanceFollowRedirects(true);
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setDoInput(true);
+			out = new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8");
+			if (PublicDataConf.USERBARRAGEMESSAGE != null&&PublicDataConf.COOKIE!=null) {
+				stringBuilder.append("roomid=").append(PublicDataConf.ROOMID)
+				.append("&block_uid=").append(uid).append("&hour=").append(hour)
+				.append("&csrf_token=").append(PublicDataConf.COOKIE.getBili_jct()).append("&csrf=")
+				.append(PublicDataConf.COOKIE.getBili_jct()).append("&visit_id=");
+				param = stringBuilder.toString();
+			}
+			out.write(param);
+			out.flush();
+            stringBuilder.delete(0, stringBuilder.length());
+			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
+			String msgs = null;
+			while (null != (msgs = bufferedReader.readLine())) {
+				data = msgs;
+			}
+			bufferedReader.close();
+			httpURLConnection.disconnect();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			}
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			}
+			if (httpURLConnection != null) {
+				httpURLConnection.disconnect();
+			}
+		}
+		jsonObject = JSONObject.parseObject(data);
+		short code = jsonObject.getShort("code");
+		if (code == 0) {
+			//禁言成功
+//			System.out.println(jsonObject.getString("data"));
+		}else {
+			LOGGER.error("禁言失败,原因" + jsonObject.getString("msg"));
+		}
+		return code;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * 退出 删除cookie
+	 * 
+	 */
 	public static void quit() {
 		BufferedReader bufferedReader = null;
 		HttpURLConnection httpURLConnection = null;

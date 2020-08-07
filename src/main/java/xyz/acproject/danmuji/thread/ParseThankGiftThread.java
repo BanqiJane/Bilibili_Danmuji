@@ -8,11 +8,11 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.SetMethodCode;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ThankGiftStatus;
+import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
 
 public class ParseThankGiftThread extends Thread {
@@ -50,7 +50,7 @@ public class ParseThankGiftThread extends Thread {
 							gifts = entry.getValue();
 							for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
 								Gift gift = iterator.next();
-								if (SetMethodCode.getGiftShieldStatus(PublicDataConf.centerSetConf.getThank_gift()
+								if (ParseSetStatusTools.getGiftShieldStatus(PublicDataConf.centerSetConf.getThank_gift()
 										.getShield_status()) == ShieldGift.CUSTOM_RULE) {
 									if (ShieldGiftTools.shieldGift(gift, ShieldGift.CUSTOM_RULE, null,
 											getThankGiftRuleSets()) == null) {
