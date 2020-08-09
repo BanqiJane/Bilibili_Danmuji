@@ -151,7 +151,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 ## 开源
 
-**基于MIT License开源协议.**
+**基于GPL-3.0 License开源协议.**
 
 ## 项目线上实战展示<br/><br/>
 ## [破站-Elysian绿豆直播间](https://live.bilibili.com/26445 "破站ELysian绿豆直播间-豆子哥")(用户名:Elysian绿豆)<br/><br/>
