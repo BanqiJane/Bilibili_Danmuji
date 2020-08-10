@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.conf.set;
 
 import java.io.Serializable;
 
+/**
+ * @ClassName ThankGiftRuleSet
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:19
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ThankGiftRuleSet implements Serializable{
 	/**
 	 * 

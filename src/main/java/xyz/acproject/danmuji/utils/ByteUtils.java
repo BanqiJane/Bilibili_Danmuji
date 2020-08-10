@@ -8,6 +8,14 @@ import java.util.zip.InflaterOutputStream;
 
 import org.apache.tomcat.util.buf.HexUtils;
 
+/**
+ * @ClassName ByteUtils
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:34
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ByteUtils {
 	public static final int UNICODE_LEN = 2;
 	/**

@@ -1,9 +1,8 @@
 $(function() {
 	"use strict";
 	var time;
-	var socket;
+	var socket = null;
 	time = setInterval(heartBeat, 30000);
-	openSocket(socket,"127.0.0.1");
 	function heartBeat() {
 		"use strict";
 		$.ajax({
@@ -78,6 +77,17 @@ $(function() {
 					$("#gift-shield-btn").show();
 				}
 			});
+	$(document).on('click','.btn-connect-d',function(){
+		var a = $(".connect-docket").val();
+		if(a===""||a===null){
+			$(".connect-docket").val("不能为空");
+			return;
+		}
+		if(!$(this).attr("disabled")){
+		openSocket(socket,a);
+		$(this).attr("disabled",true);
+	}
+	});
 });
 $(document).on(
 		'click',
@@ -683,15 +693,23 @@ const method = {
 					<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
 					</span>
 				</li>`);
-//				$("#replys-ul").append(
-//						"<li><input type='checkbox' class='reply_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'> "
-//						+"<input class='small-input reply_keywords' placeholder='关键字' data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开' data-original-title='关键字' readonly='readonly' value='"
-//						+method.giftStrings_metod(lists[i].keywords)+"' disabled/>"
-//						+"<input class='small-input reply_shields' placeholder='屏蔽词' data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开' data-original-title='屏蔽词' readonly='readonly' value='"
-//						+method.giftStrings_metod(lists[i].shields)+"' disabled/>"
-//						+"<input class='big-input reply_rs' placeholder='回复语句' readonly='readonly' value='"
-//						+lists[i].reply+"' disabled/>"
-//						+"<span class='reply-btns'><button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button><button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button></span></li>");
+// $("#replys-ul").append(
+// "<li><input type='checkbox' class='reply_open' data-toggle='tooltip'
+// data-placement='top' title='是否开启' data-original-title='是否开启'> "
+// +"<input class='small-input reply_keywords' placeholder='关键字'
+// data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+// data-original-title='关键字' readonly='readonly' value='"
+// +method.giftStrings_metod(lists[i].keywords)+"' disabled/>"
+// +"<input class='small-input reply_shields' placeholder='屏蔽词'
+// data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+// data-original-title='屏蔽词' readonly='readonly' value='"
+// +method.giftStrings_metod(lists[i].shields)+"' disabled/>"
+// +"<input class='big-input reply_rs' placeholder='回复语句' readonly='readonly'
+// value='"
+// +lists[i].reply+"' disabled/>"
+// +"<span class='reply-btns'><button type='button' class='btn btn-success
+// btn-sm reply_edit'>编辑</button><button type='button' class='btn btn-danger
+// btn-sm reply_delete'>删除</button></span></li>");
 				$(".reply_open").eq(i).prop('checked', lists[i].is_open);
 				$(".reply_keywords").eq(i).val(method.giftStrings_metod(lists[i].keywords));
 				$(".reply_shields").eq(i).val(method.giftStrings_metod(lists[i].shields));
@@ -750,13 +768,10 @@ const method = {
 };
 function openSocket(socket,ip) {
 	if (typeof (WebSocket) == "undefined") {
-		alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌");
+		alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
 	} else {
 		console.log("弹幕服务器正在连接");
-		var socketUrl = "ws://%IP%:23333/danmu/sub";
-		if(ip!=null){
-			socketUrl = socketUrl.replace("%IP%",ip);
-		}
+		var socketUrl = ip;
 		if (socket != null) {
 			socket.close();
 			socket = null;
@@ -782,27 +797,26 @@ function openSocket(socket,ip) {
 				$("#danmu").append(
 						"<div class='danmu-child'>" + msg.data + "<div/>");
 			}
-			if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= 544) {
+			if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= 804) {
 				$('#danmu').scrollTop($('#danmu')[0].scrollHeight);
 			}
 
 		};
 		// 关闭事件
 		socket.onclose = function() {
-			$("#danmu").append("<div class='danmu-child'>连接已关闭<div/>");
-			console.log("连接已关闭");
+			$("#danmu").append("<div class='danmu-child'>连接已关闭，网页显示弹幕失败 但不影响其他功能使用<div/>");
+			console.log("连接已关闭，网页显示弹幕失败 但不影响其他功能使用");
 		};
 		// 发生了错误事件
 		socket.onerror = function() {
-			$("#danmu").append("<div class='danmu-child'>连接到弹幕服务器发生了错误<div/>");
-			console.log("连接到弹幕服务器发生了错误");
-			openSocket(socket,method.getIp());
+			$("#danmu").append("<div class='danmu-child'>连接到弹幕服务器发生了错误,请刷新网页并确认地址正确无误后再次连接尝试<div/>");
+			console.log("连接到弹幕服务器发生了错误，网页显示弹幕失败 但不影响其他功能使用");
 		}
 	}
 }
 function sendMessage() {
 	if (typeof (WebSocket) == "undefined") {
-		console.log("您的浏览器不支持WebSocket");
+		console.log("您的浏览器不支持WebSocket，网页显示弹幕失败 但不影响其他功能使用");
 	} else {
 		console.log("您的浏览器支持WebSocket");
 		socket.send('{"toUserId":"' + $("#toUserId").val()

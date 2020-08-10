@@ -11,6 +11,14 @@ import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.enums.ThankGiftStatus;
 
+/**
+ * @ClassName ParseSetStatusTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:23
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ParseSetStatusTools {
 	public static ShieldGift getGiftShieldStatus(short code) {
 		switch (code) {

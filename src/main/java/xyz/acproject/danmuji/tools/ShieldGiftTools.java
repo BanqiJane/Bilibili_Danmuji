@@ -6,6 +6,14 @@ import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.enums.ShieldGift;
 
+/**
+ * @ClassName ShieldGiftTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:27
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ShieldGiftTools {
 
 	public static Gift shieldGift(Gift gift, ShieldGift shieldGift, Set<String> giftStrings,

@@ -1,5 +1,3 @@
-<h1 style="font-weight:700;">注意：本软件始终免费开源透明</h1><br/>
-
 # 运行环境
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
 ```bash
@@ -160,6 +158,13 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本更新<br/>
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
+<blockquote>
+<h2>Beta2.1</h2>
+<p>修复了若干bug(maybe make more bug)</p>
+<p>把连接网页弹幕显示变为手动连接<p/>
+<p>已知bug：</p>
+<p>自动回复姬设置为禁言时 如果除了两禁言参数外带其他字符会使自动回复姬失效</p>
+</blockquote>
 <blockquote>
 <h2>Beta2.0</h2>
 <p>修复了若干bug(maybe make more bug)</p>

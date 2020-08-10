@@ -26,6 +26,14 @@ import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
+/**
+ * @ClassName ClientServiceImpl
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:16:42
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @Service
 public class ClientServiceImpl implements ClientService{
 	@Autowired

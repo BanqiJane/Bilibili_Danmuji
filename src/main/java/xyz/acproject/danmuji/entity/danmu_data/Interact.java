@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.entity.danmu_data;
 
 import java.io.Serializable;
 
+/**
+ * @ClassName Interact
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:22:37
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class Interact implements Serializable{
 	/**
 	 * 

@@ -30,6 +30,14 @@ import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 
+/**
+ * @ClassName ThreadComponentImpl
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:20:38
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @Component
 public class ThreadComponentImpl implements ThreadComponent{
 

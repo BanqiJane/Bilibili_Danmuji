@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.entity.room_data;
 
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+/**
+ * @ClassName RoomInit
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:23:13
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class RoomInit {
 	private Long room_id;
 	private Integer short_id;

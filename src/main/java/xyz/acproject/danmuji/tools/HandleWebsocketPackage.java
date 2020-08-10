@@ -12,6 +12,14 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
+/**
+ * @ClassName HandleWebsocketPackage
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:15
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HandleWebsocketPackage {
 	private static Logger LOGGER = LogManager.getLogger(HandleWebsocketPackage.class);
 

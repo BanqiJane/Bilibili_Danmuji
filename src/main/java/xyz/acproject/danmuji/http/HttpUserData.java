@@ -23,6 +23,14 @@ import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
+/**
+ * @ClassName HttpUserData
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:29:05
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HttpUserData {
 	private static Logger LOGGER = LogManager.getLogger(HttpUserData.class);
 

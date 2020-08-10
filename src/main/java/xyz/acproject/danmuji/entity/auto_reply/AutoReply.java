@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.entity.auto_reply;
 
 import java.io.Serializable;
 
+/**
+ * @ClassName AutoReply
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:59
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class AutoReply implements Serializable,Cloneable{
 	/**
 	 * 

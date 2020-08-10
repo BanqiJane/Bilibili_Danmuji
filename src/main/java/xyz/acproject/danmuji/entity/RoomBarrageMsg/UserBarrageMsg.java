@@ -4,6 +4,14 @@ package xyz.acproject.danmuji.entity.RoomBarrageMsg;
 
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+/**
+ * @ClassName UserBarrageMsg
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:23:30
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class UserBarrageMsg {
 	private Short bubble;
 	private UserBarrage danmu;

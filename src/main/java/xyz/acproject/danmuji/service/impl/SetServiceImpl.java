@@ -28,6 +28,14 @@ import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 
+/**
+ * @ClassName SetServiceImpl
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:17:03
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @Service
 public class SetServiceImpl implements SetService{
 	private Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);

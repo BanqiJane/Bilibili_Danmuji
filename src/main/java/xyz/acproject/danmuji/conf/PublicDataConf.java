@@ -24,6 +24,14 @@ import xyz.acproject.danmuji.thread.online.HeartBeatThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
 
+/**
+ * @ClassName PublicDataConf
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:34
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class PublicDataConf {
 	//url 直播弹幕websocket地址
 	public static String URL = null;
@@ -115,7 +123,7 @@ public class PublicDataConf {
 	public static Boolean IS_ROOM_POPULARITY =false;
 	
 	public static Long ROOMID_SAFE = null;
-	public static String EDITION ="2.0";
+	public static String EDITION ="2.1";
 
 	
 }

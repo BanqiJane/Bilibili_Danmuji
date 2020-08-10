@@ -21,6 +21,14 @@ import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
 
+/**
+ * @ClassName HttpRoomData
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:59
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HttpRoomData {
 	private static Logger LOGGER = LogManager.getLogger(HttpRoomData.class);
 

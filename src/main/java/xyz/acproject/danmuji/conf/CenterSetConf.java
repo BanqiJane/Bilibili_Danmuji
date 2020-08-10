@@ -8,6 +8,14 @@ import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+/**
+ * @ClassName CenterSetConf
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:29
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class CenterSetConf implements Serializable{
 	/**
 	 * 

@@ -3,6 +3,14 @@ package xyz.acproject.danmuji.entity.heart;
 import java.io.Serializable;
 import java.util.Arrays;
 
+/**
+ * @ClassName Eheart
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:22:47
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class Eheart implements Serializable{
 	/**
 	 * 

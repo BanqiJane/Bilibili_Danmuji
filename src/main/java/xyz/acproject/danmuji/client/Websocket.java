@@ -14,6 +14,14 @@ import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 
+/**
+ * @ClassName Websocket
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:20:25
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class Websocket extends WebSocketClient {
 	private static Logger LOGGER = LogManager.getLogger(Websocket.class);
 

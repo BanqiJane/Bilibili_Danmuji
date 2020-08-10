@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.thread;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
+/**
+ * @ClassName GiftShieldThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:30:27
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class GiftShieldThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(GiftShieldThread.class);

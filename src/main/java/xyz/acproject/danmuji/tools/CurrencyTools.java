@@ -10,6 +10,14 @@ import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.entity.server_data.HostServer;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
+/**
+ * @ClassName CurrencyTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:10
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class CurrencyTools {
 	private static Logger LOGGER = LogManager.getLogger(CurrencyTools.class);
 	/**

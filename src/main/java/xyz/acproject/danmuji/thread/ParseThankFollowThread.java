@@ -5,6 +5,14 @@ import java.util.Vector;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 
+/**
+ * @ClassName ParseThankFollowThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:30:34
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ParseThankFollowThread extends Thread {
 //	private Logger LOGGER = LogManager.getLogger(ParseThankFollowThread.class);
 	public volatile boolean FLAG = false;

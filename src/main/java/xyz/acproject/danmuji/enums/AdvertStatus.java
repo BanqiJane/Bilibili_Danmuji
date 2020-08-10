@@ -1,5 +1,13 @@
 package xyz.acproject.danmuji.enums;
 
+/**
+ * @ClassName AdvertStatus
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:05
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public enum AdvertStatus {
 	
 	//顺序

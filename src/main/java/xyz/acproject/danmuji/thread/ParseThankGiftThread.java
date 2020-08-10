@@ -15,6 +15,14 @@ import xyz.acproject.danmuji.enums.ThankGiftStatus;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
 
+/**
+ * @ClassName ParseThankGiftThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:30:38
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ParseThankGiftThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private static Logger LOGGER = LogManager.getLogger(ParseThankGiftThread.class);

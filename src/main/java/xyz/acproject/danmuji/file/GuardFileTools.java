@@ -11,6 +11,14 @@ import java.util.Hashtable;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
+/**
+ * @ClassName GuardFileTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:31
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class GuardFileTools {
 	public static Hashtable<Long, String> read() {
 		String path = System.getProperty("user.dir");

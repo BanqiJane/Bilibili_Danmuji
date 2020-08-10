@@ -4,6 +4,14 @@ import java.io.Serializable;
 
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+/**
+ * @ClassName Fans
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:22:21
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class Fans implements Serializable{
 	/**
 	 * 

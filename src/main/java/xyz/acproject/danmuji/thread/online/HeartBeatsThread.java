@@ -3,6 +3,14 @@ package xyz.acproject.danmuji.thread.online;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.http.HttpHeartBeatData;
 
+/**
+ * @ClassName HeartBeatsThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:29:59
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HeartBeatsThread extends Thread{
 //	private static Logger LOGGER = LogManager.getLogger(HeartBeatsThread.class);
 	public volatile boolean FLAG = false;

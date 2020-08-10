@@ -9,6 +9,14 @@ import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 
+/**
+ * @ClassName ThreadComponent
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:20:47
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public interface ThreadComponent {
 	//开启处理弹幕包线程 core
 	boolean startParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,CenterSetConf centerSetConf);

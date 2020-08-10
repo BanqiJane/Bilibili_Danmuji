@@ -15,6 +15,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 
+/**
+ * @ClassName DanmuWebsocket
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:44
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @Controller
 @ServerEndpoint("/danmu/sub")
 public class DanmuWebsocket {

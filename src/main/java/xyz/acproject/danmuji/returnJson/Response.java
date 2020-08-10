@@ -9,6 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 
 ;
 
+/**
+ * @ClassName Response
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:29:14
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ * @param <T>
+ */
 public class Response<T> {
 	private String code;
 	private String msg;

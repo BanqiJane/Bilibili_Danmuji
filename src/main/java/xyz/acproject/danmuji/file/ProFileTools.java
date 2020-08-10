@@ -9,6 +9,14 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.Hashtable;
 
+/**
+ * @ClassName ProFileTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:42
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ProFileTools {
 	public static Hashtable<String, String> read(String filename) {
 		String path = System.getProperty("user.dir");

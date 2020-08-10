@@ -4,6 +4,14 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.service.impl.ClientServiceImpl;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
+/**
+ * @ClassName ReConnThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:29:52
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ReConnThread extends Thread {
 	public volatile boolean RFLAG = false;
 	private volatile Integer num =0;

@@ -50,16 +50,32 @@
 								th:if="${ROOMID}==null">未连接到任何房间</span>
 						</div>
 						<div class="input-group mb-3">
-							<a href="#danmu" class="btn btn-secondary" id="danmu_open"
+							<a href="#danmuw" class="btn btn-secondary" id="danmu_open"
 								data-toggle="collapse">显示弹幕</a>
-							<div id="danmu" class="collapse">
-								<!-- <div class="danmu-child">
+							<div id="danmuw" class="collapse">
+								<div class="input-group mb-3">
+									<div class="form-group connect-set">
+										<input class="form-control connect-docket"
+											placeholder="要连接的端口地址" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											value="ws://localhost:23333/danmu/sub"
+											data-original-title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换">
+
+									</div>
+									<div class="form-group connect-button">
+										<button type="button" class="btn btn-primary btn-connect-d">连接</button>
+									</div>
+
+								</div>
+								<div id="danmu">
+									<!-- <div class="danmu-child">
 									<span class="danmu-time">17:02:46</span><a
 										href="javasript:void(0)"><span class="danmu-name">[舰长][房管]名字</span>:</a><span
 										class="danmu-text">哈哈哈哈</span>
 								</div> -->
-								<!-- 								<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
+									<!-- 								<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
 									它说:那个框是对面拉比克偷的</div> -->
+								</div>
 							</div>
 						</div>
 						<div class="input-group mb-3">
@@ -71,7 +87,7 @@
 								<h4>显示设置</h4>
 							</div>
 							<div class="input-group mb-3 common-set">
-							<div class="custom-control custom-radio custom-control-inline">
+								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_autoStart"> <span
 										class="_description" data-toggle="tooltip"
@@ -79,20 +95,18 @@
 										data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置无需打开再网页进行手动连接</span>">自动</span>
 									</label>
 								</div>
-							<div class="custom-control custom-radio custom-control-inline">
+								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_barrage_guard"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示老爷图标">舰</span>
+										data-placement="top" title="" data-original-title="弹幕是否显示老爷图标">舰</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_barrage_vip"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示舰长图标">爷</span>
+										data-placement="top" title="" data-original-title="弹幕是否显示舰长图标">爷</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
@@ -303,7 +317,9 @@
 								</div>
 								<h6 data-toggle="tooltip" data-placement="top" title=""
 									data-html="true"
-									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span></h6>
+									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">
+									上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span>
+								</h6>
 								<div class="header-set">
 									<div class="custom-control custom-radio custom-control-inline">
 										<label class="form-check-label is_guard_report_click">
@@ -545,7 +561,7 @@
 			</div>
 			<div class="con">
 				<ul class="replys-ul" id="replys-ul" data-role="listview">
-					
+
 				</ul>
 			</div>
 		</div>
@@ -567,12 +583,12 @@
 								data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='red-font'>注意不能为空</span>"></textarea></li>
 						<li><textarea class="reply_shields_i" placeholder="屏蔽词"
 								data-toggle="tooltip" data-placement="top"
-								title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词" data-html="true"
-								data-original-title="屏蔽词"></textarea></li>
+								title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"
+								data-html="true" data-original-title="屏蔽词"></textarea></li>
 						<li><textarea class="reply_rs_i" placeholder="回复语句"
 								data-toggle="tooltip" data-placement="top"
-								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目" data-html="true"
-								data-original-title="回复语句"></textarea></li>
+								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>3：参数%TIME%以替换当前时间"
+								data-html="true" data-original-title="回复语句"></textarea></li>
 						<li><button type="button"
 								class="btn btn-danger btn-sm reply_delete_i">删除</button></li>
 					</ul>

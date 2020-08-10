@@ -42,8 +42,12 @@ import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
 /**
- * @author banqijane
+ * @ClassName ParseMessageThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:16:51
  *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class ParseMessageThread extends Thread {
 	private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);

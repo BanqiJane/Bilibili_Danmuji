@@ -8,7 +8,17 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.AutoReplySet;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.http.HttpUserData;
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
+
+/**
+ * @ClassName AutoReplyThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:16:13
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class AutoReplyThread extends Thread {
 	public volatile boolean FLAG = false;
 	private short time = 3;
@@ -69,6 +79,13 @@ public class AutoReplyThread extends Thread {
 									} else {
 										replyString = String.valueOf(PublicDataConf.FANSNUM);
 									}
+									// 替换%TIME%
+									if (!replyString.equals("%TIME%")) {
+										replyString = replyString.replaceAll("%TIME%",
+												JodaTimeUtils.format(System.currentTimeMillis()));
+									} else {
+										replyString =JodaTimeUtils.format(System.currentTimeMillis());
+									}
 									// 替换%BLOCK%参数 和 {{time}}时间参数
 									if (replyString.contains("%BLOCK%")) {
 										replyString = replyString.replaceAll("%BLOCK%", "");
@@ -83,7 +100,7 @@ public class AutoReplyThread extends Thread {
 											hourReplace = replyString.substring(replyString.indexOf("{{"),
 													replyString.indexOf("}}") + 2);
 											if (!replyString.equals(hourReplace)) {
-												replyString = replyString.replaceAll(hourReplace, "");
+												replyString = replyString.replace(hourReplace, "");
 											} else {
 												replyString = "";
 											}
@@ -137,6 +154,13 @@ public class AutoReplyThread extends Thread {
 								} else {
 									replyString = String.valueOf(PublicDataConf.FANSNUM);
 								}
+								// 替换%TIME%
+								if (!replyString.equals("%TIME%")) {
+									replyString = replyString.replaceAll("%TIME%",
+											JodaTimeUtils.format(System.currentTimeMillis()));
+								} else {
+									replyString =JodaTimeUtils.format(System.currentTimeMillis());
+								}
 								// 替换%BLOCK%参数 和 {{time}}时间参数
 								if (replyString.contains("%BLOCK%")) {
 									replyString = replyString.replaceAll("%BLOCK%", "");
@@ -150,8 +174,10 @@ public class AutoReplyThread extends Thread {
 										}
 										hourReplace = replyString.substring(replyString.indexOf("{{"),
 												replyString.indexOf("}}") + 2);
+										//bug 标记
+										System.out.println(hourReplace);
 										if (!replyString.equals(hourReplace)) {
-											replyString = replyString.replaceAll(hourReplace, "");
+											replyString = replyString.replace(hourReplace, "");
 										} else {
 											replyString = "";
 										}

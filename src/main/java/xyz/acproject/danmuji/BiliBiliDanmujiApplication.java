@@ -9,6 +9,14 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 
+/**
+ * @ClassName BiliBiliDanmujiApplication
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:52
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @SpringBootApplication
 public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Autowired

@@ -3,6 +3,14 @@ package xyz.acproject.danmuji.tools;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Barrage;
 
+/**
+ * @ClassName ParseIndentityTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:31:19
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ParseIndentityTools {
 
 	/**

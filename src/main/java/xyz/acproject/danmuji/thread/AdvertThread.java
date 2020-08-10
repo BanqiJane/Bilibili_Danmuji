@@ -5,6 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.enums.AdvertStatus;
 
+/**
+ * @ClassName AdvertThread
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:30:17
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class AdvertThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(AdvertThread.class);

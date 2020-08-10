@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.entity.room_data;
 
 import java.io.Serializable;
 
+/**
+ * @ClassName CheckTx
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:23:03
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class CheckTx implements Serializable{
 	/**
 	 * 

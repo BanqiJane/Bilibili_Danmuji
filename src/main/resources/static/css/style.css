@@ -111,9 +111,14 @@ a#danmu_open {
 	margin-bottom: 10px;
 }
 
+#danmuw {
+	width: 100%;
+	height: auto;
+}
+
 div#danmu {
 	width: 100%;
-	height: 520px;
+	height: 780px;
 	z-index: 9;
 	border: 1px solid pink;
 	overflow-y: auto;
@@ -517,4 +522,14 @@ div#danmu .danmu-child a{
 	vertical-align: middle;
     height: 150px!important;
     cursor: pointer;
+}
+.connect-set{
+	width:75%!important;
+}
+.connect-button{
+	width:23%!important;
+	margin-left: 2%;
+}
+.connect-button .btn-connect-d{
+	width:100%!important;
 }

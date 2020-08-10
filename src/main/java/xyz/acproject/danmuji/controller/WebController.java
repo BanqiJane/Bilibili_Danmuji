@@ -26,6 +26,14 @@ import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.utils.QrcodeUtils;
 
+/**
+ * @ClassName WebController
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:50
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 @Controller
 public class WebController {
 	@Autowired

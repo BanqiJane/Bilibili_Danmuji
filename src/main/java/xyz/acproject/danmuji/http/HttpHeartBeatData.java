@@ -16,9 +16,14 @@ import com.alibaba.fastjson.JSONObject;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.heart.Eheart;
 
+
 /**
- * @author zjian
+ * @ClassName HttpHeartBeatData
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:52
  *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class HttpHeartBeatData {
 	private static Logger LOGGER = LogManager.getLogger(HttpHeartBeatData.class);

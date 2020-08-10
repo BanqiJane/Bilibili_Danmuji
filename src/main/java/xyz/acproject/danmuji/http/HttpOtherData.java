@@ -14,6 +14,14 @@ import com.alibaba.fastjson.JSONObject;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
+/**
+ * @ClassName HttpOtherData
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:55
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HttpOtherData {
 	private static Logger LOGGER = LogManager.getLogger(HttpUserData.class);
 	public static String httpGetNewEdition() {

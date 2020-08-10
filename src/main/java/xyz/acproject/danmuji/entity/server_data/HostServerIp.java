@@ -4,6 +4,14 @@ import java.io.Serializable;
 
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+/**
+ * @ClassName HostServerIp
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:23:50
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class HostServerIp implements Serializable {
 	/**
 	 * 

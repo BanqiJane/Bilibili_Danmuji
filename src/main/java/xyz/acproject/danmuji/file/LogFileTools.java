@@ -9,6 +9,14 @@ import java.net.URLDecoder;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
+/**
+ * @ClassName LogFileTools
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:39
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class LogFileTools {
 	public static void logFile(String msg) {
 		FileWriter fw = null;

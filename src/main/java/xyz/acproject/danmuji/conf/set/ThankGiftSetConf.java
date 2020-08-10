@@ -3,6 +3,14 @@ package xyz.acproject.danmuji.conf.set;
 import java.io.Serializable;
 import java.util.HashSet;
 
+/**
+ * @ClassName ThankGiftSetConf
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:21:24
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class ThankGiftSetConf implements Serializable{
 	
 	/**

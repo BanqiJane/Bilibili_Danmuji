@@ -2,6 +2,14 @@ package xyz.acproject.danmuji.entity.user_data;
 
 import java.io.Serializable;
 
+/**
+ * @ClassName UserCookie
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:27:35
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public class UserCookie  implements Serializable{
 	/**
 	 * 

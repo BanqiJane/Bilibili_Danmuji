@@ -1,5 +1,13 @@
 package xyz.acproject.danmuji.returnJson;
 
+/**
+ * @ClassName ResponseCode
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:29:19
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public enum ResponseCode {
 	 normal("200", "Successful.", "操作成功"),
 	    syserror("400", "System is busy!", "系统繁忙"),

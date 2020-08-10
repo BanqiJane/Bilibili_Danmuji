@@ -1,5 +1,13 @@
 package xyz.acproject.danmuji.enums;
 
+/**
+ * @ClassName ShieldMessage
+ * @Description TODO
+ * @author BanqiJane
+ * @date 2020年8月10日 下午12:28:15
+ *
+ * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
+ */
 public enum ShieldMessage {
 	is_welcome,is_gift,is_barrage_ul
 	,is_barrage_guard,is_barrage_vip,is_barrage_medal
