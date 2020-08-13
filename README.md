@@ -162,8 +162,6 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <h2>Beta2.1</h2>
 <p>修复了若干bug(maybe make more bug)</p>
 <p>把连接网页弹幕显示变为手动连接<p/>
-<p>已知bug：</p>
-<p>自动回复姬设置为禁言时 如果除了两禁言参数外带其他字符会使自动回复姬失效</p>
 </blockquote>
 <blockquote>
 <h2>Beta2.0</h2>
@@ -175,6 +173,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <p>分离弹幕图标舰队老爷的显示</p>
 <p>已知bug：</p>
 <p>1.0.6~1.0.7版本出现，感谢关注姬人数调节参数不可用 与感谢礼物姬的人数重合了修改感谢礼物姬参数即可修改它，2.0fix</p>
+<p>自动回复姬设置为禁言时 如果除了两禁言参数外带其他字符会使自动回复姬失效</p>
 </blockquote>
 <blockquote>
 <h2>Beta1.0.7</h2>
