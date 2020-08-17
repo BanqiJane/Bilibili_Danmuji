@@ -155,6 +155,12 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 ## [破站-坂本叔直播间](https://live.bilibili.com/1000 "破站坂本叔直播间") (用户名:坂崎简)<br/><br/>
 **本项目已在坂本叔直播间经过2年多的风吹雨打 最近才想起来开源,请放心使用**<br/>
 **如果您使用了本软件，最好能在破站私聊我吱一下呢**
+
+
+# **我的另一个弹幕姬项目**
+**[BiliLiveChat](https://github.com/BanqiJane/BiliLiveChat "BiliLiveChat")**
+
+
 # 版本更新<br/>
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
