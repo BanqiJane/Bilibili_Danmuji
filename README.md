@@ -168,6 +168,8 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本更新<br/>
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
+
+<blockquote>
 <blockquote>
 <h2>Beta2.2</h2>
 <p>修复了若干bug(maybe make more bug)</p>
@@ -178,7 +180,6 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <p>自动回复姬增加若干参数,自动回复姬增加精确匹配功能(仅在在只有一个关键字且没有屏蔽词的情况下使用),自动回复姬增加满足条件A或条件B 发送内容C的功能<p/>
 <p><p/>
 </blockquote>
-<blockquote>
 <blockquote>
 <h2>Beta2.1</h2>
 <p>修复了若干bug(maybe make more bug)</p>
