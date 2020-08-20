@@ -62,11 +62,16 @@ public class ParseSetStatusTools {
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 			short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
-				17);
+				18);
 		if (centerSetConf.isIs_barrage_guard()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, true);
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_guard, false);
+		}
+		if(centerSetConf.isIs_cmd()) {
+			messageConcurrentHashMap.put(ShieldMessage.is_cmd, true);
+		}else {
+			messageConcurrentHashMap.put(ShieldMessage.is_cmd, false);
 		}
 		if (centerSetConf.isIs_barrage_vip()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_vip, true);

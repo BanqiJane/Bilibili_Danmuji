@@ -1,18 +1,15 @@
 package xyz.acproject.danmuji.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.alibaba.fastjson.JSONObject;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
 /**
  * @ClassName HttpOtherData
@@ -25,49 +22,34 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 public class HttpOtherData {
 	private static Logger LOGGER = LogManager.getLogger(HttpUserData.class);
 	public static String httpGetNewEdition() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
 		String edition = null;
+		String code="-1";
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		datas = new HashMap<>(4);
+		datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
+		datas.put("edition", PublicDataConf.EDITION);
+		datas.put("time", String.valueOf(System.currentTimeMillis()));
 		try {
-			String urlString = "http://129.204.79.75/getEdition?roomid="+PublicDataConf.centerSetConf.getRoomid()+"&edition="+PublicDataConf.EDITION+"&time="+System.currentTimeMillis();
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setConnectTimeout(4000);
-			httpURLConnection.setReadTimeout(4000);
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("http://129.204.79.75/getEdition", headers, datas)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-//			e.printStackTrace();
+			LOGGER.error(e);
 			edition="获取公告失败";
 			LOGGER.error("请求服务器超时，获取最新版本失败");
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			data = null;
 		}
-		if(StringUtils.isEmpty(data)) {
+		if (data == null)
 			return edition;
-		}
 		jsonObject = JSONObject.parseObject(data);
-		String code = jsonObject.getString("code");
+		code = jsonObject.getString("code");
 		if (code.equals("200")) {
 			edition = ((JSONObject)jsonObject.get("result")).getString("value");
 		} else {
@@ -76,53 +58,73 @@ public class HttpOtherData {
 		return edition;
 	}
 	public static String httpGetNewAnnounce() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
 		String announce = null;
+		String code="-1";
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		datas = new HashMap<>(4);
+		datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
+		datas.put("edition", PublicDataConf.EDITION);
+		datas.put("time", String.valueOf(System.currentTimeMillis()));
 		try {
-			String urlString = "http://129.204.79.75/getAnnounce?roomid="+PublicDataConf.centerSetConf.getRoomid()+"&edition="+PublicDataConf.EDITION+"&time="+System.currentTimeMillis();
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setConnectTimeout(4000);
-			httpURLConnection.setReadTimeout(4000);
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("http://129.204.79.75/getAnnounce", headers, datas)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-//			e.printStackTrace();
+			LOGGER.error(e);
+			announce="获取最新公告失败";
 			LOGGER.error("请求服务器超时，获取最新公告失败");
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			data = null;
 		}
-		if(StringUtils.isEmpty(data)) {
+		if (data == null)
 			return announce;
-		}
 		jsonObject = JSONObject.parseObject(data);
-		String code = jsonObject.getString("code");
+		code = jsonObject.getString("code");
 		if (code.equals("200")) {
 			announce = ((JSONObject)jsonObject.get("result")).getString("value");
 		} else {
 			LOGGER.error("未知错误,原因:" + jsonObject.getString("msg"));
 		}
 		return announce;
+	}
+	public static String httpGetIp() {
+		String data = null;
+		JSONObject jsonObject = null;
+		String status = null;
+		String ip = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		try {
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("http://ip-api.com/json/", headers, null)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return null;
+		jsonObject = JSONObject.parseObject(data);
+		try {
+			status = jsonObject.getString("status");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		if (status.equals("success")) {
+			ip = jsonObject.getString("query");
+		} else {
+			LOGGER.error("获取ip失败" + jsonObject.toString());
+		}
+		return ip;
 	}
 }

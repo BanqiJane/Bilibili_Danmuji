@@ -140,7 +140,6 @@ public class ClientServiceImpl implements ClientService{
 	public void reConnService() throws Exception {
 		if (!PublicDataConf.webSocketProxy.isOpen()) {
 			threadComponent.closeHeartByteThread();
-			threadComponent.closeParseMessageThread();
 			threadComponent.closeUserOnlineThread();
 			threadComponent.closeAdvertThread();
 			threadComponent.closeSendBarrageThread();

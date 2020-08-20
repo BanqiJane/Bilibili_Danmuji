@@ -11,7 +11,7 @@ import xyz.acproject.danmuji.conf.CenterSetConf;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public interface SetService {
-	void init();
+	void init(int i);
 	void changeSet(CenterSetConf centerSetConf);
 	void connectSet(CenterSetConf centerSetConf);
 	void holdSet(CenterSetConf centerSetConf);

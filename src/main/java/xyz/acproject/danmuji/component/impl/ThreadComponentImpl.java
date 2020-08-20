@@ -39,10 +39,10 @@ import xyz.acproject.danmuji.tools.ParseSetStatusTools;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 @Component
-public class ThreadComponentImpl implements ThreadComponent{
+public class ThreadComponentImpl implements ThreadComponent {
 
-
-	/**O
+	/**
+	 * O
 	 * 
 	 * 开启弹幕处理线程
 	 *
@@ -53,7 +53,8 @@ public class ThreadComponentImpl implements ThreadComponent{
 		// TODO 自动生成的方法存根
 		HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
 		// thankGiftRuleSets
-		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets().iterator(); iterator.hasNext();) {
+		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
+				.iterator(); iterator.hasNext();) {
 			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
 			if (thankGiftRuleSet.isIs_open()) {
 				thankGiftRuleSets.add(thankGiftRuleSet);
@@ -140,7 +141,8 @@ public class ThreadComponentImpl implements ThreadComponent{
 	public boolean startAutoReplyThread(CenterSetConf centerSetConf) {
 		// TODO 自动生成的方法存根
 		HashSet<AutoReplySet> autoReplySets = new HashSet<AutoReplySet>();
-		for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator.hasNext();) {
+		for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator
+				.hasNext();) {
 			AutoReplySet autoReplySet = iterator.next();
 			if (autoReplySet.isIs_open()) {
 				autoReplySets.add(autoReplySet);
@@ -257,32 +259,30 @@ public class ThreadComponentImpl implements ThreadComponent{
 	}
 
 	@Override
-	public void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf,HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
+	public void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf,
+			HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
 		// TODO 自动生成的方法存根
-		if(PublicDataConf.parsethankGiftThread==null) {
+		if (PublicDataConf.parsethankGiftThread == null) {
 			PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
 		}
 		if (PublicDataConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
 				|| PublicDataConf.parsethankGiftThread.getState().toString().equals("NEW")) {
 			PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
-			PublicDataConf.parsethankGiftThread
-					.setDelaytime((long) (1000 * thankGiftSetConf.getDelaytime()));
+			PublicDataConf.parsethankGiftThread.setDelaytime((long) (1000 * thankGiftSetConf.getDelaytime()));
 			PublicDataConf.parsethankGiftThread.start();
 			PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 			PublicDataConf.parsethankGiftThread.setThankGiftString(thankGiftSetConf.getThank());
-			PublicDataConf.parsethankGiftThread.setThankGiftStatus(
-					ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread
-					.setThankGiftRuleSets(thankGiftRuleSets);
+					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
+			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
 			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.isIs_num());
 		} else {
 			PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 			PublicDataConf.parsethankGiftThread.setThankGiftString(thankGiftSetConf.getThank());
-			PublicDataConf.parsethankGiftThread.setThankGiftStatus(
-					ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread
-					.setThankGiftRuleSets(thankGiftRuleSets);
+					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
+			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
 			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.isIs_num());
 		}
@@ -294,8 +294,7 @@ public class ThreadComponentImpl implements ThreadComponent{
 		if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 				|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 			PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
-			PublicDataConf.parsethankFollowThread
-					.setDelaytime((long) (1000 * thankFollowSetConf.getDelaytime()));
+			PublicDataConf.parsethankFollowThread.setDelaytime((long) (1000 * thankFollowSetConf.getDelaytime()));
 			PublicDataConf.parsethankFollowThread.start();
 			PublicDataConf.parsethankFollowThread.setTimestamp(System.currentTimeMillis());
 			PublicDataConf.parsethankFollowThread.setThankFollowString(thankFollowSetConf.getFollows());
@@ -314,7 +313,8 @@ public class ThreadComponentImpl implements ThreadComponent{
 		if (PublicDataConf.parseMessageThread != null) {
 			HashSet<ThankGiftRuleSet> thankGiftRuleSets = new HashSet<>();
 			// thankGiftRuleSets
-			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets().iterator(); iterator.hasNext();) {
+			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
+					.iterator(); iterator.hasNext();) {
 				ThankGiftRuleSet thankGiftRuleSet = iterator.next();
 				if (thankGiftRuleSet.isIs_open()) {
 					thankGiftRuleSets.add(thankGiftRuleSet);
@@ -343,7 +343,8 @@ public class ThreadComponentImpl implements ThreadComponent{
 		// TODO 自动生成的方法存根
 		if (PublicDataConf.autoReplyThread != null) {
 			HashSet<AutoReplySet> autoReplySets = new HashSet<AutoReplySet>();
-			for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator.hasNext();) {
+			for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator
+					.hasNext();) {
 				AutoReplySet autoReplySet = iterator.next();
 				if (autoReplySet.isIs_open()) {
 					autoReplySets.add(autoReplySet);
@@ -392,9 +393,13 @@ public class ThreadComponentImpl implements ThreadComponent{
 			PublicDataConf.advertThread.interrupt();
 			PublicDataConf.advertThread = null;
 		}
-		if (!PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
-				&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
-				&& null == PublicDataConf.autoReplyThread) {
+		if (PublicDataConf.ROOMID != null) {
+			if (!PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
+					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
+					&& null == PublicDataConf.autoReplyThread) {
+				closeSendBarrageThread();
+			}
+		}else {
 			closeSendBarrageThread();
 		}
 	}

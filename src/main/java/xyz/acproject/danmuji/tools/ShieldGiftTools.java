@@ -24,7 +24,7 @@ public class ShieldGiftTools {
 		switch (shieldGift) {
 		// 2
 		case HIGH_PRICE:
-			if (gift.getPrice() >= 28000) {
+			if (gift.getCoin_type()==1&&gift.getPrice() >= 28000) {
 				return gift;
 			} else {
 				return null;
@@ -42,7 +42,7 @@ public class ShieldGiftTools {
 			}
 			// 1
 		case SILVER:
-			if (gift.getCoin_type().equals("gold")) {
+			if (gift.getCoin_type()==1) {
 				return gift;
 			} else {
 				return null;

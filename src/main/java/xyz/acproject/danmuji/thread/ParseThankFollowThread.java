@@ -2,6 +2,8 @@ package xyz.acproject.danmuji.thread;
 
 import java.util.Vector;
 
+import org.apache.commons.lang3.StringUtils;
+
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 
@@ -33,6 +35,11 @@ public class ParseThankFollowThread extends Thread {
 				if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
 					return;
 				}
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO 自动生成的 catch 块
+				}
 				long nowTime = System.currentTimeMillis();
 				if (nowTime - getTimestamp() < getDelaytime()) {
 				} else {
@@ -47,7 +54,8 @@ public class ParseThankFollowThread extends Thread {
 								stringBuilder.append(interacts.get(j).getUname()).append(",");
 							}
 							stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-							thankFollowStr = getThankFollowString().replaceAll("%uNames%", stringBuilder.toString());
+							
+							thankFollowStr =StringUtils.replace(handleThankStr(getThankFollowString()), "%uNames%", stringBuilder.toString());
 							stringBuilder.delete(0, stringBuilder.length());
 							if (PublicDataConf.sendBarrageThread != null
 									&& !PublicDataConf.sendBarrageThread.FLAG) {
@@ -56,7 +64,7 @@ public class ParseThankFollowThread extends Thread {
 									PublicDataConf.sendBarrageThread.notify();
 								}
 							}
-							thankFollowStr = getThankFollowString();
+							thankFollowStr = null;
 						}
 					}
 					interacts.clear();
@@ -68,7 +76,16 @@ public class ParseThankFollowThread extends Thread {
 
 	}
 
-	
+	public String handleThankStr(String thankStr) {
+		String thankFollowStrs[] = null;
+		if (StringUtils.indexOf(thankStr, "\n") != -1) {
+			thankFollowStrs = StringUtils.split(thankStr, "\n");
+		}
+		if(thankFollowStrs!=null&&thankFollowStrs.length>1) {
+			return thankFollowStrs[(int) Math.ceil(Math.random() * thankFollowStrs.length)-1];
+		}
+		return thankStr;
+	}
 
 	public String getThankFollowString() {
 		return thankFollowString;

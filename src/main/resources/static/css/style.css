@@ -101,7 +101,6 @@ table thead,
 	color: green;
 	display:none;
 }
-
 .connect-title {
 	font-size: 12px;
 }
@@ -277,6 +276,10 @@ div#danmu .danmu-child a{
 	color:red;
 	font-weight:1000;
 }
+.orange-font{
+	color:orange;
+	font-weight:1000;
+}
 .tips-wrap{
 	position: fixed;
     top: 50%;
@@ -393,16 +396,23 @@ div#danmu .danmu-child a{
     cursor: pointer;
     
 }
+.replys-wrap .con ul li .reply_oc{
+	vertical-align: middle;
+	margin-left:6px;
+    height: 40px!important;
+    cursor: pointer;
+    
+}
 .replys-wrap .con ul li .small-input{
 	margin-left:5px;
 	vertical-align: middle;
-	width: 80px!important;
+	width: 75px!important;
 	cursor: pointer;
 }
 .replys-wrap .con ul li .big-input{
 	margin-left:5px;
 	vertical-align: middle;
-	width: 150px!important;
+	width: 140px!important;
 	cursor: pointer;
 }
 .replys-wrap .con ul li .reply-btns{
@@ -422,11 +432,11 @@ div#danmu .danmu-child a{
 	position: fixed;
     top: 50%;
     left: 50%;
-    margin-left: -600px;
+    margin-left: -640px;
     margin-top: -200px;
     background: rgba(255,255,255,0.9);
     border-radius: 4px;
-    width:1240px;
+    width:1270px;
     border:solid 1px #7792FF;
     
 }
@@ -493,6 +503,12 @@ div#danmu .danmu-child a{
     vertical-align: middle;
 }
 .radd-body .con ul li .reply_open_i{
+	vertical-align: middle;
+	margin:0 8px 0 8px;
+    height: 150px!important;
+    cursor: pointer;
+}
+.radd-body .con ul li .reply_oc_i{
 	vertical-align: middle;
 	margin:0 8px 0 8px;
     height: 150px!important;

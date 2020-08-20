@@ -34,7 +34,7 @@ public class AdvertThread extends Thread {
 				return;
 			}
 			if (StringUtils.indexOf(getAdvertBarrage(), "\n") != -1) {
-				strings = StringUtils.split(getAdvertBarrage(), "\n");;
+				strings = StringUtils.split(getAdvertBarrage(), "\n");
 
 				if (getAdvertStatus().getCode() == 0) {
 					// 顺序发

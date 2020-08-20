@@ -32,7 +32,7 @@ public class BarrageHeadHandle implements Serializable {
 	// 数据包协议类型 int 目前已知有2，3，5，7，8
 	@StructField(order = 3)
 	private int packageType;
-	// 暂时未知 int 目前已知有0，1
+	//序列号 int 目前已知有0，1
 	@StructField(order = 4)
 	private int packageOther;
 	private BarrageHeadHandle() {}

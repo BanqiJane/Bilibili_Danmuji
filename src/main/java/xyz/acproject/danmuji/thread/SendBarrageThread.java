@@ -32,14 +32,14 @@ public class SendBarrageThread extends Thread {
 					&& !StringUtils.isEmpty(PublicDataConf.barrageString.get(0))) {
 				barrageStr = PublicDataConf.barrageString.get(0);
 				int strLength = barrageStr.length();
+				
 				int maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
 				if (strLength > maxLength) {
 					int num = (int) Math.ceil((float) maxLength / (float) strLength);
 					for (int i = 0; i <= num; i++) {
 //						if (PublicDataConf.ROOMID == 5067) {
 						try {
-							if (HttpUserData.httpGetSendBarrage(barrageStr.substring(i * maxLength,
-									strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength)) != 0) {
+							if (HttpUserData.httpPostSendBarrage(StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength)) != 0) {
 								break;
 							}
 						} catch (Exception e) {
@@ -70,13 +70,13 @@ public class SendBarrageThread extends Thread {
 //					if (PublicDataConf.ROOMID == 5067) {
 					try {
 									// TODO 自动生成的方法存根
-					HttpUserData.httpGetSendBarrage(barrageStr);
+					HttpUserData.httpPostSendBarrage(barrageStr);
 						
 					} catch (Exception e) {
 //							LOGGER.error("发送弹幕线程抛出v:" + e);
 						// TODO: handle exception
 					}
-
+//
 //					} else {
 //						LOGGER.debug(barrageStr);
 //					}

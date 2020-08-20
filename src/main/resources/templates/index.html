@@ -51,7 +51,7 @@
 						</div>
 						<div class="input-group mb-3">
 							<a href="#danmuw" class="btn btn-secondary" id="danmu_open"
-								data-toggle="collapse">显示弹幕</a>
+								data-toggle="collapse">显示控制台弹幕</a>
 							<div id="danmuw" class="collapse">
 								<div class="input-group mb-3">
 									<div class="form-group connect-set">
@@ -92,7 +92,15 @@
 										class="form-check-input is_autoStart"> <span
 										class="_description" data-toggle="tooltip"
 										data-placement="top" title="" data-html="true"
-										data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置无需打开再网页进行手动连接</span>">自动</span>
+										data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置下次启动弹幕姬将会自动连接最后一次连接的房间</span>">自动</span>
+									</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
+										class="form-check-input is_cmd"> <span
+										class="_description" data-toggle="tooltip"
+										data-placement="top" title="" data-html="true"
+										data-original-title="cmd窗口是否显示弹幕">cmd</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
@@ -269,7 +277,7 @@
 										<select class="custom-select-sm thankgift_thank_status"
 											data-toggle="tooltip" data-placement="top" data-html="true"
 											title=""
-											data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span>">
+											data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span><br/>很多人都不懂这个模式<br/>这里我解释一下<br/>单人单种顾名思义就是一个人对应一种礼物感谢<br/>单人多种是合并一个人延迟时间内赠送的多少种礼物,修改多少种礼物在右边，默认合并2种<br/>多人多种就是延迟时间内合并多少个人他们的多少种礼物，修改多少在右边，默认合并2个人他们的2种<br/><span class='red-font'>切换模式注意修改参数!</span>">
 											<option value="1" selected>单人单种</option>
 											<option value="2">单人多种</option>
 											<option value="3">多人多种</option>
@@ -292,7 +300,7 @@
 											class="small-input thankgift_delaytime"
 											placeholder="delay time(s)" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true"
-											data-original-title="延迟多少秒发送 <br/>,最小值为0,默认为3<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
+											data-original-title="延迟多少秒发送<br/>最小值为0,默认为3,可以小数点<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
 											value="0">
 									</div>
 									<div class="custom-control-inline">
@@ -303,12 +311,17 @@
 								<div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_shield"
 										placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用"></textarea>
-									<input
+									<textarea class="form-control input-margin-b thankgift_thank"
+										placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
+										data-toggle="tooltip" data-html="true" data-placement="top"
+										title=""
+										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"></textarea>
+				<!-- 					<input
 										class="form-control one_people input-margin-b thankgift_thank"
 										placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
 										data-toggle="tooltip" data-placement="top" title=""
 										data-html="true"
-										data-original-title="感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量">
+										data-original-title="感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"> -->
 									<!-- <input class="form-control some_people input-margin-b thankgift_thank" placeholder="感謝%uName%贈送的%Gifts%~" data-toggle="tooltip"
 											data-placement="top" title="" data-html="true" data-original-title="感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开">
 								     <input class="form-control somes_people input-margin-b thankgift_thank" placeholder="感謝%uNames%贈送的%Gifts%~" data-toggle="tooltip"
@@ -401,10 +414,15 @@
 									</div>
 								</div>
 								<div class="form-group footer-set">
-									<input class="form-control follow_follows"
+<!-- 									<input class="form-control follow_follows"
 										placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
 										data-placement="top" title="" data-html="true"
-										data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合">
+										data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
+										<textarea class="form-control input-margin-b follow_follows"
+										placeholder="谢谢 %uNames% 的关注~"
+										data-toggle="tooltip" data-html="true" data-placement="top"
+										title=""
+										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> %uNames%关注人名称集合"></textarea>
 								</div>
 							</div>
 							<div class="input-group mb-1">
@@ -577,17 +595,20 @@
 						<li><input type="checkbox" class="reply_open_i"
 							data-toggle="tooltip" data-placement="top" title="是否开启"
 							data-original-title="是否开启"></li>
+						<li><input type="checkbox" class="reply_oc_i"
+							data-toggle="tooltip" data-placement="top" title=""
+							data-original-title="是否精确匹配，仅在只有一个关键字且没有屏蔽词的情况下使用(也可以在 含有 || 号条件下使用)"></li>
 						<li><textarea class="reply_keywords_i" placeholder="关键字"
 								data-toggle="tooltip" data-placement="top" title=""
 								data-html="true"
-								data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='red-font'>注意不能为空</span>"></textarea></li>
+								data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='orange-font'>想实现满足条件A或条件B 发送内容C的功能请在关键字中用 || 号分割或者不同关键字(即使在多关键字情况下依旧生效)</span><br/><span class='red-font'>注意不能为空</span>"></textarea></li>
 						<li><textarea class="reply_shields_i" placeholder="屏蔽词"
 								data-toggle="tooltip" data-placement="top"
 								title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"
 								data-html="true" data-original-title="屏蔽词"></textarea></li>
 						<li><textarea class="reply_rs_i" placeholder="回复语句"
 								data-toggle="tooltip" data-placement="top"
-								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>3：参数%TIME%以替换当前时间"
+								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值"
 								data-html="true" data-original-title="回复语句"></textarea></li>
 						<li><button type="button"
 								class="btn btn-danger btn-sm reply_delete_i">删除</button></li>

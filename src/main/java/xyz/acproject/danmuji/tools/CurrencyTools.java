@@ -42,7 +42,27 @@ public class CurrencyTools {
 		}
 		return wsUrl;
 	}
-	
+	/**
+	 * @param time
+	 * @return
+	 */
+	public static String getGapTime(long time){
+        long hours = time / (1000 * 60 * 60);
+        long minutes = (time-hours*(1000 * 60 * 60 ))/(1000* 60);
+        long second = (time-hours*(1000 * 60 * 60 )-minutes*(1000 * 60 ))/1000;
+        String diffTime="";
+        if(minutes<10){
+            diffTime=hours+":0"+minutes;
+        }else{
+            diffTime=hours+":"+minutes;
+        }
+        if(second<10){
+            diffTime=diffTime+":0"+second;
+        }else{
+            diffTime=diffTime+":"+second;
+        }
+        return diffTime;
+    }
 	/**
 	 * 获取心跳包byte[]
 	 * 

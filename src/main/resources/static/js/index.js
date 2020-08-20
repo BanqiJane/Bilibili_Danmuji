@@ -42,7 +42,7 @@ $(function() {
 							$(".thankgift_thank")
 									.attr(
 											'data-original-title',
-											'感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
+											'多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
 							break;
 						case 2:
 							$(".thankgift_thank").val(method.replaceThankt(method.getSet().thank_gift.thank));
@@ -50,11 +50,11 @@ $(function() {
 									"感謝%uName%贈送的%Gifts%~");
 							$(".thankgift_thank")
 									.attr('data-original-title',
-											'感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
+											'多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
 							break
 						case 3:
 							$(".thankgift_thank").val(method.replaceThankts(method.getSet().thank_gift.thank));
-							$(".thankgift_thank").attr('data-original-title','感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+							$(".thankgift_thank").attr('data-original-title','多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
 							$(".thankgift_thank").attr('placeholder',
 									"感謝%uNames%贈送的%Gifts%~");					
 							break
@@ -120,6 +120,7 @@ $(document).on(
 			set.is_barrage_medal = $(".is_barrage_medal").is(':checked');
 			set.is_barrage_ul = $(".is_barrage_ul").is(':checked');
 			set.is_block = $(".is_block").is(':checked');
+			set.is_cmd = $(".is_cmd").is(':checked');
 			set.is_gift = $(".is_gift").is(':checked');
 			set.is_welcome = $(".is_welcome").is(':checked');
 			set.is_follow = $(".is_follow").is(':checked');
@@ -149,6 +150,7 @@ $(document).on(
 				var autoReplySet={};
 				$(".replys-ul li").each(function(i,v){
 					autoReplySet.is_open=$(".reply_open").eq(i).is(':checked');
+					autoReplySet.is_accurate=$(".reply_oc").eq(i).is(':checked');
 					var keywords =[];
 					var shields = [];
 					autoReplySet.keywords=method.giftStrings_handle(keywords,$(".reply_keywords").eq(i).val());
@@ -352,7 +354,10 @@ $(document)
 					.append(
 							`<li><input type='checkbox' class='reply_open'
 						data-toggle='tooltip' data-placement='top' title='是否开启'
-						data-original-title='是否开启'> 
+						data-original-title='是否开启'>
+						<input type='checkbox' class='reply_oc'
+						data-toggle='tooltip' data-placement='top' title='是否精确匹配'
+						data-original-title='是否精确匹配'> 
 						<input class='small-input reply_keywords' placeholder='关键字'
 						data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
 						data-html='true' data-original-title='关键字' readonly='readonly' disabled>
@@ -377,11 +382,13 @@ $(document).on('click', '.shieldgift_delete', function() {
 $(document).on('click', '.reply_edit', function() {
 	var index = $(this).parent().parent().index();
 	var is_open = $(this).parent().parent().children(".reply_open").is(':checked');
+	var is_oc = $(this).parent().parent().children(".reply_oc").is(':checked');
 	var keywords = $(this).parent().parent().children(".reply_keywords").val();
 	var shields = $(this).parent().parent().children(".reply_shields").val();
 	var rs = $(this).parent().parent().children(".reply_rs").val();
 	$(".radd-mask").show();
 	$(".radd-body").find(".reply_open_i").prop('checked', is_open);
+	$(".radd-body").find(".reply_oc_i").prop('checked', is_oc);
 	$(".radd-body").find(".reply_keywords_i").val(keywords);
 	$(".radd-body").find(".reply_shields_i").val(shields);
 	$(".radd-body").find(".reply_rs_i").val(rs);
@@ -397,10 +404,12 @@ $(document).on('click', '.btn-closeri', function() {
 	if ($(".radd-mask").is(":visible")) {
 		var index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
 		var is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
+		var is_oc = $(this).parent().parent().find(".reply_oc_i").is(':checked');
 		var keywords = $(this).parent().parent().find(".reply_keywords_i").val();
 		var shields = $(this).parent().parent().find(".reply_shields_i").val();
 		var rs = $(this).parent().parent().find(".reply_rs_i").val();
 		$(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', is_open);
+		$(".replys-ul").children("li").eq(index).find(".reply_oc").prop('checked', is_oc);
 		$(".replys-ul").children("li").eq(index).find(".reply_keywords").val(keywords);
 		$(".replys-ul").children("li").eq(index).find(".reply_shields").val(shields);
 		$(".replys-ul").children("li").eq(index).find(".reply_rs").val(rs);
@@ -476,6 +485,7 @@ const method = {
 			$(".is_barrage_vip").prop('checked',
 					set.is_barrage_vip);
 			$(".is_barrage_manager").prop('checked', set.is_barrage_manager);
+			$(".is_cmd").prop('checked', set.is_cmd);
 			$(".is_barrage_medal").prop('checked', set.is_barrage_medal);
 			$(".is_barrage_ul").prop('checked', set.is_barrage_ul);
 			$(".is_block").prop('checked', set.is_block);
@@ -546,21 +556,21 @@ const method = {
 				$(".thankgift_thank")
 						.attr(
 								'data-original-title',
-								'感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
+								'多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
 				break;
 			case 2:
 				$(".thankgift_thank").attr('placeholder',
 						"感謝%uName%贈送的%Gifts%~");
 				$(".thankgift_thank")
 						.attr('data-original-title',
-								'感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
+								'多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
 				break
 			case 3:
 				$(".thankgift_thank").attr('placeholder',
 						"感謝%uNames%贈送的%Gifts%~");
 				$(".thankgift_thank")
 				.attr('data-original-title',
-						'感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+						'多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
 				break
 			default:
 				break;
@@ -679,6 +689,9 @@ const method = {
 						`<li><input type='checkbox' class='reply_open'
 					data-toggle='tooltip' data-placement='top' title='是否开启'
 					data-original-title='是否开启'> 
+					<input type='checkbox' class='reply_oc'
+						data-toggle='tooltip' data-placement='top' title='是否精确匹配'
+						data-original-title='是否精确匹配'> 
 					<input class='small-input reply_keywords' placeholder='关键字'
 					data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
 					data-html='true' data-original-title='关键字' readonly='readonly' disabled>
@@ -711,6 +724,7 @@ const method = {
 // btn-sm reply_edit'>编辑</button><button type='button' class='btn btn-danger
 // btn-sm reply_delete'>删除</button></span></li>");
 				$(".reply_open").eq(i).prop('checked', lists[i].is_open);
+				$(".reply_oc").eq(i).prop('checked', lists[i].is_accurate);
 				$(".reply_keywords").eq(i).val(method.giftStrings_metod(lists[i].keywords));
 				$(".reply_shields").eq(i).val(method.giftStrings_metod(lists[i].shields));
 				$(".reply_rs").eq(i).val(lists[i].reply);
@@ -789,18 +803,20 @@ function openSocket(socket,ip) {
 		// 获得消息事件
 		socket.onmessage = function(msg) {
 			// 发现消息进入 开始处理前端触发逻辑
+			var data = JSON.parse(msg.data);
+			if(data.cmd==="cmdp"){
 			if ($("#danmu").children().length > 99) {
 				$("#danmu").children().first().remove();
 				$("#danmu").children("div:last-child").after(
-						"<div class='danmu-child'>" + msg.data + "<div/>");
+						"<div class='danmu-child'>" + data.result + "<div/>");
 			} else {
 				$("#danmu").append(
-						"<div class='danmu-child'>" + msg.data + "<div/>");
+						"<div class='danmu-child'>" + data.result  + "<div/>");
 			}
 			if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= 804) {
 				$('#danmu').scrollTop($('#danmu')[0].scrollHeight);
 			}
-
+			}
 		};
 		// 关闭事件
 		socket.onclose = function() {

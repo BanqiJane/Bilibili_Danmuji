@@ -1,14 +1,11 @@
 package xyz.acproject.danmuji.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -16,12 +13,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.alibaba.fastjson.JSONObject;
 
+import okhttp3.Headers;
+import okhttp3.Response;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.RoomBarrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.user_data.User;
-import xyz.acproject.danmuji.utils.JodaTimeUtils;
+import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
 /**
  * @ClassName HttpUserData
@@ -39,39 +38,22 @@ public class HttpUserData {
 	 * 
 	 */
 	public static void httpGetUser() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		try {
-			String urlString = "https://account.bilibili.com/home/USERInfo";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://account.bilibili.com/home/USERInfo", headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return;
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -89,40 +71,23 @@ public class HttpUserData {
 	 * @return
 	 */
 	public static Qrcode httpGetQrcode() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
 		Qrcode qrcode = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		try {
-			String urlString = "https://passport.bilibili.com/qrcode/getLoginUrl";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://passport.bilibili.com/qrcode/getLoginUrl", headers, null).body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return qrcode;
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -140,89 +105,52 @@ public class HttpUserData {
 	 * @return
 	 */
 	public static String httpPostCookie(LoginData logindata) {
-
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			return "";
 		}
-		OutputStreamWriter out = null;
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
-		URL url = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String cookieVal = "";
-		String key = null;
-		HashSet<String> hashSet = new HashSet<String>();
+		Response response = null;
+		Map<String, String> headers = null;
+		Map<String, String> params = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://passport.bilibili.com/login");
+		params = new HashMap<>(3);
+		params.put("oauthKey", logindata.getOauthKey());
+		params.put("gourl", logindata.getGourl());
 		try {
-			String urlString = "https://passport.bilibili.com/qrcode/getLoginInfo";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://passport.bilibili.com/login");
-			httpURLConnection.setUseCaches(false);
-			httpURLConnection.setInstanceFollowRedirects(true);
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setDoInput(true);
-			out = new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8");
-			String param = "oauthKey=" + logindata.getOauthKey() + "&gourl=" + logindata.getGourl();
-			out.write(param);
-			out.flush();
-			// 取cookie
-			for (int i = 1; (key = httpURLConnection.getHeaderFieldKey(i)) != null; i++) {
-				if (key.equalsIgnoreCase("set-cookie")) {
-					cookieVal = httpURLConnection.getHeaderField(i);
-					cookieVal = cookieVal.substring(0, cookieVal.indexOf(";"));
-					hashSet.add(cookieVal);
-//					sessionId = sessionId + cookieVal + ";";
+			response = OkHttp3Utils.getHttp3Utils().httpPostForm("https://passport.bilibili.com/qrcode/getLoginInfo",
+					headers, params);
+			data = response.body().string();
+			if (JSONObject.parseObject(data).getBoolean("status")) {
+				Headers headers2 = response.headers();
+				List<String> cookies = headers2.values("Set-Cookie");
+				Set<String> cookieSet = new HashSet<>();
+				for (String string : cookies) {
+					cookieSet.add(string.substring(0, string.indexOf(";")));
 				}
-			}
-			hashSet.forEach(value -> {
-				stringBuilder.append(value);
-				stringBuilder.append(";");
-			});
-			if (!StringUtils.isEmpty(stringBuilder.toString())) {
-				if (stringBuilder.length()>13&&StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-					PublicDataConf.USERCOOKIE = stringBuilder.toString();
-					if(PublicDataConf.ROOMID!=null) {
+				StringBuilder stringBuilder = new StringBuilder(100);
+				Iterator<String> iterable = cookieSet.iterator();
+				while (iterable.hasNext()) {
+					stringBuilder.append(iterable.next());
+					if (iterable.hasNext()) {
+						stringBuilder.append(";");
+					}
+				}
+				PublicDataConf.USERCOOKIE = stringBuilder.toString();
+				if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+					if (PublicDataConf.ROOMID != null) {
 						httpGetUserBarrageMsg();
 					}
 					LOGGER.debug("扫码登录成功");
 				}
 			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
-			bufferedReader.close();
-			httpURLConnection.disconnect();
-		} catch (Exception e) {
+		} catch (Exception e1) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error("扫码登录失败抛出异常:" + e1);
 		}
+
 		return data;
 	}
 
@@ -231,42 +159,25 @@ public class HttpUserData {
 	 * 
 	 */
 	public static void httpGetUserInfo() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
 		try {
-			String urlString = "https://api.live.bilibili.com/User/getUserInfo";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.live.bilibili.com/User/getUserInfo", headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return;
 		jsonObject = JSONObject.parseObject(data);
 		if (jsonObject.getString("code").equals("REPONSE_OK")) {
 			PublicDataConf.USER = new User();
@@ -274,12 +185,12 @@ public class HttpUserData {
 			LOGGER.debug("已经登录，获取信息成功");
 		} else if (jsonObject.getShort("code") == -500) {
 			LOGGER.debug("未登录，请登录:" + jsonObject.toString());
-			PublicDataConf.USERCOOKIE=null;
-			PublicDataConf.USER=null;
+			PublicDataConf.USERCOOKIE = null;
+			PublicDataConf.USER = null;
 		} else {
 			LOGGER.error("未知错误,原因未知" + jsonObject.toString());
-			PublicDataConf.USERCOOKIE=null;
-			PublicDataConf.USER=null;
+			PublicDataConf.USERCOOKIE = null;
+			PublicDataConf.USER = null;
 		}
 	}
 
@@ -288,44 +199,28 @@ public class HttpUserData {
 	 * 
 	 */
 	public static void httpGetUserBarrageMsg() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
 		try {
-			String urlString = "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
-					+ PublicDataConf.ROOMID;
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
+							+ PublicDataConf.ROOMID, headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return;
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -348,204 +243,128 @@ public class HttpUserData {
 	 * @param msg 弹幕信息
 	 * @return
 	 */
-	public static Short httpGetSendBarrage(String msg) {
+	public static Short httpPostSendBarrage(String msg) {
 		JSONObject jsonObject = null;
-		OutputStreamWriter out = null;
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
-		URL url = null;
-		short code= -1;
-		StringBuilder stringBuilder = new StringBuilder();
-		String param = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> params = null;
+		if (PublicDataConf.USERBARRAGEMESSAGE == null && PublicDataConf.COOKIE == null)
+			return code;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		params = new HashMap<>(10);
+		params.put("color", PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getColor().toString());
+		params.put("fontsize", "25");
+		params.put("mode", PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getMode().toString());
+		params.put("msg", msg);
+		params.put("rnd", String.valueOf(System.currentTimeMillis()).substring(0, 10));
+		params.put("roomid", PublicDataConf.ROOMID.toString());
+		params.put("bubble", PublicDataConf.USERBARRAGEMESSAGE.getBubble().toString());
+		params.put("csrf_token", PublicDataConf.COOKIE.getBili_jct());
+		params.put("csrf", PublicDataConf.COOKIE.getBili_jct());
 		try {
-			String urlString = "https://api.live.bilibili.com/msg/send";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			httpURLConnection.setConnectTimeout(6000);
-			httpURLConnection.setReadTimeout(6000);
-			httpURLConnection.setUseCaches(false);
-			httpURLConnection.setInstanceFollowRedirects(true);
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setDoInput(true);
-			out = new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8");
-			msg = URLDecoder.decode(msg, "UTF-8");
-			msg = URLDecoder.decode(msg, "UTF-8");
-			if (PublicDataConf.USERBARRAGEMESSAGE != null&&PublicDataConf.COOKIE!=null) {
-				stringBuilder.append("color=").append(PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getColor())
-				.append("&fontsize=").append(25).append("&mode=").append(PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getMode())
-				.append("&msg=").append(msg).append("&rnd=").append(Long.valueOf((String.valueOf(System.currentTimeMillis()).substring(0, 10))))
-				.append("&roomid=").append(PublicDataConf.ROOMID).append("&bubble=").append(PublicDataConf.USERBARRAGEMESSAGE.getBubble())
-				.append("&csrf_token=").append(PublicDataConf.COOKIE.getBili_jct()).append("&csrf=").append(PublicDataConf.COOKIE.getBili_jct());
-				param = stringBuilder.toString();
-			}
-			out.write(param);
-			out.flush();
-			stringBuilder.delete(0, stringBuilder.length());
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msgs = null;
-			while (null != (msgs = bufferedReader.readLine())) {
-				data = msgs;
-			}
-			bufferedReader.close();
-			httpURLConnection.disconnect();
+			data = OkHttp3Utils.getHttp3Utils().httpPostForm("https://api.live.bilibili.com/msg/send", headers, params)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return code;
 		jsonObject = JSONObject.parseObject(data);
 //		System.out.println(jsonObject.toJSONString().toString());
-		if(jsonObject!=null) {
-		code = jsonObject.getShort("code");
-		if (code == 0) {
-			if(StringUtils.isEmpty(jsonObject.getString("message").trim())) {
+		if (jsonObject != null) {
+			code = jsonObject.getShort("code");
+			if (code == 0) {
+				if (StringUtils.isEmpty(jsonObject.getString("message").trim())) {
 //				LOGGER.debug("发送弹幕成功");
-			}else if(jsonObject.getString("message").equals("msg in 1s")||jsonObject.getString("message").equals("msg repeat")){
-				LOGGER.debug("发送弹幕失败，尝试重新发送"+jsonObject.getString("message"));
-				PublicDataConf.barrageString.add(msg);
-				synchronized (PublicDataConf.sendBarrageThread) {
-					PublicDataConf.sendBarrageThread.notify();
-			}
-			}else{
-				LOGGER.debug(jsonObject.toString());
+				} else if (jsonObject.getString("message").equals("msg in 1s")
+						|| jsonObject.getString("message").equals("msg repeat")) {
+					LOGGER.debug("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
+					PublicDataConf.barrageString.add(msg);
+					synchronized (PublicDataConf.sendBarrageThread) {
+						PublicDataConf.sendBarrageThread.notify();
+					}
+				} else {
+					LOGGER.debug(jsonObject.toString());
+					LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+					code = -402;
+				}
+			} else if (code == -111) {
 				LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
-				code = -402;
+			} else if (code == -500) {
+				LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+			} else if (code == 11000) {
+				LOGGER.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
+			} else {
+				LOGGER.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
 			}
-		} else if (code == -111) {
-			LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
-		} else if (code == -500) {
-			LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
-		} else if (code == 11000) {
-			LOGGER.error("发送弹幕失败,原因:弹幕含有关键字或者弹幕颜色不存在:" + jsonObject.getString("message"));
 		} else {
-			LOGGER.error("发送弹幕失败,未知错误,原因未知" + jsonObject.toString());
-		}
-		}else {
 			return code;
 		}
 		return code;
 	}
+
 	/**
 	 * 发送私聊
 	 * 
 	 * @param recId 接受人uid
-	 * @param msg 信息
-	 * @return 
+	 * @param msg   信息
+	 * @return
 	 */
-	public static Short httpPostSendMsg(long recId,String msg) {
+	public static Short httpPostSendMsg(long recId, String msg) {
 		JSONObject jsonObject = null;
-		OutputStreamWriter out = null;
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
-		URL url = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String param = null;
-		String content = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> params = null;
+		if (PublicDataConf.USERBARRAGEMESSAGE == null && PublicDataConf.COOKIE == null)
+			return code;
+		if (PublicDataConf.USER.getUid() == recId)
+			return code;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://message.bilibili.com/");
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		params = new HashMap<>(12);
+		params.put("msg[sender_uid]", PublicDataConf.USER.getUid().toString());
+		params.put("msg[receiver_id]", String.valueOf(recId));
+		params.put("msg[receiver_type]", "1");
+		params.put("msg[msg_type]", "1");
+		params.put("msg[msg_status]", "0");
+		params.put("msg[content]", "{\"content\":\"" + msg + "\"}");
+		params.put("msg[timestamp]", String.valueOf(System.currentTimeMillis()).substring(0, 10));
+		params.put("msg[dev_id]", "");
+		params.put("build", "0");
+		params.put("mobi_app", "web");
+		params.put("csrf_token", PublicDataConf.COOKIE.getBili_jct());
 		try {
-			String urlString = "https://api.vc.bilibili.com/web_im/v1/web_im/send_msg";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://message.bilibili.com/");
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			httpURLConnection.setUseCaches(false);
-			httpURLConnection.setInstanceFollowRedirects(true);
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setDoInput(true);
-			out = new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8");
-			if (PublicDataConf.USERBARRAGEMESSAGE != null&&PublicDataConf.COOKIE!=null) {
-				try {
-					msg = URLDecoder.decode(msg, "UTF-8");
-					msg = URLDecoder.decode(msg, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-				content = "{\"content\":\""+msg+"\"}";
-				stringBuilder.append("msg%5Bsender_uid%5D=").append(PublicDataConf.USER.getUid())
-				.append("&msg%5Breceiver_id%5D=").append(recId)
-				.append("&msg%5Breceiver_type%5D=1").append("&msg%5Bmsg_type%5D=1").append("&msg%5Bmsg_status%5D=0")
-				.append("&msg%5Bcontent%5D=").append(content).append("&msg%5Btimestamp%5D=")
-				.append(JodaTimeUtils.getTimestamp()).append("&msg%5Bdev_id%5D=")
-				.append("&build=0").append("&mobi_app=web").append("&csrf_token=")
-				.append(PublicDataConf.COOKIE.getBili_jct());
-				
-				param = stringBuilder.toString();
-			}
-			out.write(param);
-			out.flush();
-            stringBuilder.delete(0, stringBuilder.length());
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msgs = null;
-			while (null != (msgs = bufferedReader.readLine())) {
-				data = msgs;
-			}
-			bufferedReader.close();
-			httpURLConnection.disconnect();
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpPostForm("https://api.vc.bilibili.com/web_im/v1/web_im/send_msg", headers, params).body()
+					.string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return code;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
-			if(jsonObject.getString("message").equals("ok")) {
-				//发送私聊成功
-			}else{
+			if (jsonObject.getString("message").equals("ok")) {
+				// 发送私聊成功
+			} else {
 				LOGGER.error("发送私聊失败,未知错误,原因未知v" + jsonObject.toString());
 			}
 		} else {
@@ -553,97 +372,93 @@ public class HttpUserData {
 		}
 		return code;
 	}
+
 	/**
 	 * 禁言
 	 * 
-	 * @param uid 被禁言人uid
+	 * @param uid  被禁言人uid
 	 * @param hour 禁言时间 单位小时
 	 * @return
 	 */
-	public static Short httpPostAddBlock(long uid,short hour) {
+	public static Short httpPostAddBlock(long uid, short hour) {
 		JSONObject jsonObject = null;
-		OutputStreamWriter out = null;
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
-		URL url = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String param = null;
-		if(hour<1) {
-			hour=1;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> params = null;
+		if (hour < 1) {
+			hour = 1;
 		}
-		if(hour>720) {
-			hour=720;
+		if (hour > 720) {
+			hour = 720;
 		}
+		if (PublicDataConf.USERBARRAGEMESSAGE == null && PublicDataConf.COOKIE == null)
+			return code;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		params = new HashMap<>(7);
+		params.put("roomid", PublicDataConf.ROOMID.toString());
+		params.put("block_uid", String.valueOf(uid));
+		params.put("hour", String.valueOf(hour));
+		params.put("csrf_token", PublicDataConf.COOKIE.getBili_jct());
+		params.put("csrf", PublicDataConf.COOKIE.getBili_jct());
+		params.put("visit_id", "");
 		try {
-			String urlString = "https://api.live.bilibili.com/banned_service/v2/Silent/add_block_user";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/"+PublicDataConf.ROOMID);
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			httpURLConnection.setUseCaches(false);
-			httpURLConnection.setInstanceFollowRedirects(true);
-			httpURLConnection.setDoOutput(true);
-			httpURLConnection.setDoInput(true);
-			out = new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8");
-			if (PublicDataConf.USERBARRAGEMESSAGE != null&&PublicDataConf.COOKIE!=null) {
-				stringBuilder.append("roomid=").append(PublicDataConf.ROOMID)
-				.append("&block_uid=").append(uid).append("&hour=").append(hour)
-				.append("&csrf_token=").append(PublicDataConf.COOKIE.getBili_jct()).append("&csrf=")
-				.append(PublicDataConf.COOKIE.getBili_jct()).append("&visit_id=");
-				param = stringBuilder.toString();
-			}
-			out.write(param);
-			out.flush();
-            stringBuilder.delete(0, stringBuilder.length());
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msgs = null;
-			while (null != (msgs = bufferedReader.readLine())) {
-				data = msgs;
-			}
-			bufferedReader.close();
-			httpURLConnection.disconnect();
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpPostForm("https://api.live.bilibili.com/banned_service/v2/Silent/add_block_user", headers,
+							params)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return code;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
-			//禁言成功
+			// 禁言成功
 //			System.out.println(jsonObject.getString("data"));
-		}else {
+		} else {
 			LOGGER.error("禁言失败,原因" + jsonObject.getString("msg"));
 		}
 		return code;
 	}
-	
+
+	public static String httpGetUserFaces(long uid) {
+		String data = null;
+		JSONObject jsonObject = null;
+		String faceUrl = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://space.bilibili.com/" +uid);
+		try {
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/space/acc/info?mid="+uid, headers, null)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return null;
+		jsonObject = JSONObject.parseObject(data);
+		short code = jsonObject.getShort("code");
+		if (code == 0) {
+			faceUrl = ((JSONObject)jsonObject.get("data")).getString("face");
+		}else {
+			LOGGER.error("获取头像错误,未知错误,原因未知" + jsonObject.toString());
+		}
+		return faceUrl;
+	}
 	
 	
 	/**
@@ -652,40 +467,19 @@ public class HttpUserData {
 	 * 
 	 */
 	public static void quit() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
-		URL url = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://www.bilibili.com/");
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
 		try {
-			String urlString = "https://passport.bilibili.com/login?act=exit";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("USER-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://www.bilibili.com/");
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			@SuppressWarnings("unused")
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-			}
+			OkHttp3Utils.getHttp3Utils().httpGet("https://passport.bilibili.com/login?act=exit", headers, null);
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
 		}
 	}
 }

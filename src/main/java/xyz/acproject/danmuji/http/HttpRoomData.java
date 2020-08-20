@@ -1,11 +1,8 @@
 package xyz.acproject.danmuji.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +15,12 @@ import com.alibaba.fastjson.JSONObject;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.room_data.CheckTx;
 import xyz.acproject.danmuji.entity.room_data.Room;
+import xyz.acproject.danmuji.entity.room_data.RoomInfo;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
+import xyz.acproject.danmuji.entity.view.RoomGift;
+import xyz.acproject.danmuji.tools.ParseIndentityTools;
+import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
 /**
  * @ClassName HttpRoomData
@@ -39,50 +40,35 @@ public class HttpRoomData {
 	 * @return
 	 */
 	public static Conf httpGetConf() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
 		Conf conf = null;
-		URL url = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		headers = new HashMap<>(3);
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		datas = new HashMap<>(3);
+		datas.put("id", PublicDataConf.ROOMID.toString());
+		datas.put("type", "0");
 		try {
-			String urlString = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=" + PublicDataConf.ROOMID
-					+ "&type=0";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE) && PublicDataConf.USER != null) {
-				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo", headers, datas)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
-		if(StringUtils.isEmpty(data)) {
-			return conf;
-		}
+		if (data == null)
+			return null;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
 			conf = jsonObject.getObject("data", Conf.class);
 		} else {
@@ -98,53 +84,32 @@ public class HttpRoomData {
 	 * @return
 	 */
 	public static Room httpGetRoomData(long roomid) {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
 		Room room = null;
-		URL url = null;
-
+		short code = -1;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		}
 		try {
-			String urlString = "https://api.live.bilibili.com/room_ex/v1/RoomNews/get?roomid=" + roomid;
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			httpURLConnection.setConnectTimeout(6000);
-			httpURLConnection.setReadTimeout(6000);
-//			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-//				httpURLConnection.setRequestProperty("cookie", PublicDataConf.USERCOOKIE);
-//			}
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/room_ex/v1/RoomNews/get?roomid=" + roomid, headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
-//		LOGGER.debug("获取到的room:" + data);
-		if(StringUtils.isEmpty(data)) {
+		if (data == null)
 			return room;
-		}
+//		LOGGER.debug("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
 			room = jsonObject.getObject("data", Room.class);
 		} else {
@@ -159,46 +124,31 @@ public class HttpRoomData {
 	 * @param roomid
 	 */
 	public static RoomInit httpGetRoomInit(long roomid) {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		RoomInit roomInit = null;
 		JSONObject jsonObject = null;
-		URL url = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(2);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		}
 		try {
-			String urlString = "https://api.live.bilibili.com/room/v1/Room/room_init?id=" + roomid;
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/room/v1/Room/room_init?id=" + roomid, headers, null).body()
+					.string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
-//		LOGGER.debug("获取到的room:" + data);
-		if(StringUtils.isEmpty(data)) {
+		if (data == null)
 			return roomInit;
-		}
+//		LOGGER.debug("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
 			roomInit = jsonObject.getObject("data", RoomInit.class);
 		} else {
@@ -209,56 +159,45 @@ public class HttpRoomData {
 	}
 
 	/**
-	 * 获取房间最详细信息 日后扩容 目前只是获取主播uid
+	 * 获取房间最详细信息 日后扩容 目前只是获取主播uid 改
 	 * 
 	 * @return
 	 */
-	public static Long httpGetRoomInfo() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
+	public static RoomInfo httpGetRoomInfo() {
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
-		Long auid = 0L;
+		RoomInfo roomInfo = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+//		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		}
 		try {
-			String urlString = "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
-					+ PublicDataConf.ROOMID;
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
+							+ PublicDataConf.ROOMID, headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return roomInfo;
 //		LOGGER.debug("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
-			auid = ((JSONObject) ((JSONObject) jsonObject.get("data")).get("room_info")).getLong("uid");
+			roomInfo = jsonObject.getObject(((JSONObject) jsonObject.get("data")).getString("room_info"),
+					RoomInfo.class);
 		} else {
 			LOGGER.error("获取房间详细信息失败，请稍后尝试:" + jsonObject.getString("message"));
 		}
-		return auid;
+		return roomInfo;
 	}
 
 	/**
@@ -267,15 +206,14 @@ public class HttpRoomData {
 	 * @return 关注uname集
 	 */
 	public static ConcurrentHashMap<Long, String> httpGetFollowers() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
 		Integer page = null;
 		JSONArray jsonArray = null;
 		short code = -1;
 		ConcurrentHashMap<Long, String> followConcurrentHashMap = null;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
 		if (PublicDataConf.AUID == null) {
 			return null;
 		}
@@ -287,37 +225,29 @@ public class HttpRoomData {
 		}
 		followConcurrentHashMap = new ConcurrentHashMap<Long, String>();
 		while (page > 0) {
+			headers = new HashMap<>(3);
+			headers.put("referer", "https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
+			headers.put("user-agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			}
+			datas = new HashMap<>(6);
+			datas.put("vmid", PublicDataConf.AUID.toString());
+			datas.put("pn", String.valueOf(page));
+			datas.put("ps", "50");
+			datas.put("order", "desc");
+			datas.put("jsonp", "jsonp");
 			try {
-				String urlString = "https://api.bilibili.com/x/relation/followers?vmid=" + PublicDataConf.AUID + "&pn="
-						+ page + "&ps=50&order=desc&jsonp=jsonp";
-				url = new URL(urlString);
-				httpURLConnection = (HttpURLConnection) url.openConnection();
-				httpURLConnection.setRequestMethod("GET");
-				httpURLConnection.setRequestProperty("user-agent",
-						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-				httpURLConnection.setRequestProperty("referer",
-						"https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
-				bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-				String msg = null;
-				while (null != (msg = bufferedReader.readLine())) {
-					data = msg;
-				}
+				data = OkHttp3Utils.getHttp3Utils()
+						.httpGet("https://api.bilibili.com/x/relation/followers", headers, datas).body().string();
 			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			} finally {
-				if (bufferedReader != null) {
-					try {
-						bufferedReader.close();
-					} catch (IOException e) {
-						// TODO 自动生成的 catch 块
-						e.printStackTrace();
-					}
-				}
-				if (httpURLConnection != null) {
-					httpURLConnection.disconnect();
-				}
+				LOGGER.error(e);
+				data = null;
 			}
+			if (data == null)
+				return null;
 			jsonObject = JSONObject.parseObject(data);
 			try {
 				code = jsonObject.getShort("code");
@@ -328,7 +258,7 @@ public class HttpRoomData {
 			}
 
 			if (code == 0) {
-				PublicDataConf.FANSNUM =((JSONObject) jsonObject.get("data")).getLong("total");
+				PublicDataConf.FANSNUM = ((JSONObject) jsonObject.get("data")).getLong("total");
 				jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
 				for (Object object : jsonArray) {
 					followConcurrentHashMap.put(((JSONObject) object).getLong("mid"),
@@ -348,50 +278,40 @@ public class HttpRoomData {
 	 * @return 返回关注数
 	 */
 	public static Long httpGetFollowersNum() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
-		Integer page = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
 		Long followersNum = 0L;
 		if (PublicDataConf.AUID == null) {
 			return followersNum;
 		}
+		headers = new HashMap<>(3);
+		headers.put("referer", "https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			}
+		datas = new HashMap<>(6);
+		datas.put("vmid", PublicDataConf.AUID.toString());
+		datas.put("pn", String.valueOf(1));
+		datas.put("ps", "50");
+		datas.put("order", "desc");
+		datas.put("jsonp", "jsonp");
 		try {
-			page = 1;
-			String urlString = "https://api.bilibili.com/x/relation/followers?vmid=" + PublicDataConf.AUID + "&pn="
-					+ page + "&ps=50&order=desc&jsonp=jsonp";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer",
-					"https://space.bilibili.com/{" + PublicDataConf.AUID + "}/");
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/relation/followers", headers, datas)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return followersNum;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
 			followersNum = ((JSONObject) jsonObject.get("data")).getLong("total");
 		} else {
@@ -401,13 +321,13 @@ public class HttpRoomData {
 	}
 
 	public static Hashtable<Long, String> httpGetGuardList() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		Hashtable<Long, String> hashtable = new Hashtable<Long, String>();
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
-		URL url = null;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		short code = -1;
 		int totalSize = httpGetGuardListTotalSize();
 		int page = 0;
 		if (totalSize == 0) {
@@ -417,39 +337,32 @@ public class HttpRoomData {
 		if (page == 0) {
 			page = 1;
 		}
-		for (int i=1;i<=page;i++) {
+		for (int i = 1; i <= page; i++) {
+			headers = new HashMap<>(3);
+			headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+			headers.put("user-agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//				headers.put("cookie", PublicDataConf.USERCOOKIE);
+//			}
+			datas = new HashMap<>(4);
+			datas.put("roomid", PublicDataConf.ROOMID.toString());
+			datas.put("page", String.valueOf(i));
+			datas.put("ruid", PublicDataConf.AUID.toString());
+			datas.put("page_size", "29");
 			try {
-				String urlString = "https://api.live.bilibili.com/xlive/app-room/v1/guardTab/topList?roomid="
-						+ PublicDataConf.ROOMID + "&page=" + i + "&ruid=" + PublicDataConf.AUID + "&page_size=29";
-				url = new URL(urlString);
-				httpURLConnection = (HttpURLConnection) url.openConnection();
-				httpURLConnection.setRequestMethod("GET");
-				httpURLConnection.setRequestProperty("user-agent",
-						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-				httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-				bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-				String msg = null;
-				while (null != (msg = bufferedReader.readLine())) {
-					data = msg;
-				}
+				data = OkHttp3Utils.getHttp3Utils()
+						.httpGet("https://api.live.bilibili.com/xlive/app-room/v1/guardTab/topList", headers, datas)
+						.body().string();
 			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			} finally {
-				if (bufferedReader != null) {
-					try {
-						bufferedReader.close();
-					} catch (IOException e) {
-						// TODO 自动生成的 catch 块
-						e.printStackTrace();
-					}
-				}
-				if (httpURLConnection != null) {
-					httpURLConnection.disconnect();
-				}
+				LOGGER.error(e);
+				data = null;
 			}
+			if (data == null)
+				return null;
 			jsonObject = JSONObject.parseObject(data);
-			short code = jsonObject.getShort("code");
+			code = jsonObject.getShort("code");
 			if (code == 0) {
 				jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
 				for (Object object : jsonArray) {
@@ -476,44 +389,37 @@ public class HttpRoomData {
 	}
 
 	public static int httpGetGuardListTotalSize() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
 		int num = 0;
 		JSONObject jsonObject = null;
-		URL url = null;
+		short code = -1;
+		headers = new HashMap<>(3);
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		}
+		datas = new HashMap<>(5);
+		datas.put("roomid", PublicDataConf.ROOMID.toString());
+		datas.put("page", String.valueOf(1));
+		datas.put("ruid", PublicDataConf.AUID.toString());
+		datas.put("page_size", "29");
 		try {
-			String urlString = "https://api.live.bilibili.com/xlive/app-room/v1/guardTab/topList?roomid="
-					+ PublicDataConf.ROOMID + "&page=1&ruid=" + PublicDataConf.AUID + "&page_size=29";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/app-room/v1/guardTab/topList", headers, datas).body()
+					.string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return num;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
 			num = ((JSONObject) ((JSONObject) jsonObject.get("data")).get("info")).getInteger("num");
 		} else {
@@ -521,100 +427,79 @@ public class HttpRoomData {
 		}
 		return num;
 	}
+
 	public static CheckTx httpGetCheckTX() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+//		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//			headers.put("cookie", PublicDataConf.USERCOOKIE);
+//		}
 		try {
-			String urlString = "https://api.live.bilibili.com/xlive/lottery-interface/v1/Anchor/Check?roomid="+PublicDataConf.ROOMID;
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			httpURLConnection.setRequestProperty("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/lottery-interface/v1/Anchor/Check?roomid="
+							+ PublicDataConf.ROOMID, headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			LOGGER.error(e);
+			data = null;
 		}
+		if (data == null)
+			return null;
 		jsonObject = JSONObject.parseObject(data);
-		short code = jsonObject.getShort("code");
+		code = jsonObject.getShort("code");
 		if (code == 0) {
-			if(jsonObject.get("data")!=null) {
-				return new CheckTx(((JSONObject)jsonObject.get("data")).getLong("room_id"),((JSONObject)jsonObject.get("data")).getString("gift_name"),((JSONObject)jsonObject.get("data")).getShort("time"));
+			if (jsonObject.get("data") != null) {
+				return new CheckTx(((JSONObject) jsonObject.get("data")).getLong("room_id"),
+						((JSONObject) jsonObject.get("data")).getString("gift_name"),
+						((JSONObject) jsonObject.get("data")).getShort("time"));
 			}
 		} else {
 			LOGGER.error("检查天选礼物失败,原因:" + jsonObject.getString("message"));
 		}
 		return null;
 	}
-	public static String httpGetIp() {
-		BufferedReader bufferedReader = null;
-		HttpURLConnection httpURLConnection = null;
+
+	public static void httpGetRoomGifts() {
 		String data = null;
 		JSONObject jsonObject = null;
-		URL url = null;
-		String status = null;
-		String ip = null;
+		JSONArray jsonArray = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(3);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
 		try {
-			String urlString = "http://ip-api.com/json/";
-			url = new URL(urlString);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			httpURLConnection.setRequestProperty("user-agent",
-					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-			bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
-			String msg = null;
-			while (null != (msg = bufferedReader.readLine())) {
-				data = msg;
-			}
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id="
+							+ PublicDataConf.ROOMID, headers, null)
+					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return;
+		jsonObject = JSONObject.parseObject(data);
+		code = jsonObject.getShort("code");
+		if (code == 0) {
+			jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
+			if (PublicDataConf.roomGiftConcurrentHashMap.size() < 1) {
+				for (Object object : jsonArray) {
+					PublicDataConf.roomGiftConcurrentHashMap.put(((JSONObject) object).getInteger("id"),
+							new RoomGift(((JSONObject) object).getInteger("id"), ((JSONObject) object).getString("name"), ParseIndentityTools.parseCoin_type(((JSONObject) object).getString("coin_type")), ((JSONObject) object).getString("webp")));
 				}
 			}
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+		} else {
+			LOGGER.error("获取礼物失败,原因:" + jsonObject.getString("message"));
 		}
-		jsonObject = JSONObject.parseObject(data);
-		try {
-			status = jsonObject.getString("status");
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-		if(status.equals("success")) {
-			ip = jsonObject.getString("query");
-		}else {
-			LOGGER.error("获取ip失败"+jsonObject.toString());
-		}
-		return ip;
 	}
 }

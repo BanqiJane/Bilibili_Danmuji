@@ -55,8 +55,8 @@ public class Gift implements Serializable,Cloneable{
 	private String action;
 	// 单价
 	private Integer price;
-	// 瓜子类型 silver银:gold金
-	private String coin_type;
+	// 瓜子类型 silver银:gold金//经工具过滤 0为银 1为金
+	private Short coin_type;
 	// 总价格
 	private Long total_coin;
 
@@ -76,7 +76,7 @@ public class Gift implements Serializable,Cloneable{
 	}
 
 	public static Gift getGift(Integer giftId, Short giftType, String giftName, Integer num, String uname, String face,
-			Short guard_level, Long uid, Long timestamp, String action, Integer price, String coin_type,
+			Short guard_level, Long uid, Long timestamp, String action, Integer price, Short coin_type,
 			Long total_coin) {
 		try {
 			Gift g = (Gift) gift.clone();
@@ -189,11 +189,11 @@ public class Gift implements Serializable,Cloneable{
 		this.price = price;
 	}
 
-	public String getCoin_type() {
+	public Short getCoin_type() {
 		return coin_type;
 	}
 
-	public void setCoin_type(String coin_type) {
+	public void setCoin_type(Short coin_type) {
 		this.coin_type = coin_type;
 	}
 

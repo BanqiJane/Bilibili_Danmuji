@@ -18,7 +18,6 @@ import org.springframework.lang.Nullable;
 public final class JodaTimeUtils {
 	private static final String FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
 	private static final String FORTER_DATE ="yyyy-MM-dd";
-
 	
 	
 	/**
@@ -37,7 +36,7 @@ public final class JodaTimeUtils {
 	    DateTime dt = new DateTime();  
 	    String time = dt.toString(FORMAT_TIME);  
 	    return time;  
-	}  
+	}
 	/**
 	 * 获取当前系统时间串
 	 * @return yyyy-MM-dd HH:mm:ss.0

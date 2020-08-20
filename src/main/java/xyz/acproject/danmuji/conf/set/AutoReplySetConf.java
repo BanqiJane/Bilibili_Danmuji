@@ -45,6 +45,7 @@ public class AutoReplySetConf implements Serializable{
 	public void setTime(short time) {
 		this.time = time;
 	}
+	
 	public HashSet<AutoReplySet> getAutoReplySets() {
 		return autoReplySets;
 	}

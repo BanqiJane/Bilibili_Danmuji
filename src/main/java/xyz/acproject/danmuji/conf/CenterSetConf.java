@@ -41,6 +41,8 @@ public class CenterSetConf implements Serializable{
 	private boolean is_follow = true;
 	//是否开启日志线程
 	private boolean is_log = false;
+	//是否控制台打印
+	private boolean is_cmd = true;
 	//房间号
 	private Long roomid =0l;
 	//是否自动连接
@@ -73,10 +75,9 @@ public class CenterSetConf implements Serializable{
 	}
 	
 	
-	
 	public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager,
 			boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome,
-			boolean is_follow, boolean is_log, Long roomid, boolean is_auto, boolean is_online,
+			boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto, boolean is_online,
 			ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply) {
 		super();
 		this.is_barrage_guard = is_barrage_guard;
@@ -89,6 +90,7 @@ public class CenterSetConf implements Serializable{
 		this.is_welcome = is_welcome;
 		this.is_follow = is_follow;
 		this.is_log = is_log;
+		this.is_cmd = is_cmd;
 		this.roomid = roomid;
 		this.is_auto = is_auto;
 		this.is_online = is_online;
@@ -196,6 +198,12 @@ public class CenterSetConf implements Serializable{
 		this.reply = reply;
 	}
 	
+	public boolean isIs_cmd() {
+		return is_cmd;
+	}
+	public void setIs_cmd(boolean is_cmd) {
+		this.is_cmd = is_cmd;
+	}
 	public boolean isIs_auto() {
 		return is_auto;
 	}
@@ -203,6 +211,6 @@ public class CenterSetConf implements Serializable{
 		this.is_auto = is_auto;
 	}
 	public String toJson() {
-		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, roomid, is_auto, is_online, thank_gift, advert, follow, reply));
+		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, is_cmd, roomid, is_auto, is_online, thank_gift, advert, follow, reply));
 	}
 }

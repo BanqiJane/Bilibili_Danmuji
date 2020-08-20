@@ -7,9 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.AutoReplySet;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
+import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
+import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
-
 
 /**
  * @ClassName AutoReplyThread
@@ -35,6 +36,7 @@ public class AutoReplyThread extends Thread {
 		boolean is_send = false;
 		String hourString = null;
 		String hourReplace = null;
+		String keywords[] = null;
 		short hour = 1;
 		while (!FLAG) {
 			if (FLAG) {
@@ -60,72 +62,24 @@ public class AutoReplyThread extends Thread {
 						}
 						if (!is_shield) {
 							for (String keyword : autoReplySet.getKeywords()) {
-								if (autoReply.getBarrage().contains(keyword)) {
-									kNum++;
+								if (StringUtils.indexOf(keyword, "||") != -1) {
+									keywords = StringUtils.split(keyword, "||");
+									for (String k : keywords) {
+										if (autoReply.getBarrage().contains(k)) {
+											kNum++;
+											break;
+										}
+									}
+								} else {
+									if (autoReply.getBarrage().contains(keyword)) {
+										kNum++;
+									}
 								}
 							}
 							if (kNum == kSize) {
 								if (!StringUtils.isEmpty(autoReplySet.getReply())) {
-									// 替换%NAME%参数
-									if (!autoReplySet.getReply().equals("%NAME%")) {
-										replyString = autoReplySet.getReply().replaceAll("%NAME%", autoReply.getName());
-									} else {
-										replyString = autoReply.getName();
-									}
-									// 替换%FANS%
-									if (!replyString.equals("%FANS%")) {
-										replyString = replyString.replaceAll("%FANS%",
-												String.valueOf(PublicDataConf.FANSNUM));
-									} else {
-										replyString = String.valueOf(PublicDataConf.FANSNUM);
-									}
-									// 替换%TIME%
-									if (!replyString.equals("%TIME%")) {
-										replyString = replyString.replaceAll("%TIME%",
-												JodaTimeUtils.format(System.currentTimeMillis()));
-									} else {
-										replyString =JodaTimeUtils.format(System.currentTimeMillis());
-									}
-									// 替换%BLOCK%参数 和 {{time}}时间参数
-									if (replyString.contains("%BLOCK%")) {
-										replyString = replyString.replaceAll("%BLOCK%", "");
-										if (replyString.contains("{{") && replyString.contains("}}")) {
-											hourString = replyString.substring(replyString.indexOf("{{") + 2,
-													replyString.indexOf("}}"));
-											if (hourString.matches("[0-9]+")) {
-												if (hour <= 720 && hour > 0) {
-													hour = Short.parseShort(hourString);
-												}
-											}
-											hourReplace = replyString.substring(replyString.indexOf("{{"),
-													replyString.indexOf("}}") + 2);
-											if (!replyString.equals(hourReplace)) {
-												replyString = replyString.replace(hourReplace, "");
-											} else {
-												replyString = "";
-											}
-										}
-										if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-											try {
-												HttpUserData.httpPostAddBlock(autoReply.getUid(), hour);
-											} catch (Exception e) {
-												// TODO: handle exception
-											}
-										}
-									}
-//									if(replyString.contains("%%")) {
-//										
-//									}
-									if (!StringUtils.isEmpty(replyString)) {
-										if (PublicDataConf.sendBarrageThread != null
-												&& !PublicDataConf.sendBarrageThread.FLAG) {
-											PublicDataConf.barrageString.add(replyString);
-											is_send = true;
-											synchronized (PublicDataConf.sendBarrageThread) {
-												PublicDataConf.sendBarrageThread.notify();
-											}
-										}
-									}
+									handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+											is_send);
 									break;
 								}
 							}
@@ -134,77 +88,54 @@ public class AutoReplyThread extends Thread {
 						kSize = autoReplySet.getKeywords().size();
 						kNum = 0;
 						is_shield = false;
-						for (String keyword : autoReplySet.getKeywords()) {
-							if (autoReply.getBarrage().contains(keyword)) {
-								kNum++;
+						// 精确匹配
+						if (autoReplySet.getKeywords().size() < 2 && autoReplySet.isIs_accurate()) {
+							for (String keyword : autoReplySet.getKeywords()) {
+								if (StringUtils.indexOf(keyword, "||") != -1) {
+									keywords = StringUtils.split(keyword, "||");
+									for (String k : keywords) {
+										if (autoReply.getBarrage().equals(k)) {
+											// do something
+											handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+													is_send);
+											break;
+										}
+									}
+								} else {
+									if (autoReply.getBarrage().equals(keyword)) {
+										// do something
+										handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+												is_send);
+									}
+								}
 							}
-						}
-						if (kNum == kSize) {
-							if (!StringUtils.isEmpty(autoReplySet.getReply())) {
-								// 替换%NAME%参数
-								if (!autoReplySet.getReply().equals("%NAME%")) {
-									replyString = autoReplySet.getReply().replaceAll("%NAME%", autoReply.getName());
-								} else {
-									replyString = autoReply.getName();
-								}
-								// 替换%FANS%
-								if (!replyString.equals("%FANS%")) {
-									replyString = replyString.replaceAll("%FANS%",
-											String.valueOf(PublicDataConf.FANSNUM));
-								} else {
-									replyString = String.valueOf(PublicDataConf.FANSNUM);
-								}
-								// 替换%TIME%
-								if (!replyString.equals("%TIME%")) {
-									replyString = replyString.replaceAll("%TIME%",
-											JodaTimeUtils.format(System.currentTimeMillis()));
-								} else {
-									replyString =JodaTimeUtils.format(System.currentTimeMillis());
-								}
-								// 替换%BLOCK%参数 和 {{time}}时间参数
-								if (replyString.contains("%BLOCK%")) {
-									replyString = replyString.replaceAll("%BLOCK%", "");
-									if (replyString.contains("{{") && replyString.contains("}}")) {
-										hourString = replyString.substring(replyString.indexOf("{{") + 2,
-												replyString.indexOf("}}"));
-										if (hourString.matches("[0-9]+")) {
-											if (hour <= 720 && hour > 0) {
-												hour = Short.parseShort(hourString);
-											}
-										}
-										hourReplace = replyString.substring(replyString.indexOf("{{"),
-												replyString.indexOf("}}") + 2);
-										//bug 标记
-										System.out.println(hourReplace);
-										if (!replyString.equals(hourReplace)) {
-											replyString = replyString.replace(hourReplace, "");
-										} else {
-											replyString = "";
+						} else {
+							for (String keyword : autoReplySet.getKeywords()) {
+								if (StringUtils.indexOf(keyword, "||") != -1) {
+									keywords = StringUtils.split(keyword, "||");
+									for (String k : keywords) {
+										if (autoReply.getBarrage().contains(k)) {
+											kNum++;
+											break;
 										}
 									}
-									if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-										try {
-											HttpUserData.httpPostAddBlock(autoReply.getUid(), hour);
-										} catch (Exception e) {
-											// TODO: handle exception
-										}
+								} else {
+									if (autoReply.getBarrage().contains(keyword)) {
+										kNum++;
 									}
 								}
-								if (!StringUtils.isEmpty(replyString)) {
-									if (PublicDataConf.sendBarrageThread != null
-											&& !PublicDataConf.sendBarrageThread.FLAG) {
-										PublicDataConf.barrageString.add(replyString);
-										is_send = true;
-										synchronized (PublicDataConf.sendBarrageThread) {
-											PublicDataConf.sendBarrageThread.notify();
-										}
-									}
+							}
+							if (kNum == kSize) {
+								if (!StringUtils.isEmpty(autoReplySet.getReply())) {
+									handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+											is_send);
+									break;
 								}
-								break;
 							}
 						}
 					}
 				}
+				keywords = null;
 				kSize = 0;
 				kNum = 0;
 				is_shield = false;
@@ -230,6 +161,86 @@ public class AutoReplyThread extends Thread {
 						// TODO 自动生成的 catch 块
 //						e.printStackTrace();
 					}
+				}
+			}
+		}
+	}
+
+	private synchronized void handle(AutoReplySet autoReplySet, String replyString, AutoReply autoReply,
+			String hourString, short hour, String hourReplace, boolean is_send) {
+		// 替换%NAME%参数
+		if (!autoReplySet.getReply().equals("%NAME%")) {
+			replyString = StringUtils.replace(autoReplySet.getReply(), "%NAME%", autoReply.getName());
+		} else {
+			replyString = autoReply.getName();
+		}
+		// 替换%FANS%
+		if (!replyString.equals("%FANS%")) {
+			replyString = StringUtils.replace(replyString, "%FANS%", String.valueOf(PublicDataConf.FANSNUM));
+		} else {
+			replyString = String.valueOf(PublicDataConf.FANSNUM);
+		}
+		// 替换%TIME%
+		if (!replyString.equals("%TIME%")) {
+			replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.format(System.currentTimeMillis()));
+		} else {
+			replyString = JodaTimeUtils.format(System.currentTimeMillis());
+		}
+		// 替换%LIVETIME%
+		if (!replyString.equals("%LIVETIME%")) {
+			if (PublicDataConf.lIVE_STATUS == 1) {
+				replyString = StringUtils.replace(replyString, "%LIVETIME%",
+						CurrencyTools.getGapTime(System.currentTimeMillis()
+								- HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID).getLive_time() * 1000));
+			} else {
+				replyString = StringUtils.replace(replyString, "%LIVETIME%", "0");
+			}
+		} else {
+			if (PublicDataConf.lIVE_STATUS == 1) {
+				replyString = CurrencyTools.getGapTime(System.currentTimeMillis()
+						- HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID).getLive_time() * 1000);
+			} else {
+				replyString = "0";
+			}
+		}
+		// 替换%HOT%
+		if (!replyString.equals("%HOT%")) {
+			replyString = StringUtils.replace(replyString, "%HOT%", PublicDataConf.ROOM_POPULARITY.toString());
+		} else {
+			replyString = PublicDataConf.ROOM_POPULARITY.toString();
+		}
+		// 替换%BLOCK%参数 和 {{time}}时间参数
+		if (replyString.contains("%BLOCK%")) {
+			replyString = StringUtils.replace(replyString, "%BLOCK%", "");
+			if (replyString.contains("{{") && replyString.contains("}}")) {
+				hourString = replyString.substring(replyString.indexOf("{{") + 2, replyString.indexOf("}}"));
+				if (hourString.matches("[0-9]+")) {
+					if (hour <= 720 && hour > 0) {
+						hour = Short.parseShort(hourString);
+					}
+				}
+				hourReplace = replyString.substring(replyString.indexOf("{{"), replyString.indexOf("}}") + 2);
+				if (!replyString.equals(hourReplace)) {
+					replyString = StringUtils.replace(replyString, hourReplace, "");
+				} else {
+					replyString = "";
+				}
+			}
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+				try {
+					if (HttpUserData.httpPostAddBlock(autoReply.getUid(), hour) != 0)
+						replyString = "";
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
+		if (!StringUtils.isEmpty(replyString)) {
+			if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
+				PublicDataConf.barrageString.add(replyString);
+				is_send = true;
+				synchronized (PublicDataConf.sendBarrageThread) {
+					PublicDataConf.sendBarrageThread.notify();
 				}
 			}
 		}

@@ -29,7 +29,7 @@ public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO 自动生成的方法存根
-		checkService.init();
+		checkService.init(0);
 	}
 	
 	@Bean

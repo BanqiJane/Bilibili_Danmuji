@@ -1,4 +1,5 @@
 package xyz.acproject.danmuji.conf;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,6 +10,7 @@ import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.thread.AdvertThread;
 import xyz.acproject.danmuji.thread.AutoReplyThread;
 import xyz.acproject.danmuji.thread.FollowShieldThread;
@@ -87,14 +89,14 @@ public class PublicDataConf {
 	//处理弹幕包集合
 	public final static Vector<String> resultStrs = new Vector<String>(100);
 	//礼物感谢集
-	public final static ConcurrentHashMap<String,Vector<Gift>> thankGiftConcurrentHashMap = new ConcurrentHashMap<String,Vector<Gift>>(3000);
+	public final static Map<String,Vector<Gift>> thankGiftConcurrentHashMap = new ConcurrentHashMap<String,Vector<Gift>>(3000);
 	//待发弹幕集
 	public final static Vector<String> barrageString = new Vector<String>();
 	//log日志待写入集合
 	public final static Vector<String> logString = new Vector<String>(100);
 	//待发送感谢关注集合
 	public final static Vector<Interact> interacts = new Vector<Interact>(200);
-	//弹幕
+	//自动回复处理弹幕
 	public final static Vector<AutoReply> replys = new Vector<AutoReply>();
 	
 	//日志线程
@@ -122,8 +124,15 @@ public class PublicDataConf {
 	//是否显示人气
 	public static Boolean IS_ROOM_POPULARITY =false;
 	
+	
+	
 	public static Long ROOMID_SAFE = null;
-	public static String EDITION ="2.1";
+	public static String EDITION ="2.2";
 
+	
+	
+	//view
+	//房间礼物集合
+	public static Map<Integer, RoomGift> roomGiftConcurrentHashMap = new ConcurrentHashMap<Integer, RoomGift>(300);	
 	
 }
