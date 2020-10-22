@@ -56,7 +56,7 @@ java version "1.8.0_121"
 **Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.**<br/>
 **本软件基于控制台 项目控制台运行，弹幕在控制台显示(也可以在网页查看弹幕).**<br/>
 **本软件基于web设置 必须在浏览器上设置.**<br/>
-**关于绿色版本：使用为开源的openjdk8。[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网")**
+**关于绿色版本：使用为开源的openjdk8。[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网") [红帽安装版官网](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO "红帽openjdk")**
 
 ## 现有功能
 - **弹幕显示**
