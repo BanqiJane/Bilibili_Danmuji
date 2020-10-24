@@ -4,12 +4,12 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.acproject.danmuji.client.WebSocketProxy;
-import xyz.acproject.danmuji.entity.RoomBarrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.thread.AdvertThread;
 import xyz.acproject.danmuji.thread.AutoReplyThread;
@@ -24,6 +24,7 @@ import xyz.acproject.danmuji.thread.core.ParseMessageThread;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
+import xyz.acproject.danmuji.thread.online.SmallHeartThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
 
 /**
@@ -39,6 +40,8 @@ public class PublicDataConf {
 	public static String URL = null;
 	//房间号
 	public static Long ROOMID = null;
+	//短号
+	public static Integer SHORTROOMID = null;
 	//主播uid
 	public static Long AUID = null;
 	//主播粉丝数
@@ -66,17 +69,17 @@ public class PublicDataConf {
 	
 	
 	//心跳包 16进制
-	public static String heartByte="0000001f0010000100000002000000015b6f626a656374204f626a6563745d";
+	public final static String heartByte="0000001f0010000100000002000000015b6f626a656374204f626a6563745d";
 	//包头长
-	public static char packageHeadLength = 16;
+	public final static char packageHeadLength = 16;
 	//验证包协议类型
-	public static int firstPackageType = 7;
+	public final static int firstPackageType = 7;
 	//心跳包协议类型
-	public static int heartPackageType = 2;
+	public final static int heartPackageType = 2;
 	//心跳包&验证包协议版本
-	public static char packageVersion = 1;
+	public final static char packageVersion = 1;
     //心跳包&验证包的尾巴其他
-	public static int packageOther = 1;
+	public final static int packageOther = 1;
 	
 	//websocket客户端主线程
 	public static WebSocketProxy webSocketProxy;
@@ -120,15 +123,19 @@ public class PublicDataConf {
 	public static HeartBeatThread heartBeatThread;
 	public static HeartBeatsThread heartBeatsThread;
 	public static UserOnlineHeartThread userOnlineHeartThread;
+	//小心心线程
+	public static SmallHeartThread smallHeartThread;
 
 	//是否显示人气
 	public static Boolean IS_ROOM_POPULARITY =false;
 	
-	
+	//task
+//	public static SchedulingRunnableUtil dosigntask = null;
 	
 	public static Long ROOMID_SAFE = null;
-	public static String EDITION ="2.2";
-
+	public static String SMALLHEART_ADRESS = null;
+	public static boolean is_sign= false;
+	public static String EDITION ="2.3";
 	
 	
 	//view

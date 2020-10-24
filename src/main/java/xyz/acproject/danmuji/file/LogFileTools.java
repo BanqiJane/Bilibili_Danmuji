@@ -18,21 +18,37 @@ import xyz.acproject.danmuji.utils.JodaTimeUtils;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class LogFileTools {
-	public static void logFile(String msg) {
+	private volatile static LogFileTools logFileTools;
+
+	private LogFileTools() {
+	}
+
+	public static LogFileTools getlogFileTools() {
+		if (logFileTools == null) {
+			synchronized (LogFileTools.class) {
+				if (logFileTools == null) {
+				logFileTools = new LogFileTools();
+				}
+			}
+		}
+		return logFileTools;
+	}
+
+	public void logFile(String msg) {
 		FileWriter fw = null;
-		PrintWriter pw =null;
+		PrintWriter pw = null;
 		String path = System.getProperty("user.dir");
 		FileTools fileTools = new FileTools();
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
-			path = URLDecoder.decode(fileTools.getBaseJarPath().toString(),"utf-8");
+			path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
 		} catch (Exception e1) {
 			// TODO 自动生成的 catch 块
 			e1.printStackTrace();
 		}
 		try {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-			path = path+"/Danmuji_log/";
+			path = path + "/Danmuji_log/";
 			File file = new File(path);
 			file.setWritable(true, false);
 			if (file.exists() == false)
@@ -41,17 +57,17 @@ public class LogFileTools {
 			stringBuilder.append("(");
 			stringBuilder.append(PublicDataConf.ROOMID);
 			stringBuilder.append(")");
-			file = new File(path+stringBuilder.toString()+".txt");
+			file = new File(path + stringBuilder.toString() + ".txt");
 			file.setWritable(true, false);
 			stringBuilder.delete(0, stringBuilder.length());
 			if (file.exists() == false)
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
-			fw = new FileWriter(file,true);
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			fw = new FileWriter(file, true);
 			pw = new PrintWriter(fw);
 			pw.println(msg);
 			pw.flush();
@@ -60,11 +76,11 @@ public class LogFileTools {
 			fw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			if(pw!=null) {
+		} finally {
+			if (pw != null) {
 				pw.close();
 			}
-			if(fw!=null) {
+			if (fw != null) {
 				try {
 					fw.close();
 				} catch (IOException e) {

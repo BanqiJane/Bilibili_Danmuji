@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.entity.RoomBarrageMsg;
+package xyz.acproject.danmuji.entity.user_in_room_barrageMsg;
 
 import java.io.Serializable;
 

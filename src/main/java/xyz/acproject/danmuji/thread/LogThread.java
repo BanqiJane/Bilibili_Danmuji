@@ -31,7 +31,7 @@ public class LogThread extends Thread{
 			}
 			if(null!=PublicDataConf.logString&&!PublicDataConf.logString.isEmpty()&&!StringUtils.isEmpty(PublicDataConf.logString.get(0))) {
 				logString = PublicDataConf.logString.get(0);
-				LogFileTools.logFile(logString);
+				LogFileTools.getlogFileTools().logFile(logString);
 				PublicDataConf.logString.remove(0);
 			}else {
 				synchronized (PublicDataConf.logThread) {

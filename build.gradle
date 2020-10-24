@@ -5,8 +5,9 @@ plugins {
 }
 
 group = 'xyz.acproject.danmuji'
-version = '2.2beta'
+version = '2.3beta'
 sourceCompatibility = '1.8'
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 repositories {
 	//mavenCentral()
@@ -39,15 +40,19 @@ dependencies {
     compile group: 'net.glxn', name: 'qrgen', version: '1.4'
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
-    
-    
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
     
     compile fileTree(dir: 'lib', includes: ['*.jar'])
 }
 configurations {
 	//remove default logger
 	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	
 }
 test {
 	useJUnitPlatform()
+}
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
 }

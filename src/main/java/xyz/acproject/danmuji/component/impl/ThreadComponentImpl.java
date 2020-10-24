@@ -15,6 +15,7 @@ import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
 import xyz.acproject.danmuji.enums.ShieldMessage;
+import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.thread.AdvertThread;
 import xyz.acproject.danmuji.thread.AutoReplyThread;
 import xyz.acproject.danmuji.thread.FollowShieldThread;
@@ -27,6 +28,7 @@ import xyz.acproject.danmuji.thread.core.HeartByteThread;
 import xyz.acproject.danmuji.thread.core.ParseMessageThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
+import xyz.acproject.danmuji.thread.online.SmallHeartThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 
@@ -175,6 +177,10 @@ public class ThreadComponentImpl implements ThreadComponent {
 		PublicDataConf.sendBarrageThread = new SendBarrageThread();
 		PublicDataConf.sendBarrageThread.FLAG = false;
 		PublicDataConf.sendBarrageThread.start();
+		if (PublicDataConf.sendBarrageThread != null
+				&& !PublicDataConf.sendBarrageThread.getState().toString().equals("TERMINATED")) {
+			return true;
+		}
 		return false;
 	}
 
@@ -205,6 +211,27 @@ public class ThreadComponentImpl implements ThreadComponent {
 			return true;
 		} else {
 			closeUserOnlineThread();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean startSmallHeartThread() {
+		// TODO 自动生成的方法存根
+		if (PublicDataConf.smallHeartThread != null
+				&& !PublicDataConf.smallHeartThread.getState().toString().equals("TERMINATED")) {
+			return false;
+		}
+		if(null==PublicDataConf.userOnlineHeartThread) {
+			return false;
+		}
+		PublicDataConf.SMALLHEART_ADRESS = HttpOtherData.httpPostEncsUrl();
+		PublicDataConf.smallHeartThread = new SmallHeartThread();
+		PublicDataConf.smallHeartThread.FLAG = false;
+		PublicDataConf.smallHeartThread.start();
+		if (PublicDataConf.smallHeartThread != null
+				&& !PublicDataConf.smallHeartThread.getState().toString().equals("TERMINATED")) {
+			return true;
 		}
 		return false;
 	}
@@ -394,12 +421,12 @@ public class ThreadComponentImpl implements ThreadComponent {
 			PublicDataConf.advertThread = null;
 		}
 		if (PublicDataConf.ROOMID != null) {
-			if (!PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
-					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
+			if (!PublicDataConf.centerSetConf.getFollow().isIs_open()
+					&& !PublicDataConf.centerSetConf.getThank_gift().isIs_open()
 					&& null == PublicDataConf.autoReplyThread) {
 				closeSendBarrageThread();
 			}
-		}else {
+		} else {
 			closeSendBarrageThread();
 		}
 	}
@@ -441,6 +468,16 @@ public class ThreadComponentImpl implements ThreadComponent {
 				&& !PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")) {
 			PublicDataConf.followShieldThread.FLAG = false;
 			PublicDataConf.followShieldThread.interrupt();
+		}
+	}
+
+	@Override
+	public void closeSmallHeartThread() {
+		// TODO 自动生成的方法存根
+		if(PublicDataConf.smallHeartThread!=null) {
+			PublicDataConf.smallHeartThread.FLAG=true;
+			PublicDataConf.smallHeartThread.interrupt();
+			PublicDataConf.smallHeartThread=null;
 		}
 	}
 

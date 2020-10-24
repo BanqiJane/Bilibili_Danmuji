@@ -68,13 +68,47 @@
 
 								</div>
 								<div id="danmu">
-									<!-- <div class="danmu-child">
-									<span class="danmu-time">17:02:46</span><a
-										href="javasript:void(0)"><span class="danmu-name">[舰长][房管]名字</span>:</a><span
-										class="danmu-text">哈哈哈哈</span>
-								</div> -->
-									<!-- 								<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
-									它说:那个框是对面拉比克偷的</div> -->
+									<!-- <div class="danmu-child" uid="0">
+										<span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span
+											class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span
+											class="danmu-vip">爷</span><span class="danmu-manager">管</span><span
+											class="danmu-ul">UL19</span><a href="javasript:void(0)"><span
+											class="danmu-name name-guard">名字</span>:</a><span
+											class="danmu-text">哈哈哈哈</span>
+											<div class="danmu-tips">
+											<ul class="danmu-tips-ul">
+											<li class="danmu-tips-li">禁言</li>
+											<li class="danmu-tips-li">查看</li>
+											<li class="danmu-tips-li">关闭</li>
+											</ul>
+											</div>
+									</div>
+									<div class="danmu-child" uid="0">
+										<span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a
+											href="javasript:void(0)"><span
+											class="danmu-name name-guard">名字</span></a><span
+											class="danmu-text">赠送了 辣条 x 10</span>
+									</div>
+									<div class="danmu-child" uid="0">
+										<span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a
+											href="javasript:void(0)"><span
+											class="danmu-name name-guard">名字</span></a><span
+											class="danmu-text">已被禁言</span>
+									</div>
+									<div class="danmu-child" uid="0">
+										<span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>
+										<span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span
+											class="danmu-name name-guard">名字</span></a><span
+											class="danmu-text">进入直播间</span>
+									</div>
+									<div class="danmu-child" uid="0">
+										<span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>
+										<a href="javasript:void(0)"><span
+											class="danmu-name name-guard">名字</span></a><span
+											class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>
+									</div> -->
+									<!-- 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
+										它说:那个框是对面拉比克偷的</div> -->
 								</div>
 							</div>
 						</div>
@@ -107,14 +141,14 @@
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_barrage_guard"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示老爷图标">舰</span>
+										data-placement="top" title="" data-original-title="弹幕是否显示舰长图标">舰</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_barrage_vip"> <span
 										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示舰长图标">爷</span>
+										data-placement="top" title="" data-original-title="弹幕是否显示老爷图标">爷</span>
 									</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
@@ -316,7 +350,7 @@
 										data-toggle="tooltip" data-html="true" data-placement="top"
 										title=""
 										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"></textarea>
-				<!-- 					<input
+									<!-- 					<input
 										class="form-control one_people input-margin-b thankgift_thank"
 										placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
 										data-toggle="tooltip" data-placement="top" title=""
@@ -414,14 +448,13 @@
 									</div>
 								</div>
 								<div class="form-group footer-set">
-<!-- 									<input class="form-control follow_follows"
+									<!-- 									<input class="form-control follow_follows"
 										placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
 										data-placement="top" title="" data-html="true"
 										data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
-										<textarea class="form-control input-margin-b follow_follows"
-										placeholder="谢谢 %uNames% 的关注~"
-										data-toggle="tooltip" data-html="true" data-placement="top"
-										title=""
+									<textarea class="form-control input-margin-b follow_follows"
+										placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
+										data-html="true" data-placement="top" title=""
 										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> %uNames%关注人名称集合"></textarea>
 								</div>
 							</div>
@@ -463,15 +496,31 @@
 								</div>
 							</div>
 							<div class="input-group mb-1">
-								<h5>实验性设置(需要登录)</h5>
+								<h5>实验性设置</h5>
 							</div>
-							<div class="input-group mb-3 other-set">
+							<div class="input-group mb-3 othser-set">
+								<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
+										class="form-check-input is_dosign"> <span
+										class="_description" data-toggle="tooltip"
+										data-placement="top" title="" data-html="true"
+										data-original-title="是否自动直播签到，每天凌晨0点30分检查签到">自动签到</span>
+									</label>
+								</div>
 								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_online"> <span
 										class="_description" data-toggle="tooltip"
 										data-placement="top" title="" data-html="true"
 										data-original-title="是否打开用户在线心跳">在线心跳</span>
+									</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
+										class="form-check-input is_sh"> <span
+										class="_description" data-toggle="tooltip"
+										data-placement="top" title="" data-html="true"
+										data-original-title="是否打开获取在线小心心，不知道什么时候失效且用且珍惜">小心心</span>
 									</label>
 								</div>
 							</div>
@@ -614,6 +663,24 @@
 								class="btn btn-danger btn-sm reply_delete_i">删除</button></li>
 					</ul>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div class="block-mask" style="display: none;">
+		<div class="block-wrap">
+			<div class="t">
+				禁言窗口 <i class="btn-close"> </i>
+			</div>
+			<div class="con">
+				<div class="input-group mb-3">
+									<div class="form-group block-set">
+										<input class="form-control form-control-sm block-input" type="number" min="1" max="720" placeholder="禁言时间1-720小时" data-toggle="tooltip" data-placement="top" title="" data-html="true" value="" data-original-title="">
+									</div>
+									<div class="form-group block-button">
+										<button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
+									</div>
+
+								</div>
 			</div>
 		</div>
 	</div>

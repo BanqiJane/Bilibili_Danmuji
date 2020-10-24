@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -19,6 +20,7 @@ import xyz.acproject.danmuji.entity.room_data.RoomInfo;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
 import xyz.acproject.danmuji.entity.view.RoomGift;
+import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
@@ -47,7 +49,7 @@ public class HttpRoomData {
 		Map<String, String> headers = null;
 		Map<String, String> datas = null;
 		headers = new HashMap<>(3);
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
@@ -90,7 +92,7 @@ public class HttpRoomData {
 		short code = -1;
 		Map<String, String> headers = null;
 		headers = new HashMap<>(3);
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 //		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
@@ -172,14 +174,14 @@ public class HttpRoomData {
 		headers = new HashMap<>(3);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 //		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 //			headers.put("cookie", PublicDataConf.USERCOOKIE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="
-							+ PublicDataConf.ROOMID, headers, null)
+							+ CurrencyTools.parseRoomId(), headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -192,7 +194,7 @@ public class HttpRoomData {
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
-			roomInfo = jsonObject.getObject(((JSONObject) jsonObject.get("data")).getString("room_info"),
+			roomInfo = JSON.parseObject(((JSONObject) jsonObject.get("data")).getString("room_info"),
 					RoomInfo.class);
 		} else {
 			LOGGER.error("获取房间详细信息失败，请稍后尝试:" + jsonObject.getString("message"));
@@ -339,7 +341,7 @@ public class HttpRoomData {
 		}
 		for (int i = 1; i <= page; i++) {
 			headers = new HashMap<>(3);
-			headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+			headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 			headers.put("user-agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 //			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
@@ -396,7 +398,7 @@ public class HttpRoomData {
 		JSONObject jsonObject = null;
 		short code = -1;
 		headers = new HashMap<>(3);
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 //		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
@@ -436,14 +438,14 @@ public class HttpRoomData {
 		headers = new HashMap<>(3);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 //		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 //			headers.put("cookie", PublicDataConf.USERCOOKIE);
 //		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/lottery-interface/v1/Anchor/Check?roomid="
-							+ PublicDataConf.ROOMID, headers, null)
+							+ CurrencyTools.parseRoomId(), headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -475,11 +477,11 @@ public class HttpRoomData {
 		headers = new HashMap<>(3);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id="
-							+ PublicDataConf.ROOMID, headers, null)
+							+ CurrencyTools.parseRoomId(), headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块

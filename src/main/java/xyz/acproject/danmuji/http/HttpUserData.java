@@ -16,10 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 import okhttp3.Headers;
 import okhttp3.Response;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.entity.RoomBarrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.user_data.User;
+import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
+import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
 /**
@@ -205,14 +206,14 @@ public class HttpUserData {
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
-							+ PublicDataConf.ROOMID, headers, null)
+							+ CurrencyTools.parseRoomId(), headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -254,7 +255,7 @@ public class HttpUserData {
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
@@ -397,7 +398,7 @@ public class HttpUserData {
 		headers = new HashMap<>(4);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + PublicDataConf.ROOMID);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
@@ -480,6 +481,41 @@ public class HttpUserData {
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			LOGGER.error(e);
+		}
+	}
+	/**
+	 * 签到
+	 * @return
+	 */
+	public static void httpGetDoSign() {
+		String data = null;
+		JSONObject jsonObject = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://link.bilibili.com/p/center/index");
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		try {
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.live.bilibili.com/xlive/web-ucenter/v1/sign/DoSign", headers, null)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return;
+		jsonObject = JSONObject.parseObject(data);
+		int code = jsonObject.getShort("code");
+		if (code == 0) {
+			LOGGER.debug(((JSONObject)jsonObject.get("data")).getString("specialText"));
+		}else if(code== 1011040) {
+			LOGGER.debug(jsonObject.get("message"));
+		} else {
+			LOGGER.error("签到失败，原因：" + jsonObject.toString());
 		}
 	}
 }

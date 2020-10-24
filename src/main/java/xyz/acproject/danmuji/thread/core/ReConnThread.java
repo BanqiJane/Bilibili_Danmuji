@@ -16,6 +16,7 @@ public class ReConnThread extends Thread {
 	public volatile boolean RFLAG = false;
 	private volatile Integer num =0;
 	private ClientServiceImpl clientService = SpringUtils.getBean(ClientServiceImpl.class); 
+	private int TIME = 10000;
 
 	@Override
 	public synchronized void run() {
@@ -23,7 +24,7 @@ public class ReConnThread extends Thread {
 		super.run();
 		while (!RFLAG) {
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(TIME);
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
@@ -32,9 +33,10 @@ public class ReConnThread extends Thread {
 				return;
 			}
 			if(num>20) {
-				RFLAG=true;
-				num=0;
-				return;
+				this.TIME = 300000;
+//				RFLAG=true;
+//				num=0;
+//				return;
 			}
 			if (!PublicDataConf.webSocketProxy.isOpen()) {
 				try {
@@ -44,7 +46,7 @@ public class ReConnThread extends Thread {
 					e.printStackTrace();
 				}
 				num++;
-			System.out.println("每十秒,进行重连第"+num+"次(來源於綫程重連機制beta1.1)");
+			System.out.println("每"+this.TIME/1000+"秒,进行重连第"+num+"次(來源於綫程重連機制beta1.2)");
 			}else {
 				num=0;
 				RFLAG=true;

@@ -26,6 +26,7 @@ import xyz.acproject.danmuji.entity.danmu_data.BlockMessage;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Guard;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
+import xyz.acproject.danmuji.entity.high_level_danmu.Hbarrage;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
@@ -49,7 +50,7 @@ import xyz.acproject.danmuji.utils.SpringUtils;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
-public class ParseMessageThread extends Thread {
+public class ParseMessageThread extends Thread{
 	private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
 	public volatile boolean FLAG = false;
 	private ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap;
@@ -80,6 +81,8 @@ public class ParseMessageThread extends Thread {
 		String message = "";
 		String cmd = "";
 		short msg_type = 0;
+		//high_level danmu
+		Hbarrage hbarrage =null;
 		StringBuilder stringBuilder = new StringBuilder(200);
 		while (!FLAG) {
 			if (FLAG) {
@@ -94,7 +97,7 @@ public class ParseMessageThread extends Thread {
 				} catch (Exception e) {
 					// TODO: handle exception
 					LOGGER.debug("抛出解析异常:" + e);
-					LOGGER.debug(message);
+//					LOGGER.debug(message);
 					synchronized (PublicDataConf.parseMessageThread) {
 						try {
 							PublicDataConf.parseMessageThread.wait();
@@ -137,25 +140,35 @@ public class ParseMessageThread extends Thread {
 							array.getShort(7));
 					// 过滤礼物自动弹幕
 					if (barrage.getMsg_type() == 0) {
+						hbarrage = Hbarrage.copyHbarrage(barrage);
+					    if(barrage.getUid().equals(PublicDataConf.AUID)) {
+					    	hbarrage.setManager((short)2);
+					    }
 						// 判断类型输出
 						stringBuilder.append(JodaTimeUtils.format(barrage.getTimestamp()));
 						stringBuilder.append(":收到弹幕:");
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_vip) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_vip)) {
 							// 老爷
-							stringBuilder.append(ParseIndentityTools.parseVip(barrage));
+								stringBuilder.append(ParseIndentityTools.parseVip(barrage));
+						}else {
+							hbarrage.setVip((short)0);
+							hbarrage.setSvip((short)0);
 						}
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_guard) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_guard)) {
-
 							// 舰长
 							stringBuilder.append(ParseIndentityTools.parseGuard(barrage.getUguard()));
+						}else {
+							hbarrage.setUguard((short)0);
 						}
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_manager) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_manager)) {
 							// 房管
 							stringBuilder
 									.append(ParseIndentityTools.parseManager(barrage.getUid(), barrage.getManager()));
+						}else {
+							hbarrage.setManager((short)0);
 						}
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_medal) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_medal)) {
@@ -164,11 +177,18 @@ public class ParseMessageThread extends Thread {
 								stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
 										.append(barrage.getMedal_level()).append("]");
 							}
+						}else {
+							hbarrage.setMedal_level(null);
+							hbarrage.setMedal_name(null);
+							hbarrage.setMedal_room(null);
+							hbarrage.setMedal_anchor(null);
 						}
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_ul) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_ul)) {
 							// ul等级
 							stringBuilder.append("[").append("UL").append(barrage.getUlevel()).append("]");
+						}else {
+							hbarrage.setUlevel(null);
 						}
 						stringBuilder.append(barrage.getUname());
 						stringBuilder.append(" 它说:");
@@ -179,7 +199,7 @@ public class ParseMessageThread extends Thread {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short)0, hbarrage));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -247,7 +267,7 @@ public class ParseMessageThread extends Thread {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short)0, gift));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -331,13 +351,22 @@ public class ParseMessageThread extends Thread {
 								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
 						System.out.println(stringBuilder.toString());
 						}
+						gift = new Gift();
+						gift.setGiftName(guard.getGift_name());
+						gift.setNum(guard.getNum());
+						gift.setPrice(guard.getPrice());
+						gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
+						gift.setTimestamp(guard.getStart_time());
+						gift.setAction("赠送");
+						gift.setCoin_type((short) 1);
+						gift.setUname(guard.getUsername());
+						gift.setUid(guard.getUid());
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short)0, gift));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
 						}
-
 						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
 							PublicDataConf.logString.add(stringBuilder.toString());
 							synchronized (PublicDataConf.logThread) {
@@ -463,13 +492,14 @@ public class ParseMessageThread extends Thread {
 						stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
 						stringBuilder.append("秒说: ");
 						stringBuilder.append(superChat.getMessage());
+						superChat.setTime(ParseIndentityTools.parseTime(superChat.getTime()));
 						//控制台打印
 						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
 								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("superchat", (short)0, superChat));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -550,7 +580,7 @@ public class ParseMessageThread extends Thread {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("welcomeVip", (short)0, welcomeVip));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -593,7 +623,7 @@ public class ParseMessageThread extends Thread {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("welcomeGuard", (short)0, welcomeGuard));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -640,7 +670,7 @@ public class ParseMessageThread extends Thread {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+							danmuWebsocket.sendMessage(WsPackage.toJson("block", (short)0,blockMessage));
 						} catch (Exception e) {
 							// TODO 自动生成的 catch 块
 							e.printStackTrace();
@@ -1043,7 +1073,7 @@ public class ParseMessageThread extends Thread {
 								}
 							}
 							try {
-								danmuWebsocket.sendMessage(WsPackage.toJson("cmdp", (short)0, stringBuilder.toString()));
+								danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short)0, interact));
 							} catch (Exception e) {
 								// TODO 自动生成的 catch 块
 								e.printStackTrace();
@@ -1066,11 +1096,20 @@ public class ParseMessageThread extends Thread {
 							}
 						}
 					}
-//				     LOGGER.debug("直播间信息:::" + message);		
+					msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+					if(msg_type!=1&&msg_type!=2) {
+//			        LOGGER.debug("直播间信息:::" + message);
+					}
 					break;
 				// 礼物bag bot
 				case "GIFT_BAG_DOT":
 //					LOGGER.debug("礼物bag" + message);
+					break;
+				case "ONLINERANK":
+//					LOGGER.debug("新在线排名更新信息推送:::" + message);
+					break;
+				case "MESSAGEBOX_USER_MEDAL_CHANGE":
+//					LOGGER.debug("本人勋章升级推送:::" + message);
 					break;
 				default:
 //					LOGGER.debug("其他未处理消息:" + message);
@@ -1409,5 +1448,4 @@ public class ParseMessageThread extends Thread {
 
 		return cmd;
 	}
-
 }

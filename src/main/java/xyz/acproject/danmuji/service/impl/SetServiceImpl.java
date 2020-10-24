@@ -2,16 +2,20 @@ package xyz.acproject.danmuji.service.impl;
 
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
 import xyz.acproject.danmuji.component.ServerAddressComponent;
+import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
@@ -28,6 +32,7 @@ import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
+import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 
 /**
  * @ClassName SetServiceImpl
@@ -37,16 +42,19 @@ import xyz.acproject.danmuji.tools.ParseSetStatusTools;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@SuppressWarnings("all")
 @Service
 public class SetServiceImpl implements SetService {
 	private Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);
-	private String cookies = "ySZL4SBB";
+	private final String cookies = "ySZL4SBB";
 	@Autowired
 	private ClientService clientService;
 	@Autowired
 	private ThreadComponent threadComponent;
 	@Autowired
 	private ServerAddressComponent serverAddressComponent;
+	@Autowired
+	private TaskRegisterComponent taskRegisterComponent;
 
 	public void init(int i) {
 		Hashtable<String, String> hashtable = new Hashtable<String, String>();
@@ -109,7 +117,6 @@ public class SetServiceImpl implements SetService {
 		}
 		if (PublicDataConf.centerSetConf.getReply() == null) {
 			PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
-			;
 		}
 		hashtable.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
 		ProFileTools.write(hashtable, "DanmujiProfile");
@@ -169,9 +176,11 @@ public class SetServiceImpl implements SetService {
 			// 公告和检查更新
 			System.out.println();
 			System.out.println();
-			System.out.println("参考本地浏览器进入设置页面地址: 1、http://127.0.0.1:23333;2、http://localhost:23333;3、"+serverAddressComponent.getAddress());
-			System.out.println("参考局域网浏览器进入设置页面地址: 1、"+serverAddressComponent.getAddress());
-			System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、"+serverAddressComponent.getRemoteAddress());
+			System.out.println(
+					"参考本地浏览器进入设置页面地址: 1、http://127.0.0.1:" + serverAddressComponent.getPort() + ";2、http://localhost:"
+							+ serverAddressComponent.getPort() + ";3、" + serverAddressComponent.getAddress());
+			System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
+			System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
 			System.out.println();
 			System.out.println("最新公告：" + HttpOtherData.httpGetNewAnnounce());
 			String edition = HttpOtherData.httpGetNewEdition();
@@ -197,7 +206,8 @@ public class SetServiceImpl implements SetService {
 			}
 			// window用默认浏览器打开网页
 			try {
-				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+serverAddressComponent.getAddress());
+				Runtime.getRuntime()
+						.exec("rundll32 url.dll,FileProtocolHandler " + serverAddressComponent.getAddress());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				System.out.println(
@@ -264,11 +274,29 @@ public class SetServiceImpl implements SetService {
 		hashtable.clear();
 	}
 
+
 	/**
 	 * 保存配置并执行
 	 *
 	 */
 	public void holdSet(CenterSetConf centerSetConf) {
+		if (PublicDataConf.centerSetConf.isIs_dosign()) {
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+				if(!PublicDataConf.is_sign) {
+				HttpUserData.httpGetDoSign();
+				SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",new Object());
+				taskRegisterComponent.addTask(task, "0 30 0 * * ?");
+				PublicDataConf.is_sign = true;
+				}
+			}
+		}else {
+			try {
+				taskRegisterComponent.destroy();
+			} catch (Exception e) {
+				// TODO 自动生成的 catch 块
+				LOGGER.error("清理定时任务错误："+e);
+			}
+		}
 		if (PublicDataConf.ROOMID == null) {
 			return;
 		}
@@ -330,13 +358,18 @@ public class SetServiceImpl implements SetService {
 					threadComponent.closeAutoReplyThread();
 				}
 			}
-			// useronlinethread
+			// useronlinethread && smallHeartThread
 			if (centerSetConf.isIs_online()) {
 				threadComponent.startUserOnlineThread();
+				if (centerSetConf.isIs_sh()&&PublicDataConf.lIVE_STATUS==1) {
+					threadComponent.startSmallHeartThread();
+				} else {
+					threadComponent.closeSmallHeartThread();
+				}
 			} else {
+				threadComponent.closeSmallHeartThread();
 				threadComponent.closeUserOnlineThread();
 			}
-
 			// sendbarragethread
 			if (PublicDataConf.advertThread == null
 					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
@@ -361,6 +394,7 @@ public class SetServiceImpl implements SetService {
 			threadComponent.closeGiftShieldThread();
 			threadComponent.closeSendBarrageThread();
 			threadComponent.closeFollowShieldThread();
+			threadComponent.closeSmallHeartThread();
 		}
 		if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
 			threadComponent.closeHeartByteThread();
@@ -372,6 +406,7 @@ public class SetServiceImpl implements SetService {
 			threadComponent.closeLogThread();
 			threadComponent.closeGiftShieldThread();
 			threadComponent.closeAutoReplyThread();
+			threadComponent.closeSmallHeartThread();
 			PublicDataConf.SHIELDGIFTNAME = null;
 			PublicDataConf.replys.clear();
 			PublicDataConf.resultStrs.clear();
@@ -393,6 +428,14 @@ public class SetServiceImpl implements SetService {
 		threadComponent.closeFollowShieldThread();
 		threadComponent.closeAutoReplyThread();
 		threadComponent.closeSendBarrageThread();
+		threadComponent.closeSmallHeartThread();
+		// remove task all shutdown !!!!!!
+		try {
+			taskRegisterComponent.destroy();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error("清理定时任务错误："+e);
+		}
 		PublicDataConf.replys.clear();
 		PublicDataConf.thankGiftConcurrentHashMap.clear();
 		PublicDataConf.barrageString.clear();

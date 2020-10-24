@@ -2,6 +2,7 @@ $(function() {
 	"use strict";
 	var time;
 	var socket = null;
+	var sliceh =0;
 	time = setInterval(heartBeat, 30000);
 	function heartBeat() {
 		"use strict";
@@ -84,9 +85,18 @@ $(function() {
 			return;
 		}
 		if(!$(this).attr("disabled")){
-		openSocket(socket,a);
+		openSocket(socket,a,sliceh);
 		$(this).attr("disabled",true);
 	}
+	});
+	$('body').click(function(e) {
+		var target = $(e.target);
+		if (!target.is('.danmu-child-li')) {
+			if ($('.danmu-tips').is(':visible')) {
+				$('.danmu-tips').hide();
+				$('.danmu-child').removeClass('danmu-child-z');
+			}
+		}
 	});
 });
 $(document).on(
@@ -126,6 +136,8 @@ $(document).on(
 			set.is_follow = $(".is_follow").is(':checked');
 			set.is_log = $(".is_log").is(':checked');
 			set.is_online = $(".is_online").is(':checked');
+			set.is_sh = $(".is_sh").is(':checked');
+			set.is_dosign = $(".is_dosign").is(':checked');
 			set.thank_gift.is_open = $(".thankgift_is_open").is(':checked');
 			set.thank_gift.is_live_open = $(".thankgift_is_live_open").is(
 					':checked');
@@ -283,6 +295,15 @@ $(document).on('click', '.is_guard_report_click', function() {
 	}
 
 });
+$(document).on('click', '.is_online', function() {
+	if ($(".is_online").is(':checked')) {
+		$(".is_sh").attr("disabled", false);
+	} else {
+		$(".is_sh").attr("disabled", true);
+		$(".is_sh").prop('checked', false);
+	}
+
+});
 $(document).on('click', '#gift-shield-btn', function() {
 	if (!$(".shieldgifts-mask").is(":visible")) {
 		$(".shieldgifts-mask").show();
@@ -297,6 +318,9 @@ $(document).on('click', '#replys-btn', function() {
 });
 $(document).on('click', '.btn-close', function() {
 	var is_kong = false;
+	if($(".block-mask").is(":visible")){
+		$(".block-mask").hide();
+	}
 	if ($(".shieldgifts-mask").is(":visible")) {
 		$(".shieldgifts-tbody").children("tr").each(function(i,v){
 			if($(".shieldgifts_name").eq(i).val().trim()==""){
@@ -322,6 +346,26 @@ $(document).on('click', '.btn-closer', function() {
 		});
 		if(!is_hide)return;
 		$(".replys-mask").hide();
+	}
+});
+$(document).on('click', '.btn-block', function() {
+	const uid =$(".block-input").attr("uid");
+	const time = $(".block-input").val();
+	if(time!==""&&time!==null&&time.indexOf(".")<0&&Number(time)>0&&Number(time)<=720) {
+	if(Number(time)>720&&Number(time)<1){
+		alert("禁言时间错误")
+	}else{
+	const code = method.block(uid,time);
+	if(code===0){
+		alert("禁言成功");
+		$(".block-mask").hide();
+	}else{
+		alert("禁言失败");
+		console.log("禁言纠错码:"+code)
+	}
+	}
+	}else{
+		alert("请输入正确的时间")
 	}
 });
 $(document)
@@ -437,6 +481,153 @@ $(document).on('click','#checkupdate',function(){
 		},1000)
 	});
 });
+$(document).on('click','.danmu-child',function(e){
+	$(this).children(".danmu-tips").css("left",e.pageX-$(this).offset().left);
+	$(this).addClass("danmu-child-z");
+	$(this).children(".danmu-tips").show();
+	$(this).siblings().children(".danmu-tips").hide();
+	$(this).siblings().removeClass("danmu-child-z");
+});
+$(document).on('click','.danmu-tips-li',function(e){
+	e.stopPropagation();
+	const text = $(this).text();
+	const uname = $(this).parent().parent().parent().children().find(".danmu-name").text();
+	const uid = $(this).parent().parent().attr("uid");
+	if(text.trim()==="关闭"){
+		$(this).parents().children(".danmu-tips").hide();
+		$(".danmu-tips").hide();
+		$(this).parents().children(".danmu-child").removeClass("danmu-child-z");
+	}else if(text.trim()==="查看"){
+		window.open("https://space.bilibili.com/"+uid,'width=1000,height=800', '_blank');
+	}else if(text.trim()==="禁言"){
+			$(".block-input").attr("uid", uid);
+			$(".block-input").val("");
+			$(".block-input").attr("placeholder", "禁言(" + uname + "-" + uid + ")" + "-禁言时间为1-720小时");
+			$(".block-mask").show();
+	}else{
+		
+	}
+});
+const danmuku = {
+		// 0弹幕 1礼物 2消息
+		type:function(t){
+			if(t===0){
+				return `<span class="danmu-type">弹幕</span>`;
+			}else if(t===1){
+				return `<span class="danmu-type">礼物</span>`;
+			}else if(t===2){
+				return `<span class="danmu-type">留言</span>`;
+			}else{
+				return `<span class="danmu-type">消息</span>`;
+			}
+		},
+		time:function(d){
+			return `<span class="danmu-time">`+format(d.timestamp,false)+`</span>`;
+		},
+	    only_time:function(d){
+			return `<span class="danmu-time">`+format(d,false)+`</span>`;
+		},
+		medal:function(d){
+			if(d.medal_name!==null&&d.medal_name!==''){
+				return `<span class="danmu-medal">`+d.medal_name+addSpace(d.medal_level)+`</span>`;
+			}
+			return '';
+		},
+		guard:function(d){
+			if(d.uguard>0){
+				return `<span class="danmu-guard">舰</span>`;
+			}else{
+				return '';
+			}
+		},
+		vip:function(d){
+			if(d.vip===1||d.svip===1){
+				return `<span class="danmu-vip">爷</span>`;
+			}else{
+				return '';
+			}
+		},
+		manager:function(d){
+			if(d.manager>0){
+				if(d.manager>1){
+					return `<span class="danmu-manager">播</span>`;
+				}else{
+			     	return `<span class="danmu-manager">管</span>`;
+				}
+			}else{
+				return '';
+			}
+		},
+		ul:function(d){
+			if(d.ulevel!=null){
+				return `<span class="danmu-ul">UL`+addSpace(d.ulevel)+`</span>`;
+			}
+			return '';
+		},
+		dname:function(d){
+			var clazz = "";
+			if(d.uguard>0)clazz="name-guard";
+			if(d.manager>0)clazz="name-manager";
+			return `<a href="javascript:;"><span class="danmu-name`+(clazz===""?"":(" "+clazz))+`">`+d.uname+`:</span></a>`;
+		},
+		dmessage:function(d){
+			return `<span class="danmu-text">`+d.msg+`</span>`;
+		},
+		gname:function(d){
+			var clazz = "";
+			if(d.uguard>0)clazz="name-guard";
+			return `<a href="javascript:;"><span class="danmu-name`+(clazz===""?"":(" "+clazz))+`">`+d.uname+`</span></a>`;
+		},
+		gguard:function(d){
+			if(d.guard_level){
+				return `<span class="danmu-guard">舰</span>`;
+			}else{
+				return '';
+			}
+		},
+		gmessage:function(d){
+			return `<span class="danmu-text">`+d.action+`了 `+d.giftName+` x `+d.num+`</span>`;
+		},
+		stext:function(d){
+			return `<span class="danmu-text">留言了`+d.time+`秒说:`+d.message+`</span>`;
+		},
+		block_type:function(d){
+			if(d.operator===1){
+				return "房管";
+			}else{
+				return "主播";
+			}
+		},
+		tips:function(d){
+			return `<div class="danmu-tips" uid="`+d.uid+`"><ul class="danmu-tips-ul"><li class="danmu-tips-li">禁言</li><li class="danmu-tips-li">查看</li><li class="danmu-tips-li">关闭</li></ul></div>`;
+		},
+		danmu:function(type,d){
+			switch(type){
+			case "danmu":
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(0)+danmuku.time(d)+danmuku.medal(d)+danmuku.guard(d)+danmuku.vip(d)+danmuku.manager(d)+danmuku.ul(d)+danmuku.dname(d)+danmuku.dmessage(d)+danmuku.tips(d)+`</div>`;
+			case "gift":
+				d.timestamp = d.timestamp*1000;
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(1)+danmuku.time(d)+danmuku.gguard(d)+danmuku.gname(d)+danmuku.gmessage(d)+danmuku.tips(d)+`</div>`;
+			case "superchat":
+				d.start_time =d.start_time*1000;
+				d.timestamp = d.start_time;
+				d.uguard = d.user_info.guard_level;
+				d.manager = d.user_info.manager;
+				d.uname= d.user_info.uname;
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(2)+danmuku.time(d)+danmuku.dname(d)+danmuku.stext(d)+danmuku.tips(d)+`</div>`;
+			case "welcomeVip":
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(4)+danmuku.only_time(getTimestamp())+`<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">`+d.uname+`</span></a><span class="danmu-text">老爷进入直播间</span>`+danmuku.tips(d)+`</div>`;
+			case "welcomeGuard":
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(4)+danmuku.only_time(getTimestamp())+`<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">`+d.username+`</span></a><span class="danmu-text">舰长进入直播间</span>`+danmuku.tips(d)+`</div>`;
+			case "block":
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(4)+danmuku.only_time(getTimestamp())+`<a href="javascript:;"><span class="danmu-name">`+d.uname+`</span></a><span class="danmu-text">已被`+danmuku.block_type(d)+`禁言</span>`+danmuku.tips(d)+`</div>`;
+			case "follow":
+				return `<div class="danmu-child" uid="`+d.uid+`">`+danmuku.type(4)+danmuku.time(d)+`<a href="javascript:;"><span class="danmu-name">`+d.uname+`</span></a><span class="danmu-text">关注了直播间</span>`+danmuku.tips(d)+`</div>`;
+			default:
+				return "";
+			}
+	},
+}
 const method = {
 	getSet : function() {
 		"use strict";
@@ -494,6 +685,8 @@ const method = {
 			$(".is_follow").prop('checked', set.is_follow);
 			$(".is_log").prop('checked', set.is_log);
 			$(".is_online").prop('checked', set.is_online);
+			$(".is_sh").prop('checked', set.is_sh);
+			$(".is_dosign").prop('checked', set.is_dosign);
 			$(".thankgift_is_open").prop('checked', set.thank_gift.is_open);
 			$(".thankgift_is_live_open").prop('checked',
 					set.thank_gift.is_live_open);
@@ -582,8 +775,17 @@ const method = {
 				$(".thankgift_report").hide();
 				$(".thankgift_barrageReport").hide();
 			}
+			if ($(".is_online").is(':checked')) {
+				$(".is_sh").prop('checked', set.is_sh);
+				$(".is_sh").attr("disabled", false);
+			} else {
+				$(".is_sh").attr("disabled", true);
+				$(".is_sh").prop('checked', false);
+			}
 			if (!$(".card-body").find(".logined").length > 0) {
 				$(".is_online").attr("disabled", true);
+				$(".is_dosign").attr("disabled",true);
+				$(".is_sh").attr("disabled", true);
 				$(".thankgift_is_open").attr("disabled", true);
 				$(".thankgift_is_live_open").attr("disabled", true);
 				$(".thankgift_is_tx_shield").attr("disabled", true);
@@ -779,8 +981,28 @@ const method = {
 		});
 		return deferred.promise();
 	},
+	block : function (uid,time){
+		var code =null;
+		$.ajax({
+			url : '../block',
+			data:{
+				uid:uid,
+				time,time
+			},
+			async : false,
+			cache : false,
+			type : 'GET',
+			dataType : 'json',
+			success : function(data) {
+				if (data.code == "200") {
+					code = data.result
+				}
+			}
+		});
+		return code;
+	},
 };
-function openSocket(socket,ip) {
+function openSocket(socket,ip,sliceh) {
 	if (typeof (WebSocket) == "undefined") {
 		alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
 	} else {
@@ -808,14 +1030,40 @@ function openSocket(socket,ip) {
 			if ($("#danmu").children().length > 99) {
 				$("#danmu").children().first().remove();
 				$("#danmu").children("div:last-child").after(
-						"<div class='danmu-child'>" + data.result + "<div/>");
+						"<div class='danmu-child'>" + data.result + "</div>");
 			} else {
-				$("#danmu").append(
-						"<div class='danmu-child'>" + data.result  + "<div/>");
+				$("#danmu").append("<div class='danmu-child'>" + data.result + "</div>");
 			}
-			if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= 804) {
-				$('#danmu').scrollTop($('#danmu')[0].scrollHeight);
+			var lastNodeH = $(".danmu-child").eq(-1).height();
+			var lasttNodeH = $(".danmu-child").eq(-2).height();
+			if(Math.abs(lastNodeH-lasttNodeH)>sliceh){
+			sliceh = Math.abs(lastNodeH-lasttNodeH);
 			}
+			if ($('#danmu')[0].scrollHeight -$("#danmu").scrollTop() <= (804+sliceh)) {
+		        var h = $("div[class='danmu-child']:last").height();
+		        var top = $("div[class='danmu-child']:last").offset().top + h + 6;
+		        $("#danmu").scrollTop($("#danmu").scrollTop() + top);
+// $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
+			}
+			}else{
+				if ($("#danmu").children().length > 99) {
+					$("#danmu").children().first().remove();
+					$("#danmu").children("div:last-child").after(
+							danmuku.danmu(data.cmd, data.result));
+				} else {
+					$("#danmu").append(danmuku.danmu(data.cmd, data.result));
+				}
+				var lastNodeH = $(".danmu-child").eq(-1).height();
+				var lasttNodeH = $(".danmu-child").eq(-2).height();
+				if(Math.abs(lastNodeH-lasttNodeH)>sliceh){
+				sliceh = Math.abs(lastNodeH-lasttNodeH);
+				}
+				if ($('#danmu')[0].scrollHeight -$("#danmu").scrollTop() <= (804+sliceh)) {
+			        var h = $("div[class='danmu-child']:last").height();
+			        var top = $("div[class='danmu-child']:last").offset().top + h + 6;
+			        $("#danmu").scrollTop($("#danmu").scrollTop() + top);
+	// $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
+				}
 			}
 		};
 		// 关闭事件
@@ -838,4 +1086,24 @@ function sendMessage() {
 		socket.send('{"toUserId":"' + $("#toUserId").val()
 				+ '","contentText":"' + $("#contentText").val() + '"}');
 	}
+}
+function add0(m){return m<10?'0'+m:m }
+function addSpace(m){return m<10?' '+m:m }
+function format(timestamp,flag)
+{
+var time = new Date(parseInt(timestamp));
+var y = time.getFullYear();
+var m = time.getMonth()+1;
+var d = time.getDate();
+var h = time.getHours();
+var mm = time.getMinutes();
+var s = time.getSeconds();
+if(flag){
+	return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+}else{
+	return add0(h)+':'+add0(mm)+':'+add0(s);
+}
+}
+function getTimestamp(){
+	return (new Date()).getTime();
 }

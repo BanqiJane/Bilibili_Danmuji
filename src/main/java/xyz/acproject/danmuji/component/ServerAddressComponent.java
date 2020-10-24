@@ -12,15 +12,23 @@ import xyz.acproject.danmuji.http.HttpOtherData;
 @Component
 public class ServerAddressComponent implements ApplicationListener<WebServerInitializedEvent>{
 	private int serverPort;
+	
+	
+	public int getPort() {
+		return this.serverPort;
+	}
 	public String getAddress() {
 		InetAddress address = null;
+		String addressStr = "";
 		try {
 			address=InetAddress.getLocalHost();
+			addressStr = address.getHostAddress();
 		} catch (UnknownHostException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
+			addressStr = "获取失败";
 		}
-		return "http://"+ address.getHostAddress() +":"+this.serverPort;
+		return "http://"+ addressStr +":"+this.serverPort;
 	}
 	/**
 	 * @return

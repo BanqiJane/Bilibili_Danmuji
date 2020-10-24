@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>BiliBili_Danmuji</name>
-	<comment>Project BiliBili_Danmuji created by Buildship.</comment>
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -12,11 +12,6 @@
 		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>org.springframework.ide.eclipse.boot.validation.springbootbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

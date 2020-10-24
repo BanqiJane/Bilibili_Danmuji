@@ -43,7 +43,7 @@ public class ParseThankGiftThread extends Thread {
 		String thankGiftStr = null;
 		Vector<Gift> gifts = null;
 		StringBuilder stringBuilder = new StringBuilder(200);
-		Gift gift=null;
+		Gift gift = null;
 		synchronized (timestamp) {
 			while (!TFLAG) {
 				if (TFLAG) {
@@ -61,7 +61,7 @@ public class ParseThankGiftThread extends Thread {
 				if (nowTime - getTimestamp() < getDelaytime()) {
 				} else {
 					if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
-						
+
 						for (Entry<String, Vector<Gift>> entry : PublicDataConf.thankGiftConcurrentHashMap.entrySet()) {
 							gifts = entry.getValue();
 							for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
@@ -80,11 +80,12 @@ public class ParseThankGiftThread extends Thread {
 							if (getThankGiftStatus() == ThankGiftStatus.one_people) {
 								for (Iterator<Gift> iterator = gifts.iterator(); iterator.hasNext();) {
 									gift = iterator.next();
-									
-									thankGiftStr =StringUtils.replace(handleThankStr(getThankGiftString()),"%uName%",gift.getUname());
-									thankGiftStr = StringUtils.replace(thankGiftStr,"%GiftName%",gift.getGiftName());
-									thankGiftStr = StringUtils.replace(thankGiftStr,"%Num%",gift.getNum().toString());
-									thankGiftStr = StringUtils.replace(thankGiftStr,"%Type%",gift.getAction());
+
+									thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()), "%uName%",
+											gift.getUname());
+									thankGiftStr = StringUtils.replace(thankGiftStr, "%GiftName%", gift.getGiftName());
+									thankGiftStr = StringUtils.replace(thankGiftStr, "%Num%", gift.getNum().toString());
+									thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%", gift.getAction());
 									if (PublicDataConf.sendBarrageThread != null
 											&& !PublicDataConf.sendBarrageThread.FLAG) {
 										PublicDataConf.barrageString.add(thankGiftStr);
@@ -101,7 +102,8 @@ public class ParseThankGiftThread extends Thread {
 										if (j >= gifts.size()) {
 											break;
 										}
-										thankGiftStr =StringUtils.replace(handleThankStr(getThankGiftString()),"%uName%",entry.getKey());
+										thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()),
+												"%uName%", entry.getKey());
 										if (isIs_num()) {
 											stringBuilder.append(gifts.get(j).getNum()).append("个")
 													.append(gifts.get(j).getGiftName()).append(",");
@@ -110,7 +112,8 @@ public class ParseThankGiftThread extends Thread {
 										}
 									}
 									stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-									thankGiftStr =StringUtils.replace(thankGiftStr,"%Gifts%",stringBuilder.toString());
+									thankGiftStr = StringUtils.replace(thankGiftStr, "%Gifts%",
+											stringBuilder.toString());
 									stringBuilder.delete(0, stringBuilder.length());
 									if (PublicDataConf.sendBarrageThread != null
 											&& !PublicDataConf.sendBarrageThread.FLAG) {
@@ -151,7 +154,7 @@ public class ParseThankGiftThread extends Thread {
 											&& !PublicDataConf.sendBarrageThread.FLAG) {
 										PublicDataConf.barrageString
 												.add(somePeoplesHandle(PublicDataConf.thankGiftConcurrentHashMap,
-														getNum(),handleThankStr(getThankGiftString())));
+														getNum(), handleThankStr(getThankGiftString())));
 										synchronized (PublicDataConf.sendBarrageThread) {
 											PublicDataConf.sendBarrageThread.notify();
 										}
@@ -167,7 +170,8 @@ public class ParseThankGiftThread extends Thread {
 											if (j >= gifts.size()) {
 												break;
 											}
-											thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()),"%uNames%",entry.getKey());
+											thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()),
+													"%uNames%", entry.getKey());
 											if (isIs_num()) {
 												stringBuilder.append(gifts.get(j).getNum()).append("个")
 														.append(gifts.get(j).getGiftName()).append(",");
@@ -176,7 +180,8 @@ public class ParseThankGiftThread extends Thread {
 											}
 										}
 										stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-										thankGiftStr = StringUtils.replace(thankGiftStr,"%Gifts%",stringBuilder.toString());
+										thankGiftStr = StringUtils.replace(thankGiftStr, "%Gifts%",
+												stringBuilder.toString());
 										stringBuilder.delete(0, stringBuilder.length());
 										if (PublicDataConf.sendBarrageThread != null
 												&& !PublicDataConf.sendBarrageThread.FLAG) {
@@ -211,10 +216,14 @@ public class ParseThankGiftThread extends Thread {
 			Map.Entry<String, Vector<Gift>> entryMap = iterator.next();
 			stringBuilderName.append(entryMap.getKey()).append(",");
 			for (Gift gift : entryMap.getValue()) {
-				if(isIs_num()) {
-				stringBuilderGifts.append(gift.getNum()).append("个").append(gift.getGiftName()).append(",");
-				}else {
-					stringBuilderGifts.append(gift.getGiftName()).append(",");
+				if (isIs_num()) {
+//				if(!stringBuilderGifts.toString().contains(gift.getGiftName())) {
+					stringBuilderGifts.append(gift.getNum()).append("个").append(gift.getGiftName()).append(",");
+//				}
+				} else {
+					if (!stringBuilderGifts.toString().contains(gift.getGiftName())) {
+						stringBuilderGifts.append(gift.getGiftName()).append(",");
+					}
 				}
 			}
 			i++;
@@ -225,8 +234,8 @@ public class ParseThankGiftThread extends Thread {
 		}
 		stringBuilderGifts.delete(stringBuilderGifts.length() - 1, stringBuilderGifts.length());
 		stringBuilderName.delete(stringBuilderName.length() - 1, stringBuilderName.length());
-		giftString = StringUtils.replace(giftString,"%uNames%",stringBuilderName.toString());
-		giftString = StringUtils.replace(giftString,"%Gifts%",stringBuilderGifts.toString());
+		giftString = StringUtils.replace(giftString, "%uNames%", stringBuilderName.toString());
+		giftString = StringUtils.replace(giftString, "%Gifts%", stringBuilderGifts.toString());
 		return giftString;
 	}
 
@@ -235,12 +244,12 @@ public class ParseThankGiftThread extends Thread {
 		if (StringUtils.indexOf(thankStr, "\n") != -1) {
 			thankGiftStrs = StringUtils.split(thankStr, "\n");
 		}
-		if(thankGiftStrs!=null&&thankGiftStrs.length>1) {
-			return thankGiftStrs[(int) Math.ceil(Math.random() * thankGiftStrs.length)-1];
+		if (thankGiftStrs != null && thankGiftStrs.length > 1) {
+			return thankGiftStrs[(int) Math.ceil(Math.random() * thankGiftStrs.length) - 1];
 		}
 		return thankStr;
 	}
-	
+
 	public Long getTimestamp() {
 		return timestamp;
 	}

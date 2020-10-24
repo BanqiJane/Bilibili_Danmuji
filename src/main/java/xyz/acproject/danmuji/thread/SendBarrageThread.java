@@ -51,7 +51,7 @@ public class SendBarrageThread extends Thread {
 //									strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength));
 //						}
 						try {
-							Thread.sleep(1300);
+							Thread.sleep(1455);
 						} catch (InterruptedException e) {
 							// TODO 自动生成的 catch 块
 //							LOGGER.debug("发送弹幕线程关闭:" + e);
@@ -83,7 +83,7 @@ public class SendBarrageThread extends Thread {
 				}
 				PublicDataConf.barrageString.remove(0);
 				try {
-					Thread.sleep(1300);
+					Thread.sleep(1455);
 				} catch (InterruptedException e) {
 					// TODO 自动生成的 catch 块
 //					LOGGER.debug("发送弹幕线程关闭:" + e);

@@ -46,6 +46,10 @@ public class ClientServiceImpl implements ClientService{
 			return;
 		}
 		RoomInit roomInit = HttpRoomData.httpGetRoomInit(roomid);
+		if(roomInit.getShort_id()>0) {
+			PublicDataConf.SHORTROOMID = roomInit.getShort_id();
+		}
+		PublicDataConf.ROOMID = roomInit.getRoom_id();
 		Room room = HttpRoomData.httpGetRoomData(roomid);
 		try {
 			if (roomInit.getRoom_id() < 1 || roomInit.getRoom_id() == null) {
@@ -55,7 +59,6 @@ public class ClientServiceImpl implements ClientService{
 			// TODO: handle exception
 			return;
 		}
-		PublicDataConf.ROOMID = roomInit.getRoom_id();
 		Conf conf = HttpRoomData.httpGetConf();
 		if (conf == null) {
 			return;
@@ -147,18 +150,40 @@ public class ClientServiceImpl implements ClientService{
 			threadComponent.closeGiftShieldThread();
 			threadComponent.closeFollowShieldThread();
 			threadComponent.closeAutoReplyThread();
+			threadComponent.closeSmallHeartThread();
+			threadComponent.closeParseMessageThread();
+			RoomInit roomInit = HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID);
 			Room room = HttpRoomData.httpGetRoomData(PublicDataConf.ROOMID);
+			try {
+				if (roomInit.getRoom_id() < 1 || roomInit.getRoom_id() == null) {
+					return;
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				return;
+			}
+			if(roomInit.getShort_id()>0) {
+				PublicDataConf.SHORTROOMID = roomInit.getShort_id();
+			}
+			PublicDataConf.ROOMID = roomInit.getRoom_id();
 			Conf conf = HttpRoomData.httpGetConf();
+			if (conf == null) {
+				return;
+			}
+			PublicDataConf.AUID = roomInit.getUid();
 			PublicDataConf.FANSNUM = HttpRoomData.httpGetFollowersNum();
+
 			PublicDataConf.URL = CurrencyTools.GetWsUrl(conf.getHost_list());
+			PublicDataConf.ANCHOR_NAME = room.getUname();
+			PublicDataConf.lIVE_STATUS = roomInit.getLive_status();
 			if (PublicDataConf.lIVE_STATUS == 1) {
 				PublicDataConf.IS_ROOM_POPULARITY = true;
 			}
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				HttpUserData.httpGetUserBarrageMsg();
 			}
-			PublicDataConf.webSocketProxy = new WebSocketProxy(PublicDataConf.URL, room);
 			FristSecurityData fristSecurityData = null;
+			PublicDataConf.webSocketProxy = new WebSocketProxy(PublicDataConf.URL, room);
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
 						conf.getToken());
@@ -169,9 +194,9 @@ public class ClientServiceImpl implements ClientService{
 					fristSecurityData.toJson().toString().getBytes().length + PublicDataConf.packageHeadLength,
 					PublicDataConf.packageHeadLength, PublicDataConf.packageVersion, PublicDataConf.firstPackageType,
 					PublicDataConf.packageOther));
-			byte[] byte_2 = fristSecurityData.toJson().getBytes("utf-8");
+			byte[] byte_2 = fristSecurityData.toJson().getBytes();
 			byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
-			PublicDataConf.webSocketProxy.send(req);
+	 		PublicDataConf.webSocketProxy.send(req);
 			PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
 			threadComponent.startHeartByteThread();
 			if (PublicDataConf.webSocketProxy.isOpen()) {
@@ -203,6 +228,7 @@ public class ClientServiceImpl implements ClientService{
 				threadComponent.closeGiftShieldThread();
 				threadComponent.closeFollowShieldThread();
 				threadComponent.closeAutoReplyThread();
+				threadComponent.closeSmallHeartThread();
 				threadComponent.closeParseMessageThread();
 				PublicDataConf.SHIELDGIFTNAME = null;
 				PublicDataConf.replys.clear();
@@ -215,6 +241,7 @@ public class ClientServiceImpl implements ClientService{
 				PublicDataConf.ANCHOR_NAME = null;
 				PublicDataConf.AUID = null;
 				PublicDataConf.FANSNUM = null;
+				PublicDataConf.SHORTROOMID=null;
 				PublicDataConf.lIVE_STATUS = 0;
 				PublicDataConf.ROOM_POPULARITY = 1L;
 				if (null == PublicDataConf.webSocketProxy || !PublicDataConf.webSocketProxy.isOpen()) {

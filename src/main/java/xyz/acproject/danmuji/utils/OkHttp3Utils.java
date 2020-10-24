@@ -26,9 +26,9 @@ public class OkHttp3Utils {
 	private volatile static OkHttp3Utils okHttp3Utils;
 	private OkHttpClient okHttpClient;
 	// MEDIA_TYPE <==> Content-Type
-	private static final int READ_TIMEOUT = 5;
-	private static final int CONNECT_TIMEOUT = 5;
-	private static final int WRITE_TIMEOUT = 5;
+	private static final int READ_TIMEOUT = 15;
+	private static final int CONNECT_TIMEOUT = 15;
+	private static final int WRITE_TIMEOUT = 15;
 	private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 	// MEDIA_TYPE_TEXT
 	// post请求不是application/x-www-form-urlencoded的，全部直接返回，不作处理，即不会解析表单数据来放到request
