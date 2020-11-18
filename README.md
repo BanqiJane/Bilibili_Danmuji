@@ -182,6 +182,10 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 <blockquote>
 <blockquote>
+<h2>Beta2.3.1</h2>
+<p>修复了小心心bug</p>
+</blockquote>
+<blockquote>
 <h2>Beta2.3</h2>
 <p>修复了若干bug(maybe make more bug)</p>
 <p>优化弹幕保存本地,修复断线重连机制<p/>
