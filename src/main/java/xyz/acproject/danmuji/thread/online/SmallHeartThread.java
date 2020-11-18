@@ -30,7 +30,7 @@ public class SmallHeartThread extends Thread {
 			if (FLAG) {
 				return;
 			}
-			if(num>=25) {
+			if(num>=240) {
 				return;
 			}
 			if(num==0) {
