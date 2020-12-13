@@ -48,6 +48,8 @@ java version "1.8.0_121"
         </tr>
     </tbody>
 </table>
+
+
 # 版本2.3.1
 - **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址")**<br/><br/>
 - **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址")**<br/><br/>
