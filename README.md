@@ -4,8 +4,10 @@
 $ java -version
 java version "1.8.0_121"
 ```
-
-**！！！：1.0.3+版本增加window64绿色版本，再也不用配置安装java环境了**<br/><br/><br/>
+# 版本2.3.1
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址") **<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址") **<br/><br/>
+- **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址") **<br/><br/>
 **Bootstrap4 放弃了对 IE8 以及 iOS 6 的支持，现在仅仅支持 IE9 以上 以及 iOS 7 以上版本的浏览器。**<br/>
 **以最新版本浏览器示例:**
 <table>
@@ -56,7 +58,7 @@ java version "1.8.0_121"
 **Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.**<br/>
 **本软件基于控制台 项目控制台运行，弹幕在控制台显示(也可以在网页查看弹幕).**<br/>
 **本软件基于web设置 必须在浏览器上设置.**<br/>
-**关于绿色版本：使用为开源的openjdk8。[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网") [红帽安装版官网](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO "红帽openjdk")**
+**关于绿色版本：使用为开源的openjdk8。1.[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网") 2.[红帽安装版官网](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO "红帽openjdk")**
 
 ## 现有功能
 - **弹幕显示**
@@ -168,6 +170,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 ## 项目线上实战展示<br/><br/>
 ## [破站-Elysian绿豆直播间](https://live.bilibili.com/26445 "破站ELysian绿豆直播间-豆子哥")(用户名:Elysian绿豆)<br/><br/>
 ## [破站-坂本叔直播间](https://live.bilibili.com/1000 "破站坂本叔直播间") (用户名:坂崎简)<br/><br/>
+## [破站-西凉君君直播间](https://live.bilibili.com/101937 "破站西凉君君直播间") (用户名:西凉君君)<br/><br/>
 **本项目已在坂本叔直播间经过2年多的风吹雨打 最近才想起来开源,请放心使用**<br/>
 **如果您使用了本软件，最好能在破站私聊我吱一下呢**
 
