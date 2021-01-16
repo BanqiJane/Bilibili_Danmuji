@@ -50,9 +50,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.3.1
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.1 "下载地址")**<br/><br/>
+# 版本2.3.2
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.2 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.3.2 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -186,6 +186,12 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+ <blockquote>
+<h2>Beta2.3.2</h2>
+<p>优化小心心逻辑</p>
+<p>修复自动签到</p>
+<p>修复私信接口</p>
+</blockquote>
 <blockquote>
 <h2>Beta2.3.1</h2>
 <p>修复了小心心bug</p>
