@@ -24,13 +24,14 @@ public class SmallHeartThread extends Thread {
 	public void run() {
 		int num=0;
 		RoomInfo roomInfo = HttpRoomData.httpGetRoomInfo();
+		XData xDataIn =null;
 		// TODO 自动生成的方法存根
 		super.run();
 		while (!FLAG) {
 			if (FLAG) {
 				return;
 			}
-			if(num>=240) {
+			if(num>=255) {
 				return;
 			}
 			if(num==0) {
@@ -52,7 +53,12 @@ public class SmallHeartThread extends Thread {
 			}
 			num+=1;
 			try {
-				setxData(HttpHeartBeatData.httpPostX(roomInfo, num, getxData()));	
+				xDataIn = HttpHeartBeatData.httpPostX(roomInfo, num, getxData());
+				if(xDataIn==null||xDataIn.getError()){
+					num=0;
+				}else {
+					setxData(xDataIn);
+				}
 			} catch (Exception e) {
 				// TODO: handle exception
 			}

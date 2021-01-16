@@ -10,13 +10,13 @@ public class XData {
 	private Long ts;
 	private String ua ="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
 	private short[] secret_rule;
+	private Boolean error;
 	public XData() {
 		super();
 		// TODO 自动生成的构造函数存根
 	}
-	
-	public XData(long[] id, String device, Long ets, String benchmark, Short time, Long ts,
-			short[] secret_rule) {
+
+	public XData(long[] id, String device, Long ets, String benchmark, Short time, Long ts, short[] secret_rule, Boolean error) {
 		super();
 		this.id = id;
 		this.device = device;
@@ -25,6 +25,7 @@ public class XData {
 		this.time = time;
 		this.ts = ts;
 		this.secret_rule = secret_rule;
+		this.error = error;
 	}
 
 	public long[] getId() {
@@ -75,5 +76,12 @@ public class XData {
 	public void setSecret_rule(short[] secret_rule) {
 		this.secret_rule = secret_rule;
 	}
-	
+
+	public Boolean getError() {
+		return error;
+	}
+
+	public void setError(Boolean error) {
+		this.error = error;
+	}
 }

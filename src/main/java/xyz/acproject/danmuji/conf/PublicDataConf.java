@@ -37,7 +37,7 @@ import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
  */
 public class PublicDataConf {
 	//url 直播弹幕websocket地址
-	public static String URL = null;
+	public static String URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
 	//房间号
 	public static Long ROOMID = null;
 	//短号

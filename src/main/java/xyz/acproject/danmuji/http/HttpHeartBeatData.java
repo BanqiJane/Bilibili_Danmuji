@@ -166,7 +166,7 @@ public class HttpHeartBeatData {
 			if (jsonObject.getString("message").equals("0")) {
 //				LOGGER.debug("心跳包post发送成功" + jsonObject.getString("data"));
 				smallHeart  = jsonObject.getObject("data", SmallHeart.class);
-				xData = new XData(ids,devices, smallHeart.getTimestamp(), smallHeart.getSecret_key(), smallHeart.getHeartbeat_interval(), ts,smallHeart.getSecret_rule());
+				xData = new XData(ids,devices, smallHeart.getTimestamp(), smallHeart.getSecret_key(), smallHeart.getHeartbeat_interval(), ts,smallHeart.getSecret_rule(),false);
 			} else{
 				LOGGER.error("心跳包Epost发送失败,未知错误,原因未知v:" + jsonObject.toString());
 			}
@@ -239,11 +239,14 @@ public class HttpHeartBeatData {
 				xData.setEts(smallHeart.getTimestamp());
 				xData.setSecret_rule(smallHeart.getSecret_rule());
 				xData.setTime(smallHeart.getHeartbeat_interval());
+				xData.setError(false);
 			} else {
 				LOGGER.error("心跳包Xpost发送失败,未知错误,原因未知v:" + jsonObject.toString());
+				xData.setError(true);
 			}
 		} else {
 			LOGGER.error("发跳包Xpost发送失败,未知错误,原因未知:" + jsonObject.toString());
+			xData.setError(true);
 		}
 		return xData;
 	}
