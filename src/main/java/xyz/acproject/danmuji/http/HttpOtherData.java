@@ -40,7 +40,7 @@ public class HttpOtherData {
 		datas.put("time", String.valueOf(System.currentTimeMillis()));
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
-					.httpGet("http://129.204.79.75/getEdition", headers, datas)
+					.httpGet("http://bilibili.acproject.xyz/getEdition", headers, datas)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -76,7 +76,7 @@ public class HttpOtherData {
 		datas.put("time", String.valueOf(System.currentTimeMillis()));
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
-					.httpGet("http://129.204.79.75/getAnnounce", headers, datas)
+					.httpGet("http://bilibili.acproject.xyz/getAnnounce", headers, datas)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -147,7 +147,7 @@ public class HttpOtherData {
 		datas.put("time", String.valueOf(System.currentTimeMillis()));
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
-					.httpPostForm("http://129.204.79.75/getEncsServer", headers, datas)
+					.httpPostForm("http://bilibili.acproject.xyz/getEncsServer", headers, datas)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -237,7 +237,7 @@ public class HttpOtherData {
 		datas.put("day", day.toString());
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
-					.httpPostForm("http://129.204.79.75/getWeather", headers, datas)
+					.httpPostForm("http://bilibili.acproject.xyz/getWeather", headers, datas)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
