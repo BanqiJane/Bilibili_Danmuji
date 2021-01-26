@@ -1,3 +1,7 @@
+# 特别注意：
+# 2.4版本更换了检查更新服务器和小心心服务器 2.4版本以后的服务器将弃用 注意更新
+
+
 # 运行环境
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
 ```bash
@@ -50,7 +54,6 @@ java version "1.8.0_121"
 </table>
 
 
-# 特别注意 2.4版本更换了检查更新服务器和小心心服务器 2.4版本以后的服务器将弃用 注意更新
 # 版本2.4
 - **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4 "下载地址")**<br/><br/>
 - **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4"下载地址")**<br/><br/>
