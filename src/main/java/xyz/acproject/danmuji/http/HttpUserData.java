@@ -1,11 +1,6 @@
 package xyz.acproject.danmuji.http;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -337,7 +332,7 @@ public class HttpUserData {
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
-		params = new HashMap<>(12);
+		params = new HashMap<>(16);
 		params.put("msg[sender_uid]", PublicDataConf.USER.getUid().toString());
 		params.put("msg[receiver_id]", String.valueOf(recId));
 		params.put("msg[receiver_type]", "1");
@@ -345,10 +340,13 @@ public class HttpUserData {
 		params.put("msg[msg_status]", "0");
 		params.put("msg[content]", "{\"content\":\"" + msg + "\"}");
 		params.put("msg[timestamp]", String.valueOf(System.currentTimeMillis()).substring(0, 10));
-		params.put("msg[dev_id]", "");
+		params.put("msg[new_face_version]", "1");
+		params.put("msg[dev_id]","");
+		params.put("from_firework", "0");
 		params.put("build", "0");
 		params.put("mobi_app", "web");
 		params.put("csrf_token", PublicDataConf.COOKIE.getBili_jct());
+		params.put("csrf", PublicDataConf.COOKIE.getBili_jct());
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpPostForm("https://api.vc.bilibili.com/web_im/v1/web_im/send_msg", headers, params).body()
@@ -363,11 +361,7 @@ public class HttpUserData {
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
-			if (jsonObject.getString("message").equals("ok")) {
 				// 发送私聊成功
-			} else {
-				LOGGER.error("发送私聊失败,未知错误,原因未知v" + jsonObject.toString());
-			}
 		} else {
 			LOGGER.error("发送私聊失败,未知错误,原因未知" + jsonObject.toString());
 		}

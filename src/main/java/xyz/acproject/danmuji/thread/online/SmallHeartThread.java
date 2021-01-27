@@ -23,7 +23,7 @@ public class SmallHeartThread extends Thread {
 	@Override
 	public void run() {
 		int num=0;
-		RoomInfo roomInfo = HttpRoomData.httpGetRoomInfo();
+		RoomInfo roomInfo = null;
 		XData xDataIn =null;
 		// TODO 自动生成的方法存根
 		super.run();
@@ -35,10 +35,12 @@ public class SmallHeartThread extends Thread {
 				return;
 			}
 			if(num==0) {
+				roomInfo = HttpRoomData.httpGetRoomInfo();
 				try {
 					setxData(HttpHeartBeatData.httpPostE(roomInfo));	
 				} catch (Exception e) {
 					// TODO: handle exception
+					num=0;
 				}
 			}
 			try {

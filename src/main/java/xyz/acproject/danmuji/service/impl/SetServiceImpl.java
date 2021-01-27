@@ -284,7 +284,7 @@ public class SetServiceImpl implements SetService {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				if(!PublicDataConf.is_sign) {
 				HttpUserData.httpGetDoSign();
-				SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",new Object());
+				SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",null);
 				taskRegisterComponent.addTask(task, "0 30 0 * * ?");
 				PublicDataConf.is_sign = true;
 				}

@@ -18,5 +18,7 @@ public class DoSignTask {
 			LOGGER.error("定时任务抛出： 未登录 签到失败");
 		}
 	}
-	
+	public void test() {
+		System.err.println("登录");
+	}
 }

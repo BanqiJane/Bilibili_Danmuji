@@ -183,9 +183,9 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%TIME%
         if (!replyString.equals("%TIME%")) {
-            replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.format(System.currentTimeMillis()));
+            replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.formatDateTime(System.currentTimeMillis()));
         } else {
-            replyString = JodaTimeUtils.format(System.currentTimeMillis());
+            replyString = JodaTimeUtils.formatDateTime(System.currentTimeMillis());
         }
         // 替换%LIVETIME%
         if (!replyString.equals("%LIVETIME%")) {

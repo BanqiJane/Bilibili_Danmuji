@@ -145,7 +145,7 @@ public class ParseMessageThread extends Thread{
 					    	hbarrage.setManager((short)2);
 					    }
 						// 判断类型输出
-						stringBuilder.append(JodaTimeUtils.format(barrage.getTimestamp()));
+						stringBuilder.append(JodaTimeUtils.formatDateTime(barrage.getTimestamp()));
 						stringBuilder.append(":收到弹幕:");
 						if (getMessageControlMap().get(ShieldMessage.is_barrage_vip) != null
 								&& getMessageControlMap().get(ShieldMessage.is_barrage_vip)) {
@@ -252,7 +252,7 @@ public class ParseMessageThread extends Thread{
 //							giftFile = new GiftFile(jsonObject.getInteger("giftId"), jsonObject.getString("giftName"),
 //									jsonObject.getInteger("price"), jsonObject.getString("coin_type"));
 //							GiftFileTools.addGiftToFile(giftFile.toJson());
-						stringBuilder.append(JodaTimeUtils.format(gift.getTimestamp() * 1000));
+						stringBuilder.append(JodaTimeUtils.formatDateTime(gift.getTimestamp() * 1000));
 						stringBuilder.append(":收到道具:");
 						stringBuilder.append(gift.getUname());
 						stringBuilder.append(" ");
@@ -339,7 +339,7 @@ public class ParseMessageThread extends Thread{
 					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
 							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
 						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-						stringBuilder.append(JodaTimeUtils.format(guard.getStart_time() * 1000));
+						stringBuilder.append(JodaTimeUtils.formatDateTime(guard.getStart_time() * 1000));
 						stringBuilder.append(":有人上船:");
 						stringBuilder.append(guard.getUsername());
 						stringBuilder.append("在本房间开通了");
@@ -483,7 +483,7 @@ public class ParseMessageThread extends Thread{
 					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
 							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
 						superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
-						stringBuilder.append(JodaTimeUtils.format(superChat.getStart_time() * 1000));
+						stringBuilder.append(JodaTimeUtils.formatDateTime(superChat.getStart_time() * 1000));
 						stringBuilder.append(":收到留言:");
 						stringBuilder.append(superChat.getUser_info().getUname());
 						stringBuilder.append(" 他用了");
@@ -570,7 +570,7 @@ public class ParseMessageThread extends Thread{
 					if (getMessageControlMap().get(ShieldMessage.is_welcome) != null
 							&& getMessageControlMap().get(ShieldMessage.is_welcome)) {
 						welcomeVip = JSONObject.parseObject(jsonObject.getString("data"), WelcomeVip.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentTimeString());
+						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						stringBuilder.append(":欢迎老爷:");
 						stringBuilder.append(welcomeVip.getUname());
 						stringBuilder.append(" 进入直播间");
@@ -603,7 +603,7 @@ public class ParseMessageThread extends Thread{
 					if (getMessageControlMap().get(ShieldMessage.is_welcome) != null
 							&& getMessageControlMap().get(ShieldMessage.is_welcome)) {
 						welcomeGuard = JSONObject.parseObject(jsonObject.getString("data"), WelcomeGuard.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentTimeString());
+						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						switch (welcomeGuard.getGuard_level()) {
 						case 3:
 							stringBuilder.append(":欢迎舰长:");
@@ -654,7 +654,7 @@ public class ParseMessageThread extends Thread{
 					if (getMessageControlMap().get(ShieldMessage.is_block) != null
 							&& getMessageControlMap().get(ShieldMessage.is_block)) {
 						blockMessage = JSONObject.parseObject(jsonObject.getString("data"), BlockMessage.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentTimeString());
+						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						stringBuilder.append(":禁言消息:");
 						stringBuilder.append(blockMessage.getUname());
 						if (blockMessage.getOperator() == 2) {
@@ -1059,7 +1059,7 @@ public class ParseMessageThread extends Thread{
 						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 						if (msg_type == 2) {
 							interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-							stringBuilder.append(JodaTimeUtils.format(System.currentTimeMillis())).append(":新的关注:")
+							stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
 									.append(interact.getUname()).append(" 关注了直播间");
 							//控制台打印
 							if (getMessageControlMap().get(ShieldMessage.is_cmd) != null

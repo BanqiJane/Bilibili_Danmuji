@@ -28,7 +28,7 @@ public class SchedulingRunnableUtil implements Runnable {
     
     
     public SchedulingRunnableUtil(String beanName, String methodName) {
-        this(beanName, methodName,new Object());
+        this(beanName, methodName,null);
     }
 
     public SchedulingRunnableUtil(String beanName, String methodName, Object...params ) {
