@@ -54,9 +54,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4"下载地址")**<br/><br/>
+# 版本2.4.1
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.1 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.1 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -190,7 +190,11 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
-    <blockquote>
+ <blockquote>
+<h2>Beta2.4.1</h2>
+<p>检查发现2.3.1以后版本的更新代码被覆盖掉了 导致回滚 该版本尝试恢复</p>
+</blockquote>
+ <blockquote>
 <h2>Beta2.4</h2>
 <p>更换了弹幕姬检查更新服务器和小心心服务器</p>
 </blockquote>
