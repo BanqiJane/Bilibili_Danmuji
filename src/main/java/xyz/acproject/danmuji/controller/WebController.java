@@ -1,8 +1,6 @@
 package xyz.acproject.danmuji.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,19 +9,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSONObject;
-
+import org.springframework.web.multipart.MultipartFile;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
+import xyz.acproject.danmuji.file.JsonFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.Response;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
+import xyz.acproject.danmuji.utils.FastJsonUtils;
 import xyz.acproject.danmuji.utils.QrcodeUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName WebController
@@ -235,5 +240,34 @@ public class WebController {
 		}
 		code = HttpUserData.httpPostAddBlock(uid, time);
 		return Response.success(code, req);
+	}
+	@ResponseBody
+	@RequestMapping(value = "/setExport",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
+	public Response<?> setExport(HttpServletRequest req){
+		boolean flag = JsonFileTools.createJsonFile(PublicDataConf.centerSetConf.toJson());
+		if(flag) {
+			return Response.success(0, req);
+		}else {
+			return Response.success(1, req);
+		}
+	}
+	@ResponseBody
+	@RequestMapping(value = "/setImport",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+	public Response<?> setImport(@RequestParam("file")MultipartFile file,HttpServletRequest req) throws IOException {
+		if(!file.getResource().getFilename().endsWith(".json")){
+			return Response.success(2, req);
+		}
+		String jsonString = new BufferedReader(new InputStreamReader(file.getInputStream()))
+				.lines().collect(Collectors.joining(System.lineSeparator()));
+		try {
+			CenterSetConf centerSetConf = FastJsonUtils.parseObject(jsonString, CenterSetConf.class);
+			if(centerSetConf!=null) {
+				PublicDataConf.centerSetConf = centerSetConf;
+				checkService.changeSet(centerSetConf);
+			}
+		}catch (Exception e) {
+			return Response.success(1, req);
+		}
+		return Response.success(0, req);
 	}
 }

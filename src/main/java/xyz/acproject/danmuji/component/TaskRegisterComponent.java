@@ -1,15 +1,14 @@
 package xyz.acproject.danmuji.component;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
-
 import xyz.acproject.danmuji.task.ScheduledTask;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName TaskRegisterComponent
@@ -62,6 +61,11 @@ public class TaskRegisterComponent implements DisposableBean{
 		if(scheduledTask!=null) {
 			scheduledTask.cancel();
 		}
+	}
+
+	public Map<Runnable, ScheduledTask> getScheduledTasks(){
+		System.err.println(this.scheduledTasks.toString());
+		return this.scheduledTasks;
 	}
 
 	

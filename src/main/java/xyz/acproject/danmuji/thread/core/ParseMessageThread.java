@@ -413,7 +413,7 @@ public class ParseMessageThread extends Thread{
 							GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
 							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
-								String report =StringUtils.replace(getThankGiftSetConf().getReport(),"\n","\\\\r\\\\n");
+								String report = StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
 								report = StringUtils.replace(report,"%uName%",guard.getUsername());
 								try {
 //									if (PublicDataConf.ROOMID == 5067) {

@@ -52,8 +52,11 @@ public class ThankGiftSetConf implements Serializable{
 		super();
 		// TODO 自动生成的构造函数存根
 	}
-	
 
+	public ThankGiftSetConf(boolean is_open) {
+		super();
+		this.is_open = is_open;
+	}
 	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status,
 			HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num,
 			double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, String report,

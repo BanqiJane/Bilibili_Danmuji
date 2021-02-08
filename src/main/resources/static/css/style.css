@@ -50,7 +50,7 @@ input {
 	-ms-flex-wrap: wrap;
 	flex-wrap: wrap;
 	-ms-flex-align: stretch;
-	align-items: stretc h;
+	align-items: stretch;
 	width: 100%;
 	font-size: 16px;
 }
@@ -813,4 +813,10 @@ div#danmu .danmu-child a {
 }
 .block-button{
 	
+}
+.footer-header-margin{
+	padding-top: 8px;
+}
+.right-margin{
+	margin-right: 10px;
 }

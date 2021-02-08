@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
-
-import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 
 /**

@@ -1,21 +1,23 @@
 package xyz.acproject.danmuji.tools;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.CollectionUtils;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.entity.BarrageHeadHandle;
+import xyz.acproject.danmuji.entity.room_data.RoomInit;
+import xyz.acproject.danmuji.entity.server_data.HostServer;
+import xyz.acproject.danmuji.entity.user_data.UserMedal;
+import xyz.acproject.danmuji.http.HttpRoomData;
+import xyz.acproject.danmuji.http.HttpUserData;
+import xyz.acproject.danmuji.utils.ByteUtils;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import xyz.acproject.danmuji.component.ThreadComponent;
-import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.entity.BarrageHeadHandle;
-import xyz.acproject.danmuji.entity.server_data.HostServer;
-import xyz.acproject.danmuji.utils.ByteUtils;
-import xyz.acproject.danmuji.utils.SpringUtils;
-
-import javax.swing.*;
 
 /**
  * @author BanqiJane
@@ -167,5 +169,64 @@ public class CurrencyTools {
         return weatherDay.append(day).append("日星期").append(weekString).toString();
     }
 
+
+    public static List<UserMedal> getAllUserMedals(){
+        int page =1;
+        List<UserMedal> userMedals = new ArrayList<>();
+        List<UserMedal> userMedalsIn = null;
+       while (true){
+          userMedalsIn = HttpUserData.httpGetMedalList(page);
+          if(userMedalsIn==null||userMedalsIn.size()<1){
+              break;
+          }
+          userMedals.addAll(userMedalsIn);
+           page++;
+           try {
+               Thread.sleep(500);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+       }
+       return userMedals;
+    }
+
+    public static String handleEnterStr(String enterStr) {
+        String enterStrs[] = null;
+        if (StringUtils.indexOf(enterStr, "\n") != -1) {
+            enterStrs = StringUtils.split(enterStr, "\n");
+        }
+        if(enterStrs!=null&&enterStrs.length>1) {
+            return enterStrs[(int) Math.ceil(Math.random() * enterStrs.length)-1];
+        }
+        return enterStr;
+    }
+
+    public static int clockIn(List<UserMedal> userMedals) {
+        if(StringUtils.isEmpty(PublicDataConf.centerSetConf.getClock_in().getBarrage()))return 0;
+        int max = 0;
+        RoomInit roomInit;
+        if(!CollectionUtils.isEmpty(userMedals)){
+            for(UserMedal userMedal : userMedals){
+                roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
+                try {
+                    Thread.sleep(2050);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                    String barrge = handleEnterStr(PublicDataConf.centerSetConf.getClock_in().getBarrage());
+                 //   short code = 0;
+                    short code = HttpUserData.httpPostSendBarrage(barrge,roomInit.getRoom_id());
+                try {
+                    Thread.sleep(1050);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                LOGGER.debug("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}",max+1,code==0?"成功":"失败",userMedal.getRoomid(),userMedal.getTarget_name(),barrge);
+                    max++;
+                }
+            }
+        return  max;
+    }
 
 }

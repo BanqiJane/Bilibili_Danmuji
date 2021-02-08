@@ -1,8 +1,4 @@
 package xyz.acproject.danmuji.conf;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
@@ -11,14 +7,7 @@ import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
 import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.view.RoomGift;
-import xyz.acproject.danmuji.thread.AdvertThread;
-import xyz.acproject.danmuji.thread.AutoReplyThread;
-import xyz.acproject.danmuji.thread.FollowShieldThread;
-import xyz.acproject.danmuji.thread.GiftShieldThread;
-import xyz.acproject.danmuji.thread.LogThread;
-import xyz.acproject.danmuji.thread.ParseThankFollowThread;
-import xyz.acproject.danmuji.thread.ParseThankGiftThread;
-import xyz.acproject.danmuji.thread.SendBarrageThread;
+import xyz.acproject.danmuji.thread.*;
 import xyz.acproject.danmuji.thread.core.HeartByteThread;
 import xyz.acproject.danmuji.thread.core.ParseMessageThread;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
@@ -26,6 +15,10 @@ import xyz.acproject.danmuji.thread.online.HeartBeatThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
 import xyz.acproject.danmuji.thread.online.SmallHeartThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
+
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName PublicDataConf
@@ -125,6 +118,7 @@ public class PublicDataConf {
 	public static UserOnlineHeartThread userOnlineHeartThread;
 	//小心心线程
 	public static SmallHeartThread smallHeartThread;
+	//签到线程
 
 	//是否显示人气
 	public static Boolean IS_ROOM_POPULARITY =false;
@@ -135,7 +129,7 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.4.1";
+	public static String EDITION ="2.4.2";
 	
 	
 	//view

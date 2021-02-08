@@ -19,7 +19,7 @@ public class SchedulingConfig {
 	public TaskScheduler taskScheduler() {
 		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
 		//线程数
-		taskScheduler.setPoolSize(2);
+		taskScheduler.setPoolSize(5);
 		taskScheduler.setRemoveOnCancelPolicy(true);
 		taskScheduler.setThreadNamePrefix("定时任务-");
 		return taskScheduler;

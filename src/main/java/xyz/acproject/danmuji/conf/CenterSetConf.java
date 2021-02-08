@@ -1,12 +1,9 @@
 package xyz.acproject.danmuji.conf;
 
-import java.io.Serializable;
-
-import xyz.acproject.danmuji.conf.set.AdvertSetConf;
-import xyz.acproject.danmuji.conf.set.AutoReplySetConf;
-import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
-import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
+
+import java.io.Serializable;
 
 /**
  * @ClassName CenterSetConf
@@ -63,6 +60,8 @@ public class CenterSetConf implements Serializable{
 	private ThankFollowSetConf follow;
 	//是否开启自动回复线程
 	private AutoReplySetConf reply;
+	//开启自动签到设置
+	private ClockInSetConf clock_in;
 	
 	
 	public CenterSetConf() {
@@ -70,12 +69,13 @@ public class CenterSetConf implements Serializable{
 		// TODO 自动生成的构造函数存根
 	}
 	public CenterSetConf( ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow,AutoReplySetConf reply) {
+			ThankFollowSetConf follow,AutoReplySetConf reply,ClockInSetConf clock_in) {
 		super();
 		this.thank_gift = thank_gift;
 		this.advert = advert;
 		this.follow = follow;
 		this.reply = reply;
+		this.clock_in = clock_in;
 	}
 	
 	
@@ -85,7 +85,7 @@ public class CenterSetConf implements Serializable{
 			boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome,
 			boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto, boolean is_online,
 			boolean is_sh, boolean is_dosign, ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow, AutoReplySetConf reply) {
+			ThankFollowSetConf follow, AutoReplySetConf reply,ClockInSetConf clock_in) {
 		super();
 		this.is_barrage_guard = is_barrage_guard;
 		this.is_barrage_vip = is_barrage_vip;
@@ -107,6 +107,7 @@ public class CenterSetConf implements Serializable{
 		this.advert = advert;
 		this.follow = follow;
 		this.reply = reply;
+		this.clock_in=clock_in;
 	}
 	public boolean isIs_barrage_guard() {
 		return is_barrage_guard;
@@ -234,7 +235,16 @@ public class CenterSetConf implements Serializable{
 	public void setIs_auto(boolean is_auto) {
 		this.is_auto = is_auto;
 	}
+
+	public ClockInSetConf getClock_in() {
+		return clock_in;
+	}
+
+	public void setClock_in(ClockInSetConf clock_in) {
+		this.clock_in = clock_in;
+	}
+
 	public String toJson() {
-		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, is_cmd, roomid, is_auto, is_online, is_sh, is_dosign,thank_gift, advert, follow, reply));
+		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, is_cmd, roomid, is_auto, is_online, is_sh, is_dosign,thank_gift, advert, follow, reply,clock_in));
 	}
 }

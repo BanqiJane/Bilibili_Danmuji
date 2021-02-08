@@ -509,6 +509,14 @@
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
 									<label class="form-check-label"> <input type="checkbox"
+																			class="form-check-input is_clockin"> <span
+											class="_description" data-toggle="tooltip"
+											data-placement="top" title="" data-html="true"
+											data-original-title="是否自动打卡，每天凌晨0点35分自动打卡向直播间发送任意自定义弹幕">自动打卡</span>
+									</label>
+								</div>
+								<div class="custom-control custom-radio custom-control-inline">
+									<label class="form-check-label"> <input type="checkbox"
 										class="form-check-input is_online"> <span
 										class="_description" data-toggle="tooltip"
 										data-placement="top" title="" data-html="true"
@@ -523,11 +531,22 @@
 										data-original-title="是否打开获取在线小心心，不知道什么时候失效且用且珍惜">小心心</span>
 									</label>
 								</div>
+								<div class="form-group footer-set footer-header-margin clock_in_barrage">
+									<textarea class="form-control input-margin-b clockin_barrage"
+											  placeholder="打卡姬自定义发送弹幕,多条回车" data-toggle="tooltip"
+											  data-html="true" data-placement="top" title=""
+											  data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条"></textarea>
+								</div>
 							</div>
-							<div class="input-group mb-3 set-control">
-								<button type="button" class="btn btn-success set-hold">保存设置</button>
+							<div class="input-group mb-3 set-control" style="display: block">
+								<button type="button" class="btn btn-danger set-hold">保存设置</button>
 								<span class="notice-message">成功</span> <span
 									class="success-message">成功</span>
+								<div style="float: right;display: block;">
+								<input type="file" value="上传文件" id="file"  style="display: none;" />
+								<button type="button" class="btn btn-warning export-set">导出设置</button>
+								<button type="button" class="btn btn-info import-set">导入设置</button>
+								</div>
 							</div>
 						</div>
 					</div>

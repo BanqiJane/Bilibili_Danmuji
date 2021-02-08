@@ -1,11 +1,11 @@
 package xyz.acproject.danmuji.utils;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @ClassName SchedulingRunnableUtil
@@ -95,4 +95,19 @@ public class SchedulingRunnableUtil implements Runnable {
         return Objects.hash(beanName, methodName, params);
     }
 
+    public String getBeanName() {
+        return beanName;
+    }
+
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
 }

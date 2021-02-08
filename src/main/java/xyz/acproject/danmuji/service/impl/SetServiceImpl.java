@@ -1,29 +1,19 @@
 package xyz.acproject.danmuji.service.impl;
 
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSONObject;
-
 import xyz.acproject.danmuji.component.ServerAddressComponent;
 import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.set.AdvertSetConf;
-import xyz.acproject.danmuji.conf.set.AutoReplySetConf;
-import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
-import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
@@ -31,8 +21,13 @@ import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
+import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
+
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * @ClassName SetServiceImpl
@@ -97,9 +92,10 @@ public class SetServiceImpl implements SetService {
 			LOGGER.error("读取配置文件失败,尝试重新读取" + e);
 			PublicDataConf.centerSetConf = null;
 		}
+		//初始化配置文件开始
 		if (PublicDataConf.centerSetConf == null) {
 			PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
-					new ThankFollowSetConf(), new AutoReplySetConf());
+					new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf());
 		} else {
 			if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
 				PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
@@ -118,6 +114,10 @@ public class SetServiceImpl implements SetService {
 		if (PublicDataConf.centerSetConf.getReply() == null) {
 			PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
 		}
+		if(PublicDataConf.centerSetConf.getClock_in() ==null){
+			PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false,"签到"));
+		}
+		//初始化配置文件结束
 		hashtable.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
 		ProFileTools.write(hashtable, "DanmujiProfile");
 		try {
@@ -168,16 +168,14 @@ public class SetServiceImpl implements SetService {
 				LOGGER.debug("用户cookie装载失败");
 				PublicDataConf.COOKIE = null;
 			}
-			if (PublicDataConf.ROOMID != null) {
-				holdSet(PublicDataConf.centerSetConf);
-			}
+			holdSet(PublicDataConf.centerSetConf);
 		}
 		if (i == 0) {
 			// 公告和检查更新
 			System.out.println();
 			System.out.println();
 			System.out.println(
-					"参考本地浏览器进入设置页面地址: 1、http://127.0.0.1:" + serverAddressComponent.getPort() + ";2、http://localhost:"
+					"参考本地浏览器进入设置页面地址: 1、http://127.0.0.1:" + serverAddressComponent.getPort() +";2、http://localhost:"
 							+ serverAddressComponent.getPort() + ";3、" + serverAddressComponent.getAddress());
 			System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
 			System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
@@ -238,9 +236,7 @@ public class SetServiceImpl implements SetService {
 			PublicDataConf.centerSetConf = JSONObject.parseObject(
 					new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
 					CenterSetConf.class);
-			if (PublicDataConf.ROOMID != null) {
-				holdSet(centerSetConf);
-			}
+			holdSet(centerSetConf);
 			LOGGER.debug("保存配置文件成功");
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -280,32 +276,54 @@ public class SetServiceImpl implements SetService {
 	 *
 	 */
 	public void holdSet(CenterSetConf centerSetConf) {
+		SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",null);
+		SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin",null);
+		//每日签到
 		if (PublicDataConf.centerSetConf.isIs_dosign()) {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				if(!PublicDataConf.is_sign) {
 				HttpUserData.httpGetDoSign();
-				SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",null);
 				taskRegisterComponent.addTask(task, "0 30 0 * * ?");
 				PublicDataConf.is_sign = true;
 				}
 			}
 		}else {
 			try {
-				taskRegisterComponent.destroy();
+				taskRegisterComponent.removeTask(task);
 			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
 				LOGGER.error("清理定时任务错误："+e);
 			}
 		}
-		if (PublicDataConf.ROOMID == null) {
+		if(centerSetConf.getClock_in().isIs_open()){
+			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+				Long uid =HttpOtherData.httpGetClockInRecord();
+				if(uid==null||uid<=0){					//这里开启一个线程用于打卡
+					new Thread(()->{
+						List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
+						int max = CurrencyTools.clockIn(userMedals);
+						if(max == userMedals.size()){
+							HttpOtherData.httpPOSTSetClockInRecord();
+						}
+					}).start();
+					taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
+				}
+			}
+		}else{
+			try {
+				taskRegisterComponent.removeTask(dakatask);
+			} catch (Exception e) {
+				// TODO 自动生成的 catch 块
+				LOGGER.error("清理定时任务错误："+e);
+			}
+		}
+		if (PublicDataConf.ROOMID == null||PublicDataConf.ROOMID<=0) {
 			return;
 		}
 		if (PublicDataConf.webSocketProxy == null) {
 			return;
 		}
-		if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
-			return;
-		}
+		if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen())return;
 		// parsemessagethread start
 		threadComponent.startParseMessageThread(
 				ParseSetStatusTools.getMessageConcurrentHashMap(centerSetConf, PublicDataConf.lIVE_STATUS),
