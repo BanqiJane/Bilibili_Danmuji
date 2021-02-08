@@ -54,9 +54,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4.1
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.1 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.1 "下载地址")**<br/><br/>
+# 版本2.4.2
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.2 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.2 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -125,7 +125,9 @@ java version "1.8.0_121"
 - **断线自动重连(实验性)**
 - **在线小心心(实验性)**
 - **直播自动签到(实验性)**
+- **每日按现有勋章列表完成首日+100亲密度打卡(实验性)**
 - **弹幕姬所发出的任意弹幕 都可以完成首日+100亲密度任务**
+- **设置导入导出**
 
 <br/><br/>
 # 如何运行<br/>
@@ -190,6 +192,12 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+    <blockquote>
+<h2>Beta2.4.2</h2>
+<p>恢复部分2.4.1没有发现的覆盖代码</p>
+<p>新增每日打卡</p>
+ <p>新增配置导入导出</p>
+</blockquote>
  <blockquote>
 <h2>Beta2.4.1</h2>
 <p>检查发现2.3.1以后版本的更新代码被覆盖掉了 导致回滚 该版本尝试恢复</p>
