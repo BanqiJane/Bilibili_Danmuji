@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'xyz.acproject.danmuji'
-version = '2.4.2beta'
+version = '2.4.3beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 

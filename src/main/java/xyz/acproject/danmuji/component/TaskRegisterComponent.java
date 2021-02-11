@@ -45,11 +45,14 @@ public class TaskRegisterComponent implements DisposableBean{
 	public void addTask(CronTask cronTask) {
 		if(cronTask!=null) {
 			Runnable task = cronTask.getRunnable();
-			if(this.scheduledTasks.containsKey(task)) {
-				
+			if(!this.scheduledTasks.containsKey(task)) {
+				this.scheduledTasks.put(task,scheduledTask(cronTask));
 			}
-			this.scheduledTasks.put(task,scheduledTask(cronTask));
 		}
+	}
+
+	public boolean hasTask(Runnable task){
+		return this.scheduledTasks.containsKey(task);
 	}
 	
 	/**

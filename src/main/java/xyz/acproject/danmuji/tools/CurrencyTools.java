@@ -209,7 +209,7 @@ public class CurrencyTools {
             for(UserMedal userMedal : userMedals){
                 roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
                 try {
-                    Thread.sleep(2050);
+                    Thread.sleep(4050);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -217,7 +217,7 @@ public class CurrencyTools {
                  //   short code = 0;
                     short code = HttpUserData.httpPostSendBarrage(barrge,roomInit.getRoom_id());
                 try {
-                    Thread.sleep(1050);
+                    Thread.sleep(2050);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

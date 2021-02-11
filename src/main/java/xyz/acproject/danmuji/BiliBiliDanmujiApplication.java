@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 
 /**
@@ -22,6 +23,8 @@ import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Autowired
 	private SetServiceImpl checkService;
+	@Autowired
+	private TaskRegisterComponent taskRegisterComponent;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(BiliBiliDanmujiApplication.class, args);

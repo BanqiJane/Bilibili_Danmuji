@@ -306,9 +306,9 @@ public class SetServiceImpl implements SetService {
 							HttpOtherData.httpPOSTSetClockInRecord();
 						}
 					}).start();
-					taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
 				}
 			}
+			taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
 		}else{
 			try {
 				taskRegisterComponent.removeTask(dakatask);

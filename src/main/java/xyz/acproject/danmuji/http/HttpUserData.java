@@ -403,10 +403,6 @@ public class HttpUserData {
 				} else if (jsonObject.getString("message").equals("msg in 1s")
 						|| jsonObject.getString("message").equals("msg repeat")) {
 					LOGGER.debug("发送弹幕失败，尝试重新发送" + jsonObject.getString("message"));
-					PublicDataConf.barrageString.add(msg);
-					synchronized (PublicDataConf.sendBarrageThread) {
-						PublicDataConf.sendBarrageThread.notify();
-					}
 				} else {
 					LOGGER.debug(jsonObject.toString());
 					LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
