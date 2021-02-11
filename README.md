@@ -193,6 +193,11 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 <blockquote>
     <blockquote>
+<h2>Beta2.4.3</h2>
+<p>修复每日打卡bug 该bug曾经导致会向连接房间发送打卡弹幕</p>
+ <p>修复定时任务bug 该bug曾经导致重复执行定时任务</p>
+</blockquote>
+<blockquote>
 <h2>Beta2.4.2</h2>
 <p>恢复部分2.4.1没有发现的覆盖代码</p>
 <p>新增每日打卡</p>
