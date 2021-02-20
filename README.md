@@ -306,4 +306,5 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 </blockquote>
     
 <br/>
-**精力有限 点击一起维护该项目[加入我们](https://message.bilibili.com/#/whisper/mid17418088 "破站私聊")**
+**精力有限 点击一起维护该项目**
+**[加入我们](https://message.bilibili.com/#/whisper/mid17418088 "破站私聊")**
