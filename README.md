@@ -304,4 +304,6 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <p>重要问题：弹幕姬登录后，在不开启广告姬的情况下保存设置会出现致命错误，导致弹幕姬开启不了，在1.0.3以后版本得到解决</p>
 <p></p>
 </blockquote>
-
+    
+<br/>
+**精力有限 点击一起维护该项目 [加入我们](https://message.bilibili.com/#/whisper/mid17418088 "破站私聊")**
