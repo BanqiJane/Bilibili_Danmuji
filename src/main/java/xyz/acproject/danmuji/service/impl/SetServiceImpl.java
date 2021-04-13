@@ -297,8 +297,7 @@ public class SetServiceImpl implements SetService {
 		}
 		if(centerSetConf.getClock_in().isIs_open()){
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-				Long uid =HttpOtherData.httpGetClockInRecord();
-				if(uid==null||uid<=0){					//这里开启一个线程用于打卡
+				//这里开启一个匿名线程用于打卡
 					new Thread(()->{
 						List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
 						int max = CurrencyTools.clockIn(userMedals);
@@ -306,7 +305,6 @@ public class SetServiceImpl implements SetService {
 							HttpOtherData.httpPOSTSetClockInRecord();
 						}
 					}).start();
-				}
 			}
 			taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
 		}else{

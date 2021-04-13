@@ -196,7 +196,9 @@ public class HttpOtherData {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
+		if(StringUtils.isBlank(status)){
+			return "获取失败:请自行获取本机对公Ip地址";
+		}
 		if (status.equals("success")) {
 			ip = jsonObject.getString("query");
 		} else {

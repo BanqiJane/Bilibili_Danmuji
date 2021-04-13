@@ -10,6 +10,7 @@ import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.HostServer;
 import xyz.acproject.danmuji.entity.user_data.UserMedal;
+import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.utils.ByteUtils;
@@ -200,8 +201,10 @@ public class CurrencyTools {
         }
         return enterStr;
     }
-
-    public static int clockIn(List<UserMedal> userMedals) {
+    //打卡 保持其同步性
+    public synchronized static int clockIn(List<UserMedal> userMedals) {
+        Long uid = HttpOtherData.httpGetClockInRecord();
+        if(uid!=null&&uid>0)return 0;
         if(StringUtils.isEmpty(PublicDataConf.centerSetConf.getClock_in().getBarrage()))return 0;
         int max = 0;
         RoomInit roomInit;
