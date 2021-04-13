@@ -54,9 +54,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4.2
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.2 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.2 "下载地址")**<br/><br/>
+# 版本2.4.3
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.3 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.3 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -186,13 +186,17 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # **我的另一个弹幕姬项目**
 **[BiliLiveChat](https://github.com/BanqiJane/BiliLiveChat "BiliLiveChat")**
 
-
 # 版本更新<br/>
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
 # 版本详细<br/>
 
 <blockquote>
     <blockquote>
+<h2>Beta2.4.3</h2>
+<p>修复每日打卡bug 该bug曾经导致会向连接房间发送打卡弹幕</p>
+ <p>修复定时任务bug 该bug曾经导致重复执行定时任务</p>
+</blockquote>
+<blockquote>
 <h2>Beta2.4.2</h2>
 <p>恢复部分2.4.1没有发现的覆盖代码</p>
 <p>新增每日打卡</p>
@@ -299,4 +303,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <p>重要问题：弹幕姬登录后，在不开启广告姬的情况下保存设置会出现致命错误，导致弹幕姬开启不了，在1.0.3以后版本得到解决</p>
 <p></p>
 </blockquote>
+</blockquote>  
 
+
+**精力有限 点击一起维护该项目[加入我们](https://message.bilibili.com/#/whisper/mid17418088 "破站私聊")**
