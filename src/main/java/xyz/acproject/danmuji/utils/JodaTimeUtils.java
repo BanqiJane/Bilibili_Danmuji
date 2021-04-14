@@ -1,17 +1,12 @@
 package xyz.acproject.danmuji.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.*;
+import org.springframework.lang.Nullable;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.TimeZone;
-
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.springframework.lang.Nullable;
 
 public final class JodaTimeUtils {
 	private static final String FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
@@ -312,9 +307,8 @@ public final class JodaTimeUtils {
 			return null;
 		}
 		DateTime dateTime = new DateTime(date);
-		dateTime.toString(parrten);
 		dateTime.withZone(DateTimeZone.forTimeZone(timeZone));
-		return dateTime.toString();
+		return dateTime.toString(parrten);
 	}
 	/**
 	 * 格式化日期

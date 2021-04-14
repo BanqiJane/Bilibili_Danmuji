@@ -1,9 +1,6 @@
 package xyz.acproject.danmuji.thread;
 
-import java.util.HashSet;
-
 import org.apache.commons.lang3.StringUtils;
-
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.AutoReplySet;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
@@ -13,6 +10,10 @@ import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.TimeZone;
 
 /**
  * @author BanqiJane
@@ -183,9 +184,9 @@ public class AutoReplyThread extends Thread {
         }
         // 替换%TIME%
         if (!replyString.equals("%TIME%")) {
-            replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.formatDateTime(System.currentTimeMillis()));
+            replyString = StringUtils.replace(replyString, "%TIME%", JodaTimeUtils.format(new Date(),TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss"));
         } else {
-            replyString = JodaTimeUtils.formatDateTime(System.currentTimeMillis());
+            replyString =JodaTimeUtils.format(new Date(),TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss");
         }
         // 替换%LIVETIME%
         if (!replyString.equals("%LIVETIME%")) {
