@@ -57,6 +57,8 @@ public class PublicDataConf {
 	public static String SHIELDGIFTNAME = null;
 	//天选是否正在屏蔽关注
 	public static Boolean ISSHIELDFOLLOW = false;
+	//天选是否正在屏蔽欢迎
+	public static Boolean ISSHIELDWELCOME = false;
 	//设置
 	public static CenterSetConf centerSetConf;
 	
@@ -92,13 +94,17 @@ public class PublicDataConf {
 	public final static Vector<String> logString = new Vector<String>(100);
 	//待发送感谢关注集合
 	public final static Vector<Interact> interacts = new Vector<Interact>(200);
+	//待发送欢迎进入直播间集合
+	public final static Vector<Interact> interactWelcome = new Vector<Interact>(400);
 	//自动回复处理弹幕
 	public final static Vector<AutoReply> replys = new Vector<AutoReply>();
 	
 	//日志线程
 	public static LogThread logThread;
-	//处理关注数刷新线程
+	//处理感谢关注线程
 	public static ParseThankFollowThread parsethankFollowThread = new ParseThankFollowThread();
+	//处理感谢进入直播间线程
+	public static ParseThankWelcomeThread parseThankWelcomeThread = new ParseThankWelcomeThread();
 	//广告姬线程
 	public static AdvertThread advertThread;
 	//感谢礼物数据集线程
@@ -109,6 +115,8 @@ public class PublicDataConf {
 	public static GiftShieldThread giftShieldThread = new GiftShieldThread();
 	//屏蔽天选关注线程
 	public static FollowShieldThread followShieldThread = new FollowShieldThread();
+	//屏蔽天选欢迎线程
+	public static WelcomeShieldThread welcomeShieldThread = new WelcomeShieldThread();
 	//自动回复线程
 	public static AutoReplyThread autoReplyThread;
 	
@@ -129,7 +137,7 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.4.3";
+	public static String EDITION ="2.4.4";
 	
 	
 	//view

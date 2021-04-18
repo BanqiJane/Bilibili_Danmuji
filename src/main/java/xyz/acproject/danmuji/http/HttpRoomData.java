@@ -1,28 +1,22 @@
 package xyz.acproject.danmuji.http;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.entity.room_data.CheckTx;
-import xyz.acproject.danmuji.entity.room_data.Room;
-import xyz.acproject.danmuji.entity.room_data.RoomInfo;
-import xyz.acproject.danmuji.entity.room_data.RoomInit;
+import xyz.acproject.danmuji.entity.room_data.*;
 import xyz.acproject.danmuji.entity.server_data.Conf;
 import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName HttpRoomData
@@ -37,8 +31,7 @@ public class HttpRoomData {
 
 	/**
 	 * 获取连接目标房间websocket端口 接口
-	 * 
-	 * @param roomid
+	 *
 	 * @return
 	 */
 	public static Conf httpGetConf() {
@@ -503,5 +496,45 @@ public class HttpRoomData {
 		} else {
 			LOGGER.error("获取礼物失败,原因:" + jsonObject.getString("message"));
 		}
+	}
+
+	public static List<RoomBlock> getBlockList(int page){
+		String data = null;
+		JSONObject jsonObject = null;
+		JSONArray jsonArray = null;
+		List<RoomBlock> roomBlocks = new ArrayList<>();
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		headers = new HashMap<>(4);
+		datas = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		datas.put("roomid",String.valueOf(PublicDataConf.ROOMID));
+		datas.put("page",String.valueOf(page));
+		try {
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/liveact/ajaxGetBlockList",headers,datas)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return roomBlocks;
+		jsonObject = JSONObject.parseObject(data);
+		short code = jsonObject.getShort("code");
+		if (code == 0) {
+			jsonArray = jsonObject.getJSONArray("data");
+			if(!CollectionUtils.isEmpty(jsonArray)){
+				roomBlocks = new ArrayList<>(jsonArray.toJavaList(RoomBlock.class));
+			}
+			return roomBlocks;
+		}
+		return roomBlocks;
 	}
 }

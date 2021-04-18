@@ -1,13 +1,14 @@
 package xyz.acproject.danmuji.component;
 
-import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
-
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
+import xyz.acproject.danmuji.conf.set.ThankWelcomeSetConf;
 import xyz.acproject.danmuji.enums.ShieldMessage;
+
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName ThreadComponent
@@ -49,11 +50,17 @@ public interface ThreadComponent {
 	// 开启关注屏蔽线程
 	boolean startFollowShieldThread(int time);
 
+	//开启天选欢迎屏蔽线程
+
+	boolean startWelcomeShieldThread(int time);
+
 	// 开启public的礼物感谢线程
 	void startParseThankGiftThread(ThankGiftSetConf thankGiftSetConf, HashSet<ThankGiftRuleSet> thankGiftRuleSets);
 
 	// 开启public的关注感谢线程
 	void startParseThankFollowThread(ThankFollowSetConf thankFollowSetConf);
+
+	void startParseThankWelcomThread(ThankWelcomeSetConf thankWelcomeSetConf);
 
 	// 设置处理弹幕包线程
 	void setParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,
@@ -86,6 +93,8 @@ public interface ThreadComponent {
 	void closeGiftShieldThread();
 
 	void closeFollowShieldThread();
+
+	void closeWelcomeShieldThread();
 
 	// 关闭用户在线线程
 	void closeUserOnlineThread();

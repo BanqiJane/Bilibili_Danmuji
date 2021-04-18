@@ -820,3 +820,141 @@ div#danmu .danmu-child a {
 .right-margin{
 	margin-right: 10px;
 }
+
+.wel-mask{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .3);
+	z-index: 10;
+	display: none;
+}
+.wel-wrap{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -300px;
+	margin-top: -300px;
+	background: #fff;
+	border-radius: 4px;
+}
+.wel-wrap .t {
+	text-align: center;
+	font-size: 16px;
+	color: #222;
+	padding: 10px 20px;
+	border-bottom: 1px solid #AAAAAA;
+	background: rgba(238, 238, 238, 0.9);
+}
+.wel-wrap .con {
+	background: white;
+	padding: 20px;
+	width:600px;
+}
+.wel-wrap .t .btn-close-wel {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	right: 12px;
+	top: 10px;
+	overflow: hidden;
+	cursor: pointer;
+	transition: all .3s;
+}
+.wel-wrap  .t .btn-close-wel:before {
+	content: "";
+	position: absolute;
+	height: 1px;
+	width: 100%;
+	top: 50%;
+	left: 0;
+	margin-top: -1px;
+	background: #aaa;
+	transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+}
+.wel-wrap  .t .btn-close-wel:after {
+	content: "";
+	position: absolute;
+	height: 1px;
+	width: 100%;
+	top: 50%;
+	left: 0;
+	margin-top: -1px;
+	background: #aaa;
+	transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+}
+.wel-set{
+	width:60%;
+	margin-left: 85px;
+	margin-right: 5px;
+}
+.user-list{
+	width: 100%;
+	border-collapse: collapse;
+}
+table thead{
+	width:100%!important;
+}
+tbody tr{
+	width:100%!important;
+}
+.list-head{
+	height: 24px;
+}
+th.list-head-text{
+	font-size: 12px;
+	color: #333;
+	font-weight: 400;
+}
+.list-unit {
+	text-align: left;
+	text-indent: 49px;
+	font-size: 12px;
+	line-height: 16px;
+	color: #666;
+}
+.list-unit span{
+	cursor: pointer;
+}
+tbody {
+	max-height: 168px;
+	display: block;
+	overflow-y: auto;
+	position: relative;
+}
+.list-row:nth-child(odd) {
+	background-color: #fafbfc;
+}
+.list-row {
+	height: 24px;
+}
+.user-name-col{
+	margin: 0;
+	max-width: 169px;
+	overflow: hidden;
+	white-space: nowrap;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	height: 16px;
+}
+div .link-popup-panel .popup-content-ctnr p {
+	color: #aaa!important;
+}
+.block-btn{
+	text-align: center;
+	position: relative;
+}
+.block-btn .block-btn-body{
+	position: relative;
+	left: 210px;
+}
+.block-btn .block-btn-body .block-pre-page{
+	margin-right: 10px;
+}
+.block-btn .block-btn-body .block-next-page{
+	margin-left: 10px;
+}

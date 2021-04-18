@@ -4,7 +4,6 @@ $(function () {
     var socket = null;
     var sliceh = 0;
     time = setInterval(heartBeat, 30000);
-
     function heartBeat() {
         "use strict";
         $.ajax({
@@ -28,7 +27,8 @@ $(function () {
                 }
             }
         });
-    }
+    };
+    method.getBlocks(1);
     $("#file").change(function () {
        method.importDfFile();
     });
@@ -115,15 +115,19 @@ $(document).on(
         var c6 = false;
         var c7 = false;
         var c8 = false;
+        var c9 = false;
+        var c10 = false;
         var set = {
             "thank_gift": {
                 "giftStrings": [],
-                "thankGiftRuleSets": []
+                "thankGiftRuleSets": [],
+                "codeStrings":[],
             },
             "advert": {},
             "follow": {},
             "reply": {"autoReplySets": []},
             "clock_in": {},
+            "welcome":{},
         };
         set.is_auto = $(".is_autoStart").is(
             ':checked');
@@ -138,6 +142,7 @@ $(document).on(
         set.is_cmd = $(".is_cmd").is(':checked');
         set.is_gift = $(".is_gift").is(':checked');
         set.is_welcome = $(".is_welcome").is(':checked');
+        set.is_welcome_all = $(".is_welcome_all").is(':checked');
         set.is_follow = $(".is_follow").is(':checked');
         set.is_log = $(".is_log").is(':checked');
         set.is_online = $(".is_online").is(':checked');
@@ -187,6 +192,9 @@ $(document).on(
             .is(':checked');
         set.thank_gift.is_guard_local = $(".thankgift_is_guard_local")
             .is(':checked');
+        set.thank_gift.is_gift_code = $(".thankgift_is_gift_code")
+            .is(':checked');
+        set.thank_gift.codeStrings = method.codeStrings_handle(set.thank_gift.codeStrings, $(".thankgift_codeStrings").val());
         set.thank_gift.report = $(".thankgift_report").val();
         set.thank_gift.report_barrage = $(".thankgift_barrageReport").val();
         set.advert.is_open = $(".advert_is_open").is(':checked');
@@ -201,6 +209,12 @@ $(document).on(
         set.follow.num = Number($(".follow_num").val());
         set.follow.follows = $(".follow_follows").val();
         set.follow.delaytime = Number($(".thankfollow_delaytime").val());
+        set.welcome.is_open = $(".welcome_is_open").is(':checked');
+        set.welcome.is_live_open = $(".welcome_is_live_open").is(':checked');
+        set.welcome.is_tx_shield = $(".welcome_tx_shield").is(':checked');
+        set.welcome.num = Number($(".welcome_num").val());
+        set.welcome.welcomes = $(".welcome_welcomes").val();
+        set.welcome.delaytime = Number($(".thankwelcome_delaytime").val());
         set.reply.is_open = $(".replys_is_open").is(':checked');
         set.reply.is_live_open = $(".replys_is_live_open").is(':checked');
         set.reply.time = Number($(".replys_time").val());
@@ -221,6 +235,20 @@ $(document).on(
             } else {
                 c5 = true;
                 method.delay_method(".notice-message", "感谢关注必须大于0");
+            }
+        }
+        if ($(".welcome_is_open").is(':checked')) {
+            if ($(".welcome_welcomes").val().trim() !== null
+                && $(".welcome_welcomes").val().trim() !== "") {
+            } else {
+                c9 = true;
+                method.delay_method(".notice-message", "感谢欢迎语不能为空");
+            }
+            if (Number($(".welcome_num").val()) > 0) {
+
+            } else {
+                c10 = true;
+                method.delay_method(".notice-message", "感谢欢迎必须大于0");
             }
         }
         if ($(".thankgift_is_open").is(':checked')) {
@@ -269,7 +297,7 @@ $(document).on(
             }
         });
         if ($(".card-body").find(".logined").length > 0) {
-            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8) {
+            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10) {
                 console.log(set);
                 publicData.set = method.initSet(set);
                 if (method.sendSet(set)) {
@@ -299,9 +327,20 @@ $(document).on('click', '.is_guard_report_click', function () {
     if ($(".thankgift_is_guard_report").is(':checked')) {
         $(".thankgift_report").show();
         $(".thankgift_barrageReport").show();
+        if ($(".thankgift_is_gift_code").is(':checked')) {
+            $(".thankgift_codeStrings").show();
+        }
     } else {
         $(".thankgift_report").hide();
         $(".thankgift_barrageReport").hide();
+        $(".thankgift_codeStrings").hide();
+    }
+});
+$(document).on('click', '.is_guard_code_click', function () {
+    if ($(".thankgift_is_gift_code").is(':checked')&&$(".thankgift_is_guard_report").is(':checked')) {
+        $(".thankgift_codeStrings").show();
+    } else {
+        $(".thankgift_codeStrings").hide();
     }
 });
 $(document).on('click', '.import-set', function () {
@@ -339,23 +378,16 @@ $(document).on('click', '#replys-btn', function () {
 
 });
 $(document).on('click', '.btn-close', function () {
-    var is_kong = false;
     if ($(".block-mask").is(":visible")) {
         $(".block-mask").hide();
     }
-    if ($(".shieldgifts-mask").is(":visible")) {
-        $(".shieldgifts-tbody").children("tr").each(function (i, v) {
-            if ($(".shieldgifts_name").eq(i).val().trim() == "") {
-                alert("自定义规则礼物名称不能为空");
-                is_kong = true;
-                return false;
-            }
-        })
-        if (is_kong) return;
-        $(".shieldgifts-mask").hide();
+});
+$(document).on('click', '.btn-close-wel', function () {
+    var is_kong = false;
+    if ($(".wel-mask").is(":visible")) {
+        $(".wel-mask").hide();
     }
 });
-
 $(document).on('click', '.btn-closer', function () {
     var is_hide = true;
     if ($(".replys-mask").is(":visible")) {
@@ -445,6 +477,29 @@ $(document).on('click', '.reply_delete', function () {
 $(document).on('click', '.shieldgift_delete', function () {
     $(this).parent().parent().remove();
 });
+$(document).on('click', '.del_block_click', function () {
+    var id = $(this).attr("data-id");
+    if(id!=undefined){
+        method.delBlock(id);
+    }
+});
+$(document).on('click', '.block-pre-page', function () {
+    var page = $(".block-page").text();
+    if(page>1) {
+        method.getBlocks(Number(page)- 1);
+        $(".block-page").text(Number(page)-1);
+    }else{
+        alert("没有上一页了");
+    }
+});
+$(document).on('click', '.block-next-page', function () {
+    var page = $(".block-page").text();
+    if(method.getBlocks(Number(page)+1)){
+        $(".block-page").text(Number(page)+1);
+    }else{
+        alert("没有更多数据了");
+    }
+});
 $(document).on('click', '.reply_edit', function () {
     var index = $(this).parent().parent().index();
     var is_open = $(this).parent().parent().children(".reply_open").is(':checked');
@@ -502,6 +557,9 @@ $(document).on('click', '#checkupdate', function () {
             $(".tips-wrap").hide();
         }, 1000)
     });
+});
+$(document).on('click', '.room-manager', function (e) {
+    $(".wel-mask").show();
 });
 $(document).on('click', '.danmu-child', function (e) {
     $(this).children(".danmu-tips").css("left", e.pageX - $(this).offset().left);
@@ -707,6 +765,7 @@ const method = {
             $(".is_block").prop('checked', set.is_block);
             $(".is_gift").prop('checked', set.is_gift);
             $(".is_welcome").prop('checked', set.is_welcome);
+            $(".is_welcome_all").prop('checked', set.is_welcome_all);
             $(".is_follow").prop('checked', set.is_follow);
             $(".is_log").prop('checked', set.is_log);
             $(".is_online").prop('checked', set.is_online);
@@ -722,6 +781,7 @@ const method = {
             $(".thankgift_shield_status").find("option").eq(
                 set.thank_gift.shield_status).prop('selected', true);
             $(".thankgift_shield").val(method.giftStrings_metod(set.thank_gift.giftStrings));
+            $(".thankgift_codeStrings").val(method.codeStrings_metod(set.thank_gift.codeStrings));
             method.shieldgifts_each(set.thank_gift.thankGiftRuleSets);
             method.replys_each(set.reply.autoReplySets);
             // $(".thankgift_thankGiftRuleSets").val(
@@ -733,6 +793,8 @@ const method = {
             $(".thankgift_thank").val(set.thank_gift.thank);
             $(".thankgift_is_guard_report").prop('checked',
                 set.thank_gift.is_guard_report);
+            $(".thankgift_is_gift_code").prop('checked',
+                set.thank_gift.is_gift_code);
             $(".thankgift_is_guard_local").prop('checked',
                 set.thank_gift.is_guard_local);
             $(".thankgift_report").val(set.thank_gift.report);
@@ -749,6 +811,12 @@ const method = {
             $(".follow_num").val(set.follow.num);
             $(".follow_follows").val(set.follow.follows);
             $(".thankfollow_delaytime").val(set.follow.delaytime);
+            $(".welcome_is_open").prop('checked', set.welcome.is_open);
+            $(".welcome_is_live_open").prop('checked', set.welcome.is_live_open);
+            $(".welcome_tx_shield").prop('checked', set.welcome.is_tx_shield);
+            $(".welcome_num").val(set.welcome.num);
+            $(".welcome_welcomes").val(set.welcome.welcomes);
+            $(".thankwelcome_delaytime").val(set.welcome.delaytime);
             $(".replys_is_open").prop('checked',
                 set.reply.is_open);
             $(".replys_is_live_open").prop('checked',
@@ -798,9 +866,18 @@ const method = {
             if ($(".thankgift_is_guard_report").is(':checked')) {
                 $(".thankgift_report").show();
                 $(".thankgift_barrageReport").show();
+                if ($(".thankgift_is_gift_code").is(':checked')) {
+                    $(".thankgift_codeStrings").show();
+                }
             } else {
                 $(".thankgift_report").hide();
                 $(".thankgift_barrageReport").hide();
+                $(".thankgift_codeStrings").hide();
+            }
+            if ($(".thankgift_is_gift_code").is(':checked')&&$(".thankgift_is_guard_report").is(':checked')) {
+                $(".thankgift_codeStrings").show();
+            } else {
+                $(".thankgift_codeStrings").hide();
             }
             if ($(".is_online").is(':checked')) {
                 $(".is_sh").prop('checked', set.is_sh);
@@ -829,6 +906,8 @@ const method = {
                 $(".thankgift_delaytime").attr("disabled", true);
                 $(".thankgift_thank").attr("disabled", true);
                 $(".thankgift_is_guard_report").attr("disabled", true);
+                $(".thankgift_is_gift_code").attr("disabled", true);
+                $(".thankgift_codeStrings").attr("disabled", true);
                 $(".thankgift_is_guard_local").attr("disabled", true);
                 $(".thankgift_report").attr("disabled", true);
                 $("#gift-shield-btn").attr("disabled", true);
@@ -843,6 +922,12 @@ const method = {
                 $(".follow_follows").attr("disabled", true);
                 $(".follow_tx_shield").attr("disabled", true);
                 $(".thankfollow_delaytime").attr("disabled", true);
+                $(".welcome_is_open").attr("disabled", true);
+                $(".welcome_is_live_open").attr("disabled", true);
+                $(".welcome_num").attr("disabled", true);
+                $(".welcome_welcomes").attr("disabled", true);
+                $(".welcome_tx_shield").attr("disabled", true);
+                $(".thankwelcome_delaytime").attr("disabled", true);
                 $(".shieldgift_delete").attr("disabled", true);
                 $(".thankgift_barrageReport").attr("disabled", true);
                 $(".thankgift_is_num").attr("disabled", true);
@@ -885,6 +970,13 @@ const method = {
         }
         return s;
     },
+    codeStrings_metod: function (lists) {
+        var s = "";
+        if (lists != null) {
+            s = lists.join("\n");
+        }
+        return s;
+    },
     giftStrings_handle: function (lists, s) {
         if (s != "") {
             if (s.indexOf("，") >= 0) {
@@ -898,6 +990,23 @@ const method = {
                 lists.push(s);
             }
         }
+        console.log(lists);
+        return lists;
+    },
+    codeStrings_handle: function (lists, s) {
+        if (s != "") {
+            if (s.indexOf("\n") >= 0) {
+                var ss = s.split("\n");
+                for (let gs in ss) {
+                    if (ss[gs].trim() != "") {
+                        lists.push(ss[gs]);
+                    }
+                }
+            } else {
+                lists.push(s);
+            }
+        }
+        console.log(lists);
         return lists;
     },
     shieldgifts_each: function (lists) {
@@ -979,6 +1088,55 @@ const method = {
             success: function (data) {
                 if (data.code == "200") {
                     ip = data.result
+                }
+            }
+        });
+        return ip;
+    },
+    delBlock: function (id) {
+        $.ajax({
+            url: '../del_block?id='+id,
+            async: false,
+            cache: false,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == 0) {
+                    alert("撤销禁言成功");
+                    method.getBlocks(1);
+                } else{
+                    alert("撤销禁言失败");
+                }
+            }
+        });
+        return ip;
+    },
+    getBlocks: function (page) {
+        var ip = true;
+        $.ajax({
+            url: '../blocks?page='+page,
+            async: false,
+            cache: false,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == "200") {
+                    if(data.result==null||data.result.length<1){
+                        ip=false;
+                    }
+                    if(ip){
+                        $('.list-row').remove();
+                        for(var i of data.result){
+                            $('.list-body').append(
+                                ` <tr class="list-row">
+                        <td width="35%" class="list-unit"><p class="user-name-col">`+i.uname+`</p></td>
+                        <td width="44%" class="list-unit">`+i.block_end_time+`</td>
+                        <td width="21%" class="list-unit pointer no-select"><span class="del_block_click" data-id="`+i.id+`">撤销</span>
+                        </td>
+                    </tr>`
+                            );
+                        }
+                    }
                 }
             }
         });

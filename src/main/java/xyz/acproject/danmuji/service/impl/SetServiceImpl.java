@@ -95,7 +95,7 @@ public class SetServiceImpl implements SetService {
 		//初始化配置文件开始
 		if (PublicDataConf.centerSetConf == null) {
 			PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
-					new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf());
+					new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf());
 		} else {
 			if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
 				PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
@@ -116,6 +116,9 @@ public class SetServiceImpl implements SetService {
 		}
 		if(PublicDataConf.centerSetConf.getClock_in() ==null){
 			PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false,"签到"));
+		}
+		if(PublicDataConf.centerSetConf.getWelcome()==null){
+			PublicDataConf.centerSetConf.setWelcome(new ThankWelcomeSetConf());
 		}
 		//初始化配置文件结束
 		hashtable.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
@@ -389,6 +392,7 @@ public class SetServiceImpl implements SetService {
 			// sendbarragethread
 			if (PublicDataConf.advertThread == null
 					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
+					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_welcomeThank)
 					&& !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
 					&& PublicDataConf.autoReplyThread == null) {
 				threadComponent.closeSendBarrageThread();
@@ -396,6 +400,7 @@ public class SetServiceImpl implements SetService {
 				PublicDataConf.thankGiftConcurrentHashMap.clear();
 				PublicDataConf.barrageString.clear();
 				PublicDataConf.interacts.clear();
+				PublicDataConf.interactWelcome.clear();
 			} else {
 				threadComponent.startSendBarrageThread();
 			}
@@ -410,6 +415,7 @@ public class SetServiceImpl implements SetService {
 			threadComponent.closeGiftShieldThread();
 			threadComponent.closeSendBarrageThread();
 			threadComponent.closeFollowShieldThread();
+			threadComponent.closeWelcomeShieldThread();
 			threadComponent.closeSmallHeartThread();
 		}
 		if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
@@ -423,6 +429,7 @@ public class SetServiceImpl implements SetService {
 			threadComponent.closeGiftShieldThread();
 			threadComponent.closeAutoReplyThread();
 			threadComponent.closeSmallHeartThread();
+			threadComponent.closeWelcomeShieldThread();
 			PublicDataConf.SHIELDGIFTNAME = null;
 			PublicDataConf.replys.clear();
 			PublicDataConf.resultStrs.clear();
@@ -430,6 +437,9 @@ public class SetServiceImpl implements SetService {
 			PublicDataConf.barrageString.clear();
 			PublicDataConf.logString.clear();
 			PublicDataConf.interacts.clear();
+			PublicDataConf.interactWelcome.clear();
+			PublicDataConf.ISSHIELDFOLLOW=false;
+			PublicDataConf.ISSHIELDWELCOME=false;
 		}
 	}
 
@@ -445,6 +455,7 @@ public class SetServiceImpl implements SetService {
 		threadComponent.closeAutoReplyThread();
 		threadComponent.closeSendBarrageThread();
 		threadComponent.closeSmallHeartThread();
+		threadComponent.closeWelcomeShieldThread();
 		// remove task all shutdown !!!!!!
 		try {
 			taskRegisterComponent.destroy();
@@ -456,6 +467,7 @@ public class SetServiceImpl implements SetService {
 		PublicDataConf.thankGiftConcurrentHashMap.clear();
 		PublicDataConf.barrageString.clear();
 		PublicDataConf.interacts.clear();
+		PublicDataConf.interactWelcome.clear();
 		holdSet(PublicDataConf.centerSetConf);
 		LOGGER.debug("用户退出成功");
 	}

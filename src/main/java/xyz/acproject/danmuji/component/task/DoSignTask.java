@@ -27,8 +27,6 @@ public class DoSignTask {
 		}
 	}
 	public void clockin() {
-		Long uid =HttpOtherData.httpGetClockInRecord();
-	  if(uid!=null&&uid>0)return;
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
 			int max = CurrencyTools.clockIn(userMedals);

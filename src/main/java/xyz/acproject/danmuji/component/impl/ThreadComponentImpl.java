@@ -1,29 +1,14 @@
 package xyz.acproject.danmuji.component.impl;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.set.AutoReplySet;
-import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
-import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
-import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.http.HttpOtherData;
-import xyz.acproject.danmuji.thread.AdvertThread;
-import xyz.acproject.danmuji.thread.AutoReplyThread;
-import xyz.acproject.danmuji.thread.FollowShieldThread;
-import xyz.acproject.danmuji.thread.GiftShieldThread;
-import xyz.acproject.danmuji.thread.LogThread;
-import xyz.acproject.danmuji.thread.ParseThankFollowThread;
-import xyz.acproject.danmuji.thread.ParseThankGiftThread;
-import xyz.acproject.danmuji.thread.SendBarrageThread;
+import xyz.acproject.danmuji.thread.*;
 import xyz.acproject.danmuji.thread.core.HeartByteThread;
 import xyz.acproject.danmuji.thread.core.ParseMessageThread;
 import xyz.acproject.danmuji.thread.online.HeartBeatThread;
@@ -31,6 +16,10 @@ import xyz.acproject.danmuji.thread.online.HeartBeatsThread;
 import xyz.acproject.danmuji.thread.online.SmallHeartThread;
 import xyz.acproject.danmuji.thread.online.UserOnlineHeartThread;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName ThreadComponentImpl
@@ -62,11 +51,12 @@ public class ThreadComponentImpl implements ThreadComponent {
 				thankGiftRuleSets.add(thankGiftRuleSet);
 			}
 		}
-		if (PublicDataConf.parseMessageThread != null) {
+		if (PublicDataConf.parseMessageThread != null && !PublicDataConf.parseMessageThread.getState().toString().equals("TERMINATED")) {
 			PublicDataConf.parseMessageThread.setMessageControlMap(messageControlMap);
 			PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
 			PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
 			PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
+			PublicDataConf.parseMessageThread.setThankWelcomeSetConf(centerSetConf.getWelcome());
 			return false;
 		}
 		PublicDataConf.parseMessageThread = new ParseMessageThread();
@@ -75,6 +65,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		PublicDataConf.parseMessageThread.setMessageControlMap(messageControlMap);
 		PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
 		PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
+		PublicDataConf.parseMessageThread.setThankWelcomeSetConf(centerSetConf.getWelcome());
 		PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
 		if (PublicDataConf.parseMessageThread != null
 				&& !PublicDataConf.parseMessageThread.getState().toString().equals("TERMINATED")) {
@@ -266,6 +257,19 @@ public class ThreadComponentImpl implements ThreadComponent {
 	}
 
 	@Override
+	public boolean startWelcomeShieldThread(int time) {
+		if (PublicDataConf.parseThankWelcomeThread.getState().toString().equals("TERMINATED")
+				|| PublicDataConf.parseThankWelcomeThread.getState().toString().equals("NEW")) {
+			PublicDataConf.welcomeShieldThread = new WelcomeShieldThread();
+			PublicDataConf.welcomeShieldThread.FLAG = false;
+			PublicDataConf.welcomeShieldThread.setTime(time);
+			PublicDataConf.welcomeShieldThread.start();
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void closeUserOnlineThread() {
 		// TODO 自动生成的方法存根
 		if (PublicDataConf.userOnlineHeartThread != null) {
@@ -334,6 +338,23 @@ public class ThreadComponentImpl implements ThreadComponent {
 	}
 
 	@Override
+	public void startParseThankWelcomThread(ThankWelcomeSetConf thankWelcomeSetConf) {
+		if (PublicDataConf.parseThankWelcomeThread.getState().toString().equals("TERMINATED")
+				|| PublicDataConf.parseThankWelcomeThread.getState().toString().equals("NEW")) {
+			PublicDataConf.parseThankWelcomeThread = new ParseThankWelcomeThread();
+			PublicDataConf.parseThankWelcomeThread.setDelaytime((long) (1000 * thankWelcomeSetConf.getDelaytime()));
+			PublicDataConf.parseThankWelcomeThread.start();
+			PublicDataConf.parseThankWelcomeThread.setTimestamp(System.currentTimeMillis());
+			PublicDataConf.parseThankWelcomeThread.setThankWelcomeString(thankWelcomeSetConf.getWelcomes());
+			PublicDataConf.parseThankWelcomeThread.setNum(thankWelcomeSetConf.getNum());
+		} else {
+			PublicDataConf.parseThankWelcomeThread.setTimestamp(System.currentTimeMillis());
+			PublicDataConf.parseThankWelcomeThread.setThankWelcomeString(thankWelcomeSetConf.getWelcomes());
+			PublicDataConf.parseThankWelcomeThread.setNum(thankWelcomeSetConf.getNum());
+		}
+	}
+
+	@Override
 	public void setParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,
 			CenterSetConf centerSetConf) {
 		// TODO 自动生成的方法存根
@@ -351,6 +372,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 			PublicDataConf.parseMessageThread.setThankGiftSetConf(centerSetConf.getThank_gift());
 			PublicDataConf.parseMessageThread.setThankFollowSetConf(centerSetConf.getFollow());
 			PublicDataConf.parseMessageThread.setThankGiftRuleSets(thankGiftRuleSets);
+			PublicDataConf.parseMessageThread.setThankWelcomeSetConf(centerSetConf.getWelcome());
 		}
 	}
 
@@ -468,6 +490,15 @@ public class ThreadComponentImpl implements ThreadComponent {
 				&& !PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")) {
 			PublicDataConf.followShieldThread.FLAG = false;
 			PublicDataConf.followShieldThread.interrupt();
+		}
+	}
+
+	@Override
+	public void closeWelcomeShieldThread() {
+		if (PublicDataConf.welcomeShieldThread != null
+				&& !PublicDataConf.welcomeShieldThread.getState().toString().equals("TERMINATED")) {
+			PublicDataConf.welcomeShieldThread.FLAG = false;
+			PublicDataConf.welcomeShieldThread.interrupt();
 		}
 	}
 

@@ -671,4 +671,56 @@ public class HttpUserData {
 		}
 		return null;
 	}
+
+	//
+
+	/**
+	 * 解除禁言
+	 *
+	 * @Param bid block id
+	 * @return
+	 */
+	public static Short httpPostDeleteBlock(long bid) {
+		JSONObject jsonObject = null;
+		String data = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> params = null;
+		if (PublicDataConf.COOKIE == null)
+			return code;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		params = new HashMap<>(7);
+		params.put("id", String.valueOf(bid));
+		params.put("roomid", PublicDataConf.ROOMID.toString());
+		params.put("csrf_token", PublicDataConf.COOKIE.getBili_jct());
+		params.put("csrf", PublicDataConf.COOKIE.getBili_jct());
+		params.put("visit_id", "");
+		try {
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpPostForm("https://api.live.bilibili.com/banned_service/v1/Silent/del_room_block_user", headers,
+							params)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return code;
+		jsonObject = JSONObject.parseObject(data);
+		code = jsonObject.getShort("code");
+		if (code == 0) {
+			// 解禁成功
+//			System.out.println(jsonObject.getString("data"));
+		} else {
+			LOGGER.error("解除禁言失败,原因" + jsonObject.getString("msg"));
+		}
+		return code;
+	}
 }

@@ -1,729 +1,855 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="referrer" content="never">
-<meta name="renderer" content="webkit">
-<meta
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-	name="viewport">
-<title>弹幕姬主页</title>
-<link rel="stylesheet" href="../../css/bootstrap.min.css"
-	th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
-<link rel="stylesheet" href="../../css/style.css"
-	th:href="@{/css/style.css}" type="text/css" media="all">
-<script type="text/javascript" src="../../js/jquery.min.js"
-	th:src="@{/js/jquery.min.js}"></script>
-<script type="text/javascript" src="../../js/popper.min.js"
-	th:src="@{/js/popper.min.js}"></script>
-<script type="text/javascript" src="../../js/bootstrap.min.js"
-	th:src="@{/js/bootstrap.min.js}"></script>
-<script type="text/javascript" src="../../js/index.js"
-	th:src="@{/js/index.js}"></script>
+    <meta charset="utf-8">
+    <meta name="referrer" content="never">
+    <meta name="renderer" content="webkit">
+    <meta
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+            name="viewport">
+    <title>弹幕姬主页</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css"
+          th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
+    <link rel="stylesheet" href="../../css/style.css"
+          th:href="@{/css/style.css}" type="text/css" media="all">
+    <script type="text/javascript" src="../../js/jquery.min.js"
+            th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="../../js/popper.min.js"
+            th:src="@{/js/popper.min.js}"></script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"
+            th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="../../js/index.js"
+            th:src="@{/js/index.js}"></script>
 </head>
 
 <body>
-	<div class="app">
-		<div
-			class="row align-items-center justify-content-center center-wrapper">
-			<div class="col-md-9 m-3">
-				<div class="card border-primary">
-					<div class="card-header">
-						<h2>
-							<span>弹幕姬web控制面板</span><span class="connect-title"><a
-								th:href="@{/connect}">房间连接</a></span>
-						</h2>
-					</div>
-					<div class="card-body">
-						<div class="input-group mb-3">
+<div class="app">
+    <div
+            class="row align-items-center justify-content-center center-wrapper">
+        <div class="col-md-9 m-3">
+            <div class="card border-primary">
+                <div class="card-header">
+                    <h2>
+                        <span>弹幕姬web控制面板</span><span class="connect-title"><a
+                            th:href="@{/connect}">房间连接</a></span>
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
 							<span class="unlogin" th:if="!(${USER}?exists)">你还没有登陆，<a
-								th:href="@{/login}">去登陆</a>
+                                    th:href="@{/login}">去登陆</a>
 							</span><span class="logined" th:if="${USER}?exists">用户名：<span
-								th:text="${USER.uname}" class="user-name"></span>，uid：<span
-								th:text="${USER.uid}" class="user-id"></span>；<a
-								th:href="@{/quit}">退出登录</a>
+                            th:text="${USER.uname}" class="user-name"></span>，uid：<span
+                            th:text="${USER.uid}" class="user-id"></span>；<a
+                            th:href="@{/quit}">退出登录</a>
 							</span>&nbsp;&nbsp; <span class="room-data" th:if="${ROOMID}!=null">已连接至主播房间：<span
-								th:text="${ROOMID}" class="room-id"></span>，<span><a
-									th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
-									th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
-								th:text="${POPU}" class="popu"></span></span> <span class="room-data"
-								th:if="${ROOMID}==null">未连接到任何房间</span>
-						</div>
-						<div class="input-group mb-3">
-							<a href="#danmuw" class="btn btn-secondary" id="danmu_open"
-								data-toggle="collapse">显示控制台弹幕</a>
-							<div id="danmuw" class="collapse">
-								<div class="input-group mb-3">
-									<div class="form-group connect-set">
-										<input class="form-control connect-docket"
-											placeholder="要连接的端口地址" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											value="ws://localhost:23333/danmu/sub"
-											data-original-title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换">
+                            th:text="${ROOMID}" class="room-id"></span>，<span><a
+                            th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
+                            th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
+                            th:text="${POPU}" class="popu"></span>，<span class="room-manager"><a
+                            href="javascript:void(0)">房间管理</a></span></span>
+                        <span class="room-data"
+                              th:if="${ROOMID}==null">未连接到任何房间</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <a href="#danmuw" class="btn btn-secondary" id="danmu_open"
+                           data-toggle="collapse">显示控制台弹幕</a>
+                        <div id="danmuw" class="collapse">
+                            <div class="input-group mb-3">
+                                <div class="form-group connect-set">
+                                    <input class="form-control connect-docket"
+                                           placeholder="要连接的端口地址" data-toggle="tooltip"
+                                           data-placement="top" title="" data-html="true"
+                                           value="ws://localhost:23333/danmu/sub"
+                                           data-original-title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换">
 
-									</div>
-									<div class="form-group connect-button">
-										<button type="button" class="btn btn-primary btn-connect-d">连接</button>
-									</div>
+                                </div>
+                                <div class="form-group connect-button">
+                                    <button type="button" class="btn btn-primary btn-connect-d">连接</button>
+                                </div>
 
-								</div>
-								<div id="danmu">
-									<!-- <div class="danmu-child" uid="0">
-										<span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span
-											class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span
-											class="danmu-vip">爷</span><span class="danmu-manager">管</span><span
-											class="danmu-ul">UL19</span><a href="javasript:void(0)"><span
-											class="danmu-name name-guard">名字</span>:</a><span
-											class="danmu-text">哈哈哈哈</span>
-											<div class="danmu-tips">
-											<ul class="danmu-tips-ul">
-											<li class="danmu-tips-li">禁言</li>
-											<li class="danmu-tips-li">查看</li>
-											<li class="danmu-tips-li">关闭</li>
-											</ul>
-											</div>
-									</div>
-									<div class="danmu-child" uid="0">
-										<span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a
-											href="javasript:void(0)"><span
-											class="danmu-name name-guard">名字</span></a><span
-											class="danmu-text">赠送了 辣条 x 10</span>
-									</div>
-									<div class="danmu-child" uid="0">
-										<span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a
-											href="javasript:void(0)"><span
-											class="danmu-name name-guard">名字</span></a><span
-											class="danmu-text">已被禁言</span>
-									</div>
-									<div class="danmu-child" uid="0">
-										<span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>
-										<span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span
-											class="danmu-name name-guard">名字</span></a><span
-											class="danmu-text">进入直播间</span>
-									</div>
-									<div class="danmu-child" uid="0">
-										<span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>
-										<a href="javasript:void(0)"><span
-											class="danmu-name name-guard">名字</span></a><span
-											class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>
-									</div> -->
-									<!-- 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
-										它说:那个框是对面拉比克偷的</div> -->
-								</div>
-							</div>
-						</div>
-						<div class="input-group mb-3">
-							<a href="#set" class="btn btn-secondary" id="set_open"
-								data-toggle="collapse">设置</a>
-						</div>
-						<div id="set" class="collapse">
-							<div class="input-group mb-1">
-								<h4>显示设置</h4>
-							</div>
-							<div class="input-group mb-3 common-set">
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_autoStart"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置下次启动弹幕姬将会自动连接最后一次连接的房间</span>">自动</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_cmd"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="cmd窗口是否显示弹幕">cmd</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_guard"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示舰长图标">舰</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_vip"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示老爷图标">爷</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_manager"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示房管主播图标">管</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_medal"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示勋章图标">勋</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_barrage_ul"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示用户UL等级图标">UL</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_block"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示房管禁言消息">禁言</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_gift"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示礼物消息">礼物</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_welcome"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title=""
-										data-original-title="弹幕是否显示欢迎老爷舰长进入直播间消息">欢迎</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_follow"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-original-title="弹幕是否显示关注消息">关注</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_log"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="弹幕是否保存本地<br/>本地弹幕文件夹位置：<br/>本项目根目录下Danmuji_log文件夹">本地</span>
-									</label>
-								</div>
-							</div>
-							<div class="input-group mb-1">
-								<h5>广告姬设置(需要登录)</h5>
-							</div>
-							<div class="input-group mb-3 advert-set">
-								<div class="header-set">
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input advert_is_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否打开">开关</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input advert_is_live_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
-										</label>
-									</div>
-									<div class="custom-control-inline input-margin-s">
-										<select class="custom-select-sm advert_status"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="选择发送条件">
-											<option value="1" selected="selected">顺序</option>
-											<option value="2">随机</option>
-										</select>
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="1" class="small-input advert_time"
-											οninput="if(value.length>5)value=value.slice(0,5)"
-											style="ime-mode: Disabled"
-											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											placeholder="time(s)" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="多少秒发送一次"
-											value="1">
-									</div>
-								</div>
-								<div class="form-group footer-set">
+                            </div>
+                            <div id="danmu">
+                                <!-- <div class="danmu-child" uid="0">
+                                    <span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span
+                                        class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span
+                                        class="danmu-vip">爷</span><span class="danmu-manager">管</span><span
+                                        class="danmu-ul">UL19</span><a href="javasript:void(0)"><span
+                                        class="danmu-name name-guard">名字</span>:</a><span
+                                        class="danmu-text">哈哈哈哈</span>
+                                        <div class="danmu-tips">
+                                        <ul class="danmu-tips-ul">
+                                        <li class="danmu-tips-li">禁言</li>
+                                        <li class="danmu-tips-li">查看</li>
+                                        <li class="danmu-tips-li">关闭</li>
+                                        </ul>
+                                        </div>
+                                </div>
+                                <div class="danmu-child" uid="0">
+                                    <span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a
+                                        href="javasript:void(0)"><span
+                                        class="danmu-name name-guard">名字</span></a><span
+                                        class="danmu-text">赠送了 辣条 x 10</span>
+                                </div>
+                                <div class="danmu-child" uid="0">
+                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a
+                                        href="javasript:void(0)"><span
+                                        class="danmu-name name-guard">名字</span></a><span
+                                        class="danmu-text">已被禁言</span>
+                                </div>
+                                <div class="danmu-child" uid="0">
+                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>
+                                    <span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span
+                                        class="danmu-name name-guard">名字</span></a><span
+                                        class="danmu-text">进入直播间</span>
+                                </div>
+                                <div class="danmu-child" uid="0">
+                                    <span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>
+                                    <a href="javasript:void(0)"><span
+                                        class="danmu-name name-guard">名字</span></a><span
+                                        class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>
+                                </div> -->
+                                <!-- 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
+                                    它说:那个框是对面拉比克偷的</div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <a href="#set" class="btn btn-secondary" id="set_open"
+                           data-toggle="collapse">设置</a>
+                    </div>
+                    <div id="set" class="collapse">
+                        <div class="input-group mb-1">
+                            <h4>显示设置</h4>
+                        </div>
+                        <div class="input-group mb-3 common-set">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_autoStart"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置下次启动弹幕姬将会自动连接最后一次连接的房间</span>">自动</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_cmd"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="cmd窗口是否显示弹幕">cmd</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_barrage_guard"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="弹幕是否显示舰长图标">舰</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_barrage_vip"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="弹幕是否显示老爷图标">爷</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_barrage_manager">
+                                    <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title=""
+                                            data-original-title="弹幕是否显示房管主播图标">管</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_barrage_medal"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="弹幕是否显示勋章图标">勋</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_barrage_ul"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title=""
+                                        data-original-title="弹幕是否显示用户UL等级图标">UL</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_block"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title=""
+                                        data-original-title="弹幕是否显示房管禁言消息">禁言</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_gift"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="弹幕是否显示礼物消息">礼物</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_welcome"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title=""
+                                        data-original-title="弹幕是否显示欢迎老爷舰长进入直播间消息">欢迎</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_welcome_all"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title=""
+                                        data-original-title="弹幕是否显示用户进入直播间消息">进入</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_follow"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-original-title="弹幕是否显示关注消息">关注</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_log"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="弹幕是否保存本地<br/>本地弹幕文件夹位置：<br/>本项目根目录下Danmuji_log文件夹">本地</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group mb-1">
+                            <h5>广告姬设置(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 advert-set">
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input advert_is_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="是否打开">开关</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input advert_is_live_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control-inline input-margin-s">
+                                    <select class="custom-select-sm advert_status"
+                                            data-toggle="tooltip" data-placement="top" title=""
+                                            data-original-title="选择发送条件">
+                                        <option value="1" selected="selected">顺序</option>
+                                        <option value="2">随机</option>
+                                    </select>
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="1" class="small-input advert_time"
+                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                           style="ime-mode: Disabled"
+                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           placeholder="time(s)" data-toggle="tooltip"
+                                           data-placement="top" title="" data-original-title="多少秒发送一次"
+                                           value="1">
+                                </div>
+                            </div>
+                            <div class="form-group footer-set">
 									<textarea class="form-control advert_adverts"
-										placeholder="多条语句下以回车为分割每条语句" data-toggle="tooltip"
-										data-placement="top" data-html="true" title=""
-										data-original-title="多条语句时候注意以回车为分割每条语句<br/>注意每条语句不要超出自己能发送的弹幕长度<br/>超出长度弹幕姬会自动分段发送"></textarea>
-								</div>
-							</div>
+                                              placeholder="多条语句下以回车为分割每条语句" data-toggle="tooltip"
+                                              data-placement="top" data-html="true" title=""
+                                              data-original-title="多条语句时候注意以回车为分割每条语句<br/>注意每条语句不要超出自己能发送的弹幕长度<br/>超出长度弹幕姬会自动分段发送"></textarea>
+                            </div>
+                        </div>
 
-							<div class="input-group mb-1">
-								<h5>感谢礼物姬设置(需要登录)</h5>
-							</div>
-							<div class="input-group mb-3 thankGift-set">
-								<div class="header-set">
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input thankgift_is_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否打开">开关</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox"
-											class="form-check-input thankgift_is_live_open"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox"
-											class="form-check-input thankgift_is_tx_shield"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title=""
-											data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input thankgift_is_num">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">显示礼物数量</span>
-										</label>
-									</div>
-									<div class="custom-control-inline input-margin-s">
-										<select class="custom-select-sm thankgift_shield_status"
-											data-toggle="tooltip" data-placement="top" data-html="true"
-											title=""
-											data-original-title="屏蔽：<br/>自定义为(根据礼物名字屏蔽，空为不屏蔽)；<br/>免费为屏蔽所有免费礼物(不要钱的)<br/>低价为目前默认屏蔽单价低于礼花的金瓜子礼物；<br/>规则为自定义规则；">
-											<option value="1" selected>自定义</option>
-											<option value="2">免费</option>
-											<option value="3">低价</option>
-											<option value="4">规则</option>
-										</select>
-									</div>
-									<div class="custom-control-inline input-margin-s">
-										<select class="custom-select-sm thankgift_thank_status"
-											data-toggle="tooltip" data-placement="top" data-html="true"
-											title=""
-											data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span><br/>很多人都不懂这个模式<br/>这里我解释一下<br/>单人单种顾名思义就是一个人对应一种礼物感谢<br/>单人多种是合并一个人延迟时间内赠送的多少种礼物,修改多少种礼物在右边，默认合并2种<br/>多人多种就是延迟时间内合并多少个人他们的多少种礼物，修改多少在右边，默认合并2个人他们的2种<br/><span class='red-font'>切换模式注意修改参数!</span>">
-											<option value="1" selected>单人单种</option>
-											<option value="2">单人多种</option>
-											<option value="3">多人多种</option>
-										</select>
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="2" class="small-input thankgift_num"
-											οninput="if(value.length>5)value=value.slice(0,5)"
-											style="ime-mode: Disabled"
-											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											placeholder="多少种" data-toggle="tooltip" data-placement="top"
-											title="" data-html="true"
-											data-original-title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/><span class='red-font'>仅在单人多种和多人多种模式下使用</span>"
-											value="2">
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="0"
-											class="small-input thankgift_delaytime"
-											placeholder="delay time(s)" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="延迟多少秒发送<br/>最小值为0,默认为3,可以小数点<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
-											value="0">
-									</div>
-									<div class="custom-control-inline">
-										<button class="btn btn-primary btn-sm" id="gift-shield-btn">礼物自定义规则屏蔽设置</button>
-									</div>
+                        <div class="input-group mb-1">
+                            <h5>感谢礼物姬设置(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 thankGift-set">
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input thankgift_is_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="是否打开">开关</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox"
+                                            class="form-check-input thankgift_is_live_open"> <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox"
+                                            class="form-check-input thankgift_is_tx_shield"> <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title=""
+                                            data-original-title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input thankgift_is_num">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-html="true"
+                                              data-original-title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">显示礼物数量</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control-inline input-margin-s">
+                                    <select class="custom-select-sm thankgift_shield_status"
+                                            data-toggle="tooltip" data-placement="top" data-html="true"
+                                            title=""
+                                            data-original-title="屏蔽：<br/>自定义为(根据礼物名字屏蔽，空为不屏蔽)；<br/>免费为屏蔽所有免费礼物(不要钱的)<br/>低价为目前默认屏蔽单价低于礼花的金瓜子礼物；<br/>规则为自定义规则；">
+                                        <option value="1" selected>自定义</option>
+                                        <option value="2">免费</option>
+                                        <option value="3">低价</option>
+                                        <option value="4">规则</option>
+                                    </select>
+                                </div>
+                                <div class="custom-control-inline input-margin-s">
+                                    <select class="custom-select-sm thankgift_thank_status"
+                                            data-toggle="tooltip" data-placement="top" data-html="true"
+                                            title=""
+                                            data-original-title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span><br/>很多人都不懂这个模式<br/>这里我解释一下<br/>单人单种顾名思义就是一个人对应一种礼物感谢<br/>单人多种是合并一个人延迟时间内赠送的多少种礼物,修改多少种礼物在右边，默认合并2种<br/>多人多种就是延迟时间内合并多少个人他们的多少种礼物，修改多少在右边，默认合并2个人他们的2种<br/><span class='red-font'>切换模式注意修改参数!</span>">
+                                        <option value="1" selected>单人单种</option>
+                                        <option value="2">单人多种</option>
+                                        <option value="3">多人多种</option>
+                                    </select>
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="2" class="small-input thankgift_num"
+                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                           style="ime-mode: Disabled"
+                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           placeholder="多少种" data-toggle="tooltip" data-placement="top"
+                                           title="" data-html="true"
+                                           data-original-title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/><span class='red-font'>仅在单人多种和多人多种模式下使用</span>"
+                                           value="2">
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="0"
+                                           class="small-input thankgift_delaytime"
+                                           placeholder="delay time(s)" data-toggle="tooltip"
+                                           data-placement="top" title="" data-html="true"
+                                           data-original-title="延迟多少秒发送<br/>最小值为0,默认为3,可以小数点<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时，非常强大特别推荐使用</span>"
+                                           value="0">
+                                </div>
+                                <div class="custom-control-inline">
+                                    <button class="btn btn-primary btn-sm" id="gift-shield-btn">礼物自定义规则屏蔽设置</button>
+                                </div>
 
-								</div>
-								<div class="form-group footer-set">
+                            </div>
+                            <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_shield"
-										placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用"></textarea>
-									<textarea class="form-control input-margin-b thankgift_thank"
-										placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
-										data-toggle="tooltip" data-html="true" data-placement="top"
-										title=""
-										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"></textarea>
-									<!-- 					<input
-										class="form-control one_people input-margin-b thankgift_thank"
-										placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
-										data-toggle="tooltip" data-placement="top" title=""
-										data-html="true"
-										data-original-title="感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"> -->
-									<!-- <input class="form-control some_people input-margin-b thankgift_thank" placeholder="感謝%uName%贈送的%Gifts%~" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true" data-original-title="感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开">
-								     <input class="form-control somes_people input-margin-b thankgift_thank" placeholder="感謝%uNames%贈送的%Gifts%~" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true" data-original-title="感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开"> -->
+                                              placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用"></textarea>
+                                <textarea class="form-control input-margin-b thankgift_thank"
+                                          placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
+                                          data-toggle="tooltip" data-html="true" data-placement="top"
+                                          title=""
+                                          data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"></textarea>
+                                <!-- 					<input
+                                    class="form-control one_people input-margin-b thankgift_thank"
+                                    placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
+                                    data-toggle="tooltip" data-placement="top" title=""
+                                    data-html="true"
+                                    data-original-title="感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"> -->
+                                <!-- <input class="form-control some_people input-margin-b thankgift_thank" placeholder="感謝%uName%贈送的%Gifts%~" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true" data-original-title="感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开">
+                                 <input class="form-control somes_people input-margin-b thankgift_thank" placeholder="感謝%uNames%贈送的%Gifts%~" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true" data-original-title="感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开"> -->
 
-								</div>
-								<h6 data-toggle="tooltip" data-placement="top" title=""
-									data-html="true"
-									data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">
-									上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span>
-								</h6>
-								<div class="header-set">
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label is_guard_report_click">
-											<input type="checkbox"
-											class="form-check-input thankgift_is_guard_local"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="是否开启舰长储存在本地<br/>如在开启上舰私信的情况下：不开启既为有人上舰都私信<br/>主要用于防止重复发送私信<br/>本地文件夹guardFile下<br/><span class='red-font'>注意变动该配置都需要重启弹幕姬</span>">舰长存储本地</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label is_guard_report_click">
-											<input type="checkbox"
-											class="form-check-input thankgift_is_guard_report"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title=""
-											data-original-title="是否开启上舰后发送私信">上舰长私信(需要登录)</span>
-										</label>
-									</div>
-								</div>
-								<div class="form-group footer-set">
+                            </div>
+                            <h6 data-toggle="tooltip" data-placement="top" title=""
+                                data-html="true"
+                                data-original-title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">
+                                上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span>
+                            </h6>
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label is_guard_report_click">
+                                        <input type="checkbox"
+                                               class="form-check-input thankgift_is_guard_local"> <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title="" data-html="true"
+                                            data-original-title="是否开启舰长储存在本地<br/>如在开启上舰私信的情况下：不开启既为有人上舰都私信<br/>主要用于防止重复发送私信<br/>本地文件夹guardFile下<br/><span class='red-font'>注意变动该配置都需要重启弹幕姬</span>">舰长存储本地</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label is_guard_report_click">
+                                        <input type="checkbox"
+                                               class="form-check-input thankgift_is_guard_report"> <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title=""
+                                            data-original-title="是否开启上舰后发送私信">上舰长私信(需要登录)</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label is_guard_code_click">
+                                        <input type="checkbox"
+                                               class="form-check-input thankgift_is_gift_code"> <span
+                                            class="_description" data-toggle="tooltip"
+                                            data-placement="top" title=""
+                                            data-original-title="是否开启礼品码模式">礼品码</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_report"
-										placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称"
-										data-toggle="tooltip" data-html="true" data-placement="top"
-										title=""
-										data-original-title="回车为换行，不能超过破站官方规定的500字<br/>可选参数%uName%，刚刚上舰的人的名称"></textarea>
-									<input
-										class="form-control input-margin-b thankgift_barrageReport"
-										placeholder="" data-toggle="tooltip" data-placement="top"
-										title="" data-html="true"
-										data-original-title="上舰私信发送成功后，发送的自定义弹幕，默认空不发送">
-								</div>
-							</div>
-							<div class="input-group mb-1">
-								<h5>感谢关注姬设置(需要登录)</h5>
-							</div>
-							<div class="input-group mb-3 thankFollow-set">
-								<div class="header-set">
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input follow_is_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="是否打开">开关</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input follow_is_live_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input follow_tx_shield">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title=""
-											data-original-title="是否屏蔽天选状态下的关注">天选</span>
-										</label>
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="1" class="small-input follow_num"
-											οninput="if(value.length>5)value=value.slice(0,5)"
-											style="ime-mode: Disabled"
-											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											placeholder="多少人" data-toggle="tooltip" data-placement="top"
-											title="" data-html="true" data-original-title="每次感谢多少个人"
-											value="1">
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="0"
-											class="small-input thankfollow_delaytime"
-											placeholder="delay time(s)" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
-											value="0">
-									</div>
-								</div>
-								<div class="form-group footer-set">
-									<!-- 									<input class="form-control follow_follows"
-										placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
-									<textarea class="form-control input-margin-b follow_follows"
-										placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
-										data-html="true" data-placement="top" title=""
-										data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> %uNames%关注人名称集合"></textarea>
-								</div>
-							</div>
-							<div class="input-group mb-1">
-								<h5>自动回复姬设置(需要登录)</h5>
-							</div>
-							<div class="input-group mb-3 autoReply-set">
-								<div class="header-set">
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input replys_is_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="是否打开">开关</span>
-										</label>
-									</div>
-									<div class="custom-control custom-radio custom-control-inline">
-										<label class="form-check-label"> <input
-											type="checkbox" class="form-check-input replys_is_live_open">
-											<span class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="仅在直播中有效">直播</span>
-										</label>
-									</div>
-									<div
-										class="custom-control-inline small-input-wrap input-margin-s">
-										<input type="number" min="1" class="small-input replys_time"
-											οninput="if(value.length>5)value=value.slice(0,5)"
-											style="ime-mode: Disabled"
-											onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											placeholder="间隔" data-toggle="tooltip" data-placement="top"
-											title="" data-html="true"
-											data-original-title="<span class='red-font'>间隔多少秒才识别弹幕并自动回复</span><br/>默认为3秒"
-											value="3">
-									</div>
-									<div class="custom-control-inline">
-										<button class="btn btn-primary btn-sm" id="replys-btn">自定义回复设置</button>
-									</div>
-								</div>
-							</div>
-							<div class="input-group mb-1">
-								<h5>实验性设置</h5>
-							</div>
-							<div class="input-group mb-3 othser-set">
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_dosign"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="是否自动直播签到，每天凌晨0点30分检查签到">自动签到</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-																			class="form-check-input is_clockin"> <span
-											class="_description" data-toggle="tooltip"
-											data-placement="top" title="" data-html="true"
-											data-original-title="是否自动打卡，每天凌晨0点35分自动打卡向直播间发送任意自定义弹幕">自动打卡</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_online"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="是否打开用户在线心跳">在线心跳</span>
-									</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<label class="form-check-label"> <input type="checkbox"
-										class="form-check-input is_sh"> <span
-										class="_description" data-toggle="tooltip"
-										data-placement="top" title="" data-html="true"
-										data-original-title="是否打开获取在线小心心，不知道什么时候失效且用且珍惜">小心心</span>
-									</label>
-								</div>
-								<div class="form-group footer-set footer-header-margin clock_in_barrage">
+                                              placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称&#10;可选参数%giftCode%，礼品码"
+                                              data-toggle="tooltip" data-html="true" data-placement="top"
+                                              title=""
+                                              data-original-title="回车为换行，不能超过破站官方规定的500字<br/>可选参数%uName%，刚刚上舰的人的名称"></textarea>
+                                <input
+                                        class="form-control input-margin-b thankgift_barrageReport"
+                                        placeholder="" data-toggle="tooltip" data-placement="top"
+                                        title="" data-html="true"
+                                        data-original-title="上舰私信发送成功后，发送的自定义弹幕，默认空不发送">
+                                <textarea class="form-control input-margin-b thankgift_codeStrings"
+                                          placeholder="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做备份"
+                                          data-toggle="tooltip" data-html="true" data-placement="top"
+                                          title=""
+                                          data-original-title="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做备份"></textarea>
+                            </div>
+                        </div>
+                        <div class="input-group mb-1">
+                            <h5>感谢关注姬设置(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 thankFollow-set">
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input follow_is_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="是否打开">开关</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input follow_is_live_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input follow_tx_shield">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title=""
+                                              data-original-title="是否屏蔽天选状态下的关注">天选</span>
+                                    </label>
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="1" class="small-input follow_num"
+                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                           style="ime-mode: Disabled"
+                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           placeholder="多少人" data-toggle="tooltip" data-placement="top"
+                                           title="" data-html="true" data-original-title="每次感谢多少个人"
+                                           value="1">
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="0"
+                                           class="small-input thankfollow_delaytime"
+                                           placeholder="delay time(s)" data-toggle="tooltip"
+                                           data-placement="top" title="" data-html="true"
+                                           data-original-title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+                                           value="0">
+                                </div>
+                            </div>
+                            <div class="form-group footer-set">
+                                <!-- 									<input class="form-control follow_follows"
+                                    placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
+                                    data-placement="top" title="" data-html="true"
+                                    data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
+                                <textarea class="form-control input-margin-b follow_follows"
+                                          placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
+                                          data-html="true" data-placement="top" title=""
+                                          data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> %uNames%关注人名称集合"></textarea>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="input-group mb-1">
+                            <h5>欢迎姬设置(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 thankFollow-set">
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input welcome_is_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="是否打开">开关</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input welcome_is_live_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-original-title="仅在直播中有效">直播</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input welcome_tx_shield">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title=""
+                                              data-original-title="是否屏蔽天选状态下的关注">天选</span>
+                                    </label>
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="1" class="small-input welcome_num"
+                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                           style="ime-mode: Disabled"
+                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           placeholder="多少人" data-toggle="tooltip" data-placement="top"
+                                           title="" data-html="true" data-original-title="每次欢迎多少个人"
+                                           value="1">
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="0"
+                                           class="small-input thankwelcome_delaytime"
+                                           placeholder="delay time(s)" data-toggle="tooltip"
+                                           data-placement="top" title="" data-html="true"
+                                           data-original-title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+                                           value="0">
+                                </div>
+                            </div>
+                            <div class="form-group footer-set">
+                                <!-- 									<input class="form-control follow_follows"
+                                    placeholder="谢谢 %uNames% 的关注~" data-toggle="tooltip"
+                                    data-placement="top" title="" data-html="true"
+                                    data-original-title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
+                                <textarea class="form-control input-margin-b welcome_welcomes"
+                                          placeholder="欢迎 %uNames% 进入直播间~" data-toggle="tooltip"
+                                          data-html="true" data-placement="top" title=""
+                                          data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> %uNames%欢迎人名称集合"></textarea>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="input-group mb-1">
+                            <h5>自动回复姬设置(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 autoReply-set">
+                            <div class="header-set">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input replys_is_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-html="true"
+                                              data-original-title="是否打开">开关</span>
+                                    </label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <label class="form-check-label"> <input
+                                            type="checkbox" class="form-check-input replys_is_live_open">
+                                        <span class="_description" data-toggle="tooltip"
+                                              data-placement="top" title="" data-html="true"
+                                              data-original-title="仅在直播中有效">直播</span>
+                                    </label>
+                                </div>
+                                <div
+                                        class="custom-control-inline small-input-wrap input-margin-s">
+                                    <input type="number" min="1" class="small-input replys_time"
+                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                           style="ime-mode: Disabled"
+                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           placeholder="间隔" data-toggle="tooltip" data-placement="top"
+                                           title="" data-html="true"
+                                           data-original-title="<span class='red-font'>间隔多少秒才识别弹幕并自动回复</span><br/>默认为3秒"
+                                           value="3">
+                                </div>
+                                <div class="custom-control-inline">
+                                    <button class="btn btn-primary btn-sm" id="replys-btn">自定义回复设置</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-1">
+                            <h5>实验性设置</h5>
+                        </div>
+                        <div class="input-group mb-3 othser-set">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_dosign"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="是否自动直播签到，每天凌晨0点30分检查签到">自动签到</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_clockin"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="是否自动打卡，每天凌晨0点35分自动打卡向直播间发送任意自定义弹幕">自动打卡</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_online"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="是否打开用户在线心跳">在线心跳</span>
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input is_sh"> <span
+                                        class="_description" data-toggle="tooltip"
+                                        data-placement="top" title="" data-html="true"
+                                        data-original-title="是否打开获取在线小心心，不知道什么时候失效且用且珍惜">小心心</span>
+                                </label>
+                            </div>
+                            <div class="form-group footer-set footer-header-margin clock_in_barrage">
 									<textarea class="form-control input-margin-b clockin_barrage"
-											  placeholder="打卡姬自定义发送弹幕,多条回车" data-toggle="tooltip"
-											  data-html="true" data-placement="top" title=""
-											  data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条"></textarea>
-								</div>
-							</div>
-							<div class="input-group mb-3 set-control" style="display: block">
-								<button type="button" class="btn btn-danger set-hold">保存设置</button>
-								<span class="notice-message">成功</span> <span
-									class="success-message">成功</span>
-								<div style="float: right;display: block;">
-								<input type="file" value="上传文件" id="file"  style="display: none;" />
-								<button type="button" class="btn btn-warning export-set">导出设置</button>
-								<button type="button" class="btn btn-info import-set">导入设置</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="card-footer">
-						<div class="author-message">
-							B站直播java版弹幕姬 © 2020-2021 <a href="https://blogs.acproject.xyz/"
-								target="_blank"> SaKazaKi(坂崎简) </a>|<a
-								href="https://github.com/BanqiJane/Bilibili_Danmuji"
-								target="_blank" data-toggle="tooltip" data-placement="top"
-								title=""
-								data-original-title="https://github.com/BanqiJane/Bilibili_Danmuji">
-								GitHub仓库(查看更新) </a>|<a href="mailto:zjianf2014@outlook.com"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-original-title="zjianf2014@outlook.com(有什么建议或反馈bug)">
-								联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-original-title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
-								href="javascript:;" data-toggle="tooltip" id="checkupdate"
-								data-placement="top" title=""
-								th:data-original-title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="shieldgifts-mask" style="display: none;">
-		<div class="shieldgifts-wrap">
-			<div class="t">
-				请自定义需要屏蔽的礼物规则<a href="javascript:;" class="shieldgift_add"
-					data-toggle="tooltip" data-placement="top" title=""
-					data-html="true" data-original-title="新增规则">⊕</a> <i
-					class="btn-close"> </i>
-			</div>
-			<div class="con">
-				<table class="table table-bordered table-sm">
-					<tbody class="shieldgifts-tbody">
-						<tr>
-							<td><input type="checkbox" class="shieldgifts_open"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-original-title="是否开启"></td>
-							<td><input class="small-input shieldgifts_name"
-								placeholder="礼物名称" data-toggle="tooltip" data-placement="top"
-								title="" data-html="true" data-original-title="礼物名称"></td>
-							<td><select class="custom-select-sm shieldgifts_status"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-html="true" data-original-title="选择类型">
-									<option value="1" selected="selected">数量</option>
-									<option value="2">瓜子</option>
-							</select></td>
-							<td><input type="number" min="0"
-								class="small-input shieldgifts_num"
-								οninput="if(value.length>5)value=value.slice(0,5)"
-								style="ime-mode: Disabled"
-								onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-								placeholder="num" value="0" data-toggle="tooltip"
-								data-placement="top" title="" data-html="true"
-								data-original-title="大于多少(不得小于)"></td>
-							<td><button type="button"
-									class="btn btn-danger btn-sm shieldgift_delete">删除</button></td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" class="shieldgifts_open"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-original-title="是否开启"></td>
-							<td><input class="small-input shieldgifts_name"
-								placeholder="礼物名称" data-toggle="tooltip" data-placement="top"
-								title="" data-html="true" data-original-title="礼物名称"></td>
-							<td><select class="custom-select-sm shieldgift_status"
-								data-toggle="tooltip" data-placement="top" title="选择类型"
-								data-html="true" data-original-title="选择类型">
-									<option value="1" selected="selected">数量</option>
-									<option value="2">瓜子</option>
-							</select></td>
-							<td><input type="number" min="0"
-								class="small-input shieldgifts_num"
-								οninput="if(value.length>5)value=value.slice(0,5)"
-								style="ime-mode: Disabled"
-								onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-								placeholder="num" value="0" data-toggle="tooltip"
-								data-placement="top" title="大于多少(不得小于)" data-html="true"
-								data-original-title="大于多少(不得小于)"></td>
-							<td><button type="button"
-									class="btn btn-danger btn-sm shieldgift_delete">删除</button></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="replys-mask">
-		<div class="replys-wrap">
-			<div class="t">
-				请自定义弹幕姬自动回复规则<a href="javascript:;" class="replys_add"
-					data-toggle="tooltip" data-placement="top" title=""
-					data-html="true" data-original-title="新增回复规则">⊕</a> <i
-					class="btn-closer"> </i>
-			</div>
-			<div class="con">
-				<ul class="replys-ul" id="replys-ul" data-role="listview">
+                                              placeholder="打卡姬自定义发送弹幕,多条回车" data-toggle="tooltip"
+                                              data-html="true" data-placement="top" title=""
+                                              data-original-title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条"></textarea>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 set-control" style="display: block">
+                            <button type="button" class="btn btn-danger set-hold">保存设置</button>
+                            <span class="notice-message">成功</span> <span
+                                class="success-message">成功</span>
+                            <div style="float: right;display: block;">
+                                <input type="file" value="上传文件" id="file" style="display: none;"/>
+                                <button type="button" class="btn btn-warning export-set">导出设置</button>
+                                <button type="button" class="btn btn-info import-set">导入设置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="author-message">
+                        B站直播java版弹幕姬 © 2020-2021 <a href="https://blogs.acproject.xyz/"
+                                                    target="_blank"> SaKazaKi(坂崎简) </a>|<a
+                            href="https://github.com/BanqiJane/Bilibili_Danmuji"
+                            target="_blank" data-toggle="tooltip" data-placement="top"
+                            title=""
+                            data-original-title="https://github.com/BanqiJane/Bilibili_Danmuji">
+                        GitHub仓库(查看更新) </a>|<a href="mailto:zjianf2014@outlook.com"
+                                               data-toggle="tooltip" data-placement="top" title=""
+                                               data-original-title="zjianf2014@outlook.com(有什么建议或反馈bug)">
+                        联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
+                                     data-toggle="tooltip" data-placement="top" title=""
+                                     data-original-title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
+                            href="javascript:;" data-toggle="tooltip" id="checkupdate"
+                            data-placement="top" title=""
+                            th:data-original-title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="shieldgifts-mask" style="display: none;">
+    <div class="shieldgifts-wrap">
+        <div class="t">
+            请自定义需要屏蔽的礼物规则<a href="javascript:;" class="shieldgift_add"
+                            data-toggle="tooltip" data-placement="top" title=""
+                            data-html="true" data-original-title="新增规则">⊕</a> <i
+                class="btn-close"> </i>
+        </div>
+        <div class="con">
+            <table class="table table-bordered table-sm">
+                <tbody class="shieldgifts-tbody">
+                <tr>
+                    <td><input type="checkbox" class="shieldgifts_open"
+                               data-toggle="tooltip" data-placement="top" title=""
+                               data-original-title="是否开启"></td>
+                    <td><input class="small-input shieldgifts_name"
+                               placeholder="礼物名称" data-toggle="tooltip" data-placement="top"
+                               title="" data-html="true" data-original-title="礼物名称"></td>
+                    <td><select class="custom-select-sm shieldgifts_status"
+                                data-toggle="tooltip" data-placement="top" title=""
+                                data-html="true" data-original-title="选择类型">
+                        <option value="1" selected="selected">数量</option>
+                        <option value="2">瓜子</option>
+                    </select></td>
+                    <td><input type="number" min="0"
+                               class="small-input shieldgifts_num"
+                               οninput="if(value.length>5)value=value.slice(0,5)"
+                               style="ime-mode: Disabled"
+                               onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                               placeholder="num" value="0" data-toggle="tooltip"
+                               data-placement="top" title="" data-html="true"
+                               data-original-title="大于多少(不得小于)"></td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-danger btn-sm shieldgift_delete">删除
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="shieldgifts_open"
+                               data-toggle="tooltip" data-placement="top" title=""
+                               data-original-title="是否开启"></td>
+                    <td><input class="small-input shieldgifts_name"
+                               placeholder="礼物名称" data-toggle="tooltip" data-placement="top"
+                               title="" data-html="true" data-original-title="礼物名称"></td>
+                    <td><select class="custom-select-sm shieldgift_status"
+                                data-toggle="tooltip" data-placement="top" title="选择类型"
+                                data-html="true" data-original-title="选择类型">
+                        <option value="1" selected="selected">数量</option>
+                        <option value="2">瓜子</option>
+                    </select></td>
+                    <td><input type="number" min="0"
+                               class="small-input shieldgifts_num"
+                               οninput="if(value.length>5)value=value.slice(0,5)"
+                               style="ime-mode: Disabled"
+                               onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                               placeholder="num" value="0" data-toggle="tooltip"
+                               data-placement="top" title="大于多少(不得小于)" data-html="true"
+                               data-original-title="大于多少(不得小于)"></td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-danger btn-sm shieldgift_delete">删除
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="replys-mask">
+    <div class="replys-wrap">
+        <div class="t">
+            请自定义弹幕姬自动回复规则<a href="javascript:;" class="replys_add"
+                            data-toggle="tooltip" data-placement="top" title=""
+                            data-html="true" data-original-title="新增回复规则">⊕</a> <i
+                class="btn-closer"> </i>
+        </div>
+        <div class="con">
+            <ul class="replys-ul" id="replys-ul" data-role="listview">
 
-				</ul>
-			</div>
-		</div>
-		<div class="radd-mask">
-			<div class="radd-body">
-				<div class="t">
-					修改当前规则(关闭既为设置完成,别忘了最后保存配置)<i class="btn-closeri"
-						data-toggle="tooltip" data-placement="top" data-html="true"
-						title="关闭既为设置完成<br/>别忘了保存配置" data-original-title="关闭既为"> </i>
-				</div>
-				<div class="con">
-					<ul>
-						<li><input type="checkbox" class="reply_open_i"
-							data-toggle="tooltip" data-placement="top" title="是否开启"
-							data-original-title="是否开启"></li>
-						<li><input type="checkbox" class="reply_oc_i"
-							data-toggle="tooltip" data-placement="top" title=""
-							data-original-title="是否精确匹配，仅在只有一个关键字且没有屏蔽词的情况下使用(也可以在 含有 || 号条件下使用)"></li>
-						<li><textarea class="reply_keywords_i" placeholder="关键字"
-								data-toggle="tooltip" data-placement="top" title=""
-								data-html="true"
-								data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='orange-font'>想实现满足条件A或条件B 发送内容C的功能请在关键字中用 || 号分割或者不同关键字(即使在多关键字情况下依旧生效)</span><br/><span class='red-font'>注意不能为空</span>"></textarea></li>
-						<li><textarea class="reply_shields_i" placeholder="屏蔽词"
-								data-toggle="tooltip" data-placement="top"
-								title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"
-								data-html="true" data-original-title="屏蔽词"></textarea></li>
-						<li><textarea class="reply_rs_i" placeholder="回复语句"
-								data-toggle="tooltip" data-placement="top"
-								title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值"
-								data-html="true" data-original-title="回复语句"></textarea></li>
-						<li><button type="button"
-								class="btn btn-danger btn-sm reply_delete_i">删除</button></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="block-mask" style="display: none;">
-		<div class="block-wrap">
-			<div class="t">
-				禁言窗口 <i class="btn-close"> </i>
-			</div>
-			<div class="con">
-				<div class="input-group mb-3">
-									<div class="form-group block-set">
-										<input class="form-control form-control-sm block-input" type="number" min="1" max="720" placeholder="禁言时间1-720小时" data-toggle="tooltip" data-placement="top" title="" data-html="true" value="" data-original-title="">
-									</div>
-									<div class="form-group block-button">
-										<button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
-									</div>
+            </ul>
+        </div>
+    </div>
+    <div class="radd-mask">
+        <div class="radd-body">
+            <div class="t">
+                修改当前规则(关闭既为设置完成,别忘了最后保存配置)<i class="btn-closeri"
+                                             data-toggle="tooltip" data-placement="top" data-html="true"
+                                             title="关闭既为设置完成<br/>别忘了保存配置" data-original-title="关闭既为"> </i>
+            </div>
+            <div class="con">
+                <ul>
+                    <li><input type="checkbox" class="reply_open_i"
+                               data-toggle="tooltip" data-placement="top" title="是否开启"
+                               data-original-title="是否开启"></li>
+                    <li><input type="checkbox" class="reply_oc_i"
+                               data-toggle="tooltip" data-placement="top" title=""
+                               data-original-title="是否精确匹配，仅在只有一个关键字且没有屏蔽词的情况下使用(也可以在 含有 || 号条件下使用)"></li>
+                    <li><textarea class="reply_keywords_i" placeholder="关键字"
+                                  data-toggle="tooltip" data-placement="top" title=""
+                                  data-html="true"
+                                  data-original-title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='orange-font'>想实现满足条件A或条件B 发送内容C的功能请在关键字中用 || 号分割或者不同关键字(即使在多关键字情况下依旧生效)</span><br/><span class='red-font'>注意不能为空</span>"></textarea>
+                    </li>
+                    <li><textarea class="reply_shields_i" placeholder="屏蔽词"
+                                  data-toggle="tooltip" data-placement="top"
+                                  title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"
+                                  data-html="true" data-original-title="屏蔽词"></textarea></li>
+                    <li><textarea class="reply_rs_i" placeholder="回复语句"
+                                  data-toggle="tooltip" data-placement="top"
+                                  title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值"
+                                  data-html="true" data-original-title="回复语句"></textarea></li>
+                    <li>
+                        <button type="button"
+                                class="btn btn-danger btn-sm reply_delete_i">删除
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="block-mask" style="display: none;">
+    <div class="block-wrap">
+        <div class="t">
+            禁言窗口 <i class="btn-close"> </i>
+        </div>
+        <div class="con">
+            <div class="input-group mb-3">
+                <div class="form-group block-set">
+                    <input class="form-control form-control-sm block-input" type="number" min="1" max="720"
+                           placeholder="禁言时间1-720小时" data-toggle="tooltip" data-placement="top" title=""
+                           data-html="true" value="" data-original-title="">
+                </div>
+                <div class="form-group block-button">
+                    <button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
+                </div>
 
-								</div>
-			</div>
-		</div>
-	</div>
-	<div class="tips-wrap">
-		<div class="tips-t"></div>
-	</div>
-	<script type="text/javascript">
-		$(function() {
-			$("[data-toggle='tooltip']").tooltip();
-			$(document).click(".btn-secondary", function() {
-				if ($('#set').hasClass("show")) {
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wel-mask" style="display: none;">
+    <div class="wel-wrap">
+        <div class="t">
+            禁言列表窗口 <i class="btn-close-wel"> </i>
+        </div>
+        <div class="con">
+            <div class="input-group mb-3">
+                <table class="user-list">
+                    <thead>
+                    <tr class="list-head">
+                        <th width="35%" class="list-head-text list-unit">用户名称</th>
+                        <th width="44%" class="list-head-text list-unit">解禁时间</th>
+                        <th width="21%" class="list-head-text list-unit">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="list-body ps ps--theme_default">
+                    <tr class="list-row">
+                        <td width="35%" class="list-unit"><p class="user-name-col">火鸡味-大锅巴</p></td>
+                        <td width="44%" class="list-unit">2021-05-17 22:43:39</td>
+                        <td width="21%" class="list-unit pointer no-select"><span>撤销</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="block-btn"><div class="block-btn-body"><a href="javascript:void(0)" class="block-pre-page">上一页</a><span class="block-page">1</span><a href="javascript:void(0)" class="block-next-page">下一页</a></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tips-wrap">
+    <div class="tips-t"></div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+        $(document).click(".btn-secondary", function () {
+            if ($('#set').hasClass("show")) {
 
-				} else {
-					setTimeout(function() {
-						$.each($("textarea"), function(i, n) {
-							if ($(n).hasClass('form-control')) {
-								$(n).css("height", n.scrollHeight + "px");
-							}
-						})
-					}, 10)
-				}
+            } else {
+                setTimeout(function () {
+                    $.each($("textarea"), function (i, n) {
+                        if ($(n).hasClass('form-control')) {
+                            $(n).css("height", n.scrollHeight + "px");
+                        }
+                    })
+                }, 10)
+            }
 
-			})
-		});
-	</script>
+        })
+    });
+</script>
 </body>
 </html>

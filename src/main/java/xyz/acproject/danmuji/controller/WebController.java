@@ -14,8 +14,10 @@ import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
+import xyz.acproject.danmuji.entity.room_data.RoomBlock;
 import xyz.acproject.danmuji.file.JsonFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
+import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.Response;
 import xyz.acproject.danmuji.service.ClientService;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -39,11 +42,13 @@ import java.util.stream.Collectors;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 @Controller
+@Deprecated
 public class WebController {
 	@Autowired
 	private SetService checkService;
 	@Autowired
 	private ClientService clientService;
+
 
 	@RequestMapping(value = { "/", "index" })
 	public String index(HttpServletRequest req, Model model) {
@@ -99,7 +104,7 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/qrcodeUrl", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/qrcodeUrl", method = RequestMethod.POST)
 	public Response<?> qrcodeUrl(HttpServletRequest req) {
 		if (req.getSession().getAttribute("status") != null)
 			return null;
@@ -109,10 +114,10 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/loginCheck", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	public String loginCheck(HttpServletRequest req) {
+	@RequestMapping(value = "/loginCheck", method = RequestMethod.POST)
+	public JSONObject loginCheck(HttpServletRequest req) {
 		if (req.getSession().getAttribute("status") != null)
-			return "";
+			return null;
 		JSONObject jsonObject = null;
 		String oauthKey = (String) req.getSession().getAttribute("auth");
 		LoginData loginData = new LoginData();
@@ -127,11 +132,11 @@ public class WebController {
 				}
 			}
 		}
-		return jsonString;
+		return jsonObject;
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/connectRoom", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/connectRoom", method = RequestMethod.GET)
 	public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomid") Long roomid) {
 		boolean flag = false;
 		if (null == PublicDataConf.webSocketProxy || !PublicDataConf.webSocketProxy.isOpen()) {
@@ -156,7 +161,7 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/disconnectRoom", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/disconnectRoom", method = RequestMethod.GET)
 	public Response<?> disconnectRoom(HttpServletRequest req) {
 		boolean flag = false;
 		flag = clientService.closeConnService();
@@ -164,7 +169,7 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/connectCheck", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/connectCheck", method = RequestMethod.GET)
 	public Response<?> connectCheck(HttpServletRequest req) {
 		boolean flag = false;
 		if (PublicDataConf.webSocketProxy != null) {
@@ -176,19 +181,19 @@ public class WebController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/heartBeat", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/heartBeat", method = RequestMethod.GET)
 	public Response<?> heartBeat(HttpServletRequest req) {
 		return Response.success(PublicDataConf.ROOM_POPULARITY, req);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/getSet", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/getSet", method = RequestMethod.GET)
 	public Response<?> getSet(HttpServletRequest req) {
 		return Response.success(PublicDataConf.centerSetConf, req);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/sendSet", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/sendSet", method = RequestMethod.POST)
 	public Response<?> sendSet(HttpServletRequest req, @RequestParam("set") String set) {
 		try {
 			CenterSetConf centerSetConf = JSONObject.parseObject(set, CenterSetConf.class);
@@ -201,7 +206,7 @@ public class WebController {
 		return Response.success(true, req);
 	}
 	@ResponseBody
-	@RequestMapping(value = "/getIp", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/getIp", method = RequestMethod.GET)
 	public Response<?> getIp(HttpServletRequest req) {
 		String ip =HttpOtherData.httpGetIp();
 		if(!StringUtils.isEmpty(ip)) {
@@ -212,7 +217,7 @@ public class WebController {
 		
 	}
 	@ResponseBody
-	@RequestMapping(value = "/checkupdate", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/checkupdate", method = RequestMethod.GET)
 	public Response<?> checkUpdate(HttpServletRequest req) {
 		String edition = HttpOtherData.httpGetNewEdition();
 		if(!StringUtils.isEmpty(edition)) {
@@ -230,7 +235,7 @@ public class WebController {
 		}	
 	}
 	@ResponseBody
-	@RequestMapping(value="/block",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
+	@RequestMapping(value="/block",method = RequestMethod.GET)
 	public Response<?> block(@RequestParam("uid")long uid,@RequestParam("time")short time,HttpServletRequest req){
 		short code = 0;
 		if(time>720&&time<=0) {
@@ -241,8 +246,28 @@ public class WebController {
 		code = HttpUserData.httpPostAddBlock(uid, time);
 		return Response.success(code, req);
 	}
+
 	@ResponseBody
-	@RequestMapping(value = "/setExport",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
+	@RequestMapping(value="/del_block",method = RequestMethod.GET)
+	public Response<?> del_block(@RequestParam("id")long id,HttpServletRequest req){
+		short code = -1;
+		code = HttpUserData.httpPostDeleteBlock(id);
+		return Response.success(code, req);
+	}
+
+
+	@ResponseBody
+	@RequestMapping(value="/blocks",method = RequestMethod.GET)
+	public Response<?> blocks(@RequestParam("page")int page,HttpServletRequest req){
+		if(page<=0){
+			page = 1;
+		}
+		List<RoomBlock> roomBlockList = HttpRoomData.getBlockList(page);
+		return Response.success(roomBlockList, req);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/setExport",method = RequestMethod.GET)
 	public Response<?> setExport(HttpServletRequest req){
 		boolean flag = JsonFileTools.createJsonFile(PublicDataConf.centerSetConf.toJson());
 		if(flag) {
@@ -252,12 +277,12 @@ public class WebController {
 		}
 	}
 	@ResponseBody
-	@RequestMapping(value = "/setImport",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/setImport",method = RequestMethod.POST)
 	public Response<?> setImport(@RequestParam("file")MultipartFile file,HttpServletRequest req) throws IOException {
 		if(!file.getResource().getFilename().endsWith(".json")){
 			return Response.success(2, req);
 		}
-		String jsonString = new BufferedReader(new InputStreamReader(file.getInputStream()))
+		String jsonString = new BufferedReader(new InputStreamReader(file.getInputStream(),"utf-8"))
 				.lines().collect(Collectors.joining(System.lineSeparator()));
 		try {
 			CenterSetConf centerSetConf = FastJsonUtils.parseObject(jsonString, CenterSetConf.class);

@@ -1,13 +1,9 @@
 package xyz.acproject.danmuji.service.impl;
 
-import java.util.Hashtable;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.buf.HexUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.PublicDataConf;
@@ -25,6 +21,9 @@ import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 import xyz.acproject.danmuji.utils.ByteUtils;
+
+import java.util.Hashtable;
+import java.util.Map.Entry;
 
 /**
  * @author BanqiJane
@@ -92,10 +91,11 @@ public class ClientServiceImpl implements ClientService {
         PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
         threadComponent.startHeartByteThread();
         setService.holdSet(PublicDataConf.centerSetConf);
+        CheckTx checkTx = null;
         // 登录发现天选屏蔽礼物
         if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().isIs_tx_shield()) {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                CheckTx checkTx = HttpRoomData.httpGetCheckTX();
+               checkTx = HttpRoomData.httpGetCheckTX();
                 if (checkTx != null) {
                     if (!StringUtils.isEmpty(checkTx.getGift_name())) {
                         if (checkTx.getTime() > 0) {
@@ -108,11 +108,27 @@ public class ClientServiceImpl implements ClientService {
         // 登录发现天选屏蔽关注
         if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().isIs_tx_shield()) {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                CheckTx checkTx = HttpRoomData.httpGetCheckTX();
+                if(checkTx==null) {
+                    checkTx = HttpRoomData.httpGetCheckTX();
+                }
                 if (checkTx != null) {
                     if (checkTx.getTime() > 0) {
                         // do something
                         threadComponent.startFollowShieldThread(checkTx.getTime());
+                    }
+                }
+            }
+        }
+        // 登录发现天选屏蔽欢迎
+        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().isIs_tx_shield()) {
+            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                if(checkTx==null) {
+                   checkTx = HttpRoomData.httpGetCheckTX();
+                }
+                if (checkTx != null) {
+                    if (checkTx.getTime() > 0) {
+                        // do something
+                        threadComponent.startWelcomeShieldThread(checkTx.getTime());
                     }
                 }
             }
@@ -148,6 +164,7 @@ public class ClientServiceImpl implements ClientService {
             threadComponent.closeLogThread();
             threadComponent.closeGiftShieldThread();
             threadComponent.closeFollowShieldThread();
+            threadComponent.closeWelcomeShieldThread();
             threadComponent.closeAutoReplyThread();
             threadComponent.closeSmallHeartThread();
             threadComponent.closeParseMessageThread();
@@ -227,6 +244,7 @@ public class ClientServiceImpl implements ClientService {
                 threadComponent.closeLogThread();
                 threadComponent.closeGiftShieldThread();
                 threadComponent.closeFollowShieldThread();
+                threadComponent.closeWelcomeShieldThread();
                 threadComponent.closeAutoReplyThread();
                 threadComponent.closeSmallHeartThread();
                 threadComponent.closeParseMessageThread();
@@ -237,6 +255,9 @@ public class ClientServiceImpl implements ClientService {
                 PublicDataConf.barrageString.clear();
                 PublicDataConf.interacts.clear();
                 PublicDataConf.logString.clear();
+                PublicDataConf.interactWelcome.clear();
+                PublicDataConf.ISSHIELDWELCOME=false;
+                PublicDataConf.ISSHIELDFOLLOW=false;
                 PublicDataConf.ROOMID = null;
                 PublicDataConf.ANCHOR_NAME = null;
                 PublicDataConf.AUID = null;

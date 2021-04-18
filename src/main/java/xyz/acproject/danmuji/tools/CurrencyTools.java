@@ -15,10 +15,7 @@ import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author BanqiJane
@@ -232,4 +229,23 @@ public class CurrencyTools {
         return  max;
     }
 
+    public static String sendGiftCode(){
+        String code = "";
+        //默认随机发送
+        synchronized (PublicDataConf.centerSetConf.getThank_gift().getCodeStrings()) {
+            if (!CollectionUtils.isEmpty(PublicDataConf.centerSetConf.getThank_gift().getCodeStrings())) {
+                int random = (int) Math.ceil(Math.random() * PublicDataConf.centerSetConf.getThank_gift().getCodeStrings().size()) - 1;
+                int i = 0;
+                for (Iterator<String> iterator = PublicDataConf.centerSetConf.getThank_gift().getCodeStrings().iterator(); iterator.hasNext(); ) {
+                    if (i == random) {
+                        code = new String(iterator.next());
+                        iterator.remove();
+                        break;
+                    }
+                    i++;
+                }
+            }
+        }
+        return code;
+    }
 }

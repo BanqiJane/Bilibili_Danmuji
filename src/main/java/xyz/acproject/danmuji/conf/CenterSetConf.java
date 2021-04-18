@@ -34,6 +34,8 @@ public class CenterSetConf implements Serializable{
 	private boolean is_gift = true;
 	//信息是否显示欢迎老爷舰长进入直播间消息
 	private boolean is_welcome =true;
+	//信息是否显示全部欢迎
+	private boolean is_welcome_all = false;
 	//是否开启关注显示
 	private boolean is_follow = true;
 	//是否开启日志线程
@@ -62,6 +64,8 @@ public class CenterSetConf implements Serializable{
 	private AutoReplySetConf reply;
 	//开启自动签到设置
 	private ClockInSetConf clock_in;
+	//是否开启欢迎进入直播间线程
+	private ThankWelcomeSetConf welcome;
 	
 	
 	public CenterSetConf() {
@@ -69,23 +73,24 @@ public class CenterSetConf implements Serializable{
 		// TODO 自动生成的构造函数存根
 	}
 	public CenterSetConf( ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow,AutoReplySetConf reply,ClockInSetConf clock_in) {
+			ThankFollowSetConf follow,AutoReplySetConf reply,ClockInSetConf clock_in,ThankWelcomeSetConf welcome) {
 		super();
 		this.thank_gift = thank_gift;
 		this.advert = advert;
 		this.follow = follow;
 		this.reply = reply;
 		this.clock_in = clock_in;
+		this.welcome=welcome;
 	}
 	
 	
 	
 	
 	public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager,
-			boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome,
+			boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome,boolean is_welcome_all,
 			boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto, boolean is_online,
 			boolean is_sh, boolean is_dosign, ThankGiftSetConf thank_gift, AdvertSetConf advert,
-			ThankFollowSetConf follow, AutoReplySetConf reply,ClockInSetConf clock_in) {
+			ThankFollowSetConf follow, AutoReplySetConf reply,ClockInSetConf clock_in,ThankWelcomeSetConf welcome) {
 		super();
 		this.is_barrage_guard = is_barrage_guard;
 		this.is_barrage_vip = is_barrage_vip;
@@ -95,6 +100,7 @@ public class CenterSetConf implements Serializable{
 		this.is_block = is_block;
 		this.is_gift = is_gift;
 		this.is_welcome = is_welcome;
+		this.is_welcome_all = is_welcome_all;
 		this.is_follow = is_follow;
 		this.is_log = is_log;
 		this.is_cmd = is_cmd;
@@ -108,6 +114,7 @@ public class CenterSetConf implements Serializable{
 		this.follow = follow;
 		this.reply = reply;
 		this.clock_in=clock_in;
+		this.welcome=welcome;
 	}
 	public boolean isIs_barrage_guard() {
 		return is_barrage_guard;
@@ -157,6 +164,15 @@ public class CenterSetConf implements Serializable{
 	public void setIs_welcome(boolean is_welcome) {
 		this.is_welcome = is_welcome;
 	}
+
+	public boolean isIs_welcome_all() {
+		return is_welcome_all;
+	}
+
+	public void setIs_welcome_all(boolean is_welcome_all) {
+		this.is_welcome_all = is_welcome_all;
+	}
+
 	public boolean isIs_follow() {
 		return is_follow;
 	}
@@ -244,7 +260,15 @@ public class CenterSetConf implements Serializable{
 		this.clock_in = clock_in;
 	}
 
+	public ThankWelcomeSetConf getWelcome() {
+		return welcome;
+	}
+
+	public void setWelcome(ThankWelcomeSetConf welcome) {
+		this.welcome = welcome;
+	}
+
 	public String toJson() {
-		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_follow, is_log, is_cmd, roomid, is_auto, is_online, is_sh, is_dosign,thank_gift, advert, follow, reply,clock_in));
+		return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome,is_welcome_all,is_follow, is_log, is_cmd, roomid, is_auto, is_online, is_sh, is_dosign,thank_gift, advert, follow, reply,clock_in,welcome));
 	}
 }

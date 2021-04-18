@@ -42,10 +42,14 @@ public class ThankGiftSetConf implements Serializable{
 	private boolean is_guard_report =false;
 	//是否开启本地存储舰长
 	private boolean is_guard_local=false;
+	//是否开启礼物码模式
+	private boolean is_gift_code = false;
 	//舰长私信语
 	private String report;
 	//舰长私信成功后发送弹幕
 	private String report_barrage;
+	//礼物码HashSet
+	private HashSet<String> codeStrings;
 	//是否开启感谢数量显示
 	private boolean is_num=true;
 	public ThankGiftSetConf() {
@@ -57,11 +61,8 @@ public class ThankGiftSetConf implements Serializable{
 		super();
 		this.is_open = is_open;
 	}
-	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status,
-			HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num,
-			double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, String report,
-			String report_barrage, boolean is_num) {
-		super();
+
+	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status, HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num, double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, boolean is_gift_code, String report, String report_barrage, HashSet<String> codeStrings, boolean is_num) {
 		this.is_open = is_open;
 		this.is_live_open = is_live_open;
 		this.is_tx_shield = is_tx_shield;
@@ -74,8 +75,10 @@ public class ThankGiftSetConf implements Serializable{
 		this.thank = thank;
 		this.is_guard_report = is_guard_report;
 		this.is_guard_local = is_guard_local;
+		this.is_gift_code = is_gift_code;
 		this.report = report;
 		this.report_barrage = report_barrage;
+		this.codeStrings = codeStrings;
 		this.is_num = is_num;
 	}
 
@@ -115,7 +118,21 @@ public class ThankGiftSetConf implements Serializable{
 		this.is_guard_local = is_guard_local;
 	}
 
+	public boolean isIs_gift_code() {
+		return is_gift_code;
+	}
 
+	public void setIs_gift_code(boolean is_gift_code) {
+		this.is_gift_code = is_gift_code;
+	}
+
+	public HashSet<String> getCodeStrings() {
+		return codeStrings;
+	}
+
+	public void setCodeStrings(HashSet<String> codeStrings) {
+		this.codeStrings = codeStrings;
+	}
 
 	public HashSet<String> getGiftStrings() {
 		return giftStrings;
