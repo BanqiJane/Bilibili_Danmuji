@@ -11,6 +11,7 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.user_data.User;
+import xyz.acproject.danmuji.entity.user_data.UserManager;
 import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.tools.CurrencyTools;
@@ -189,7 +190,52 @@ public class HttpUserData {
 			PublicDataConf.USER = null;
 		}
 	}
-
+	/**
+	 * 获取用户所在房间是否是房管
+	 *
+	 */
+	public static void httpGetUserIsManager() {
+		String data = null;
+		JSONObject jsonObject = null;
+		Map<String, String> headers = null;
+		headers = new HashMap<>(4);
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		try {
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByUser?room_id="
+							+ CurrencyTools.parseRoomId(), headers, null)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return;
+		jsonObject = JSONObject.parseObject(data);
+		short code = jsonObject.getShort("code");
+		if (code == 0) {
+			LOGGER.debug("获取本房间自身管理信息成功");
+			if(PublicDataConf.ROOMID!=null&&PublicDataConf.ROOMID>0) {
+				Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
+				PublicDataConf.USERMANAGER = new UserManager();
+				PublicDataConf.USERMANAGER.setIs_manager(manager != null ? manager : false);
+				PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
+				PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
+			}
+		} else if (code == -101) {
+			LOGGER.debug("未登录，请登录:" + jsonObject.toString());
+		} else if (code == -400) {
+			LOGGER.debug("房间号不存在或者未输入房间号:" + jsonObject.toString());
+		} else {
+			LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+		}
+	}
 	/**
 	 * 获取用户在目标房间所能发送弹幕的最大长度
 	 * 
@@ -220,9 +266,14 @@ public class HttpUserData {
 		jsonObject = JSONObject.parseObject(data);
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
-			LOGGER.debug("获取本房间可发送弹幕长度成功");
+			LOGGER.debug("获取本房间可发送弹幕长度+是否是管理员 成功");
 			PublicDataConf.USERBARRAGEMESSAGE = JSONObject
 					.parseObject((((JSONObject) jsonObject.get("data")).getString("property")), UserBarrageMsg.class);
+			Boolean manager =jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
+			PublicDataConf.USERMANAGER = new UserManager();
+			PublicDataConf.USERMANAGER.setIs_manager(manager!=null?manager:false);
+			PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
+			PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
 		} else if (code == -101) {
 			LOGGER.debug("未登录，请登录:" + jsonObject.toString());
 		} else if (code == -400) {
@@ -230,7 +281,6 @@ public class HttpUserData {
 		} else {
 			LOGGER.error("未知错误,原因未知" + jsonObject.toString());
 		}
-
 	}
 	/**
 	 * 获取用户在目标房间所能发送弹幕的最大长度

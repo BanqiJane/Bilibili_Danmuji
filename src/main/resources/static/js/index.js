@@ -1109,7 +1109,6 @@ const method = {
                 }
             }
         });
-        return ip;
     },
     getBlocks: function (page) {
         var ip = true;
@@ -1121,11 +1120,11 @@ const method = {
             dataType: 'json',
             success: function (data) {
                 if (data.code == "200") {
+                    $('.list-row').remove();
                     if(data.result==null||data.result.length<1){
                         ip=false;
                     }
                     if(ip){
-                        $('.list-row').remove();
                         for(var i of data.result){
                             $('.list-body').append(
                                 ` <tr class="list-row">

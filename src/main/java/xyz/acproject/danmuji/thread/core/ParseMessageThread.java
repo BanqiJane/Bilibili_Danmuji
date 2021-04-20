@@ -456,6 +456,8 @@ public class ParseMessageThread extends Thread{
 									&& getMessageControlMap().get(ShieldMessage.is_giftCode)
 									&& !CollectionUtils.isEmpty(PublicDataConf.centerSetConf.getThank_gift().getCodeStrings())) {
 								report = StringUtils.replace(report,"%giftCode%",this.sendCode());
+							}else{
+								report = StringUtils.replace(report,"%giftCode%","");
 							}
 							try {
 //								if (PublicDataConf.ROOMID == 5067) {

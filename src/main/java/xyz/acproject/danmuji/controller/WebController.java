@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,7 @@ public class WebController {
 		model.addAttribute("EDITION",PublicDataConf.EDITION);
 		model.addAttribute("ROOMID", PublicDataConf.ROOMID);
 		model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
+		model.addAttribute("MANAGER",PublicDataConf.USERMANAGER!=null?PublicDataConf.USERMANAGER.isIs_manager():false);
 		if (PublicDataConf.USER != null) {
 			model.addAttribute("USER", PublicDataConf.USER);
 		}
@@ -237,13 +239,15 @@ public class WebController {
 	@ResponseBody
 	@RequestMapping(value="/block",method = RequestMethod.GET)
 	public Response<?> block(@RequestParam("uid")long uid,@RequestParam("time")short time,HttpServletRequest req){
-		short code = 0;
+		short code = -1;
 		if(time>720&&time<=0) {
 			//required time error
 			code =2;
 			return Response.success(code, req);
 		}
-		code = HttpUserData.httpPostAddBlock(uid, time);
+		if(StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+			code = HttpUserData.httpPostAddBlock(uid, time);
+		}
 		return Response.success(code, req);
 	}
 
@@ -262,7 +266,10 @@ public class WebController {
 		if(page<=0){
 			page = 1;
 		}
-		List<RoomBlock> roomBlockList = HttpRoomData.getBlockList(page);
+		List<RoomBlock> roomBlockList = new ArrayList<>();
+		if(PublicDataConf.ROOMID!=null&&StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)&&PublicDataConf.USERMANAGER!=null&&PublicDataConf.USERMANAGER.isIs_manager()) {
+			roomBlockList = HttpRoomData.getBlockList(page);
+		}
 		return Response.success(roomBlockList, req);
 	}
 

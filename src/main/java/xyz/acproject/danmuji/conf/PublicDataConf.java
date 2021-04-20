@@ -5,6 +5,7 @@ import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.entity.user_data.UserManager;
 import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.thread.*;
@@ -53,6 +54,8 @@ public class PublicDataConf {
 	public static UserCookie COOKIE = null;
 	//user弹幕长度
 	public static UserBarrageMsg USERBARRAGEMESSAGE = null;
+	//user房间管理信息
+	public static UserManager USERMANAGER = null;
 	//天选礼物屏蔽
 	public static String SHIELDGIFTNAME = null;
 	//天选是否正在屏蔽关注
