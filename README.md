@@ -54,9 +54,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4.3
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.3 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.3 "下载地址")**<br/><br/>
+# 版本2.4.4
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.4 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.4 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -96,6 +96,12 @@ java version "1.8.0_121"
 3. 可屏蔽天选时刻下的关注
 4. **延迟感谢(可统计延时内关注,一旦延时内有新关注就会重新刷新延时)！**
 5. 可设置多条感谢弹幕模板
+- **进入直播间欢迎感谢姬**
+1. 是否仅在直播中开启
+2. 可调节每次感谢人数
+3. 可屏蔽天选时刻下的感谢
+4. **延迟感谢(可统计延时内关注,一旦延时内有新进入直播间观众就会重新刷新延时)！**
+5. 可设置多条感谢弹幕模板 
 - **定时发送弹幕(用于发送广告)**
 1. 是否仅在直播中开启
 2. 可调节时间
@@ -103,8 +109,9 @@ java version "1.8.0_121"
 - **上舰私信**
 1. 发送私信
 2. 并可以设置发送私信成功后直播间发送提醒弹幕
-3. 选择可不可以重复发送，即舰长信息保存本地，打开此设置需要重启弹幕姬，读取现有舰长数量，读取过程可能引起弹幕姬连接房间较慢
-(注意该功能仅统计弹幕姬开启时候的舰长，本地文件夹为guardFile，文件格式为guards（房间号）；格式为 uid,uname 亦可以按按照格式自己手动修改文件添加，注意不要为空)
+3. 选择可不可以重复发送，即舰长信息保存本地，打开此设置需要重启弹幕姬，读取现有舰长数量，读取过程可能引起弹幕姬连接房间较慢<br/>
+(注意该功能仅统计弹幕姬开启时候的舰长，本地文件夹为guardFile，文件格式为guards（房间号）；格式为 uid,uname 亦可以按按照格式自己手动修改文件添加，注意不要为空)<br/>
+4.礼品码模式 可以发送礼品码（规则：回车换行为分割不同礼品码 礼品码发送出去会自动删除  请用户刷新页面查看最新礼品码列表 礼品码参数为%giftCode%）
 - **自动回复姬**
 1. 是否仅在直播中开启
 2. 可调节多少秒间隔才能识别弹幕并自动回复
@@ -120,7 +127,9 @@ java version "1.8.0_121"
 - **网页高级弹幕显示**
 1. 可以手动禁言
 2. 可以查看用户个人空间
+3. 包含房间管理 可以撤销禁言
 - **关键字禁言(内嵌于自动回复姬里)**
+- **房间管理(可以撤销禁言)**
 - **模拟在线(老爷可增加在线经验)**
 - **断线自动重连(实验性)**
 - **在线小心心(实验性)**
@@ -139,9 +148,11 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 如果Window系统还可以：<br/>
 运行目录下run.bat<br/>
 ### 1.0.3+新增win64绿色版本（不用配置环境)<br/>
-解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）<br/>
-解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络<br/>
-其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-2.0beta.jar 即可运行<br/><br/>
+~~解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）~~<br/>
+~~解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络~~<br/>
+~~其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-2.0beta.jar 即可运行~~<br/>
+弹幕姬从2.4.4绿色版本开始更换java环境包  可能造成兼容问题 有兼容问题请到上面官网自行下载8以上的java版本<br/>
+新版绿色版直接运行run.bat文件就可以开启弹幕姬拉（更小的jre环境包）<br/><br/>
 ### 运行完后就可以打开浏览器 地址栏输入http://127.0.0.1:23333 打开设置页面进行设置 <br/>**或者点击这里[设置](http://127.0.0.1:23333 "设置")**<br/><br/>
 ### 注意<br/>
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
@@ -191,6 +202,14 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+        <blockquote>
+<h2>Beta2.4.4</h2>
+ <p>修复定时任务bug 该bug曾经导致重复执行定时任务</p>
+  <p>私聊姬新增礼品码模式</p>
+<p>新增自动欢迎姬(功能与关注姬一样)</p>
+ <p>新增房间管理 （房管才能看）用于撤销禁言</p>
+ <p>修复诺干问题</p>
+</blockquote>
     <blockquote>
 <h2>Beta2.4.3</h2>
 <p>修复每日打卡bug 该bug曾经导致会向连接房间发送打卡弹幕</p>
