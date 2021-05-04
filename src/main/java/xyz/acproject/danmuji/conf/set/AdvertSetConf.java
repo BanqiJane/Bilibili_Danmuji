@@ -16,8 +16,9 @@ public class AdvertSetConf implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -643702235901579872L;
-	
+	//是否开启
 	private boolean is_open =false;
+	//是否直播有效
 	private boolean is_live_open = false;
 	//如何发送 0 1
 	private short status=0;

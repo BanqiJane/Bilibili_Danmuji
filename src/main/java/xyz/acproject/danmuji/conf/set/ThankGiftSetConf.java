@@ -24,13 +24,13 @@ public class ThankGiftSetConf implements Serializable{
 	private boolean is_live_open =false;
 	//是否开启屏蔽天选礼物
 	private boolean is_tx_shield=false;
-	//礼物屏蔽模式 0 1 2 3
+	//礼物屏蔽模式 0 自定义 1 免费 2 低价 3 规则
 	private short shield_status =0;
 	//自定义礼物屏蔽  0 
 	private HashSet<String> giftStrings;
 	//自定义感谢屏蔽规则 3
 	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
-	//感谢模式 0 1 2
+	//感谢模式 0 单人单种 1 单人多种 2 多人多种
 	private short thank_status = 0;
 	//最多多种 仅在感谢模式1 2下有用
 	private short num = 2;

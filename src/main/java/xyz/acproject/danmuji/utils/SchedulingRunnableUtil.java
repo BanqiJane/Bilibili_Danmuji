@@ -28,7 +28,7 @@ public class SchedulingRunnableUtil implements Runnable {
     
     
     public SchedulingRunnableUtil(String beanName, String methodName) {
-        this(beanName, methodName,null);
+        this(beanName, methodName, new  Object[]{});
     }
 
     public SchedulingRunnableUtil(String beanName, String methodName, Object...params ) {
@@ -44,7 +44,7 @@ public class SchedulingRunnableUtil implements Runnable {
 
         try {
             Object target = SpringUtils.getBean(beanName);
-
+            Class clazz = ByteUtils.class;
             Method method = null;
             if (null != params && params.length > 0) {
                 Class<?>[] paramCls = new Class[params.length];

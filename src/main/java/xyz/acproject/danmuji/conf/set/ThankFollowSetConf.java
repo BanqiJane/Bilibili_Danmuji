@@ -15,12 +15,15 @@ public class ThankFollowSetConf implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -7461261092620918037L;
+	//是否开启
 	private boolean is_open = false;
+	//是否直播有效
 	private boolean is_live_open =false;
 	//是否开启屏蔽天选礼物
 	private boolean is_tx_shield=false;
 	//分段回复
 	private short num = 1;
+	//发送弹幕
 	private String follows="谢谢%uNames%的关注~";
 	//发送感谢语延迟时间
 	private double delaytime = 0;

@@ -16,9 +16,13 @@ public class AutoReplySetConf implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 6387301110915854706L;
+	//是否开启
 	private boolean is_open = false;
+	//是否直播有效
 	private boolean is_live_open =false;
+	//间隔时间
 	private short time = 3;
+	//自动回复子对象集合
 	private HashSet<AutoReplySet> autoReplySets;
 	
 	

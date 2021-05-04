@@ -54,17 +54,17 @@ public class CenterSetConf implements Serializable{
 	private boolean is_sh = false;
 	//是否开启用户自动签到
 	private boolean is_dosign = false;
-	//是否开启礼物感谢线程
+	//是否开启礼物感谢线程对象体
 	private ThankGiftSetConf thank_gift;
-	//是否开启广告公告线程
+	//是否开启广告公告线程对象体
 	private AdvertSetConf advert;
-	//是否开启感谢关注线程
+	//是否开启感谢关注线程对象体
 	private ThankFollowSetConf follow;
-	//是否开启自动回复线程
+	//是否开启自动回复线程对象体
 	private AutoReplySetConf reply;
-	//开启自动签到设置
+	//开启自动签到设置对象体
 	private ClockInSetConf clock_in;
-	//是否开启欢迎进入直播间线程
+	//是否开启欢迎进入直播间线程对象体
 	private ThankWelcomeSetConf welcome;
 	
 	

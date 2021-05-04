@@ -378,6 +378,11 @@ $(document).on('click', '#replys-btn', function () {
 
 });
 $(document).on('click', '.btn-close', function () {
+    if ($(".shieldgifts-mask").is(":visible")) {
+        $(".shieldgifts-mask").hide();
+    }
+});
+$(document).on('click', '.btn-close-block', function () {
     if ($(".block-mask").is(":visible")) {
         $(".block-mask").hide();
     }

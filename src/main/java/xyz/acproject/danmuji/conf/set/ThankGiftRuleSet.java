@@ -15,7 +15,13 @@ public class ThankGiftRuleSet implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -4838306525238441431L;
+	/**
+	* 是否开启
+	*/
 	private boolean is_open = false;
+	/**
+	* 礼物名称
+	*/
 	private String gift_name;
 	//条件码 0数量  1银瓜子 2金瓜子
 	private short status = 0;

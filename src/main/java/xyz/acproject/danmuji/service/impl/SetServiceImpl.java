@@ -279,8 +279,8 @@ public class SetServiceImpl implements SetService {
 	 *
 	 */
 	public void holdSet(CenterSetConf centerSetConf) {
-		SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign",null);
-		SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin",null);
+		SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
+		SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
 		//每日签到
 		if (PublicDataConf.centerSetConf.isIs_dosign()) {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {

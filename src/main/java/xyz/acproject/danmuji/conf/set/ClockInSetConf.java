@@ -12,7 +12,13 @@ import java.io.Serializable;
 public class ClockInSetConf implements Serializable {
 
     private static final long serialVersionUID = 3354141280551660852L;
+    /**
+    * 是否开启自动签到
+    */
     private boolean is_open = false;
+    /**
+    * 自动签到发送的弹幕
+    */
     private String barrage = "签到";
 
     public ClockInSetConf() {

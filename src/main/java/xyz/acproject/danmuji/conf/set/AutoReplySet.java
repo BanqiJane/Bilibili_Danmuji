@@ -16,10 +16,25 @@ public class AutoReplySet implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 562887876061232840L;
+	/**
+	* 是否开启
+	*/
 	private boolean is_open = false;
+	/**
+	* 是否独特
+	*/
 	private boolean is_accurate = false;
+	/**
+	* 关键字集合
+	*/
 	private HashSet<String> keywords;
+	/**
+	* 屏蔽字集合
+	*/
 	private HashSet<String> shields;
+	/**
+	* 发送弹幕体
+	*/
 	private String reply;
 	public AutoReplySet() {
 		super();
