@@ -2,6 +2,7 @@ package xyz.acproject.danmuji.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.room_data.RoomBlock;
@@ -294,7 +296,23 @@ public class WebController {
 		try {
 			CenterSetConf centerSetConf = FastJsonUtils.parseObject(jsonString, CenterSetConf.class);
 			if(centerSetConf!=null) {
-				PublicDataConf.centerSetConf = centerSetConf;
+				if (centerSetConf.getAdvert() == null) {
+					centerSetConf.setAdvert(new AdvertSetConf());
+				}
+				if (centerSetConf.getFollow() == null) {
+					centerSetConf.setFollow(new ThankFollowSetConf());
+				}
+				if (centerSetConf.getThank_gift() == null) {
+					centerSetConf.setThank_gift(new ThankGiftSetConf());
+				}
+				if (centerSetConf.getReply() == null) {
+					centerSetConf.setReply(new AutoReplySetConf());
+				}
+				if(centerSetConf.getWelcome()==null){
+					centerSetConf.setWelcome(new ThankWelcomeSetConf());
+				}
+				centerSetConf.setClock_in(PublicDataConf.centerSetConf.getClock_in());
+				BeanUtils.copyProperties(centerSetConf,PublicDataConf.centerSetConf);
 				checkService.changeSet(centerSetConf);
 			}
 		}catch (Exception e) {

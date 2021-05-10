@@ -261,6 +261,24 @@ public class SetServiceImpl implements SetService {
 			PublicDataConf.centerSetConf = JSONObject.parseObject(
 					new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
 					CenterSetConf.class);
+			if (PublicDataConf.centerSetConf.getAdvert() == null) {
+				PublicDataConf.centerSetConf.setAdvert(new AdvertSetConf());
+			}
+			if (PublicDataConf.centerSetConf.getFollow() == null) {
+				PublicDataConf.centerSetConf.setFollow(new ThankFollowSetConf());
+			}
+			if (PublicDataConf.centerSetConf.getThank_gift() == null) {
+				PublicDataConf.centerSetConf.setThank_gift(new ThankGiftSetConf());
+			}
+			if (PublicDataConf.centerSetConf.getReply() == null) {
+				PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
+			}
+			if(PublicDataConf.centerSetConf.getClock_in() ==null){
+				PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false,"签到"));
+			}
+			if(PublicDataConf.centerSetConf.getWelcome()==null){
+				PublicDataConf.centerSetConf.setWelcome(new ThankWelcomeSetConf());
+			}
 			if (PublicDataConf.ROOMID != null) {
 				holdSet(centerSetConf);
 			}
