@@ -21,9 +21,7 @@ import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 @EnableScheduling
 @SpringBootApplication
 public class BiliBiliDanmujiApplication implements CommandLineRunner{
-	@Autowired
 	private SetServiceImpl checkService;
-	@Autowired
 	private TaskRegisterComponent taskRegisterComponent;
 	
 	public static void main(String[] args) {
@@ -41,4 +39,12 @@ public class BiliBiliDanmujiApplication implements CommandLineRunner{
 		return new ServerEndpointExporter();
 	}
 
+	@Autowired
+	public void setCheckService(SetServiceImpl checkService) {
+		this.checkService = checkService;
+	}
+	@Autowired
+	public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
+		this.taskRegisterComponent = taskRegisterComponent;
+	}
 }

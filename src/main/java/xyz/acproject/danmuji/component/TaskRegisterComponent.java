@@ -22,8 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TaskRegisterComponent implements DisposableBean{
 
 	private final Map<Runnable, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(6);
-	
-	@Autowired
+
 	private TaskScheduler taskScheduler;
 	
 	
@@ -92,5 +91,9 @@ public class TaskRegisterComponent implements DisposableBean{
 		}
 		this.scheduledTasks.clear();
 	}
-	
+
+	@Autowired
+	public void setTaskScheduler(TaskScheduler taskScheduler) {
+		this.taskScheduler = taskScheduler;
+	}
 }

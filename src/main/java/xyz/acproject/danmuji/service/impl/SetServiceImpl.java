@@ -42,13 +42,9 @@ import java.util.List;
 public class SetServiceImpl implements SetService {
 	private Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);
 	private final String cookies = "ySZL4SBB";
-	@Autowired
 	private ClientService clientService;
-	@Autowired
 	private ThreadComponent threadComponent;
-	@Autowired
 	private ServerAddressComponent serverAddressComponent;
-	@Autowired
 	private TaskRegisterComponent taskRegisterComponent;
 
 	public void init(int i) {
@@ -488,5 +484,21 @@ public class SetServiceImpl implements SetService {
 		PublicDataConf.interactWelcome.clear();
 		holdSet(PublicDataConf.centerSetConf);
 		LOGGER.debug("用户退出成功");
+	}
+	@Autowired
+	public void setClientService(ClientService clientService) {
+		this.clientService = clientService;
+	}
+	@Autowired
+	public void setThreadComponent(ThreadComponent threadComponent) {
+		this.threadComponent = threadComponent;
+	}
+	@Autowired
+	public void setServerAddressComponent(ServerAddressComponent serverAddressComponent) {
+		this.serverAddressComponent = serverAddressComponent;
+	}
+	@Autowired
+	public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
+		this.taskRegisterComponent = taskRegisterComponent;
 	}
 }

@@ -10,7 +10,6 @@ import xyz.acproject.danmuji.service.SetService;
 
 @Component
 public class TimeTaskConfig {
-    @Autowired
     private SetService setService;
     private static final Logger LOGGER = LogManager.getLogger(TimeTaskConfig.class);
 
@@ -23,4 +22,8 @@ public class TimeTaskConfig {
         }
     }
 
+    @Autowired
+    public void setSetService(SetService setService) {
+        this.setService = setService;
+    }
 }

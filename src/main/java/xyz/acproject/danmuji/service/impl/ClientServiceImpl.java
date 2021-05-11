@@ -34,9 +34,7 @@ import java.util.Map.Entry;
  */
 @Service
 public class ClientServiceImpl implements ClientService {
-    @Autowired
     private SetService setService;
-    @Autowired
     private ThreadComponent threadComponent;
 
     public void startConnService(long roomid) throws Exception {
@@ -273,5 +271,14 @@ public class ClientServiceImpl implements ClientService {
             }
         }
         return flag;
+    }
+
+    @Autowired
+    public void setSetService(SetService setService) {
+        this.setService = setService;
+    }
+    @Autowired
+    public void setThreadComponent(ThreadComponent threadComponent) {
+        this.threadComponent = threadComponent;
     }
 }

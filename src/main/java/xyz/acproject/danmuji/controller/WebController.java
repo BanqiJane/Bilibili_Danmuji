@@ -47,9 +47,7 @@ import java.util.stream.Collectors;
 @Controller
 @Deprecated
 public class WebController {
-	@Autowired
 	private SetService checkService;
-	@Autowired
 	private ClientService clientService;
 
 
@@ -319,5 +317,13 @@ public class WebController {
 			return Response.success(1, req);
 		}
 		return Response.success(0, req);
+	}
+	@Autowired
+	public void setCheckService(SetService checkService) {
+		this.checkService = checkService;
+	}
+	@Autowired
+	public void setClientService(ClientService clientService) {
+		this.clientService = clientService;
 	}
 }
