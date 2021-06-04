@@ -202,7 +202,18 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
-        <blockquote>
+ <blockquote>
+<h2>Beta2.4.5</h2>
+<p>修复定时任务bug 该bug曾经导致重复执行定时任务(这次是真的修复了（)</p>
+<p>
+添加说明文件readme.txt和启动配置run.bat的端口参数<br>
+--server.port=23333 修改即可修改端口启动<br>
+亦或者cmd:java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333</p>
+<p>修改弹幕姬小心心功能的提示UI</p>
+ <p>重连姬添加在错误的情况下也会触发重连弹幕服务器的机制</p>
+ <p>修复诺干问题</p>
+</blockquote>
+<blockquote>
 <h2>Beta2.4.4</h2>
  <p>修复定时任务bug 该bug曾经导致重复执行定时任务</p>
   <p>私聊姬新增礼品码模式</p>
