@@ -161,10 +161,11 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **localhost:23333/login 扫码登录地址**<br/><br/>
 
 # 关于修改端口<br/>
-自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去<br/>
---server.port=23333 修改即可修改端口启动<br/>
-完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333<br/>
-以上方法均兼容旧版本<br/><br/>
+- **自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去**<br/>
+- **--server.port=23333 修改即可修改端口启动**<br/>
+- **完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333**<br/>
+- **以上方法均兼容旧版本**
+<br/><br/>
 <br/>
 
 ## 项目提示或教程
