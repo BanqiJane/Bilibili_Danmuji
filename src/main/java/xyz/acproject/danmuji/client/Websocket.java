@@ -1,18 +1,17 @@
 package xyz.acproject.danmuji.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 
 /**
  * @ClassName Websocket
@@ -83,6 +82,25 @@ public class Websocket extends WebSocketClient {
 	public void onError(Exception ex) {
 		// TODO 自动生成的方法存根
 		LOGGER.error("[错误信息，请将log文件下的日志发送给管理员]websocket connect error,message:" + ex.getMessage());
+		LOGGER.debug("尝试重新链接");
+		synchronized (PublicDataConf.webSocketProxy) {
+			PublicDataConf.webSocketProxy.close(1006);
+			if (!PublicDataConf.webSocketProxy.isOpen()) {
+				if (PublicDataConf.reConnThread != null) {
+					if (PublicDataConf.reConnThread.getState().toString().equals("TERMINATED")) {
+						PublicDataConf.reConnThread = new ReConnThread();
+						PublicDataConf.reConnThread.start();
+					} else {
+
+					}
+				} else {
+					PublicDataConf.reConnThread = new ReConnThread();
+					PublicDataConf.reConnThread.start();
+				}
+			} else {
+				PublicDataConf.reConnThread.RFLAG = true;
+			}
+		}
 	}
 
 	@Override

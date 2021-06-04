@@ -6,6 +6,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
 import xyz.acproject.danmuji.task.ScheduledTask;
+import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class TaskRegisterComponent implements DisposableBean{
 
-	private final Map<Runnable, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(6);
+	private final Map<SchedulingRunnableUtil, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(6);
 
 	private TaskScheduler taskScheduler;
 	
@@ -37,13 +38,12 @@ public class TaskRegisterComponent implements DisposableBean{
 	 * @param task
 	 * @param expression
 	 */
-	public void addTask(Runnable task,String expression) {
-		addTask(new CronTask(task, expression));
+	public void addTask(SchedulingRunnableUtil task,String expression) {
+		addTask(task,new CronTask(task, expression));
 	}
 	
-	public void addTask(CronTask cronTask) {
+	public void addTask(SchedulingRunnableUtil task,CronTask cronTask) {
 		if(cronTask!=null) {
-			Runnable task = cronTask.getRunnable();
 			if(!this.scheduledTasks.containsKey(task)) {
 				this.scheduledTasks.put(task,scheduledTask(cronTask));
 			}
@@ -65,8 +65,7 @@ public class TaskRegisterComponent implements DisposableBean{
 		}
 	}
 
-	public Map<Runnable, ScheduledTask> getScheduledTasks(){
-		System.err.println(this.scheduledTasks.toString());
+	public Map<SchedulingRunnableUtil, ScheduledTask> getScheduledTasks(){
 		return this.scheduledTasks;
 	}
 

@@ -1,4 +1,5 @@
 package xyz.acproject.danmuji.conf;
+
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
@@ -140,9 +141,8 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.4.4";
-	
-	
+	public static String EDITION ="2.4.5";
+
 	//view
 	//房间礼物集合
 	public static Map<Integer, RoomGift> roomGiftConcurrentHashMap = new ConcurrentHashMap<Integer, RoomGift>(300);	

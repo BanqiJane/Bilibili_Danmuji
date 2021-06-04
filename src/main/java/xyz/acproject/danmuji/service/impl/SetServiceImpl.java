@@ -300,7 +300,9 @@ public class SetServiceImpl implements SetService {
 			if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 				if(!PublicDataConf.is_sign) {
 				HttpUserData.httpGetDoSign();
-				taskRegisterComponent.addTask(task, "0 30 0 * * ?");
+				if(!taskRegisterComponent.hasTask(task)) {
+					taskRegisterComponent.addTask(task, "0 30 0 * * ?");
+				}
 				PublicDataConf.is_sign = true;
 				}
 			}
@@ -323,7 +325,9 @@ public class SetServiceImpl implements SetService {
 						}
 					}).start();
 			}
-			taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
+			if(!taskRegisterComponent.hasTask(dakatask)) {
+				taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
+			}
 		}else{
 			try {
 				taskRegisterComponent.removeTask(dakatask);
