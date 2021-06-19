@@ -1,7 +1,3 @@
-# 特别注意：
-# 2.4版本更换了检查更新服务器和小心心服务器 2.4版本以后的服务器将弃用 注意更新
-
-
 # 运行环境
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
 ```bash
@@ -54,9 +50,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4.4
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.4 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.4 "下载地址")**<br/><br/>
+# 版本2.4.5
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.5 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.5 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -164,6 +160,14 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **localhost:23333/connect 连接房间地址**<br/>
 - **localhost:23333/login 扫码登录地址**<br/><br/>
 
+# 关于修改端口<br/>
+- **自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去**<br/>
+- **--server.port=23333 修改即可修改端口启动**<br/>
+- **完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333**<br/>
+- **以上方法均兼容旧版本**
+<br/><br/>
+<br/>
+
 ## 项目提示或教程
 - **光标悬浮在相应位置出现提示**<br/><br/>
 ![提示](https://images.acproject.xyz/dm_tips.gif "提示")
@@ -202,7 +206,18 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
-        <blockquote>
+ <blockquote>
+<h2>Beta2.4.5</h2>
+<p>修复定时任务bug 该bug曾经导致重复执行定时任务(这次是真的修复了（)</p>
+<p>
+添加说明文件readme.txt和启动配置run.bat的端口参数<br>
+--server.port=23333 修改即可修改端口启动<br>
+亦或者cmd:java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333</p>
+<p>修改弹幕姬小心心功能的提示UI</p>
+ <p>重连姬添加在错误的情况下也会触发重连弹幕服务器的机制</p>
+ <p>修复诺干问题</p>
+</blockquote>
+<blockquote>
 <h2>Beta2.4.4</h2>
  <p>修复定时任务bug 该bug曾经导致重复执行定时任务</p>
   <p>私聊姬新增礼品码模式</p>
@@ -324,5 +339,3 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 </blockquote>
 </blockquote>  
 
-
-**精力有限 点击一起维护该项目[加入我们](https://message.bilibili.com/#/whisper/mid17418088 "破站私聊")**
