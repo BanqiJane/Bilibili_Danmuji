@@ -50,9 +50,9 @@ java version "1.8.0_121"
 </table>
 
 
-# 版本2.4.5
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.5 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.5 "下载地址")**<br/><br/>
+# 版本2.4.6
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
+- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 
 # 简介
@@ -206,6 +206,13 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+<blockquote>
+<h2>Beta2.4.6</h2>
+<p>增加弹幕姬登录验证(以暗号的形式 初始默认密码为123)</p>
+<p>修改弹幕姬部分提示UI</p>
+ <p>适配破站更新 金瓜子变成电池 相应的倍数也会改变</p>
+ <p>修复弹幕姬服务器依赖bug</p>
+</blockquote>
  <blockquote>
 <h2>Beta2.4.5</h2>
 <p>修复定时任务bug 该bug曾经导致重复执行定时任务(这次是真的修复了（)</p>
