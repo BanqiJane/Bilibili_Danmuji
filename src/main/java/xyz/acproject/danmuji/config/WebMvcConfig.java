@@ -28,8 +28,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         danmujiConfig.init();
         if (PublicDataConf.centerSetConf.isIs_manager_login()) {
             registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*").excludePathPatterns("/manager/login", "/manager/logins");
+        }else {
+        WebMvcConfigurer.super.addInterceptors(registry);
         }
-//        WebMvcConfigurer.super.addInterceptors(registry);
     }
 
     @Override

@@ -70,7 +70,7 @@ public class WebController {
             model.addAttribute("USER", PublicDataConf.USER);
         }
 
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(value = "/connect")
