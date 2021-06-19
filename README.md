@@ -4,49 +4,37 @@
 $ java -version
 java version "1.8.0_121"
 ```
-**Bootstrap4 放弃了对 IE8 以及 iOS 6 的支持，现在仅仅支持 IE9 以上 以及 iOS 7 以上版本的浏览器。**<br/>
+**Bootstrap5 放弃了对 IE 的支持。**<br/>
 **以最新版本浏览器示例:**
-<table>
-    <thead>
-        <tr>
-            <td></td>
-            <th>Chrome</th>
-            <th>Firefox</th>
-            <th>Internet Explorer</th>
-            <th>Microsoft Edge</th>
-            <th>Opera</th>
-            <th>Safari</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>Mac</th>
-            <td>支持</td>
-            <td>支持</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>支持</td>
-            <td>支持</td>
-        </tr>
-        <tr>
-            <th>Windows</th>
-            <td>支持</td>
-            <td>支持</td>
-            <td>支持</td>
-            <td>支持</td>
-            <td>支持</td>
-            <td>不支持</td>
-        </tr>
-        <tr>
-            <th>Linux</th>
-            <td>支持</td>
-            <td>支持</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>支持</td>
-            <td>支持</td>
-        </tr>
-    </tbody>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Chrome</th>
+      <th scope="col">Firefox</th>
+      <th scope="col">Microsoft Edge</th>
+      <th scope="col">Opera</th>
+      <th scope="col">Safari</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Mac</th>
+      <td>支持</td>
+      <td>支持</td>
+      <td>支持</td>
+      <td>支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <th scope="row">Windows</th>
+      <td>支持</td>
+      <td>支持</td>
+      <td>支持</td>
+      <td>支持</td>
+      <td class="text-muted">—</td>
+    </tr>
+  </tbody>
 </table>
 
 
