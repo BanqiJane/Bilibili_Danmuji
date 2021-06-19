@@ -148,9 +148,6 @@ public class ClientServiceImpl implements ClientService {
                 }
             }
         }
-        room = null;
-        roomInit = null;
-        conf = null;
     }
 
     public void reConnService() throws Exception {

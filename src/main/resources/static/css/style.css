@@ -40,7 +40,7 @@ input {
 }
 
 .center-wrapper {
-	margin-top: 20vh;
+	margin-top: 20vh!important;
 }
 
 .login-body {
@@ -335,7 +335,7 @@ div#danmu .danmu-child a {
 }
 
 .small-input-wrap {
-	width: 50px !important;
+	width: 80px !important;
 }
 
 .small-input-wrap .small-input {

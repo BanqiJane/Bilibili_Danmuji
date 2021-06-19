@@ -1,10 +1,10 @@
 package xyz.acproject.danmuji.tools;
 
-import java.util.Set;
-
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.enums.ShieldGift;
+
+import java.util.Set;
 
 /**
  * @ClassName ShieldGiftTools
@@ -24,6 +24,7 @@ public class ShieldGiftTools {
 		switch (shieldGift) {
 		// 2
 		case HIGH_PRICE:
+			//适配6.11破站更新金瓜子为电池  叔叔真有你的
 			if (gift.getCoin_type()==1&&gift.getPrice() >= 28000) {
 				return gift;
 			} else {
@@ -61,7 +62,7 @@ public class ShieldGiftTools {
 									return null;
 								}
 							} else if (thankGiftRuleSet.getStatus() == 1) {
-								if (gift.getTotal_coin() >= thankGiftRuleSet.getNum()) {
+								if (gift.getTotal_coin()>= (thankGiftRuleSet.getNum()*100) ) {
 									return gift;
 								} else {
 									return null;

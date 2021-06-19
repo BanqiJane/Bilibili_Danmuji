@@ -4,6 +4,7 @@ $(function () {
     var socket = null;
     var sliceh = 0;
     time = setInterval(heartBeat, 30000);
+
     function heartBeat() {
         "use strict";
         $.ajax({
@@ -30,7 +31,7 @@ $(function () {
     };
     method.getBlocks(1);
     $("#file").change(function () {
-       method.importDfFile();
+        method.importDfFile();
     });
     publicData.set = method.initSet(method.getSet());
     $('.thankgift_thank_status')
@@ -46,26 +47,32 @@ $(function () {
                             "感谢%uName%%Type%的%GiftName% x%Num%~");
                         $(".thankgift_thank")
                             .attr(
-                                'data-original-title',
-                                '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
+                                'title',
+                                '模式:单人单种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/><span class=\'red-font\'>%uName%</span>送礼人名称<br/><span class=\'red-font\'>%Type%</span>赠送类型<br/><span class=\'red-font\'>%GiftName%</span>礼物名称<br/><span class=\'red-font\'>%Num%</span>礼物数量');
                         break;
                     case 2:
                         $(".thankgift_thank").val(method.replaceThankt(method.getSet().thank_gift.thank));
                         $(".thankgift_thank").attr('placeholder',
                             "感謝%uName%贈送的%Gifts%~");
                         $(".thankgift_thank")
-                            .attr('data-original-title',
-                                '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
+                            .attr('title',
+                                '模式:单人多种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class=\'red-font\'>%uName%</span>送礼人名称<br/><span class=\'red-font\'>%Gifts%</span>礼物和数量的集合以逗号隔开');
                         break
                     case 3:
                         $(".thankgift_thank").val(method.replaceThankts(method.getSet().thank_gift.thank));
-                        $(".thankgift_thank").attr('data-original-title', '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+                        $(".thankgift_thank").attr('title', '模式:多人多种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class=\'red-font\'>%uNames%</span>送礼人名称集合<br/><span class=\'red-font\'>%Gifts%</span>礼物和数量的集合以逗号隔开');
                         $(".thankgift_thank").attr('placeholder',
                             "感謝%uNames%贈送的%Gifts%~");
                         break
                     default:
                         break;
                 }
+                var exampleTriggerEl2 = document.getElementById("thankgift_thank")
+                var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+                tooltip2 = new bootstrap.Tooltip(exampleTriggerEl2)
+                var exampleTriggerEl = document.getElementById('thankgift_thank_status')
+                var tooltip = bootstrap.Tooltip.getInstance(exampleTriggerEl)
+                tooltip.hide();
             });
     $('.thankgift_shield_status').change(
         function () {
@@ -121,13 +128,13 @@ $(document).on(
             "thank_gift": {
                 "giftStrings": [],
                 "thankGiftRuleSets": [],
-                "codeStrings":[],
+                "codeStrings": [],
             },
             "advert": {},
             "follow": {},
             "reply": {"autoReplySets": []},
             "clock_in": {},
-            "welcome":{},
+            "welcome": {},
         };
         set.is_auto = $(".is_autoStart").is(
             ':checked');
@@ -146,6 +153,12 @@ $(document).on(
         set.is_follow = $(".is_follow").is(':checked');
         set.is_log = $(".is_log").is(':checked');
         set.is_online = $(".is_online").is(':checked');
+        /* 管理登录 */
+        set.is_manager_login = $(".is_manager_login").is(':checked');
+        set.manager_maxSize = Number($(".manager_maxSize").val());
+        //密码就不set给前端了
+        set.manager_key = $(".manager_key").val();
+        /* 管理结束*/
         set.is_sh = $(".is_sh").is(':checked');
         set.is_dosign = $(".is_dosign").is(':checked');
         set.thank_gift.is_open = $(".thankgift_is_open").is(':checked');
@@ -327,17 +340,20 @@ $(document).on('click', '.is_guard_report_click', function () {
     if ($(".thankgift_is_guard_report").is(':checked')) {
         $(".thankgift_report").show();
         $(".thankgift_barrageReport").show();
+        $(".thankgift_is_gift_code").attr("disabled", false);
         if ($(".thankgift_is_gift_code").is(':checked')) {
             $(".thankgift_codeStrings").show();
         }
     } else {
+        $(".thankgift_is_gift_code").attr("disabled", true);
+        $(".thankgift_is_gift_code").prop('checked', false);
         $(".thankgift_report").hide();
         $(".thankgift_barrageReport").hide();
         $(".thankgift_codeStrings").hide();
     }
 });
 $(document).on('click', '.is_guard_code_click', function () {
-    if ($(".thankgift_is_gift_code").is(':checked')&&$(".thankgift_is_guard_report").is(':checked')) {
+    if ($(".thankgift_is_gift_code").is(':checked') && $(".thankgift_is_guard_report").is(':checked')) {
         $(".thankgift_codeStrings").show();
     } else {
         $(".thankgift_codeStrings").hide();
@@ -435,18 +451,28 @@ $(document)
             $(".shieldgifts-tbody")
                 .append(
                     `<tr>
-									<td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td>
-									<td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td>
+									<td><input type='checkbox' class='shieldgifts_open' data-bs-toggle='tooltip' data-bs-placement='top' title='是否开启' data-original-title='是否开启'></td>
+									<td><input class='small-input shieldgifts_name' placeholder='礼物名称' data-bs-toggle='tooltip' data-bs-placement='top' title='礼物名称' data-bs-html='true' data-original-title='礼物名称'></td>
 									<td>
-									<select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'>
+									<select class='custom-select-sm shieldgifts_status' data-bs-toggle='tooltip' data-bs-placement='top' title='选择类型<br/>1:屏蔽对应数量<br/>2:屏蔽一坨礼物对应电池' data-bs-html='true' data-original-title='选择类型'>
 									<option value='1' selected='selected'>数量</option>
-									<option value='2'>瓜子</option></select>
+									<option value='2'>电池</option></select>
 									</td>
 									<td>
-									<input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于)' data-html='true' data-original-title='大于多少(不得小于)'>
+									<input type='number' min='0' class='small-input shieldgifts_num' placeholder='num' value='0' data-bs-toggle='tooltip' data-bs-placement='top' title='数量(电池)小于多少触发屏蔽' data-bs-html='true' data-original-title='大于多少(不得小于)'>
 									</td>
 									<td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td>
 									</tr>`);
+            var exampleTriggerEl2 = document.getElementById("shieldgift_add")
+            var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+            tooltip2.hide()
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                // this.addEventListener('hide.bs.tooltip', function () {
+                //     new bootstrap.Tooltip(tooltipTriggerEl)
+                // })
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
         });
 $(document)
     .on(
@@ -456,25 +482,48 @@ $(document)
             $(".replys-ul")
                 .append(
                     `<li><input type='checkbox' class='reply_open'
-						data-toggle='tooltip' data-placement='top' title='是否开启'
-						data-original-title='是否开启'>
+						data-bs-toggle='tooltip' data-bs-placement='top' title='是否开启'
+						data-bs-html='true' data-original-title='是否开启'>
 						<input type='checkbox' class='reply_oc'
-						data-toggle='tooltip' data-placement='top' title='是否精确匹配'
-						data-original-title='是否精确匹配'> 
-						<input class='small-input reply_keywords' placeholder='关键字'
-						data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
-						data-html='true' data-original-title='关键字' readonly='readonly' disabled>
-						<input class='small-input reply_shields' placeholder='屏蔽词'
-						data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
-						data-html='true' data-original-title='关键字' readonly='readonly' disabled>
-						<input class='big-input reply_rs' placeholder='回复语句'
-						data-toggle='tooltip' data-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
-						data-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+						data-bs-toggle='tooltip' tabindex="0" data-bs-placement='top' title='是否精确匹配<br/>更多信息点进去编辑查看'
+						data-bs-html='true' data-original-title='是否精确匹配'> 
+						<span tabindex="0" placeholder='关键字'
+						data-bs-toggle='tooltip' data-bs-placement='top' title='外部不能编辑:多个关键字,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='关键字'>
+						<input class='small-input reply_keywords' tabindex="0" placeholder='关键字'
+						data-bs-toggle='tooltip' data-bs-placement='top' title='外部不能编辑:多个关键字,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
+						</span>
+						<span tabindex="0" placeholder='屏蔽词'
+						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:多个屏蔽词,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='关键字'>
+						<input class='small-input reply_shields' tabindex="0" placeholder='屏蔽词'
+						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:多个屏蔽词,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
+						</span>
+						<span placeholder='回复语句'
+						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='回复语句'>
+						<input class='big-input reply_rs'tabindex="0" placeholder='回复语句'
+						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称<br/>更多信息点编辑进去查看或编辑'
+						data-bs-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+						</span>
 						<span class='reply-btns'>
 						<button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button>
 						<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
 						</span>
 					</li>`);
+            var exampleTriggerEl2 = document.getElementById("replys_add")
+            var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+            tooltip2.hide()
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                // this.addEventListener('hide.bs.tooltip', function () {
+                //     new bootstrap.Tooltip(tooltipTriggerEl)
+                // })
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
         });
 $(document).on('click', '.reply_delete', function () {
     $(this).parent().parent().remove();
@@ -484,24 +533,24 @@ $(document).on('click', '.shieldgift_delete', function () {
 });
 $(document).on('click', '.del_block_click', function () {
     var id = $(this).attr("data-id");
-    if(id!=undefined){
+    if (id != undefined) {
         method.delBlock(id);
     }
 });
 $(document).on('click', '.block-pre-page', function () {
     var page = $(".block-page").text();
-    if(page>1) {
-        method.getBlocks(Number(page)- 1);
-        $(".block-page").text(Number(page)-1);
-    }else{
+    if (page > 1) {
+        method.getBlocks(Number(page) - 1);
+        $(".block-page").text(Number(page) - 1);
+    } else {
         alert("没有上一页了");
     }
 });
 $(document).on('click', '.block-next-page', function () {
     var page = $(".block-page").text();
-    if(method.getBlocks(Number(page)+1)){
-        $(".block-page").text(Number(page)+1);
-    }else{
+    if (method.getBlocks(Number(page) + 1)) {
+        $(".block-page").text(Number(page) + 1);
+    } else {
         alert("没有更多数据了");
     }
 });
@@ -773,6 +822,10 @@ const method = {
             $(".is_welcome_all").prop('checked', set.is_welcome_all);
             $(".is_follow").prop('checked', set.is_follow);
             $(".is_log").prop('checked', set.is_log);
+            /* 登录暗号                                      */
+            $(".is_manager_login").prop('checked', set.is_manager_login);
+            $(".manager_maxSize").val(set.manager_maxSize);
+            /**/
             $(".is_online").prop('checked', set.is_online);
             $(".is_sh").prop('checked', set.is_sh);
             $(".is_dosign").prop('checked', set.is_dosign);
@@ -848,22 +901,22 @@ const method = {
                         "感谢%uName%%Type%的%GiftName% x%Num%~");
                     $(".thankgift_thank")
                         .attr(
-                            'data-original-title',
-                            '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量');
+                            'title',
+                            '模式:单人单种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class=\'red-font\'>%uName%</span>送礼人名称<br/><span class=\'red-font\'>%Type%</span>赠送类型<br/><span class=\'red-font\'>%GiftName%</span>礼物名称<br/><span class=\'red-font\'>%Num%</span>礼物数量');
                     break;
                 case 2:
                     $(".thankgift_thank").attr('placeholder',
                         "感謝%uName%贈送的%Gifts%~");
                     $(".thankgift_thank")
-                        .attr('data-original-title',
-                            '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，单人多种，可选参数<br/> %uName%送礼人名称<br/>%Gifts%礼物和数量的集合以逗号隔开');
+                        .attr('title',
+                            '模式:单人多种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class=\'red-font\'>%uName%</span>送礼人名称<br/><span class=\'red-font\'>%Gifts%</span>礼物和数量的集合以逗号隔开');
                     break
                 case 3:
                     $(".thankgift_thank").attr('placeholder',
                         "感謝%uNames%贈送的%Gifts%~");
                     $(".thankgift_thank")
-                        .attr('data-original-title',
-                            '多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开');
+                        .attr('title',
+                            '模式:多人多种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class=\'red-font\'>%uNames%</span>送礼人名称集合<br/><span class=\'red-font\'>%Gifts%</span>礼物和数量的集合以逗号隔开');
                     break
                 default:
                     break;
@@ -879,7 +932,13 @@ const method = {
                 $(".thankgift_barrageReport").hide();
                 $(".thankgift_codeStrings").hide();
             }
-            if ($(".thankgift_is_gift_code").is(':checked')&&$(".thankgift_is_guard_report").is(':checked')) {
+            if ($(".thankgift_is_guard_report").is(':checked')) {
+                $(".thankgift_is_gift_code").attr("disabled", false);
+            } else {
+                $(".thankgift_is_gift_code").attr("disabled", true);
+                $(".thankgift_is_gift_code").prop('checked', false);
+            }
+            if ($(".thankgift_is_gift_code").is(':checked') && $(".thankgift_is_guard_report").is(':checked')) {
                 $(".thankgift_codeStrings").show();
             } else {
                 $(".thankgift_codeStrings").hide();
@@ -1020,11 +1079,11 @@ const method = {
             for (let i in lists) {
                 $(".shieldgifts-tbody")
                     .append(
-                        "<tr><td><input type='checkbox' class='shieldgifts_open' data-toggle='tooltip' data-placement='top' title='是否开启' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' value='"
+                        "<tr><td><input type='checkbox' class='shieldgifts_open' data-bs-toggle='tooltip' data-bs-placement='top' title='是否开启' data-original-title='是否开启'></td><td><input class='small-input shieldgifts_name' value='"
                         + lists[i].gift_name
-                        + "' placeholder='礼物名称' data-toggle='tooltip' data-placement='top' title='礼物名称' data-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-toggle='tooltip' data-placement='top' title='选择类型' data-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' value='"
+                        + "' placeholder='礼物名称' data-bs-toggle='tooltip' data-bs-placement='top' title='礼物名称' data-bs-html='true' data-original-title='礼物名称'></td><td><select class='custom-select-sm shieldgifts_status' data-bs-toggle='tooltip' data-bs-placement='top' title='选择类型' data-bs-html='true' data-original-title='选择类型'><option value='1' selected='selected'>数量</option><option value='2'>瓜子</option></select></td><td><input type='number' min='0' value='"
                         + lists[i].num
-                        + "' class='small-input shieldgifts_num' placeholder='num' value='0' data-toggle='tooltip' data-placement='top' title='大于多少(不得小于' data-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
+                        + "' class='small-input shieldgifts_num' placeholder='num' value='0' data-bs-toggle='tooltip' data-bs-placement='top' title='大于多少(不得小于' data-bs-html='true' data-original-title='大于多少(不得小于)'></td><td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td></tr>");
                 $(".shieldgifts_open").eq(i).prop('checked', lists[i].is_open);
                 $(".shieldgifts_status").eq(i).find("option").eq(
                     lists[i].status).prop('selected', true);
@@ -1038,34 +1097,34 @@ const method = {
                 $(".replys-ul")
                     .append(
                         `<li><input type='checkbox' class='reply_open'
-					data-toggle='tooltip' data-placement='top' title='是否开启'
+					data-bs-toggle='tooltip' data-bs-placement='top' title='是否开启'
 					data-original-title='是否开启'> 
 					<input type='checkbox' class='reply_oc'
-						data-toggle='tooltip' data-placement='top' title='是否精确匹配'
+						data-bs-toggle='tooltip' data-bs-placement='top' title='是否精确匹配'
 						data-original-title='是否精确匹配'> 
 					<input class='small-input reply_keywords' placeholder='关键字'
-					data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
-					data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
 					<input class='small-input reply_shields' placeholder='屏蔽词'
-					data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
-					data-html='true' data-original-title='关键字' readonly='readonly' disabled>
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
 					<input class='big-input reply_rs' placeholder='回复语句'
-					data-toggle='tooltip' data-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
-					data-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
+					data-bs-html='true' data-original-title='回复语句' readonly='readonly' disabled>
 					<span class='reply-btns'>
 					<button type='button' class='btn btn-success btn-sm reply_edit'>编辑</button>
 					<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
 					</span>
 				</li>`);
 // $("#replys-ul").append(
-// "<li><input type='checkbox' class='reply_open' data-toggle='tooltip'
-// data-placement='top' title='是否开启' data-original-title='是否开启'> "
+// "<li><input type='checkbox' class='reply_open' data-bs-toggle='tooltip'
+// data-bs-placement='top' title='是否开启' data-original-title='是否开启'> "
 // +"<input class='small-input reply_keywords' placeholder='关键字'
-// data-toggle='tooltip' data-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+// data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
 // data-original-title='关键字' readonly='readonly' value='"
 // +method.giftStrings_metod(lists[i].keywords)+"' disabled/>"
 // +"<input class='small-input reply_shields' placeholder='屏蔽词'
-// data-toggle='tooltip' data-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+// data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
 // data-original-title='屏蔽词' readonly='readonly' value='"
 // +method.giftStrings_metod(lists[i].shields)+"' disabled/>"
 // +"<input class='big-input reply_rs' placeholder='回复语句' readonly='readonly'
@@ -1100,7 +1159,7 @@ const method = {
     },
     delBlock: function (id) {
         $.ajax({
-            url: '../del_block?id='+id,
+            url: '../del_block?id=' + id,
             async: false,
             cache: false,
             type: 'GET',
@@ -1109,7 +1168,7 @@ const method = {
                 if (data.result == 0) {
                     alert("撤销禁言成功");
                     method.getBlocks(1);
-                } else{
+                } else {
                     alert("撤销禁言失败");
                 }
             }
@@ -1118,24 +1177,25 @@ const method = {
     getBlocks: function (page) {
         var ip = true;
         $.ajax({
-            url: '../blocks?page='+page,
+            url: '../blocks?page=' + page,
             async: false,
             cache: false,
             type: 'GET',
             dataType: 'json',
             success: function (data) {
                 if (data.code == "200") {
-                    $('.list-row').remove();
-                    if(data.result==null||data.result.length<1){
-                        ip=false;
+                    if (data.result == null || data.result.length < 1) {
+                        ip = false;
+                    } else {
+                        $('.list-row').remove();
                     }
-                    if(ip){
-                        for(var i of data.result){
+                    if (ip) {
+                        for (var i of data.result) {
                             $('.list-body').append(
                                 ` <tr class="list-row">
-                        <td width="35%" class="list-unit"><p class="user-name-col">`+i.uname+`</p></td>
-                        <td width="44%" class="list-unit">`+i.block_end_time+`</td>
-                        <td width="21%" class="list-unit pointer no-select"><span class="del_block_click" data-id="`+i.id+`">撤销</span>
+                        <td width="35%" class="list-unit"><p class="user-name-col">` + i.uname + `</p></td>
+                        <td width="44%" class="list-unit">` + i.block_end_time + `</td>
+                        <td width="21%" class="list-unit pointer no-select"><span class="del_block_click" data-id="` + i.id + `">撤销</span>
                         </td>
                     </tr>`
                             );
@@ -1177,9 +1237,9 @@ const method = {
             success: function (data) {
                 if (data.result == 0) {
                     alert("配置导入成功");
-                } else if(data.result == 2){
+                } else if (data.result == 2) {
                     alert("配置导入失败文件名称应为.json结尾");
-                }else{
+                } else {
                     alert("配置导入失败,请联系开发人员");
                 }
             },

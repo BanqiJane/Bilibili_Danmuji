@@ -5,6 +5,15 @@ spring:
   cache: false
   encoding: UTF-8
   mode: HTML5
+  mvc:
+    static-path-pattern: /**
+    resources:
+      chain:
+        strategy:
+          content:
+            paths: /**
+            enabled: true
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
 server:
   port: 23333
   servlet:

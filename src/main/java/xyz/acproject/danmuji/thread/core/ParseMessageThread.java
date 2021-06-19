@@ -503,8 +503,9 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append(":收到留言:");
 						stringBuilder.append(superChat.getUser_info().getUname());
 						stringBuilder.append(" 他用了");
-						stringBuilder.append(superChat.getPrice() * 1000);
-						stringBuilder.append("金瓜子留言了");
+						//适配6.11破站更新金瓜子为电池  叔叔真有你的
+						stringBuilder.append(superChat.getPrice() * 10);
+						stringBuilder.append("电池留言了");
 						stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
 						stringBuilder.append("秒说: ");
 						stringBuilder.append(superChat.getMessage());
@@ -539,8 +540,9 @@ public class ParseMessageThread extends Thread{
 							stringBuilder.append(superChat.getGift().getGift_name());
 							gift.setGiftName(stringBuilder.toString());
 							gift.setNum(superChat.getGift().getNum());
-							gift.setPrice(superChat.getPrice() * 1000);
-							gift.setTotal_coin((long) superChat.getPrice() * 1000l);
+							//适配6.11破站更新金瓜子为电池  叔叔真有你的
+							gift.setPrice(superChat.getPrice() * 10);
+							gift.setTotal_coin((long) superChat.getPrice() * 10l);
 							gift.setTimestamp(superChat.getStart_time() * 1000);
 							gift.setAction("赠送");
 							gift.setCoin_type((short) 1);

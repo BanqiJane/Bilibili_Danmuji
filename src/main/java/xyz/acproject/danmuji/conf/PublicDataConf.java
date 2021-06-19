@@ -141,7 +141,8 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.4.5";
+	public static String EDITION ="2.4.6";
+	public static int manager_login_size=0;
 
 	//view
 	//房间礼物集合
