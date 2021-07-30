@@ -1,8 +1,8 @@
 package xyz.acproject.danmuji.entity.danmu_data;
 
-import java.io.Serializable;
-
 import xyz.acproject.danmuji.utils.FastJsonUtils;
+
+import java.io.Serializable;
 
 /**
  * @ClassName Fans
@@ -28,7 +28,7 @@ public class Fans implements Serializable{
 		super();
 		// TODO 自动生成的构造函数存根
 	}
-	
+
 	public Fans(Long roomid, Long fans, Short red_notice) {
 		super();
 		this.roomid = roomid;

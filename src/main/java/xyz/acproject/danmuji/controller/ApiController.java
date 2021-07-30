@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.config.DanmujiConfig;
+import xyz.acproject.danmuji.config.DanmujiInitConfig;
 import xyz.acproject.danmuji.controller.param.IndexDataParam;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
@@ -49,7 +49,7 @@ public class ApiController {
     private ClientService clientService;
 
     @Resource
-    private DanmujiConfig danmujiConfig;
+    private DanmujiInitConfig danmujiInitConfig;
 
     /**
      * @api {GET} /api/index index
@@ -189,8 +189,8 @@ public class ApiController {
         jsonObject = JSONObject.parseObject(jsonString);
         if (jsonObject != null) {
             if (jsonObject.getBoolean("status")) {
-                danmujiConfig.init();
-                checkService.init();
+                danmujiInitConfig.init();
+//                checkService.init();
 //                if (PublicDataConf.USER != null) {
 //                    req.getSession().setAttribute("status", "login");
 //                }

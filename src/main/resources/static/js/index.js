@@ -1,10 +1,9 @@
 $(function () {
     "use strict";
-    var time;
-    var socket = null;
-    var sliceh = 0;
+    let time;
+    let socket = null;
+    let sliceh = 0;
     time = setInterval(heartBeat, 30000);
-
     function heartBeat() {
         "use strict";
         $.ajax({
@@ -15,7 +14,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.code == "200") {
-                    var popu = data.result;
+                    let popu = data.result;
                     if ($(".popu").length > 0) {
                         if (popu != null) {
                             $(".popu").html(popu);
@@ -37,7 +36,7 @@ $(function () {
     $('.thankgift_thank_status')
         .change(
             function () {
-                var num = Number($(".thankgift_thank_status").children(
+                let num = Number($(".thankgift_thank_status").children(
                     "option:selected").val());
                 switch (num) {
                     case 1:
@@ -67,11 +66,11 @@ $(function () {
                     default:
                         break;
                 }
-                var exampleTriggerEl2 = document.getElementById("thankgift_thank")
-                var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+                let exampleTriggerEl2 = document.getElementById("thankgift_thank")
+                let tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
                 tooltip2 = new bootstrap.Tooltip(exampleTriggerEl2)
-                var exampleTriggerEl = document.getElementById('thankgift_thank_status')
-                var tooltip = bootstrap.Tooltip.getInstance(exampleTriggerEl)
+                let exampleTriggerEl = document.getElementById('thankgift_thank_status')
+                let tooltip = bootstrap.Tooltip.getInstance(exampleTriggerEl)
                 tooltip.hide();
             });
     $('.thankgift_shield_status').change(
@@ -90,7 +89,7 @@ $(function () {
             }
         });
     $(document).on('click', '.btn-connect-d', function () {
-        var a = $(".connect-docket").val();
+        let a = $(".connect-docket").val();
         if (a === "" || a === null) {
             $(".connect-docket").val("不能为空");
             return;
@@ -101,7 +100,7 @@ $(function () {
         }
     });
     $('body').click(function (e) {
-        var target = $(e.target);
+        let target = $(e.target);
         if (!target.is('.danmu-child-li')) {
             if ($('.danmu-tips').is(':visible')) {
                 $('.danmu-tips').hide();
@@ -114,17 +113,18 @@ $(document).on(
     'click',
     '.set-hold',
     function () {
-        var c1 = false;
-        var c2 = false;
-        var c3 = false;
-        var c4 = false;
-        var c5 = false;
-        var c6 = false;
-        var c7 = false;
-        var c8 = false;
-        var c9 = false;
-        var c10 = false;
-        var set = {
+        let c1 = false;
+        let c2 = false;
+        let c3 = false;
+        let c4 = false;
+        let c5 = false;
+        let c6 = false;
+        let c7 = false;
+        let c8 = false;
+        let c9 = false;
+        let c10 = false;
+        let c11 = false;
+        let set = {
             "thank_gift": {
                 "giftStrings": [],
                 "thankGiftRuleSets": [],
@@ -135,9 +135,11 @@ $(document).on(
             "reply": {"autoReplySets": []},
             "clock_in": {},
             "welcome": {},
+            "auto_gift":{},
         };
         set.is_auto = $(".is_autoStart").is(
             ':checked');
+        set.win_auto_openSet = $(".win_auto_openSet").is(':checked');
         set.is_barrage_guard = $(".is_barrage_guard").is(
             ':checked');
         set.is_barrage_vip = $(".is_barrage_vip").is(
@@ -161,6 +163,7 @@ $(document).on(
         /* 管理结束*/
         set.is_sh = $(".is_sh").is(':checked');
         set.is_dosign = $(".is_dosign").is(':checked');
+        set.sign_time = method.time_parse($(".sign_time").val());
         set.thank_gift.is_open = $(".thankgift_is_open").is(':checked');
         set.thank_gift.is_live_open = $(".thankgift_is_live_open").is(
             ':checked');
@@ -171,7 +174,7 @@ $(document).on(
             .find("option:selected").val()) - 1;
         set.thank_gift.giftStrings = method.giftStrings_handle(set.thank_gift.giftStrings, $(".thankgift_shield").val());
         if ($(".shieldgifts-tbody tr").length > 0) {
-            var thankGiftRuleSet = {};
+            let thankGiftRuleSet = {};
             $(".shieldgifts-tbody tr").each(function (i, v) {
                 thankGiftRuleSet.is_open = $(".shieldgifts_open").eq(i).is(':checked');
                 thankGiftRuleSet.gift_name = $(".shieldgifts_name").eq(i).val();
@@ -182,12 +185,12 @@ $(document).on(
             });
         }
         if ($(".replys-ul li").length > 0) {
-            var autoReplySet = {};
+            let autoReplySet = {};
             $(".replys-ul li").each(function (i, v) {
                 autoReplySet.is_open = $(".reply_open").eq(i).is(':checked');
                 autoReplySet.is_accurate = $(".reply_oc").eq(i).is(':checked');
-                var keywords = [];
-                var shields = [];
+                let keywords = [];
+                let shields = [];
                 autoReplySet.keywords = method.giftStrings_handle(keywords, $(".reply_keywords").eq(i).val());
                 autoReplySet.shields = method.giftStrings_handle(shields, $(".reply_shields").eq(i).val());
                 autoReplySet.reply = $(".reply_rs").eq(i).val();
@@ -232,7 +235,12 @@ $(document).on(
         set.reply.is_live_open = $(".replys_is_live_open").is(':checked');
         set.reply.time = Number($(".replys_time").val());
         set.clock_in.is_open = $(".is_clockin").is(':checked');
+        set.clock_in.time = method.time_parse($(".clockin_time").val());
         set.clock_in.barrage = $(".clockin_barrage").val();
+        set.auto_gift.is_open = $(".is_autoGift_open").is(':checked');
+        set.auto_gift.time = method.time_parse($(".autoGift_time").val());
+        set.auto_gift.room_id = $(".autoGift_roomids").val();
+        /*处理验证?*/
         if (set.clock_in.is_open) {
             set.clock_in.sign_day = (new Date()).getTime();
         }
@@ -309,9 +317,14 @@ $(document).on(
 
             }
         });
+        if ($(".is_autoGift_open").is(':checked')) {
+            if($(".autoGift_roomids").val()==null||$(".autoGift_roomids").val().trim()===""){
+                c11=true;
+                method.delay_method(".notice-message", "礼物自动赠送姬房间号不能为空！！！");
+            }
+        }
         if ($(".card-body").find(".logined").length > 0) {
-            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10) {
-                console.log(set);
+            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10&& !c11) {
                 publicData.set = method.initSet(set);
                 if (method.sendSet(set)) {
                     method.delay_method(".success-message", "保存配置成功");
@@ -325,7 +338,6 @@ $(document).on(
                 alert("修改配置失败")
             }
         } else {
-            console.log(set);
             method.initSet(set);
             if (method.sendSet(set)) {
                 method.delay_method(".success-message", "保存配置成功");
@@ -368,8 +380,17 @@ $(document).on('click', '.export-set', function () {
 $(document).on('click', '.is_clockin', function () {
     if ($(".is_clockin").is(':checked')) {
         $(".clockin_barrage").show();
+        $(".clockin_time").attr("disabled",false);
     } else {
         $(".clockin_barrage").hide();
+        $(".clockin_time").attr("disabled",true);
+    }
+});
+$(document).on('click', '.is_dosign', function () {
+    if ($(".is_dosign").is(':checked')) {
+        $(".sign_time").attr("disabled",false);
+    } else {
+        $(".sign_time").attr("disabled",true);
     }
 });
 $(document).on('click', '.is_online', function () {
@@ -404,13 +425,13 @@ $(document).on('click', '.btn-close-block', function () {
     }
 });
 $(document).on('click', '.btn-close-wel', function () {
-    var is_kong = false;
+    let is_kong = false;
     if ($(".wel-mask").is(":visible")) {
         $(".wel-mask").hide();
     }
 });
 $(document).on('click', '.btn-closer', function () {
-    var is_hide = true;
+    let is_hide = true;
     if ($(".replys-mask").is(":visible")) {
         $(".replys-ul").children("li").each(function (i, v) {
             if ($(".reply_keywords").eq(i).val() === "" || $(".reply_rs").eq(i).val() === "") {
@@ -463,11 +484,11 @@ $(document)
 									</td>
 									<td><button type='button' class='btn btn-danger btn-sm shieldgift_delete'>删除</button></td>
 									</tr>`);
-            var exampleTriggerEl2 = document.getElementById("shieldgift_add")
-            var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+            let exampleTriggerEl2 = document.getElementById("shieldgift_add")
+            let tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
             tooltip2.hide()
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 // this.addEventListener('hide.bs.tooltip', function () {
                 //     new bootstrap.Tooltip(tooltipTriggerEl)
                 // })
@@ -513,11 +534,11 @@ $(document)
 						<button type='button' class='btn btn-danger btn-sm reply_delete'>删除</button>
 						</span>
 					</li>`);
-            var exampleTriggerEl2 = document.getElementById("replys_add")
-            var tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
+            let exampleTriggerEl2 = document.getElementById("replys_add")
+            let tooltip2 = bootstrap.Tooltip.getInstance(exampleTriggerEl2)
             tooltip2.hide()
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 // this.addEventListener('hide.bs.tooltip', function () {
                 //     new bootstrap.Tooltip(tooltipTriggerEl)
                 // })
@@ -532,13 +553,13 @@ $(document).on('click', '.shieldgift_delete', function () {
     $(this).parent().parent().remove();
 });
 $(document).on('click', '.del_block_click', function () {
-    var id = $(this).attr("data-id");
+    let id = $(this).attr("data-id");
     if (id != undefined) {
         method.delBlock(id);
     }
 });
 $(document).on('click', '.block-pre-page', function () {
-    var page = $(".block-page").text();
+    let page = $(".block-page").text();
     if (page > 1) {
         method.getBlocks(Number(page) - 1);
         $(".block-page").text(Number(page) - 1);
@@ -547,7 +568,7 @@ $(document).on('click', '.block-pre-page', function () {
     }
 });
 $(document).on('click', '.block-next-page', function () {
-    var page = $(".block-page").text();
+    let page = $(".block-page").text();
     if (method.getBlocks(Number(page) + 1)) {
         $(".block-page").text(Number(page) + 1);
     } else {
@@ -555,12 +576,12 @@ $(document).on('click', '.block-next-page', function () {
     }
 });
 $(document).on('click', '.reply_edit', function () {
-    var index = $(this).parent().parent().index();
-    var is_open = $(this).parent().parent().children(".reply_open").is(':checked');
-    var is_oc = $(this).parent().parent().children(".reply_oc").is(':checked');
-    var keywords = $(this).parent().parent().children(".reply_keywords").val();
-    var shields = $(this).parent().parent().children(".reply_shields").val();
-    var rs = $(this).parent().parent().children(".reply_rs").val();
+    let index = $(this).parent().parent().index();
+    let is_open = $(this).parent().parent().children(".reply_open").is(':checked');
+    let is_oc = $(this).parent().parent().children(".reply_oc").is(':checked');
+    let keywords = $(this).parent().parent().children(".reply_keywords").val();
+    let shields = $(this).parent().parent().children(".reply_shields").val();
+    let rs = $(this).parent().parent().children(".reply_rs").val();
     $(".radd-mask").show();
     $(".radd-body").find(".reply_open_i").prop('checked', is_open);
     $(".radd-body").find(".reply_oc_i").prop('checked', is_oc);
@@ -570,19 +591,19 @@ $(document).on('click', '.reply_edit', function () {
     $(".radd-body").find(".reply_delete_i").attr("z-index", index);
 });
 $(document).on('click', '.reply_delete_i', function (e) {
-    var index = $(this).attr("z-index");
+    let index = $(this).attr("z-index");
     $(".replys-ul").children("li").eq(index).remove();
     e.stopPropagation();
     $(".radd-mask").hide();
 });
 $(document).on('click', '.btn-closeri', function () {
     if ($(".radd-mask").is(":visible")) {
-        var index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
-        var is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
-        var is_oc = $(this).parent().parent().find(".reply_oc_i").is(':checked');
-        var keywords = $(this).parent().parent().find(".reply_keywords_i").val();
-        var shields = $(this).parent().parent().find(".reply_shields_i").val();
-        var rs = $(this).parent().parent().find(".reply_rs_i").val();
+        let index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
+        let is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
+        let is_oc = $(this).parent().parent().find(".reply_oc_i").is(':checked');
+        let keywords = $(this).parent().parent().find(".reply_keywords_i").val();
+        let shields = $(this).parent().parent().find(".reply_shields_i").val();
+        let rs = $(this).parent().parent().find(".reply_rs_i").val();
         $(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', is_open);
         $(".replys-ul").children("li").eq(index).find(".reply_oc").prop('checked', is_oc);
         $(".replys-ul").children("li").eq(index).find(".reply_keywords").val(keywords);
@@ -597,16 +618,19 @@ $(document).on('click', '.btn-closeri', function () {
 });
 $(document).on('click', '#checkupdate', function () {
     $(".tips-wrap").show();
-    $(".tips-t").html("<span>连接中<img src='../img/loading-1.gif'></span>");
+    $(".tips-t").html("<span>少女祈祷中<img src='../img/loading-1.gif'></span>");
     $.when(method.checkUpdate()).done(function (data) {
-        var num = Number(data.result);
+        let num = Number(data.result.status);
         if (num === 0) {
-            $(".tips-t").html("有新版本更新，请前往github获取更新");
+            $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:`+data.result.edition+`</span>)更新，请前往<a href="https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/`+data.result.edition+`">github</a>获取更新`);
         } else if (num === 1) {
-            $(".tips-t").html("当前为最新版本，无需更新");
+            $("#edition_content").html("当前为最新版本，无需更新");
         } else {
-            $(".tips-t").html("服务器无响应，获取更新失败");
+            $("#edition_content").html("服务器无响应，获取更新失败");
         }
+        let myToastEl = document.getElementById('updateEle')
+        let myToast = bootstrap.Toast.getInstance(myToastEl)
+        myToast.show()
         setTimeout(function () {
             $(".tips-wrap").hide();
         }, 1000)
@@ -699,7 +723,7 @@ const danmuku = {
         return '';
     },
     dname: function (d) {
-        var clazz = "";
+        let clazz = "";
         if (d.uguard > 0) clazz = "name-guard";
         if (d.manager > 0) clazz = "name-manager";
         return `<a href="javascript:;"><span class="danmu-name` + (clazz === "" ? "" : (" " + clazz)) + `">` + d.uname + `:</span></a>`;
@@ -708,7 +732,7 @@ const danmuku = {
         return `<span class="danmu-text">` + d.msg + `</span>`;
     },
     gname: function (d) {
-        var clazz = "";
+        let clazz = "";
         if (d.uguard > 0) clazz = "name-guard";
         return `<a href="javascript:;"><span class="danmu-name` + (clazz === "" ? "" : (" " + clazz)) + `">` + d.uname + `</span></a>`;
     },
@@ -768,7 +792,7 @@ const publicData = {
 const method = {
     getSet: function () {
         "use strict";
-        var json = null;
+        let json = null;
         $.ajax({
             url: '../getSet',
             async: false,
@@ -785,7 +809,7 @@ const method = {
     },
     sendSet: function (set) {
         "use strict";
-        var flag = false;
+        let flag = false;
         $.ajax({
             url: '../sendSet',
             data: {
@@ -808,6 +832,7 @@ const method = {
         if (set != null) {
             $(".is_autoStart").prop('checked',
                 set.is_auto);
+            $(".win_auto_openSet").prop('checked',set.win_auto_openSet);
             $(".is_barrage_guard").prop('checked',
                 set.is_barrage_guard);
             $(".is_barrage_vip").prop('checked',
@@ -829,6 +854,7 @@ const method = {
             $(".is_online").prop('checked', set.is_online);
             $(".is_sh").prop('checked', set.is_sh);
             $(".is_dosign").prop('checked', set.is_dosign);
+            $(".sign_time").val(set.sign_time);
             $(".thankgift_is_open").prop('checked', set.thank_gift.is_open);
             $(".thankgift_is_live_open").prop('checked',
                 set.thank_gift.is_live_open);
@@ -881,7 +907,14 @@ const method = {
                 set.reply.is_live_open);
             $(".replys_time").val(set.reply.time);
             $(".is_clockin").prop('checked', set.clock_in.is_open);
+            $(".clockin_time").val(set.clock_in.time);
             $(".clockin_barrage").val(set.clock_in.barrage);
+            console.log(set.auto_gift)
+            $(".is_autoGift_open").prop('checked',set.auto_gift.is_open);
+            $(".autoGift_time").val(set.auto_gift.time);
+            $(".autoGift_roomids").val(set.auto_gift.room_id);
+
+            /* 处理？ */
             if (Number($(".thankgift_shield_status")
                 .children("option:selected").val()) !== 1) {
                 $(".thankgift_shield").hide();
@@ -952,12 +985,20 @@ const method = {
             }
             if ($(".is_clockin").is(':checked')) {
                 $(".clockin_barrage").show();
+                $(".clockin_time").attr("disabled", false);
             } else {
                 $(".clockin_barrage").hide();
+                $(".clockin_time").attr("disabled", true);
+            }
+            if ($(".is_dosign").is(':checked')) {
+                $(".sign_time").attr("disabled", false);
+            }else{
+                $(".sign_time").attr("disabled", true);
             }
             if (!$(".card-body").find(".logined").length > 0) {
                 $(".is_online").attr("disabled", true);
                 $(".is_dosign").attr("disabled", true);
+                $(".sign_time").attr("disabled", true);
                 $(".is_sh").attr("disabled", true);
                 $(".thankgift_is_open").attr("disabled", true);
                 $(".thankgift_is_live_open").attr("disabled", true);
@@ -1000,15 +1041,24 @@ const method = {
                 $(".replys_time").attr("disabled", true);
                 $("#replys-btn").attr("disabled", true);
                 $(".is_clockin").attr("disabled", true);
+                $(".clockin_time").attr("disabled", true);
                 $(".clockin_barrage").attr("disabled", true);
             }
         }
         return set;
     },
+    time_parse:function (t){
+      if(t==null||t.trim()=="")return "00:30:00";
+      let ts = t.split(":");
+      if(ts.length==2){
+          t = t + ":00";
+      }
+      return t;
+    },
     wrap_replace: function (d) {
         "use strict";
         if (d.trim() !== null && d.trim() !== "") {
-            var rc = d.replace(/\n/g, '').replace(/\r/g, '');
+            let rc = d.replace(/\n/g, '').replace(/\r/g, '');
             // rc = rc.replace(/_#_@/g, '<br/>');
             // rc = rc.replace(/_@/g, '<br/>');
             // rc = rc.replace(/\s/g, '&nbsp;');
@@ -1028,14 +1078,14 @@ const method = {
         }
     },
     giftStrings_metod: function (lists) {
-        var s = "";
+        let s = "";
         if (lists != null) {
             s = lists.join("，");
         }
         return s;
     },
     codeStrings_metod: function (lists) {
-        var s = "";
+        let s = "";
         if (lists != null) {
             s = lists.join("\n");
         }
@@ -1044,7 +1094,7 @@ const method = {
     giftStrings_handle: function (lists, s) {
         if (s != "") {
             if (s.indexOf("，") >= 0) {
-                var ss = s.split("，");
+                let ss = s.split("，");
                 for (let gs in ss) {
                     if (ss[gs].trim() != "") {
                         lists.push(ss[gs]);
@@ -1054,13 +1104,12 @@ const method = {
                 lists.push(s);
             }
         }
-        console.log(lists);
         return lists;
     },
     codeStrings_handle: function (lists, s) {
         if (s != "") {
             if (s.indexOf("\n") >= 0) {
-                var ss = s.split("\n");
+                let ss = s.split("\n");
                 for (let gs in ss) {
                     if (ss[gs].trim() != "") {
                         lists.push(ss[gs]);
@@ -1069,8 +1118,7 @@ const method = {
             } else {
                 lists.push(s);
             }
-        }
-        console.log(lists);
+        };
         return lists;
     },
     shieldgifts_each: function (lists) {
@@ -1142,7 +1190,7 @@ const method = {
         }
     },
     getIp: function () {
-        var ip = null;
+        let ip = null;
         $.ajax({
             url: '../getIp',
             async: false,
@@ -1175,7 +1223,7 @@ const method = {
         });
     },
     getBlocks: function (page) {
-        var ip = true;
+        let ip = true;
         $.ajax({
             url: '../blocks?page=' + page,
             async: false,
@@ -1190,7 +1238,7 @@ const method = {
                         $('.list-row').remove();
                     }
                     if (ip) {
-                        for (var i of data.result) {
+                        for (let i of data.result) {
                             $('.list-body').append(
                                 ` <tr class="list-row">
                         <td width="35%" class="list-unit"><p class="user-name-col">` + i.uname + `</p></td>
@@ -1224,7 +1272,7 @@ const method = {
     },
 //导入附件
     importDfFile: function () {
-        var formData = new FormData();
+        let formData = new FormData();
         // 获取上传文件的数据
         formData.append('file', $("#file")[0].files[0]);
         $.ajax({
@@ -1268,7 +1316,7 @@ const method = {
     },
     checkUpdate: function () {
         "use strict";
-        var deferred = $.Deferred();
+        let deferred = $.Deferred();
         $.ajax({
             url: '../checkupdate',
             async: false,
@@ -1281,8 +1329,41 @@ const method = {
         });
         return deferred.promise();
     },
+    checkWebInit: function () {
+        let content = {init_edition:false,init_announce:false};
+        $.ajax({
+            url: '../checkWebInit',
+            async: false,
+            cache: false,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == "200") {
+                    content.init_edition = data.result.init_edition;
+                    content.init_announce = data.result.init_announce;
+                }
+            }
+        });
+        return content;
+    },
+    getAnnounce: function () {
+        let content = "";
+        $.ajax({
+            url: '../checkNewAnnounce',
+            async: false,
+            cache: false,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == "200") {
+                    content = data.result;
+                }
+            }
+        });
+        return content;
+    },
     block: function (uid, time) {
-        var code = null;
+        let code = null;
         $.ajax({
             url: '../block',
             data: {
@@ -1308,7 +1389,7 @@ function openSocket(socket, ip, sliceh) {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
     } else {
         console.log("弹幕服务器正在连接");
-        var socketUrl = ip;
+        let socketUrl = ip;
         if (socket != null) {
             socket.close();
             socket = null;
@@ -1326,7 +1407,7 @@ function openSocket(socket, ip, sliceh) {
         // 获得消息事件
         socket.onmessage = function (msg) {
             // 发现消息进入 开始处理前端触发逻辑
-            var data = JSON.parse(msg.data);
+            let data = JSON.parse(msg.data);
             if (data.cmd === "cmdp") {
                 if ($("#danmu").children().length > 99) {
                     $("#danmu").children().first().remove();
@@ -1335,14 +1416,14 @@ function openSocket(socket, ip, sliceh) {
                 } else {
                     $("#danmu").append("<div class='danmu-child'>" + data.result + "</div>");
                 }
-                var lastNodeH = $(".danmu-child").eq(-1).height();
-                var lasttNodeH = $(".danmu-child").eq(-2).height();
+                let lastNodeH = $(".danmu-child").eq(-1).height();
+                let lasttNodeH = $(".danmu-child").eq(-2).height();
                 if (Math.abs(lastNodeH - lasttNodeH) > sliceh) {
                     sliceh = Math.abs(lastNodeH - lasttNodeH);
                 }
                 if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= (804 + sliceh)) {
-                    var h = $("div[class='danmu-child']:last").height();
-                    var top = $("div[class='danmu-child']:last").offset().top + h + 6;
+                    let h = $("div[class='danmu-child']:last").height();
+                    let top = $("div[class='danmu-child']:last").offset().top + h + 6;
                     $("#danmu").scrollTop($("#danmu").scrollTop() + top);
 // $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
                 }
@@ -1354,14 +1435,14 @@ function openSocket(socket, ip, sliceh) {
                 } else {
                     $("#danmu").append(danmuku.danmu(data.cmd, data.result));
                 }
-                var lastNodeH = $(".danmu-child").eq(-1).height();
-                var lasttNodeH = $(".danmu-child").eq(-2).height();
+                let lastNodeH = $(".danmu-child").eq(-1).height();
+                let lasttNodeH = $(".danmu-child").eq(-2).height();
                 if (Math.abs(lastNodeH - lasttNodeH) > sliceh) {
                     sliceh = Math.abs(lastNodeH - lasttNodeH);
                 }
                 if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= (804 + sliceh)) {
-                    var h = $("div[class='danmu-child']:last").height();
-                    var top = $("div[class='danmu-child']:last").offset().top + h + 6;
+                    let h = $("div[class='danmu-child']:last").height();
+                    let top = $("div[class='danmu-child']:last").offset().top + h + 6;
                     $("#danmu").scrollTop($("#danmu").scrollTop() + top);
                     // $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
                 }
@@ -1399,13 +1480,13 @@ function addSpace(m) {
 }
 
 function format(timestamp, flag) {
-    var time = new Date(parseInt(timestamp));
-    var y = time.getFullYear();
-    var m = time.getMonth() + 1;
-    var d = time.getDate();
-    var h = time.getHours();
-    var mm = time.getMinutes();
-    var s = time.getSeconds();
+    let time = new Date(parseInt(timestamp));
+    let y = time.getFullYear();
+    let m = time.getMonth() + 1;
+    let d = time.getDate();
+    let h = time.getHours();
+    let mm = time.getMinutes();
+    let s = time.getSeconds();
     if (flag) {
         return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
     } else {

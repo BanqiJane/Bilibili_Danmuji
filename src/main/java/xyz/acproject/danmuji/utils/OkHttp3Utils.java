@@ -1,17 +1,12 @@
 package xyz.acproject.danmuji.utils;
 
+import okhttp3.*;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * @ClassName OkHttp3Utils
@@ -80,10 +75,11 @@ public class OkHttp3Utils {
 			response = okHttpClient.newCall(request).execute();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			if(headers!=null)headers.clear();
-			if(datas!=null)datas.clear();
 		}
+//		finally {
+//			if(headers!=null)headers.clear();
+//			if(datas!=null)datas.clear();
+//		}
 		return response;
 	}
 	public Response httpPostJson(String url,Map<String, String> headers,String json) throws Exception{
@@ -101,9 +97,10 @@ public class OkHttp3Utils {
 			response = okHttpClient.newCall(request).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			if(headers!=null)headers.clear();
 		}
+//		finally {
+//			if(headers!=null)headers.clear();
+//		}
 		return response;
 	}
 	public Response httpPostForm(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
@@ -130,10 +127,11 @@ public class OkHttp3Utils {
 			response = okHttpClient.newCall(request).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			if(headers!=null)headers.clear();
-			if(params!=null)params.clear();
 		}
+//		finally {
+//			if(headers!=null)headers.clear();
+//			if(params!=null)params.clear();
+//		}
 		return response;
 	}
 

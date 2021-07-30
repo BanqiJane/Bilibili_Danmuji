@@ -45,11 +45,14 @@ public class CenterSetConf implements Serializable {
     private Long roomid = 0l;
     //是否自动连接
     private boolean is_auto = false;
+    //window是否自动打开设置页面 默认open
+    private boolean win_auto_openSet = true;
 
     //是否开启登录
     private boolean is_manager_login = false;
-    ///123
+    //123
     private String manager_key = "202cb962ac59075b964b07152d234b70";
+    //每次登录最大尝试次数
     private int manager_maxSize = 10;
 
     //-------------------------以下设置需要用户登录后----------------------------------------
@@ -59,6 +62,8 @@ public class CenterSetConf implements Serializable {
     private boolean is_sh = false;
     //是否开启用户自动签到
     private boolean is_dosign = false;
+    //自定义的签到时间
+    private String sign_time = "00:30:00";
     //是否开启礼物感谢线程对象体
     private ThankGiftSetConf thank_gift;
     //是否开启广告公告线程对象体
@@ -71,6 +76,8 @@ public class CenterSetConf implements Serializable {
     private ClockInSetConf clock_in;
     //是否开启欢迎进入直播间线程对象体
     private ThankWelcomeSetConf welcome;
+    //是否开启自动送礼对象体
+    private AutoSendGiftConf auto_gift;
 
 
     public CenterSetConf() {
@@ -79,7 +86,7 @@ public class CenterSetConf implements Serializable {
     }
 
     public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,
-                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome) {
+                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift) {
         super();
         this.thank_gift = thank_gift;
         this.advert = advert;
@@ -87,10 +94,11 @@ public class CenterSetConf implements Serializable {
         this.reply = reply;
         this.clock_in = clock_in;
         this.welcome = welcome;
+        this.auto_gift= auto_gift;
     }
 
 
-    public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager, boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_welcome_all, boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto, boolean is_manager_login, String manager_key, int manager_maxSize, boolean is_online, boolean is_sh, boolean is_dosign, ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome) {
+    public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager, boolean is_barrage_medal, boolean is_barrage_ul, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_welcome_all, boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto,boolean win_auto_openSet, boolean is_manager_login, String manager_key, int manager_maxSize, boolean is_online, boolean is_sh, boolean is_dosign, String sign_time, ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift) {
         this.is_barrage_guard = is_barrage_guard;
         this.is_barrage_vip = is_barrage_vip;
         this.is_barrage_manager = is_barrage_manager;
@@ -105,18 +113,21 @@ public class CenterSetConf implements Serializable {
         this.is_cmd = is_cmd;
         this.roomid = roomid;
         this.is_auto = is_auto;
+        this.win_auto_openSet = win_auto_openSet;
         this.is_manager_login = is_manager_login;
         this.manager_key = manager_key;
         this.manager_maxSize = manager_maxSize;
         this.is_online = is_online;
         this.is_sh = is_sh;
         this.is_dosign = is_dosign;
+        this.sign_time = sign_time;
         this.thank_gift = thank_gift;
         this.advert = advert;
         this.follow = follow;
         this.reply = reply;
         this.clock_in = clock_in;
         this.welcome = welcome;
+        this.auto_gift= auto_gift;
     }
 
     public boolean isIs_barrage_guard() {
@@ -312,6 +323,14 @@ public class CenterSetConf implements Serializable {
         this.is_auto = is_auto;
     }
 
+    public boolean isWin_auto_openSet() {
+        return win_auto_openSet;
+    }
+
+    public void setWin_auto_openSet(boolean win_auto_openSet) {
+        this.win_auto_openSet = win_auto_openSet;
+    }
+
     public ClockInSetConf getClock_in() {
         return clock_in;
     }
@@ -328,7 +347,23 @@ public class CenterSetConf implements Serializable {
         this.welcome = welcome;
     }
 
+    public String getSign_time() {
+        return sign_time;
+    }
+
+    public void setSign_time(String sign_time) {
+        this.sign_time = sign_time;
+    }
+
+    public AutoSendGiftConf getAuto_gift() {
+        return auto_gift;
+    }
+
+    public void setAuto_gift(AutoSendGiftConf auto_gift) {
+        this.auto_gift = auto_gift;
+    }
+
     public String toJson() {
-        return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_welcome_all, is_follow, is_log, is_cmd, roomid, is_auto,is_manager_login,manager_key,manager_maxSize, is_online, is_sh, is_dosign, thank_gift, advert, follow, reply, clock_in, welcome));
+        return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul, is_block, is_gift, is_welcome, is_welcome_all, is_follow, is_log, is_cmd, roomid, is_auto,win_auto_openSet,is_manager_login,manager_key,manager_maxSize, is_online, is_sh, is_dosign,sign_time ,thank_gift, advert, follow, reply, clock_in, welcome,auto_gift));
     }
 }

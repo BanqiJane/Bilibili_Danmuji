@@ -1,6 +1,9 @@
 package xyz.acproject.danmuji.conf.set;
 
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Jane
@@ -16,6 +19,11 @@ public class ClockInSetConf implements Serializable {
     * 是否开启自动签到
     */
     private boolean is_open = false;
+
+    /**
+    * 自定义签到时间
+    */
+    private String time = "00:35:00";
     /**
     * 自动签到发送的弹幕
     */
@@ -46,5 +54,19 @@ public class ClockInSetConf implements Serializable {
     public void setBarrage(String barrage) {
         this.barrage = barrage;
     }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public ClockInSetConf time(Date date){
+        this.time = JodaTimeUtils.format(date,"HH:mm:ss");
+        return this;
+    }
+
 
 }

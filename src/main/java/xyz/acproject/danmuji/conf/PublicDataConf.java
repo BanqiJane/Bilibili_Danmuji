@@ -4,11 +4,11 @@ import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
+import xyz.acproject.danmuji.entity.user_data.AutoSendGift;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
 import xyz.acproject.danmuji.entity.user_data.UserManager;
 import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
-import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.thread.*;
 import xyz.acproject.danmuji.thread.core.HeartByteThread;
 import xyz.acproject.danmuji.thread.core.ParseMessageThread;
@@ -141,11 +141,17 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.4.6";
+	public static String EDITION ="2.4.7";
+	public static String NEW_EDITION ="2.4.6";
+	public static String ANNOUNCE = null;
+	public static boolean INIT_CHECK_EDITION = false;
+	public static boolean INIT_CHECK_ANNOUNCE = false;
 	public static int manager_login_size=0;
 
-	//view
-	//房间礼物集合
-	public static Map<Integer, RoomGift> roomGiftConcurrentHashMap = new ConcurrentHashMap<Integer, RoomGift>(300);	
-	
+//	//view
+//	//房间礼物集合
+//	public static Map<Integer, RoomGift> roomGiftConcurrentHashMap = new ConcurrentHashMap<Integer, RoomGift>(300);
+//
+	//可以赠送礼物集合 要初始化
+	public static Map<Integer,AutoSendGift> autoSendGiftMap = null;
 }

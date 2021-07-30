@@ -38,7 +38,12 @@ public class DoSignTask {
 		}
 	}
 
-	public void test(){
-		System.err.println("test");
+	public void autosendgift(){
+		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+			CurrencyTools.autoSendGift();
+		}else{
+			LOGGER.error("定时任务抛出： 未登录 自动送礼失败");
+		}
 	}
+
 }

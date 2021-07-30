@@ -62,6 +62,16 @@ public class ThankGiftRuleSet implements Serializable{
 	public void setNum(int num) {
 		this.num = num;
 	}
-	
-	
+
+
+	@Override
+	public int hashCode() {
+		return this.gift_name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		ThankGiftRuleSet thankGiftRuleSet = (ThankGiftRuleSet) obj;
+		return this.gift_name.equals(thankGiftRuleSet.getGift_name());
+	}
 }

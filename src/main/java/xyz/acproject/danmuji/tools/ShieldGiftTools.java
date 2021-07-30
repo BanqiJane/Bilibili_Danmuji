@@ -33,6 +33,7 @@ public class ShieldGiftTools {
 			// 0
 		case OPTIONAL:
 			if (giftStrings != null && giftStrings.size() > 0) {
+				//仅仅是模糊
 				if (giftStrings.contains(gift.getGiftName())) {
 					return null;
 				} else {

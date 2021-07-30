@@ -1,12 +1,13 @@
 package xyz.acproject.danmuji.utils;
 
+import org.apache.tomcat.util.buf.HexUtils;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.InflaterOutputStream;
-
-import org.apache.tomcat.util.buf.HexUtils;
 
 /**
  * @ClassName ByteUtils
@@ -170,18 +171,29 @@ public class ByteUtils {
 	 * @param bs 待解压byte数组
 	 * @return b 解压完成的byte[]
 	 */
-	public static byte[] BytesTozlibInflate(byte[] bs) { 
+	public static byte[] BytesTozlibInflate(byte[] bs) {
 		byte[] b = null;
-        try {  
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();  
-            InflaterOutputStream zos = new InflaterOutputStream(bos);  
-            zos.write(bs);
-            zos.close();  
-           b = bos.toByteArray();
-        } catch (Exception ex) {  
-            ex.printStackTrace();  
-        }  
-        return b;
+		ByteArrayOutputStream bos = null;
+		InflaterOutputStream zos = null;
+		try {
+			bos = new ByteArrayOutputStream();
+			zos = new InflaterOutputStream(bos);
+			zos.write(bs);
+			zos.close();
+			b = bos.toByteArray();
+			return b;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}finally {
+			if(bos!=null){
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return b;
     }
 	
 	/**

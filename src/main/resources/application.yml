@@ -15,6 +15,7 @@ spring:
             enabled: true
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
 server:
+#  port: ${PORT:5000}
   port: 23333
   servlet:
     encoding:

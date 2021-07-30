@@ -170,6 +170,9 @@ public class AutoReplyThread extends Thread {
 
     private synchronized boolean handle(AutoReplySet autoReplySet, String replyString, AutoReply autoReply,
                                      String hourString, short hour, String hourReplace, boolean is_send) {
+        //拟议自动回复处理
+        //1. 针对特定人?
+        //2. 刷屏?
         // 替换%NAME%参数
         if (!autoReplySet.getReply().equals("%NAME%")) {
             replyString = StringUtils.replace(autoReplySet.getReply(), "%NAME%", autoReply.getName());

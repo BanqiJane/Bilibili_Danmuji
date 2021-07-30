@@ -1,9 +1,9 @@
 package xyz.acproject.danmuji.entity;
 
-import java.io.Serializable;
-
 import struct.StructClass;
 import struct.StructField;
+
+import java.io.Serializable;
 
 /**
  * @ClassName BarrageHeadHandle
@@ -14,7 +14,7 @@ import struct.StructField;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 @StructClass
-public class BarrageHeadHandle implements Serializable {
+public class BarrageHeadHandle implements Serializable,Cloneable {
 	/**
 	 * 
 	 */
@@ -36,17 +36,65 @@ public class BarrageHeadHandle implements Serializable {
 	@StructField(order = 4)
 	private int packageOther;
 	private BarrageHeadHandle() {}
+
+	public BarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
+		this.packageLength = packageLength;
+		this.packageHeadLength = packageHeadLength;
+		this.packageVersion = packageVersion;
+		this.packageType = packageType;
+		this.packageOther = packageOther;
+	}
+
+	//复制模式
 	public static BarrageHeadHandle getBarrageHeadHandle() {
-		return barrageHeadHandle;
+		try {
+			return (BarrageHeadHandle)barrageHeadHandle.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return new BarrageHeadHandle();
 	}
-	public static BarrageHeadHandle getBarrageHeadHandle(int packageLength,char packageHeadLength,char packageVersion,int packageType,int packageOther) {
-		barrageHeadHandle.setPackageHeadLength(packageHeadLength);
-		barrageHeadHandle.setPackageLength(packageLength);
-		barrageHeadHandle.setPackageOther(packageOther);
-		barrageHeadHandle.setPackageType(packageType);
-		barrageHeadHandle.setPackageVersion(packageVersion);
-		return barrageHeadHandle;
+
+//单例模式
+//    public static BarrageHeadHandle getBarrageHeadHandle() {
+//        if (barrageHeadHandle == null) {
+//            synchronized (BarrageHeadHandle.class) {
+//                barrageHeadHandle = new BarrageHeadHandle();
+//            }
+//        }
+//        return barrageHeadHandle;
+//    }
+
+	public static BarrageHeadHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
+		try {
+			BarrageHeadHandle b = (BarrageHeadHandle)barrageHeadHandle.clone();
+			b.setPackageHeadLength(packageHeadLength);
+			b.setPackageLength(packageLength);
+			b.setPackageOther(packageOther);
+			b.setPackageType(packageType);
+			b.setPackageVersion(packageVersion);
+			return b;
+		} catch (CloneNotSupportedException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return new BarrageHeadHandle(packageLength,packageHeadLength,packageVersion,packageType,packageOther);
 	}
+
+	//    public static BarrageHeadHandle getBarrageHeadHandle(int packageLength, char packageHeadLength, char packageVersion, int packageType, int packageOther) {
+//        if (barrageHeadHandle == null) {
+//            synchronized (BarrageHeadHandle.class) {
+//                barrageHeadHandle = new BarrageHeadHandle();
+//            }
+//        }
+//        barrageHeadHandle.setPackageHeadLength(packageHeadLength);
+//        barrageHeadHandle.setPackageLength(packageLength);
+//        barrageHeadHandle.setPackageOther(packageOther);
+//        barrageHeadHandle.setPackageType(packageType);
+//        barrageHeadHandle.setPackageVersion(packageVersion);
+//        return barrageHeadHandle;
+//    }
 	public int getPackageLength() {
 		return packageLength;
 	}

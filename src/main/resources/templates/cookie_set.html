@@ -7,7 +7,7 @@
     <meta
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
             name="viewport">
-    <title>弹幕姬登录</title>
+    <title>弹幕姬-自定义cookie</title>
     <link rel="apple-touch-icon-precomposed"
           href="../../img/headlogo.png" th:href="@{/img/favicon.png}">
     <link rel="shortcut icon" href="../../img/headlogo.png"
@@ -17,39 +17,8 @@
           media="all">
     <script type="text/javascript" src="../../js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
     <script type="text/javascript" src="../../js/popper.min.js" th:src="@{/js/popper.min.js}"></script>
-    <script type="text/javascript" src="../../js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-    <!--jquery.md5.js-->
-    <script type="text/javascript" src="../../js/jquery.md5.js" th:src="@{/js/jquery.md5.js}"></script>
-    <script type="text/javascript">
-        function login(key) {
-            //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
-            // setTimeout(getApi,3*1000);
-            $.ajax({
-                url: '../manager/logins',
-                async: false,
-                cache: false,
-                type: 'POST',
-                data: {
-                    key: key
-                },
-                dataType: 'json',
-                success: function (data) {
-                    const flag = data.result;
-
-                    if (flag == true) {
-                        window.location.replace("/");
-                    } else {
-                        alert("暗号错误");
-                    }
-                }
-            })
-        }
-
-        $(document).on('click', '#manager_login', function () {
-            const manager_key = $.md5($("#manager_key").val());
-            login(manager_key);
-        });
-    </script>
+    <script type="text/javascript" src="../../js/bootstrap.min.js"
+            th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 
 <body>
@@ -60,7 +29,7 @@
             <div class="card border-second">
                 <div class="card-header">
                     <h2>
-                        <span>弹幕姬登录</span>
+                        <span>自定义cookie</span>
                         <iframe
                                 src="https://ghbtns.com/github-btn.html?user=BanqiJane&amp;repo=Bilibili_Danmuji&amp;type=star&amp;count=true&amp;size=large"
                                 frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
@@ -69,20 +38,59 @@
                 <div class="card-body">
                     <div class="input-group mb-3">
                         <div class="input-group-append">
-                            <span class="input-group-text">暗号:</span>
+                            <span class="input-group-text">cookie:</span>
                         </div>
-                        <input type="password" id="manager_key" class="form-control"
-                               placeholder="你的暗号" min="3"
+                        <input type="text" id="cookie_data" class="form-control"
+                               placeholder="你的cookie" data-bs-toggle="tooltip"
+                               data-bs-placement="top" data-bs-html="true"
+                               title="破站的cookie,通常在浏览器按f12找某个接口复制<br>必要:<span class='red-font'>bili_jct,SESSDATA</span>"
                         >
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-success" id="manager_login">登录</button>
+                    <button type="button" class="btn btn-success" id="cookie_set_send">设定</button>
                     <a th:href="@{/}" class="btn btn-link" style="float: right;">返回</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function cookie_set(key) {
+        $.ajax({
+            url: '../customCookie',
+            async: false,
+            cache: false,
+            type: 'POST',
+            data: {
+                cookie: key
+            },
+            dataType: 'json',
+            success: function (data) {
+                const flag = data.result;
+                if (flag == true) {
+                    alert("设定成功");
+                    window.location.replace("/");
+                } else {
+                    alert("cookie错误")
+                }
+            }
+        })
+    }
+
+    $(document).on('click', '#cookie_set_send', function () {
+        const cookie_data = $("#cookie_data").val();
+        cookie_set(cookie_data);
+    });
+    $(function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            // this.addEventListener('hide.bs.tooltip', function () {
+            //     new bootstrap.Tooltip(tooltipTriggerEl)
+            // })
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    })
+</script>
 </body>
 </html>

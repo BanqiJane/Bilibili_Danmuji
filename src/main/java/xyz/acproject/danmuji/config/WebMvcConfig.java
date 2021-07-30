@@ -21,11 +21,11 @@ import xyz.acproject.danmuji.interceptors.LoginInterceptor;
 //@AutoConfigureAfter(DanmujiConfig.class)
 //@Import(DanmujiConfig.class)
 public class WebMvcConfig implements WebMvcConfigurer {
-    private DanmujiConfig danmujiConfig;
+    private DanmujiInitConfig danmujiInitConfig;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        danmujiConfig.init();
+        danmujiInitConfig.init();
         if (PublicDataConf.centerSetConf.isIs_manager_login()) {
             registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*").excludePathPatterns("/manager/login", "/manager/logins");
         }else {
@@ -43,7 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Autowired
-    public void setDanmujiConfig(DanmujiConfig danmujiConfig) {
-        this.danmujiConfig = danmujiConfig;
+    public void setDanmujiConfig(DanmujiInitConfig danmujiInitConfig) {
+        this.danmujiInitConfig = danmujiInitConfig;
     }
 }

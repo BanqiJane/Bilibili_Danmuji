@@ -105,9 +105,11 @@ input {
 }
 
 .connect-title {
-	font-size: 12px;
+	font-size: 16px;
 }
-
+.connect-title a{
+	text-decoration: none;
+}
 a#danmu_open {
 	width: 100%;
 	margin-bottom: 10px;
@@ -312,7 +314,9 @@ div#danmu .danmu-child a {
 #set_open {
 	width: 100%;
 }
-
+#danmu_open {
+	width: 100%;
+}
 .header-set {
 	width: 100% !important;
 	margin-bottom: 8px;
@@ -773,7 +777,7 @@ div#danmu .danmu-child a {
     padding: 20px;
     width:600px;
 }
-.block-wrap .t .btn-close {
+.block-wrap .t .btn-close-block {
     position: absolute;
     width: 12px;
     height: 12px;
@@ -783,7 +787,7 @@ div#danmu .danmu-child a {
     cursor: pointer;
     transition: all .3s;
 }
-.block-wrap  .t .btn-close:before {
+.block-wrap  .t .btn-close-block:before {
     content: "";
     position: absolute;
     height: 1px;
@@ -795,7 +799,7 @@ div#danmu .danmu-child a {
     transform: rotate(45deg);
     -ms-transform: rotate(45deg);
 }
-.block-wrap  .t .btn-close:after {
+.block-wrap  .t .btn-close-block:after {
     content: "";
     position: absolute;
     height: 1px;

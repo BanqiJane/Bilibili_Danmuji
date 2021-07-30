@@ -12,11 +12,9 @@ import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
-import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
-import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
@@ -26,7 +24,6 @@ import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * @author BanqiJane
@@ -56,7 +53,8 @@ public class SetServiceImpl implements SetService {
         System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
         System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
         System.out.println();
-        System.out.println("最新公告：" + HttpOtherData.httpGetNewAnnounce());
+        PublicDataConf.ANNOUNCE = HttpOtherData.httpGetNewAnnounce();
+        System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
         String edition = HttpOtherData.httpGetNewEdition();
         if (!StringUtils.isEmpty(edition)) {
             if (!edition.equals(PublicDataConf.EDITION)) {
@@ -79,13 +77,15 @@ public class SetServiceImpl implements SetService {
             }
         }
         // window用默认浏览器打开网页
-        try {
-            Runtime.getRuntime()
-                    .exec("rundll32 url.dll,FileProtocolHandler " + serverAddressComponent.getAddress());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.println(
-                    "自动打开浏览器错误:当前系统缺少rundll32 url.dll组件或者不是window系统，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+        if(PublicDataConf.centerSetConf.isWin_auto_openSet()) {
+            try {
+                Runtime.getRuntime()
+                        .exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:" + serverAddressComponent.getPort());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                System.out.println(
+                        "自动打开浏览器错误:当前系统缺少rundll32 url.dll组件或者不是window系统，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+            }
         }
     }
 
@@ -168,17 +168,17 @@ public class SetServiceImpl implements SetService {
     public void holdSet(CenterSetConf centerSetConf) {
         SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
         SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
+        SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
         //每日签到
         if (PublicDataConf.centerSetConf.isIs_dosign()) {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                if (!PublicDataConf.is_sign) {
-                    HttpUserData.httpGetDoSign();
-                    if (!taskRegisterComponent.hasTask(task)) {
-                        taskRegisterComponent.addTask(task, "0 30 0 * * ?");
-                    }
-                    PublicDataConf.is_sign = true;
+                //移除
+//                if (!PublicDataConf.is_sign) {
+//                    HttpUserData.httpGetDoSign();
+//                    PublicDataConf.is_sign = true;
+//                }
+                if (!taskRegisterComponent.hasTask(task)) {
+                    taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
                 }
-            }
         } else {
             try {
                 taskRegisterComponent.removeTask(task);
@@ -187,19 +187,19 @@ public class SetServiceImpl implements SetService {
                 LOGGER.error("清理定时任务错误：" + e);
             }
         }
+        //每日打卡
         if (centerSetConf.getClock_in().isIs_open()) {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            //移除
                 //这里开启一个匿名线程用于打卡
-                new Thread(() -> {
-                    List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
-                    int max = CurrencyTools.clockIn(userMedals);
-                    if (max == userMedals.size()) {
-                        HttpOtherData.httpPOSTSetClockInRecord();
-                    }
-                }).start();
-            }
+//                new Thread(() -> {
+//                    List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
+//                    int max = CurrencyTools.clockIn(userMedals);
+//                    if (max == userMedals.size()) {
+//                        HttpOtherData.httpPOSTSetClockInRecord();
+//                    }
+//                }).start();
             if (!taskRegisterComponent.hasTask(dakatask)) {
-                taskRegisterComponent.addTask(dakatask, "0 35 0 * * ?");
+                taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
             }
         } else {
             try {
@@ -209,6 +209,21 @@ public class SetServiceImpl implements SetService {
                 LOGGER.error("清理定时任务错误：" + e);
             }
         }
+        //每日定时自动送礼
+        if(centerSetConf.getAuto_gift().isIs_open()){
+            if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
+                taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
+            }
+        }else{
+            try {
+                taskRegisterComponent.removeTask(autoSendGiftTask);
+            } catch (Exception e) {
+                // TODO 自动生成的 catch 块
+                LOGGER.error("清理定时任务错误：" + e);
+            }
+        }
+
+        //need roomid set
         if (PublicDataConf.ROOMID == null || PublicDataConf.ROOMID <= 0) {
             return;
         }

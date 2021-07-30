@@ -7,7 +7,11 @@
     <meta
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
             name="viewport">
-    <title>弹幕姬主页</title>
+    <title>弹幕姬-主页</title>
+    <link rel="apple-touch-icon-precomposed"
+          href="../../img/headlogo.png" th:href="@{/img/favicon.png}">
+    <link rel="shortcut icon" href="../../img/headlogo.png"
+          th:href="@{/img/favicon.png}">
     <link rel="stylesheet" href="../../css/bootstrap.min.css"
           th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
     <link rel="stylesheet" href="../../css/style.css"
@@ -31,15 +35,15 @@
                 <div class="card-header">
                     <h2>
                         <span>弹幕姬web控制面板</span><span class="connect-title"><a
-                            th:href="@{/connect}">房间连接</a></span>
+                            th:href="@{/connect}">房间连接</a>&nbsp;&nbsp;&nbsp;<a th:href="@{/cookie_set}">自定义cookie</a></span>
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="input-group mb-3">
 							<span class="unlogin" th:if="!(${USER}?exists)">你还没有登陆，<a
                                     th:href="@{/login}">去登陆</a>
-							</span><span class="logined" th:if="${USER}?exists">用户名：<span
-                            th:text="${USER.uname}" class="user-name"></span>，uid：<span
+							</span><span class="logined" th:if="${USER}?exists">用户名：<a
+                            th:text="${USER.uname}" class="user-name" th:href="@{'https://space.bilibili.com/'+${USER.uid}}"></a>，uid：<span
                             th:text="${USER.uid}" class="user-id"></span>；<a
                             th:href="@{/quit}">退出登录</a>
 							</span>&nbsp;&nbsp; <span class="room-data" th:if="${ROOMID}!=null">已连接至主播房间：<span
@@ -52,11 +56,13 @@
                               th:if="${ROOMID}==null">未连接到任何房间</span>
                     </div>
                     <div class="input-group mb-3">
-                        <a href="#danmuw" class="btn btn-secondary" id="danmu_open"
-                           data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">显示控制台弹幕</a>
-                        <div id="danmuw" class="collapse">
-                            <div class="input-group mb-3">
-                                <div class="form-group connect-set">
+                        <button href="#danmuw" class="btn btn-secondary" id="danmu_open"
+                                data-bs-toggle="collapse" data-bs-target="#danmuw" aria-expanded="false"
+                                aria-controls="danmuw">显示控制台弹幕
+                        </button>
+                        <div id="danmuw" class="collapse multi-collapse">
+                            <div class="input-group mb-3" style="margin-top: 15px;">
+                                <div class="form-group connect-set" style="padding-right: 5px;">
                                     <input class="form-control connect-docket"
                                            placeholder="要连接的端口地址" data-bs-toggle="tooltip"
                                            data-bs-placement="top" data-bs-html="true"
@@ -115,10 +121,12 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <a href="#set" class="btn btn-secondary" id="set_open"
-                           data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseExample">设置</a>
+                        <button href="#set" class="btn btn-secondary" id="set_open"
+                                data-bs-toggle="collapse" data-bs-target="#set" aria-expanded="false"
+                                aria-controls="set">设置
+                        </button>
                     </div>
-                    <div id="set" class="collapse">
+                    <div id="set" class="collapse multi-collapse">
                         <div class="input-group mb-1">
                             <h4>显示设置</h4>
                         </div>
@@ -129,6 +137,14 @@
                                         class="_description" data-bs-toggle="tooltip"
                                         data-bs-placement="top" data-bs-html="true"
                                         title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置下次启动弹幕姬将会自动连接最后一次连接的房间</span>">自动</span>
+                                </label>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-check-label"> <input type="checkbox"
+                                                                        class="form-check-input win_auto_openSet"> <span
+                                        class="_description" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-html="true"
+                                        title="window系统下是否开启自动打开配置页面，<span class='red-font'>开启该设置下次启动弹幕姬将会自动使用系统默认浏览器打开配置页面</span>">window</span>
                                 </label>
                             </div>
                             <div class="col-auto">
@@ -597,7 +613,42 @@
                         </div>
                         <!-- -->
                         <div class="input-group mb-1">
-                            <h5>弹幕姬登陆</h5>
+                            <h5>礼物自动赠送姬(需要登录)</h5>
+                        </div>
+                        <div class="input-group mb-3 autoGift-set">
+                            <div class="header-set">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox" class="form-check-input is_autoGift_open">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top" data-bs-html="true"
+                                                  title="是否打开礼物自动赠送">开关</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="big-input autoGift_time" type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top" data-bs-html="true"
+                                               title="每天自动赠送礼物的时间(默认：晚上11：45)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group footer-set">
+                                <input
+                                        class="form-control input-margin-b autoGift_roomids"
+                                        placeholder="要赠送礼物的房间号集" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-html="true"
+                                        title="要赠送礼物的房间号，多房间号以<span class='red-font'>中文逗号(，)</span>隔开(短号长号都可以,尽量使用短号-避免去请求)">
+                            </div>
+                        </div>
+
+
+
+                        <!-- -->
+                        <div class="input-group mb-1">
+                            <h5>弹幕姬登录</h5>
                         </div>
                         <div class="input-group mb-3 managerLogin-set">
                             <div class="header-set">
@@ -634,6 +685,7 @@
                         </div>
 
 
+
                         <div class="input-group mb-1">
                             <h5>实验性设置</h5>
                         </div>
@@ -644,16 +696,24 @@
                                                                             class="form-check-input is_dosign"> <span
                                             class="_description" data-bs-toggle="tooltip"
                                             data-bs-placement="top" data-bs-html="true"
-                                            title="是否自动直播签到，每天凌晨0点30分检查签到">自动签到</span>
+                                            title="是否自动直播签到，默认每天凌晨0点30分检查签到">自动签到</span>
                                     </label>
+                                    <input class="big-input sign_time" type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top" data-bs-html="true"
+                                           title="每天自动签到的时间">
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-check-label"> <input type="checkbox"
                                                                             class="form-check-input is_clockin"> <span
                                             class="_description" data-bs-toggle="tooltip"
                                             data-bs-placement="top" data-bs-html="true"
-                                            title="是否自动打卡，每天凌晨0点35分自动打卡向现有勋章列表的直播间发送任意自定义弹幕">自动打卡</span>
+                                            title="是否自动打卡，默认每天凌晨0点35分自动打卡向现有勋章列表的直播间发送任意自定义弹幕">自动打卡</span>
                                     </label>
+                                    <input class="big-input clockin_time" type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top" data-bs-html="true"
+                                           title="每天自动签到的时间">
                                 </div>
                                 <div class="col-auto">
                                     <label class="form-check-label"> <input type="checkbox"
@@ -693,7 +753,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="author-message">
-                        B站直播java版弹幕姬 © 2020-2021 <a href="https://blogs.acproject.xyz/"
+                        B站直播java版弹幕姬 © 2020-2021 <a href="https://space.bilibili.com/17418088"
                                                     target="_blank"> SaKazaKi(坂崎简) </a>|<a
                             href="https://github.com/BanqiJane/Bilibili_Danmuji"
                             target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -710,6 +770,8 @@
                             th:title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a><!-- -->
                     </div>
                 </div>
+                <!---->
+                <!---->
             </div>
         </div>
     </div>
@@ -841,7 +903,7 @@
 <div class="block-mask" style="display: none;">
     <div class="block-wrap">
         <div class="t">
-            禁言窗口 <i class="btn-close-block"> </i>
+            禁言窗口 <i class="btn-close-block"></i>
         </div>
         <div class="con">
             <div class="input-group mb-3">
@@ -894,6 +956,39 @@
 <div class="tips-wrap">
     <div class="tips-t"></div>
 </div>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <!-- Position it: -->
+    <!-- - `.toast-container` for spacing between toasts -->
+    <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+    <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+
+
+        <div class="toast" id="announceEle" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+            <div class="toast-header">
+                <img src="../../img/tips_head.png" th:src="@{/img/tips_head.png}" class="rounded me-2"
+                     style="width:20px;height:20px;">
+                <strong class="me-auto">最新公告</strong>
+                <small class="text-muted">编写:Jane</small><!--先写死.. 反正....-->
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="announce_content">
+            </div>
+        </div>
+        <!-- Then put toasts within -->
+        <div class="toast" id="updateEle" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
+            <div class="toast-header">
+                <img src="../../img/tips_head.png" th:src="@{/img/tips_head.png}" class="rounded me-2"
+                     style="width:20px;height:20px;">
+                <strong class="me-auto">版本更新提示</strong>
+                <small class="text-muted" th:text="'当前版本'+${EDITION}"></small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="edition_content" th:text="'最新版本：'+${NEW_EDITION}">
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -903,10 +998,17 @@
             // })
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
         // var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         //     return new bootstrap.Tooltip(tooltipTriggerEl)
         // })
+        // var myToastEl = document.getElementById('updateEle')
+        // var myToast = bootstrap.Toast.getInstance(myToastEl)
+        // myToast.show()
         $(document).click(".btn-secondary", function () {
             if ($('#set').hasClass("show")) {
 
@@ -919,8 +1021,19 @@
                     })
                 }, 10)
             }
-
-        })
+        });
+        //检查公告和版本更新
+        let initWebCheck= method.checkWebInit();
+        if(!initWebCheck.init_announce){
+            let init_announce = method.getAnnounce();
+            $("#announce_content").html(init_announce);
+            var announceEle = document.getElementById('announceEle')
+            var announceToast = bootstrap.Toast.getInstance(announceEle)
+            announceToast.show()
+        }
+        if(!initWebCheck.init_edition){
+            $("#checkupdate").click();
+        }
     });
 </script>
 </body>

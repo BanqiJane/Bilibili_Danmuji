@@ -46,6 +46,7 @@ public class HttpOtherData {
             code = jsonObject.getString("code");
             if (code.equals("200")) {
                 edition = ((JSONObject) jsonObject.get("result")).getString("value");
+                PublicDataConf.NEW_EDITION = edition;
             } else {
                 LOGGER.error("未知错误,原因:" + jsonObject.getString("msg"));
             }

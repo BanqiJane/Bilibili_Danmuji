@@ -12,7 +12,6 @@ import xyz.acproject.danmuji.entity.room_data.*;
 import xyz.acproject.danmuji.entity.server_data.Conf;
 import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.tools.CurrencyTools;
-import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
 
 import java.util.*;
@@ -460,21 +459,61 @@ public class HttpRoomData {
 		}
 		return null;
 	}
+//
+//	public static void httpGetRoomGifts() {
+//		String data = null;
+//		JSONObject jsonObject = null;
+//		JSONArray jsonArray = null;
+//		short code = -1;
+//		Map<String, String> headers = null;
+//		headers = new HashMap<>(3);
+//		headers.put("user-agent",
+//				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+//		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+//		try {
+//			data = OkHttp3Utils.getHttp3Utils()
+//					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id="
+//							+ CurrencyTools.parseRoomId(), headers, null)
+//					.body().string();
+//		} catch (Exception e) {
+//			// TODO 自动生成的 catch 块
+//			LOGGER.error(e);
+//			data = null;
+//		}
+//		if (data == null)
+//			return;
+//		jsonObject = JSONObject.parseObject(data);
+//		code = jsonObject.getShort("code");
+//		if (code == 0) {
+//			jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
+//			if (PublicDataConf.roomGiftConcurrentHashMap.size() < 1) {
+//				for (Object object : jsonArray) {
+//					PublicDataConf.roomGiftConcurrentHashMap.put(((JSONObject) object).getInteger("id"),
+//							new RoomGift(((JSONObject) object).getInteger("id"), ((JSONObject) object).getString("name"), ParseIndentityTools.parseCoin_type(((JSONObject) object).getString("coin_type")), ((JSONObject) object).getString("webp")));
+//				}
+//			}
+//		} else {
+//			LOGGER.error("获取礼物失败,原因:" + jsonObject.getString("message"));
+//		}
+//	}
 
-	public static void httpGetRoomGifts() {
+
+
+	public static Map<Integer,RoomGift> httpGetRoomGifts(Long roomid) {
 		String data = null;
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
 		short code = -1;
+		Map<Integer,RoomGift> giftMaps = new HashMap<>();
 		Map<String, String> headers = null;
 		headers = new HashMap<>(3);
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+		headers.put("referer", "https://live.bilibili.com/" +roomid);
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/giftPanel/giftConfig?platform=pc&room_id="
-							+ CurrencyTools.parseRoomId(), headers, null)
+							+ roomid, headers, null)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -482,21 +521,22 @@ public class HttpRoomData {
 			data = null;
 		}
 		if (data == null)
-			return;
+			return giftMaps;
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
 			jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("list");
-			if (PublicDataConf.roomGiftConcurrentHashMap.size() < 1) {
 				for (Object object : jsonArray) {
-					PublicDataConf.roomGiftConcurrentHashMap.put(((JSONObject) object).getInteger("id"),
-							new RoomGift(((JSONObject) object).getInteger("id"), ((JSONObject) object).getString("name"), ParseIndentityTools.parseCoin_type(((JSONObject) object).getString("coin_type")), ((JSONObject) object).getString("webp")));
+					RoomGift roomGift =JSONObject.parseObject(((JSONObject)object).toJSONString(),RoomGift.class);
+					giftMaps.put(roomGift.getId(),roomGift);
 				}
-			}
 		} else {
 			LOGGER.error("获取礼物失败,原因:" + jsonObject.getString("message"));
 		}
+		return giftMaps;
 	}
+
+
 
 	public static List<RoomBlock> getBlockList(int page){
 		String data = null;

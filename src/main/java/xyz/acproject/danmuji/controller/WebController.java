@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
-import xyz.acproject.danmuji.config.DanmujiConfig;
+import xyz.acproject.danmuji.config.DanmujiInitConfig;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
+import xyz.acproject.danmuji.entity.other.EditionResult;
+import xyz.acproject.danmuji.entity.other.InitCheckServerParam;
 import xyz.acproject.danmuji.entity.room_data.RoomBlock;
 import xyz.acproject.danmuji.file.JsonFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
@@ -26,8 +26,10 @@ import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.Response;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
+import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 import xyz.acproject.danmuji.utils.QrcodeUtils;
+import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +54,8 @@ public class WebController {
     private SetService checkService;
     private ClientService clientService;
     @Resource
-    private DanmujiConfig danmujiConfig;
+    private DanmujiInitConfig danmujiInitConfig;
+    private TaskRegisterComponent taskRegisterComponent;
 
     @RequestMapping(value = {"/", "index"})
     public String index(HttpServletRequest req, Model model) {
@@ -63,6 +66,7 @@ public class WebController {
         }
         model.addAttribute("ANAME", PublicDataConf.ANCHOR_NAME);
         model.addAttribute("EDITION", PublicDataConf.EDITION);
+        model.addAttribute("NEW_EDITION", PublicDataConf.NEW_EDITION);
         model.addAttribute("ROOMID", PublicDataConf.ROOMID);
         model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
         model.addAttribute("MANAGER", PublicDataConf.USERMANAGER != null ? PublicDataConf.USERMANAGER.isIs_manager() : false);
@@ -78,6 +82,13 @@ public class WebController {
         model.addAttribute("ROOMID", PublicDataConf.centerSetConf.getRoomid());
         return "connect";
     }
+
+    @RequestMapping(value = "/cookie_set")
+    public String cookie_set(Model model) {
+//        model.addAttribute("ROOMID", PublicDataConf.centerSetConf.getRoomid());
+        return "cookie_set";
+    }
+
 
     @RequestMapping(value = "/login")
     public String login(HttpServletRequest req) {
@@ -101,7 +112,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/qrcode", method = RequestMethod.GET)
+    @GetMapping(value = "/qrcode")
     public void qrcode(HttpServletRequest req, HttpServletResponse resp, @RequestParam("url") String url) {
         if (req.getSession().getAttribute("status") != null)
             return;
@@ -109,7 +120,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/qrcodeUrl", method = RequestMethod.POST)
+    @PostMapping(value = "/qrcodeUrl")
     public Response<?> qrcodeUrl(HttpServletRequest req) {
         if (req.getSession().getAttribute("status") != null)
             return null;
@@ -119,7 +130,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/loginCheck", method = RequestMethod.POST)
+    @PostMapping(value = "/loginCheck")
     public JSONObject loginCheck(HttpServletRequest req) {
         if (req.getSession().getAttribute("status") != null)
             return null;
@@ -131,8 +142,8 @@ public class WebController {
         jsonObject = JSONObject.parseObject(jsonString);
         if (jsonObject != null) {
             if (jsonObject.getBoolean("status")) {
-                danmujiConfig.init();
-                checkService.init();
+                danmujiInitConfig.init();
+//                checkService.init();
                 if (PublicDataConf.USER != null) {
                     req.getSession().setAttribute("status", "login");
                 }
@@ -141,8 +152,19 @@ public class WebController {
         return jsonObject;
     }
 
+
     @ResponseBody
-    @RequestMapping(value = "/connectRoom", method = RequestMethod.GET)
+    @PostMapping(value = "/customCookie")
+    public Response<?> customCookie(String cookie,HttpServletRequest req){
+        boolean flag = CurrencyTools.pariseCookie(cookie);
+        if(flag){
+            danmujiInitConfig.init();
+        }
+        return Response.success(flag,req);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/connectRoom")
     public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomid") Long roomid) {
         boolean flag = false;
         if (null == PublicDataConf.webSocketProxy || !PublicDataConf.webSocketProxy.isOpen()) {
@@ -167,7 +189,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/disconnectRoom", method = RequestMethod.GET)
+    @GetMapping(value = "/disconnectRoom")
     public Response<?> disconnectRoom(HttpServletRequest req) {
         boolean flag = false;
         flag = clientService.closeConnService();
@@ -175,7 +197,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/connectCheck", method = RequestMethod.GET)
+    @GetMapping(value = "/connectCheck")
     public Response<?> connectCheck(HttpServletRequest req) {
         boolean flag = false;
         if (PublicDataConf.webSocketProxy != null) {
@@ -187,19 +209,19 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/heartBeat", method = RequestMethod.GET)
+    @GetMapping(value = "/heartBeat")
     public Response<?> heartBeat(HttpServletRequest req) {
         return Response.success(PublicDataConf.ROOM_POPULARITY, req);
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getSet", method = RequestMethod.GET)
+    @GetMapping(value = "/getSet")
     public Response<?> getSet(HttpServletRequest req) {
         return Response.success(PublicDataConf.centerSetConf, req);
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendSet", method = RequestMethod.POST)
+    @PostMapping(value = "/sendSet")
     public Response<?> sendSet(HttpServletRequest req, @RequestParam("set") String set) {
         try {
             CenterSetConf centerSetConf = JSONObject.parseObject(set, CenterSetConf.class);
@@ -209,8 +231,22 @@ public class WebController {
             }else if(StringUtils.isBlank(centerSetConf.getManager_key())){
                 centerSetConf.setManager_key(PublicDataConf.centerSetConf.getManager_key());
             }
+            //签到时间 & 打卡时间
+            if(centerSetConf.isIs_dosign()&&!centerSetConf.getSign_time().equals(PublicDataConf.centerSetConf.getSign_time())){
+                SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
+                taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
+            }
+            if(centerSetConf.getClock_in()!=null&&centerSetConf.getClock_in().isIs_open()&&!centerSetConf.getClock_in().getTime().equals(PublicDataConf.centerSetConf.getClock_in().getTime())){
+                SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
+                taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
+            }
+            //自动送礼时间
+            if(centerSetConf.getAuto_gift()!=null&&centerSetConf.getAuto_gift().isIs_open()&&
+                    !centerSetConf.getAuto_gift().getTime().equals(PublicDataConf.centerSetConf.getAuto_gift().getTime())){
+                SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
+                taskRegisterComponent.removeTask(autoSendGiftTask);
+            }
             checkService.changeSet(centerSetConf);
-
         } catch (Exception e) {
             // TODO: handle exception
             return Response.success(false, req);
@@ -219,7 +255,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getIp", method = RequestMethod.GET)
+    @GetMapping(value = "/getIp")
     public Response<?> getIp(HttpServletRequest req) {
         String ip = HttpOtherData.httpGetIp();
         if (!StringUtils.isEmpty(ip)) {
@@ -231,26 +267,73 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/checkupdate", method = RequestMethod.GET)
-    public Response<?> checkUpdate(HttpServletRequest req) {
-        String edition = HttpOtherData.httpGetNewEdition();
-        if (!StringUtils.isEmpty(edition)) {
-            if (edition.equals("获取公告失败")) {
-                return Response.success(2, req);
-            } else {
-                if (!edition.equals(PublicDataConf.EDITION)) {
-                    return Response.success(0, req);
-                } else {
-                    return Response.success(1, req);
-                }
-            }
-        } else {
-            return Response.success(2, req);
+    @GetMapping("/checkWebInit")
+    public Response<?> checkWebInit(HttpServletRequest req){
+        InitCheckServerParam param = new InitCheckServerParam();
+        param.setInit_edition(PublicDataConf.INIT_CHECK_EDITION);
+        param.setInit_announce(PublicDataConf.INIT_CHECK_ANNOUNCE);
+        return Response.success(param,req);
+    }
+
+    @ResponseBody
+    @GetMapping("/checkNewAnnounce")
+    public Response<?> checkNewAnnounce(HttpServletRequest req){
+        try {
+            PublicDataConf.INIT_CHECK_ANNOUNCE=true;
+            return Response.success(StringUtils.isNotBlank(PublicDataConf.ANNOUNCE)?StringUtils.replace(PublicDataConf.ANNOUNCE,"\r\n","<br/>"):"公告获取失败",req);
+        } finally {
+            //一次性公告清除了
+            PublicDataConf.ANNOUNCE = null;
         }
     }
 
     @ResponseBody
-    @RequestMapping(value = "/block", method = RequestMethod.GET)
+    @GetMapping(value = "/checkupdate")
+    public Response<?> checkUpdate(HttpServletRequest req) {
+        String edition = HttpOtherData.httpGetNewEdition();
+        EditionResult editionResult = new EditionResult();
+        editionResult.setEdition(edition);
+        if (!StringUtils.isEmpty(edition)) {
+            if (edition.equals("获取公告失败")) {
+                editionResult.setStatus(2);
+                return Response.success(editionResult, req);
+            } else {
+                if (!edition.equals(PublicDataConf.EDITION)) {
+                    PublicDataConf.INIT_CHECK_EDITION=true;
+                    editionResult.setStatus(0);
+                    return Response.success(editionResult, req);
+                } else {
+                    editionResult.setStatus(1);
+                    return Response.success(editionResult, req);
+                }
+            }
+        } else {
+            editionResult.setStatus(2);
+            return Response.success(editionResult, req);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/getNewEdition")
+    public Response<?> getNewEdition(HttpServletRequest req) {
+        String edition = HttpOtherData.httpGetNewEdition();
+        if (!StringUtils.isEmpty(edition)) {
+            if (edition.equals("获取公告失败")) {
+                return Response.success(-1, req);
+            } else {
+                if (!edition.equals(PublicDataConf.EDITION)) {
+                    return Response.success(edition, req);
+                } else {
+                    return Response.success(-1, req);
+                }
+            }
+        } else {
+            return Response.success(-1, req);
+        }
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/block")
     public Response<?> block(@RequestParam("uid") long uid, @RequestParam("time") short time, HttpServletRequest req) {
         short code = -1;
         if (time > 720 && time <= 0) {
@@ -265,7 +348,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/del_block", method = RequestMethod.GET)
+    @GetMapping(value = "/del_block")
     public Response<?> del_block(@RequestParam("id") long id, HttpServletRequest req) {
         short code = -1;
         code = HttpUserData.httpPostDeleteBlock(id);
@@ -274,7 +357,7 @@ public class WebController {
 
 
     @ResponseBody
-    @RequestMapping(value = "/blocks", method = RequestMethod.GET)
+    @GetMapping(value = "/blocks")
     public Response<?> blocks(@RequestParam("page") int page, HttpServletRequest req) {
         if (page <= 0) {
             page = 1;
@@ -287,7 +370,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/setExport", method = RequestMethod.GET)
+    @GetMapping(value = "/setExport")
     public Response<?> setExport(HttpServletRequest req) {
         boolean flag = JsonFileTools.createJsonFile(PublicDataConf.centerSetConf.toJson());
         if (flag) {
@@ -298,7 +381,7 @@ public class WebController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/setImport", method = RequestMethod.POST)
+    @PostMapping(value = "/setImport")
     public Response<?> setImport(@RequestParam("file") MultipartFile file, HttpServletRequest req) throws IOException {
         if (!file.getResource().getFilename().endsWith(".json")) {
             return Response.success(2, req);
@@ -342,5 +425,10 @@ public class WebController {
     @Autowired
     public void setClientService(ClientService clientService) {
         this.clientService = clientService;
+    }
+
+    @Autowired
+    public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
+        this.taskRegisterComponent = taskRegisterComponent;
     }
 }

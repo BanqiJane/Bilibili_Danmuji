@@ -1,19 +1,14 @@
 package xyz.acproject.danmuji.controller;
 
 
-import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
+
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @ClassName DanmuWebsocket
@@ -43,6 +38,7 @@ public class DanmuWebsocket {
 	
 	@OnMessage
 	public void onMessage(String message) throws IOException {
+		//反向发送 23333333333 (滑稽
 		for(DanmuWebsocket danmuWebsocket:webSocketServers) {
 			danmuWebsocket.session.getBasicRemote().sendText(message);
 		}
