@@ -130,7 +130,6 @@ public class HttpHeartBeatData {
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
-		roomInfo = HttpRoomData.httpGetRoomInfo();
 		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, PublicDataConf.ROOMID};
 		stringBuilder.append("[")
 		.append("\"").append(CurrencyTools.deviceHash()).append("\"").append(",")
@@ -199,7 +198,6 @@ public class HttpHeartBeatData {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		params = new HashMap<>(12);
-		roomInfo = HttpRoomData.httpGetRoomInfo();
 		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),num,PublicDataConf.ROOMID};
 //		String[] devices = {CurrencyTools.deviceHash(),CurrencyTools.getUUID()};
 		long ts =System.currentTimeMillis();
@@ -230,7 +228,6 @@ public class HttpHeartBeatData {
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
 			if (jsonObject.getString("message").equals("0")) {
-//				LOGGER.debug("心跳包post发送成功" + jsonObject.getString("data"));
 				smallHeart  = jsonObject.getObject("data", SmallHeart.class);
 				xData.setTs(ts);
 				xData.setBenchmark(smallHeart.getSecret_key());
@@ -238,12 +235,13 @@ public class HttpHeartBeatData {
 				xData.setSecret_rule(smallHeart.getSecret_rule());
 				xData.setTime(smallHeart.getHeartbeat_interval());
 				xData.setError(false);
+				//LOGGER.debug("心跳包post发送成功,消息体:{},返回组合体:{}",jsonObject.getString("data"),xData);
 			} else {
-				LOGGER.error("心跳包Xpost发送失败,未知错误,原因未知v:" + jsonObject.toString());
+				LOGGER.error("心跳包Xpost发送失败,未知错误,原因未知v:{},错误体:{}",jsonObject.toString(),xData);
 				xData.setError(true);
 			}
 		} else {
-			LOGGER.error("发跳包Xpost发送失败,未知错误,原因未知:" + jsonObject.toString());
+			LOGGER.error("发跳包Xpost发送失败,未知错误,原因未知:{},错误体:{}",jsonObject.toString(),xData);
 			xData.setError(true);
 		}
 		return xData;

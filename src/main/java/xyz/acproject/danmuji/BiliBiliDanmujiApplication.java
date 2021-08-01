@@ -9,6 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
+
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @ClassName BiliBiliDanmujiApplication
@@ -31,6 +35,7 @@ public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO 自动生成的方法存根
+		System.err.println(JodaTimeUtils.format(new Date(), TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss"));
 		checkService.init();
 	}
 	

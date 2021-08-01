@@ -1,6 +1,8 @@
 package xyz.acproject.danmuji.entity.heart;
 
 
+import java.util.Arrays;
+
 public class XData {
 	private long[] id;
 	private String device;
@@ -83,5 +85,20 @@ public class XData {
 
 	public void setError(Boolean error) {
 		this.error = error;
+	}
+
+	@Override
+	public String toString() {
+		return "XData{" +
+				"id=" + Arrays.toString(id) +
+				", device='" + device + '\'' +
+				", ets=" + ets +
+				", benchmark='" + benchmark + '\'' +
+				", time=" + time +
+				", ts=" + ts +
+				", ua='" + ua + '\'' +
+				", secret_rule=" + Arrays.toString(secret_rule) +
+				", error=" + error +
+				'}';
 	}
 }

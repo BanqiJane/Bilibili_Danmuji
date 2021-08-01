@@ -323,9 +323,8 @@ public final class JodaTimeUtils {
 			return null;
 		}
 		DateTime dateTime = new DateTime(date);
-		dateTime.toString(parrten);
 		dateTime.withZone(DateTimeZone.forTimeZone(timeZone));
-		return dateTime.toString();
+		return dateTime.toString(parrten);
 	}
 	/**
 	 * 格式化日期
