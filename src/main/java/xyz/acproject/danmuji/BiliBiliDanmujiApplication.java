@@ -7,12 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
-import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
-import xyz.acproject.danmuji.utils.JodaTimeUtils;
-
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * @ClassName BiliBiliDanmujiApplication
@@ -26,7 +21,6 @@ import java.util.TimeZone;
 @SpringBootApplication
 public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	private SetServiceImpl checkService;
-	private TaskRegisterComponent taskRegisterComponent;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(BiliBiliDanmujiApplication.class, args);
@@ -35,7 +29,6 @@ public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO 自动生成的方法存根
-		System.err.println(JodaTimeUtils.format(new Date(), TimeZone.getTimeZone("GMT+08:00"),"yyyy-MM-dd HH:mm:ss"));
 		checkService.init();
 	}
 	
@@ -47,9 +40,5 @@ public class BiliBiliDanmujiApplication implements CommandLineRunner{
 	@Autowired
 	public void setCheckService(SetServiceImpl checkService) {
 		this.checkService = checkService;
-	}
-	@Autowired
-	public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
-		this.taskRegisterComponent = taskRegisterComponent;
 	}
 }

@@ -298,8 +298,8 @@ public class WebController {
                 editionResult.setStatus(2);
                 return Response.success(editionResult, req);
             } else {
+                PublicDataConf.INIT_CHECK_EDITION=true;
                 if (!edition.equals(PublicDataConf.EDITION)) {
-                    PublicDataConf.INIT_CHECK_EDITION=true;
                     editionResult.setStatus(0);
                     return Response.success(editionResult, req);
                 } else {
