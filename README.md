@@ -1,9 +1,12 @@
 # 运行环境
+
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
+
 ```bash
 $ java -version
 java version "1.8.0_121"
 ```
+
 **Bootstrap5 放弃了对 IE 的支持。**<br/>
 **以最新版本浏览器示例:**
 <table class="table">
@@ -37,12 +40,13 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-
 # 版本2.4.6
 
 - **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
-- **danmuji-green(window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
-- **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供 在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
+- **danmuji-green(
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
+- **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
+  在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
 - **danmuji-heroku(heroku一键部署,警告:目前测试阶段) [地址](https://github.com/BanqiJane/BiliBili_Danmuji_Heroku "地址")**<br/><br/>
 
 # 简介
@@ -50,23 +54,27 @@ java version "1.8.0_121"
 **Bilibili Live Barrage Kyi in Springboot,基于Springboot的Bilibili直播弹幕姬(使用websocket协议)，java版B站弹幕姬.**<br/>
 **本软件基于控制台 项目控制台运行，弹幕在控制台显示(也可以在网页查看弹幕).**<br/>
 **本软件基于web设置 必须在浏览器上设置.**<br/>
-**关于绿色版本：使用为开源的openjdk8。1.[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网") 2.[红帽安装版官网](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO "红帽openjdk")**
+**关于绿色版本：使用为开源的openjdk8。1.[官网](https://jdk.java.net/java-se-ri/8-MR3 "官网")
+2.[红帽安装版官网](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO "红帽openjdk")**
 
 ## 现有功能
+
 - **弹幕显示**
+
 1. 舰爷房管勋章ul的设置显示
 2. 禁言欢迎信息显示
 3. 礼物显示
 4. 新关注显示
+
 - **弹幕保存本地**
 - **网页弹幕显示**
 - **扫码登录**
 - **自动获取弹幕长度及颜色**
 - **发送弹幕长度超出上限自动分条发送**
 - **礼物感谢**
+
 1. **延迟感谢(可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时)！**
-**注意：现在破站能发重复弹幕的时间貌似为3秒 为了避免大多数感谢弹幕消失，通常建议这个设置为3秒以上
-还有延迟设置过高礼物持续赠送可能会造成刷屏**
+   **注意：现在破站能发重复弹幕的时间貌似为3秒 为了避免大多数感谢弹幕消失，通常建议这个设置为3秒以上 还有延迟设置过高礼物持续赠送可能会造成刷屏**
 2. 是否仅在直播中开启
 3. **4种感谢屏蔽模式(1自定义礼物名称，2屏蔽所有免费礼物，3低价值礼物，4自定义规则)**
 4. 可屏蔽天选时刻下的礼物
@@ -76,29 +84,39 @@ java version "1.8.0_121"
 8. 感谢舰队和留言
 9. 可选择是否输出礼物数量
 10. 可设置多条感谢弹幕模板
+
 - **关注实时感谢(1.0.6+变为真正的实时感谢)**
+
 1. 是否仅在直播中开启
 2. 可调节每次感谢人数
 3. 可屏蔽天选时刻下的关注
 4. **延迟感谢(可统计延时内关注,一旦延时内有新关注就会重新刷新延时)！**
 5. 可设置多条感谢弹幕模板
+
 - **进入直播间欢迎感谢姬**
+
 1. 是否仅在直播中开启
 2. 可调节每次感谢人数
 3. 可屏蔽天选时刻下的感谢
 4. **延迟感谢(可统计延时内关注,一旦延时内有新进入直播间观众就会重新刷新延时)！**
-5. 可设置多条感谢弹幕模板 
+5. 可设置多条感谢弹幕模板
+
 - **定时发送弹幕(用于发送广告)**
+
 1. 是否仅在直播中开启
 2. 可调节时间
 3. 目前两种模式 随机和按顺序发送
+
 - **上舰私信**
+
 1. 发送私信
 2. 并可以设置发送私信成功后直播间发送提醒弹幕
 3. 选择可不可以重复发送，即舰长信息保存本地，打开此设置需要重启弹幕姬，读取现有舰长数量，读取过程可能引起弹幕姬连接房间较慢<br/>
-(注意该功能仅统计弹幕姬开启时候的舰长，本地文件夹为guardFile，文件格式为guards（房间号）；格式为 uid,uname 亦可以按按照格式自己手动修改文件添加，注意不要为空)<br/>
-4.礼品码模式 可以发送礼品码（规则：回车换行为分割不同礼品码 礼品码发送出去会自动删除  请用户刷新页面查看最新礼品码列表 礼品码参数为%giftCode%）
+   (注意该功能仅统计弹幕姬开启时候的舰长，本地文件夹为guardFile，文件格式为guards（房间号）；格式为 uid,uname 亦可以按按照格式自己手动修改文件添加，注意不要为空)<br/>
+   4.礼品码模式 可以发送礼品码（规则：回车换行为分割不同礼品码 礼品码发送出去会自动删除 请用户刷新页面查看最新礼品码列表 礼品码参数为%giftCode%）
+
 - **自动回复姬**
+
 1. 是否仅在直播中开启
 2. 可调节多少秒间隔才能识别弹幕并自动回复
 3. 可设置多个关键字与屏蔽词
@@ -106,41 +124,60 @@ java version "1.8.0_121"
 5. 含关键字封禁功能 提供%BLOCK%参数表示当前是一个封禁功能 和{{time}}参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送;
 6. 可设置精确匹配
 7. 关键字可有满足条件A或条件B 发送内容C的功能(该功能多关键字也能用)
-8. 天气接口：固定参数 提问弹幕里面必须为@或#号开头 "天气"(实际种没有双引号)结尾  中间为城市和时间结合体(时间取数为：昨天，明天，后天，后两天，后三天) 
-例如 `#广州天气` 或者 `@广州天气` 或者 `#广州后天天气` 或者 `#广州昨天天气` ;推荐关键字配置为  `#||@，天气`
-推荐配置参数为%WEATHER%  高级自定义配置参数有 %W_CITY% 城市名称 %W_DATE% 时间 %WENDU% 温度(仅当天有效) %L_WENDU% 最低温度 %H_WENDU% 最高温度 %W_FX%  风向 %W_TYPE% 天气类型 %W_FL% 风力
-%W_TIPS% 感冒小提示
+8. 天气接口：固定参数 提问弹幕里面必须为@或#号开头 "天气"(实际种没有双引号)结尾 中间为城市和时间结合体(时间取数为：昨天，明天，后天，后两天，后三天)
+   例如 `#广州天气` 或者 `@广州天气` 或者 `#广州后天天气` 或者 `#广州昨天天气` ;推荐关键字配置为  `#||@，天气`
+   推荐配置参数为%WEATHER% 高级自定义配置参数有 %W_CITY% 城市名称 %W_DATE% 时间 %WENDU% 温度(仅当天有效) %L_WENDU% 最低温度 %H_WENDU% 最高温度 %W_FX% 风向
+   %W_TYPE% 天气类型 %W_FL% 风力 %W_TIPS% 感冒小提示
+
+- **礼物自动赠送姬**
+
+1. 自定义每日赠送时间
+2. 多个房间赠送(注意：多房间以中文逗号隔开，尽量用短号,这样可以减少请求)
+
 - **网页高级弹幕显示**
+
 1. 可以手动禁言
 2. 可以查看用户个人空间
 3. 包含房间管理 可以撤销禁言
+
 - **关键字禁言(内嵌于自动回复姬里)**
 - **房间管理(可以撤销禁言)**
 - **模拟在线(老爷可增加在线经验)**
 - **断线自动重连(实验性)**
 - **在线小心心(实验性)**
 - **直播自动签到(实验性)**
-- **每日按现有勋章列表完成首日+100亲密度打卡(实验性)**
+- **每日打卡-每日按现有勋章列表完成首日+100亲密度打卡(实验性)**
 - **弹幕姬所发出的任意弹幕 都可以完成首日+100亲密度任务**
+- **手动修改cookie(最低参数:bili_jct和SESSDATA)**
 - **设置导入导出**
 
 <br/><br/>
+
 # 如何运行<br/>
+
 ### 发布版本(环境配置好的前提下）<br/>
+
 项目目录下控制台执行：
+
 ```bash
 $ java -jar BiliBili_Danmuji-2.0beta.jar
 ```
+
 如果Window系统还可以：<br/>
 运行目录下run.bat<br/>
+
 ### 1.0.3+新增win64绿色版本（不用配置环境)<br/>
+
 ~~解压java-se-8u41-ri.zip（注意解压后不要里面还是java-se-8u41-ri名字的文件夹）~~<br/>
 ~~解压完成确定文件结构没问题直接运行run.bat就行啦（win64下）记得允许网络~~<br/>
-~~其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar  BiliBili_Danmuji-2.0beta.jar 即可运行~~<br/>
-弹幕姬从2.4.4绿色版本开始更换java环境包  可能造成兼容问题 有兼容问题请到上面官网自行下载8以上的java版本<br/>
+~~其他方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行java-se-8u41-ri\bin\java -jar BiliBili_Danmuji-2.0beta.jar 即可运行~~<br/>
+弹幕姬从2.4.4绿色版本开始更换java环境包 可能造成兼容问题 有兼容问题请到上面官网自行下载8以上的java版本<br/>
 新版绿色版直接运行run.bat文件就可以开启弹幕姬拉（更小的jre环境包）<br/><br/>
+
 ### 运行完后就可以打开浏览器 地址栏输入http://127.0.0.1:23333 打开设置页面进行设置 <br/>**或者点击这里[设置](http://127.0.0.1:23333 "设置")**<br/><br/>
+
 ### 注意<br/>
+
 - **首次运行会在项目目录下生成 log日志文件夹 DanmujiProfile配置文件**<br/>
 - **关于DanmujiProfile配置文件，配置信息和用户cookie已加密存放在此，注意不要泄露给任何人**<br/>
 - **本地运行浏览器输入localhost:23333(主页地址) 打开配置页面 远程请输入：远程主机ip:23333**<br/>
@@ -151,51 +188,78 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **localhost:23333/login 扫码登录地址**<br/><br/>
 
 # 关于修改端口<br/>
+
 - **自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去**<br/>
 - **--server.port=23333 修改即可修改端口启动**<br/>
 - **完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333**<br/>
 - **以上方法均兼容旧版本**
-<br/><br/>
-<br/>
+  <br/><br/>
+  <br/>
 
 ## 项目提示或教程
+
 - **光标悬浮在相应位置出现提示**<br/><br/>
-![提示](https://images.acproject.xyz/dm_tips.gif "提示")
+  ![提示](https://images.acproject.xyz/dm_tips.gif "提示")
 
 ## 项目UI
+
 - **主页(未登录)**<br/><br/>
-![主页(未登录)](https://images.acproject.xyz/dm_index.PNG "主页(未登录)")
+  ![主页(未登录)](https://images.acproject.xyz/dm_index.PNG "主页(未登录)")
 - **连接房间**<br/><br/>
-![连接房间](https://images.acproject.xyz/dm_connect.PNG "连接房间")
+  ![连接房间](https://images.acproject.xyz/dm_connect.PNG "连接房间")
 - **登录**<br/><br/>
-![连接房间](https://images.acproject.xyz/dm_login.PNG "登录")
+  ![连接房间](https://images.acproject.xyz/dm_login.PNG "登录")
 - **主页设置示例(未登录)**<br/><br/>
-![主页设置示例(未登录)](https://images.acproject.xyz/dm_setn.PNG "主页设置示例(未登录)")
+  ![主页设置示例(未登录)](https://images.acproject.xyz/dm_setn.PNG "主页设置示例(未登录)")
 - **主页弹幕显示(已登录)**<br/><br/>
-![主页弹幕显示(已登录)](https://images.acproject.xyz/dm_danmu.PNG "主页弹幕显示(已登录)")
+  ![主页弹幕显示(已登录)](https://images.acproject.xyz/dm_danmu.PNG "主页弹幕显示(已登录)")
 - **主页设置示例(已登录)**<br/><br/>
-![主页设置示例(已登录)](https://images.acproject.xyz/dm_sety.PNG "主页设置示例(已登录)")
+  ![主页设置示例(已登录)](https://images.acproject.xyz/dm_sety.PNG "主页设置示例(已登录)")
 
 ## 开源
 
 **基于GPL-3.0 License开源协议.**
 
 ## 项目线上实战展示<br/><br/>
+
 ## [破站-Elysian绿豆直播间](https://live.bilibili.com/26445 "破站ELysian绿豆直播间-豆子哥")(用户名:Elysian绿豆)<br/><br/>
+
 ## [破站-坂本叔直播间](https://live.bilibili.com/1000 "破站坂本叔直播间") (用户名:坂崎简)<br/><br/>
+
 ## [破站-西凉君君直播间](https://live.bilibili.com/101937 "破站西凉君君直播间") (用户名:西凉君君)<br/><br/>
+
 **本项目已在坂本叔直播间经过2年多的风吹雨打 最近才想起来开源,请放心使用**<br/>
 **如果您使用了本软件，最好能在破站私聊我吱一下呢**
 
-
 # **我的另一个弹幕姬项目**
+
 **[BiliLiveChat](https://github.com/BanqiJane/BiliLiveChat "BiliLiveChat")**
 
 # 版本更新<br/>
+
 **版本更新直接删除旧版本jar包 把新版本jar包复制进去就行 run.bat同样**
+
 # 版本详细<br/>
 
 <blockquote>
+<blockquote>
+<h2>Beta2.4.7</h2>
+<h3>新增：</h3>
+<p>1.现在支持手动修改cookie了(cookie说明请看github上说明)</p>
+<p>2.支持手动修改每日打卡时间，每日自动签到时间(精确到分)</p>
+<p>3.添加操作页面的toast提示 例如公告和版本更新的右下角toast提示</p>
+<p>4.添加了window下弹幕姬启动是否自动打开设置页面的选项</p>
+<p>5.添加每日定时礼物自动赠送(现在仅支持辣条小心心亿圆，按过期时间排序赠送)</p>
+<h3>修复(优化)：</h3>
+<p>1.修复小心心偶尔出错bug(忘删请求房间信息，导致每次小心心都会去请求房间信息)</p>
+<p>2.移除保存配置即是检查打卡和检查签到的设定,修复主播下播会自动打卡的bug</p>
+<p>3.继续修复自动回复姬获取北京时间格式错误的问题</p>
+<p>4.修复礼物感谢姬自定义礼物规则可能会出现重复礼物的问题？</p>
+<p>5.修复禁言窗口关不了...</p>
+<p>6.修复扫码登录去请求一遍公告导致弹幕姬扫码登录很慢（2.4.6特有）</p>
+<h3>更新预告：</h3>
+<p>还是麦片哥的问题 正考虑加个自动封禁</p>
+</blockquote>
 <blockquote>
 <h2>Beta2.4.6</h2>
 <p>增加弹幕姬登录验证(以暗号的形式 初始默认密码为123)</p>
