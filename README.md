@@ -40,14 +40,14 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.4.6
+# 版本2.4.7
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.7 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.6 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.4.7 "下载地址")**<br/><br/>
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "下载地址")**<br/><br/>
-- **danmuji-heroku(heroku一键部署,警告:目前测试阶段) [地址](https://github.com/BanqiJane/BiliBili_Danmuji_Heroku "地址")**<br/><br/>
+- ~~**danmuji-heroku(heroku一键部署,警告:目前测试阶段) [地址](https://github.com/BanqiJane/BiliBili_Danmuji_Heroku "地址")**~~<br/><br/>
 
 # 简介
 
@@ -185,6 +185,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **首次开启舰长保存本地 会在项目目录下生成guardFile文件夹 用来存放舰长uid和名称**<br/>
 - **生成的用于存放弹幕文件名命名规则为 当天时间+房间号**<br/>
 - **localhost:23333/connect 连接房间地址**<br/>
+- **http://localhost:23333/cookie_set 自定义cookie地址**<br/>
 - **localhost:23333/login 扫码登录地址**<br/><br/>
 
 # 关于修改端口<br/>
