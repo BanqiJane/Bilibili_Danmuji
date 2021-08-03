@@ -187,12 +187,22 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **localhost:23333/connect 连接房间地址**<br/>
 - **http://localhost:23333/cookie_set 自定义cookie地址**<br/>
 - **localhost:23333/login 扫码登录地址**<br/><br/>
-
+  
 # 关于修改端口<br/>
 
 - **自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去**<br/>
 - **--server.port=23333 修改即可修改端口启动**<br/>
 - **完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333**<br/>
+- **以上方法均兼容旧版本**
+  <br/><br/>
+  <br/>
+
+# 关于内存过大(限制内存)<br/>
+
+- **自从2.4.7增加说明文件readme.txt和启动配置run.bat的内存参数 旧版本也可以自己加上去**<br/>
+- **-Xms64m -Xmx128m**<br/>
+- **完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.4.7beta.jar**<br/>
+- **加上修改端口的完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.4.7beta.jar --server.port=23333**<br/>
 - **以上方法均兼容旧版本**
   <br/><br/>
   <br/>
@@ -251,6 +261,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 <p>3.添加操作页面的toast提示 例如公告和版本更新的右下角toast提示</p>
 <p>4.添加了window下弹幕姬启动是否自动打开设置页面的选项</p>
 <p>5.添加每日定时礼物自动赠送(现在仅支持辣条小心心亿圆，按过期时间排序赠送)</p>
+<p>6.推荐使用类似端口修改的内存启动参数 -Xms64m -Xmx128m </p>
 <h3>修复(优化)：</h3>
 <p>1.修复小心心偶尔出错bug(忘删请求房间信息，导致每次小心心都会去请求房间信息)</p>
 <p>2.移除保存配置即是检查打卡和检查签到的设定,修复主播下播会自动打卡的bug</p>
