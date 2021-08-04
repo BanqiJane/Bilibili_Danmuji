@@ -680,6 +680,7 @@ const danmuku = {
         }
     },
     time: function (d) {
+        if(String(d.timestamp).length==10)d.timestamp=d.timestamp*1000;
         return `<span class="danmu-time">` + format(d.timestamp, false) + `</span>`;
     },
     only_time: function (d) {
@@ -909,7 +910,6 @@ const method = {
             $(".is_clockin").prop('checked', set.clock_in.is_open);
             $(".clockin_time").val(set.clock_in.time);
             $(".clockin_barrage").val(set.clock_in.barrage);
-            console.log(set.auto_gift)
             $(".is_autoGift_open").prop('checked',set.auto_gift.is_open);
             $(".autoGift_time").val(set.auto_gift.time);
             $(".autoGift_roomids").val(set.auto_gift.room_id);
