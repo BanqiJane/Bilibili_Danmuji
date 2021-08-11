@@ -303,6 +303,7 @@ public class HttpOtherData {
             // TODO 自动生成的 catch 块
             LOGGER.error("连接至加密服务器错误？不存在");
             data = null;
+            s=null;
 //			e.printStackTrace();
         }
 

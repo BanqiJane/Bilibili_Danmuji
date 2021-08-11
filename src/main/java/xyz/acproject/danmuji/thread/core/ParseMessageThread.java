@@ -414,7 +414,7 @@ public class ParseMessageThread extends Thread{
 
 							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
-								String report = StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
+								String report =StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
 								report = StringUtils.replace(report,"%uName%",guard.getUsername());
 								//礼品码
 								if (getMessageControlMap().get(ShieldMessage.is_giftCode) != null
@@ -449,7 +449,7 @@ public class ParseMessageThread extends Thread{
 						if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
 								&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
 							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-							String report =StringUtils.replace(getThankGiftSetConf().getReport(),"\n","\\\\r\\\\n");
+							String report =StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
 							report = StringUtils.replace(report,"%uName%",guard.getUsername());
 							//礼品码
 							if (getMessageControlMap().get(ShieldMessage.is_giftCode) != null

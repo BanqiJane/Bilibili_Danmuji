@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @ClassName HttpHeartBeatData
@@ -183,6 +185,10 @@ public class HttpHeartBeatData {
 	 * @return
 	 */
 	public static XData httpPostX(RoomInfo roomInfo,int num,XData xData) {
+
+		//这里加上时间是明天那就返回错误;
+
+
 		JSONObject jsonObject = null;
 		String data = null;
 		Map<String, String> headers = null;
@@ -202,7 +208,27 @@ public class HttpHeartBeatData {
 //		String[] devices = {CurrencyTools.deviceHash(),CurrencyTools.getUUID()};
 		long ts =System.currentTimeMillis();
 		xData.setId(ids);
-		params.put("s", HttpOtherData.httpPostencS(xData,ts));
+		final CompletableFuture<String> completableFuture =CompletableFuture.supplyAsync(()->{
+			String s = null;
+			long startTime = xData.getStartTime();
+			//减去60秒
+			if(startTime<=0)startTime=System.currentTimeMillis();
+			while(StringUtils.isBlank(s)) {
+				//超时处理
+				if(System.currentTimeMillis()-startTime>= (xData.getTime()*1000))break;
+				s = HttpOtherData.httpPostencS(xData, ts);
+			}
+			return s;
+		});
+		try {
+			params.put("s", completableFuture.get());
+		} catch (InterruptedException e) {
+		//	e.printStackTrace();
+			LOGGER.error("s 函数处理错误1:{}",e);
+		} catch (ExecutionException e) {
+		//	e.printStackTrace();
+			LOGGER.error("s 函数处理错误2:{}",e);
+		}
 		params.put("id", Arrays.toString(ids));
 		params.put("device",  xData.getDevice());
 		params.put("ets",xData.getEts().toString());

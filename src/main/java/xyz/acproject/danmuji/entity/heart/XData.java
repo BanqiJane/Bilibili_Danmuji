@@ -12,7 +12,10 @@ public class XData {
 	private Long ts;
 	private String ua ="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
 	private short[] secret_rule;
+
+	//以下是额外参数
 	private Boolean error;
+	private long startTime;
 	public XData() {
 		super();
 		// TODO 自动生成的构造函数存根
@@ -85,6 +88,20 @@ public class XData {
 
 	public void setError(Boolean error) {
 		this.error = error;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+
+	public XData startTime(long startTime){
+		this.startTime = startTime;
+		return this;
 	}
 
 	@Override

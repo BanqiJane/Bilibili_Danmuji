@@ -23,6 +23,10 @@ public class SmallHeartThread extends Thread {
 	@Override
 	public void run() {
 		int num=0;
+		long startETime = 0;
+		long endETime = 0;
+		long startXTime =0;
+		long endXTime =0;
 		RoomInfo roomInfo = null;
 		XData xDataIn =null;
 		// TODO 自动生成的方法存根
@@ -35,6 +39,7 @@ public class SmallHeartThread extends Thread {
 				return;
 			}
 			if(num==0) {
+				startETime = System.currentTimeMillis();
 				roomInfo = HttpRoomData.httpGetRoomInfo();
 				try {
 					setxData(HttpHeartBeatData.httpPostE(roomInfo));	
@@ -42,9 +47,12 @@ public class SmallHeartThread extends Thread {
 					// TODO: handle exception
 					num=0;
 				}
+				endETime = System.currentTimeMillis();
 			}
 			try {
-				Thread.sleep(getxData().getTime()*1000);
+				long sleepMills = (getxData().getTime()*1000)-(endETime-startETime)-(endXTime-startXTime);
+//				logger.info("small heart sleep:{}",sleepMills);
+				Thread.sleep(sleepMills);
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
 //				e.printStackTrace();
@@ -52,10 +60,15 @@ public class SmallHeartThread extends Thread {
 				// TODO: handle exception
 				logger.error("null错误");
 				return;
+			}finally {
+				startETime=0;
+				endETime=0;
 			}
 			num+=1;
+			startXTime = System.currentTimeMillis();
 			try {
-				xDataIn = HttpHeartBeatData.httpPostX(roomInfo, num, getxData());
+				//发送x包
+				xDataIn = HttpHeartBeatData.httpPostX(roomInfo, num, getxData().startTime(startXTime));
 				if(xDataIn==null||xDataIn.getError()){
 					num=0;
 				}else {
@@ -64,7 +77,7 @@ public class SmallHeartThread extends Thread {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			
+			endXTime = System.currentTimeMillis();
 		}
 	}
 	public XData getxData() {
