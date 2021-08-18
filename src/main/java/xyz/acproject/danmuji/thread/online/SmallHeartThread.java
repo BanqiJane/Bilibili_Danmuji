@@ -2,11 +2,13 @@ package xyz.acproject.danmuji.thread.online;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import xyz.acproject.danmuji.entity.heart.XData;
 import xyz.acproject.danmuji.entity.room_data.RoomInfo;
 import xyz.acproject.danmuji.http.HttpHeartBeatData;
 import xyz.acproject.danmuji.http.HttpRoomData;
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
+
+import java.util.Date;
 
 /**
  * @ClassName SmallHeartThread
@@ -38,8 +40,8 @@ public class SmallHeartThread extends Thread {
 			if(num>=255) {
 				return;
 			}
+			startETime = System.currentTimeMillis();
 			if(num==0) {
-				startETime = System.currentTimeMillis();
 				roomInfo = HttpRoomData.httpGetRoomInfo();
 				try {
 					setxData(HttpHeartBeatData.httpPostE(roomInfo));	
@@ -47,12 +49,19 @@ public class SmallHeartThread extends Thread {
 					// TODO: handle exception
 					num=0;
 				}
-				endETime = System.currentTimeMillis();
 			}
+			boolean flag = checkTomorrow(System.currentTimeMillis(),getxData());
+			endETime = System.currentTimeMillis();
 			try {
 				long sleepMills = (getxData().getTime()*1000)-(endETime-startETime)-(endXTime-startXTime);
+				if(sleepMills>0) {
 //				logger.info("small heart sleep:{}",sleepMills);
-				Thread.sleep(sleepMills);
+					Thread.sleep(sleepMills);
+				}
+				if(flag){
+					num=0;
+					continue;
+				}
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
 //				e.printStackTrace();
@@ -86,6 +95,18 @@ public class SmallHeartThread extends Thread {
 	public void setxData(XData xData) {
 		this.xData = xData;
 	}
-	
+
+
+
+	private boolean checkTomorrow(long time,XData xData){
+		//这里加上时间是明天那就返回错误
+		long tomorrow_time = JodaTimeUtils.getZero(JodaTimeUtils.changeDay(new Date(time),1)).getTime();
+		long change_time = xData.getStartTime()+(xData.getTime()*1000);
+		if(change_time>=tomorrow_time){
+			logger.info("small heart change day");
+			return true;
+		}
+		return false;
+	}
 	
 }

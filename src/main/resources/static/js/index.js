@@ -1299,19 +1299,19 @@ const method = {
 
     replaceThanko: function (s) {
         s = s.replace(/uNames/g, "uName");
-        s = s.replace(/%Gifts%/g, "%Num%个%GiftName%");
+        s = s.replace(/\%Gifts\%/g, "%GiftName% x%Num%");
         return s;
     },
     replaceThankt: function (s) {
         s = s.replace(/uNames/g, "uName");
-        s = s.replace(/%Num%个%GiftName%/g, "%Gifts%");
+        s = s.replace(/\%GiftName\% x\%Num\%/g, "%Gifts%");
         return s;
     },
     replaceThankts: function (s) {
         if (s.indexOf("uNames") === -1) {
             s = s.replace(/uName/g, "uNames");
         }
-        s = s.replace(/%Num%个%GiftName%/g, "%Gifts%");
+        s = s.replace(/\%GiftName\% x\%Num\%/g, "%Gifts%");
         return s;
     },
     checkUpdate: function () {

@@ -314,9 +314,9 @@ public class HttpRoomData {
 		return followersNum;
 	}
 
-	public static Hashtable<Long, String> httpGetGuardList() {
+	public static ConcurrentHashMap<Long, String> httpGetGuardList() {
 		String data = null;
-		Hashtable<Long, String> hashtable = new Hashtable<Long, String>();
+		ConcurrentHashMap<Long, String> hashtable = new ConcurrentHashMap<Long, String>();
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
 		Map<String, String> headers = null;

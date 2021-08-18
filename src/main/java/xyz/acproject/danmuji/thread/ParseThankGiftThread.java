@@ -1,13 +1,6 @@
 package xyz.acproject.danmuji.thread;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Vector;
-
 import org.apache.commons.lang3.StringUtils;
-
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
@@ -15,6 +8,12 @@ import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ThankGiftStatus;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Vector;
 
 /**
  * @ClassName ParseThankGiftThread
@@ -114,6 +113,8 @@ public class ParseThankGiftThread extends Thread {
 									stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 									thankGiftStr = StringUtils.replace(thankGiftStr, "%Gifts%",
 											stringBuilder.toString());
+									//如果还有这个参数写死赠送
+									thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%","赠送");
 									stringBuilder.delete(0, stringBuilder.length());
 									if (PublicDataConf.sendBarrageThread != null
 											&& !PublicDataConf.sendBarrageThread.FLAG) {
@@ -182,6 +183,8 @@ public class ParseThankGiftThread extends Thread {
 										stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
 										thankGiftStr = StringUtils.replace(thankGiftStr, "%Gifts%",
 												stringBuilder.toString());
+										//如果还有这个参数写死赠送
+										thankGiftStr = StringUtils.replace(thankGiftStr, "%Type%","赠送");
 										stringBuilder.delete(0, stringBuilder.length());
 										if (PublicDataConf.sendBarrageThread != null
 												&& !PublicDataConf.sendBarrageThread.FLAG) {
@@ -236,6 +239,8 @@ public class ParseThankGiftThread extends Thread {
 		stringBuilderName.delete(stringBuilderName.length() - 1, stringBuilderName.length());
 		giftString = StringUtils.replace(giftString, "%uNames%", stringBuilderName.toString());
 		giftString = StringUtils.replace(giftString, "%Gifts%", stringBuilderGifts.toString());
+		//如果还有这个参数写死赠送
+		giftString = StringUtils.replace(giftString, "%Type%", "赠送");
 		return giftString;
 	}
 

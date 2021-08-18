@@ -18,6 +18,7 @@ import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
+import xyz.acproject.danmuji.utils.UrlUtils;
 
 import java.util.*;
 
@@ -350,7 +351,7 @@ public class HttpUserData {
         params.put("color", PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getColor().toString());
         params.put("fontsize", "25");
         params.put("mode", PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getMode().toString());
-        params.put("msg", msg);
+        params.put("msg", UrlUtils.URLEncoderString(msg,"utf-8"));
         params.put("rnd", String.valueOf(System.currentTimeMillis()).substring(0, 10));
         params.put("roomid", PublicDataConf.ROOMID.toString());
         params.put("bubble", PublicDataConf.USERBARRAGEMESSAGE.getBubble().toString());
@@ -426,7 +427,7 @@ public class HttpUserData {
         params.put("color", userBarrageMsg.getDanmu().getColor().toString());
         params.put("fontsize", "25");
         params.put("mode", userBarrageMsg.getDanmu().getMode().toString());
-        params.put("msg", msg);
+        params.put("msg",  UrlUtils.URLEncoderString(msg,"utf-8"));
         params.put("rnd", String.valueOf(System.currentTimeMillis()).substring(0, 10));
         params.put("roomid", roomId.toString());
         params.put("bubble", userBarrageMsg.getBubble().toString());
@@ -502,7 +503,7 @@ public class HttpUserData {
         params.put("msg[receiver_type]", "1");
         params.put("msg[msg_type]", "1");
         params.put("msg[msg_status]", "0");
-        params.put("msg[content]", "{\"content\":\"" + msg + "\"}");
+        params.put("msg[content]", "{\"content\":\"" + UrlUtils.URLEncoderString(msg,"utf-8") + "\"}");
         params.put("msg[timestamp]", String.valueOf(System.currentTimeMillis()).substring(0, 10));
         params.put("msg[new_face_version]", "1");
         params.put("msg[dev_id]", UUID.randomUUID().toString());

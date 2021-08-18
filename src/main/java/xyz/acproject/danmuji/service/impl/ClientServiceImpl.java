@@ -22,8 +22,8 @@ import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 import xyz.acproject.danmuji.utils.ByteUtils;
 
-import java.util.Hashtable;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author BanqiJane
@@ -136,7 +136,7 @@ public class ClientServiceImpl implements ClientService {
                     && PublicDataConf.centerSetConf.getThank_gift().isIs_guard_local()) {
                 if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
                 } else {
-                    Hashtable<Long, String> guards = HttpRoomData.httpGetGuardList();
+                    ConcurrentHashMap<Long, String> guards = HttpRoomData.httpGetGuardList();
                     if (guards != null && guards.size() > 0) {
                         for (Entry<Long, String> entry : guards.entrySet()) {
                             GuardFileTools.write(entry.getKey() + "," + entry.getValue());

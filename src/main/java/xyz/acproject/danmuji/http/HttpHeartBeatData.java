@@ -186,9 +186,6 @@ public class HttpHeartBeatData {
 	 */
 	public static XData httpPostX(RoomInfo roomInfo,int num,XData xData) {
 
-		//这里加上时间是明天那就返回错误;
-
-
 		JSONObject jsonObject = null;
 		String data = null;
 		Map<String, String> headers = null;

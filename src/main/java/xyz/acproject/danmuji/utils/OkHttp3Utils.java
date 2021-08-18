@@ -106,12 +106,14 @@ public class OkHttp3Utils {
 	public Response httpPostForm(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
 		Request request=null;
 		StringBuilder content = new StringBuilder();
-		Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, String> entry = iterator.next();
-			content.append(entry.getKey()).append("=").append(entry.getValue());
-			if (iterator.hasNext()) {
-				content.append("&");
+		if(params!=null) {
+			Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, String> entry = iterator.next();
+				content.append(entry.getKey()).append("=").append(entry.getValue());
+				if (iterator.hasNext()) {
+					content.append("&");
+				}
 			}
 		}
 		RequestBody body = RequestBody.create(MEDIA_TYPE_TEXT, content.toString());
