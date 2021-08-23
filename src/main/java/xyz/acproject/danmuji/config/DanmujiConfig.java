@@ -74,7 +74,7 @@ public class DanmujiConfig {
         //初始化配置文件开始
         if (PublicDataConf.centerSetConf == null) {
             PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
-                    new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf());
+                    new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf(), new AutoSendGiftConf());
         } else {
             if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
                 PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
