@@ -48,7 +48,7 @@ java version "1.8.0_121"
 - **danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
-  在此感谢) [地址](https://hub.docker.com/repository/docker/zzcabc/danmuji "地址")----[github项目页面](https://github.com/zzcabc/Docker_Buildx_Danmuji "github项目页面")**<br/><br/>
+  在此感谢) 1.[docker地址](https://hub.docker.com/repository/docker/zzcabc/danmuji "地址") 2.[github项目页面](https://github.com/zzcabc/Docker_Buildx_Danmuji "github项目页面")**<br/><br/>
 - ~~**danmuji-heroku(heroku一键部署,警告:目前测试阶段) [地址](https://github.com/BanqiJane/BiliBili_Danmuji_Heroku "地址")**~~<br/><br/>
 
 # 简介
