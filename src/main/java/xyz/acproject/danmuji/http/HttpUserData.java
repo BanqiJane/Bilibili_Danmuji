@@ -383,7 +383,9 @@ public class HttpUserData {
                     }
                 } else {
                     LOGGER.debug(jsonObject.toString());
-                    LOGGER.error("发送弹幕失败,原因:" + jsonObject.getString("message"));
+                    String message = jsonObject.getString("message");
+                    if("f".equals(message)||"k".equals(message)) message="触发破站关键字，请检查发送弹幕是否含有破站屏蔽词或者非法词汇";
+                    LOGGER.error("发送弹幕失败,原因:" + message);
                     code = -402;
                 }
             } else if (code == -111) {
@@ -503,7 +505,7 @@ public class HttpUserData {
         params.put("msg[receiver_type]", "1");
         params.put("msg[msg_type]", "1");
         params.put("msg[msg_status]", "0");
-        params.put("msg[content]", "{\"content\":\"" + UrlUtils.URLEncoderString(msg,"utf-8") + "\"}");
+        params.put("msg[content]", UrlUtils.URLEncoderString("{\"content\":\"" + msg + "\"}","utf-8"));
         params.put("msg[timestamp]", String.valueOf(System.currentTimeMillis()).substring(0, 10));
         params.put("msg[new_face_version]", "1");
         params.put("msg[dev_id]", UUID.randomUUID().toString());
@@ -762,7 +764,7 @@ public class HttpUserData {
             int nowPage = 1;
             while (true) {
                 params.put("page", String.valueOf(nowPage));
-                params.put("pageSize", "25");
+                params.put("pageSize", "10");
                 data = OkHttp3Utils.getHttp3Utils()
                         .httpGet("http://api.live.bilibili.com/fans_medal/v5/live_fans_medal/iApiMedal", headers, params)
                         .body().string();

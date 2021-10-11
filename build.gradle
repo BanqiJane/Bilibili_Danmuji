@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.4.7beta'
+version = '2.4.8beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -49,9 +49,10 @@ configurations {
 	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 	
 }
-test {
-	useJUnitPlatform()
-}
+//test {
+//	enable = false
+////	useJUnitPlatform()
+//}
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
