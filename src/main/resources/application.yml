@@ -1,4 +1,7 @@
 spring:
+  #开放spring完全循环构造引入
+  main:
+    allow-circular-references: true
   thymeleaf:
   prefix : classpath:/templates/
   suffix : .html

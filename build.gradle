@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.5.0'
+	id 'org.springframework.boot' version '2.6.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
@@ -28,7 +28,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.5.0'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.2'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.70'
     // https://mvnrepository.com/artifact/joda-time/joda-time
