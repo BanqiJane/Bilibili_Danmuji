@@ -147,6 +147,7 @@ $(document).on(
         set.is_barrage_manager = $(".is_barrage_manager").is(':checked');
         set.is_barrage_medal = $(".is_barrage_medal").is(':checked');
         set.is_barrage_ul = $(".is_barrage_ul").is(':checked');
+        set.is_barrage_anchor_shield = $(".is_barrage_anchor_shield").is(':checked');
         set.is_block = $(".is_block").is(':checked');
         set.is_cmd = $(".is_cmd").is(':checked');
         set.is_gift = $(".is_gift").is(':checked');
@@ -842,6 +843,7 @@ const method = {
             $(".is_cmd").prop('checked', set.is_cmd);
             $(".is_barrage_medal").prop('checked', set.is_barrage_medal);
             $(".is_barrage_ul").prop('checked', set.is_barrage_ul);
+            $(".is_barrage_anchor_shield").prop('checked', set.is_barrage_anchor_shield);
             $(".is_block").prop('checked', set.is_block);
             $(".is_gift").prop('checked', set.is_gift);
             $(".is_welcome").prop('checked', set.is_welcome);

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.http.HttpOtherData;
@@ -29,6 +30,7 @@ public class DoSignTask {
 	public void clockin() {
 		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 			List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
+			if(CollectionUtils.isEmpty(userMedals)) return;
 			int max = CurrencyTools.clockIn(userMedals);
 			if(max == userMedals.size()){
 				HttpOtherData.httpPOSTSetClockInRecord();

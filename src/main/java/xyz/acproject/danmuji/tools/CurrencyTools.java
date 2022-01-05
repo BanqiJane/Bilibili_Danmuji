@@ -10,7 +10,10 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.HostServer;
-import xyz.acproject.danmuji.entity.user_data.*;
+import xyz.acproject.danmuji.entity.user_data.AutoSendGift;
+import xyz.acproject.danmuji.entity.user_data.UserBag;
+import xyz.acproject.danmuji.entity.user_data.UserCookie;
+import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
@@ -198,23 +201,29 @@ public class CurrencyTools {
         RoomInit roomInit;
         if (!CollectionUtils.isEmpty(userMedals)) {
             for (UserMedal userMedal : userMedals) {
-                roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
                 try {
-                    Thread.sleep(4050);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                String barrge = handleEnterStr(PublicDataConf.centerSetConf.getClock_in().getBarrage());
-                //   short code = 0;
-                short code = HttpUserData.httpPostSendBarrage(barrge, roomInit.getRoom_id());
-                try {
-                    Thread.sleep(2050);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    LOGGER.debug("第{}次打卡开始,勋章数据", max + 1,userMedal);
+                    roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
+                    try {
+                        Thread.sleep(4050);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    String barrge = handleEnterStr(PublicDataConf.centerSetConf.getClock_in().getBarrage());
+                    //   short code = 0;
+                    short code = HttpUserData.httpPostSendBarrage(barrge, roomInit.getRoom_id());
+                    try {
+                        Thread.sleep(2050);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-                LOGGER.debug("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, code == 0 ? "成功" : "失败", userMedal.getRoomid(), userMedal.getTarget_name(), barrge);
-                max++;
+                    LOGGER.debug("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, code == 0 ? "成功" : "失败", userMedal.getRoomid(), userMedal.getTarget_name(), barrge);
+                    max++;
+                } catch (Exception e) {
+                    LOGGER.debug("第{}次打卡{},直播间:{},up主:{},发送弹幕:{}", max + 1, "异常", userMedal.getRoomid(), userMedal.getTarget_name(), "未能成功发送");
+//                    e.printStackTrace();
+                }
             }
         }
         return max;

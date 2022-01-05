@@ -92,6 +92,11 @@ public class ParseSetStatusTools {
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_barrage_ul, false);
 		}
+		if(centerSetConf.isIs_barrage_anchor_shield()){
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_anchor_shield,true);
+		}else{
+			messageConcurrentHashMap.put(ShieldMessage.is_barrage_anchor_shield,false);
+		}
 		if (centerSetConf.isIs_block()) {
 			messageConcurrentHashMap.put(ShieldMessage.is_block, true);
 		} else {

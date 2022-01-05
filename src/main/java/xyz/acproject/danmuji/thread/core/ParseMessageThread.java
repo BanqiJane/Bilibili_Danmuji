@@ -137,8 +137,15 @@ public class ParseMessageThread extends Thread{
 							((JSONArray) array.get(4)).getShort(0), ((JSONArray) array.get(4)).getString(3),
 							((JSONArray) array.get(5)).getString(0), ((JSONArray) array.get(5)).getString(1),
 							array.getShort(7));
-					// 过滤礼物自动弹幕
-					if (barrage.getMsg_type() == 0) {
+
+					boolean is_xunzhang= true;
+					if (getMessageControlMap().get(ShieldMessage.is_barrage_anchor_shield) != null
+							&& getMessageControlMap().get(ShieldMessage.is_barrage_anchor_shield)) {
+						// 房管
+						if(barrage.getMedal_room()!=(long)PublicDataConf.ROOMID)is_xunzhang=false;
+					}
+					// 过滤礼物自动弹幕 & 可能非主播勋章弹幕
+					if (barrage.getMsg_type() == 0&&is_xunzhang) {
 						hbarrage = Hbarrage.copyHbarrage(barrage);
 					    if(barrage.getUid().equals(PublicDataConf.AUID)) {
 					    	hbarrage.setManager((short)2);
@@ -189,6 +196,8 @@ public class ParseMessageThread extends Thread{
 						}else {
 							hbarrage.setUlevel(null);
 						}
+
+
 						stringBuilder.append(barrage.getUname());
 						stringBuilder.append(" 它说:");
 						stringBuilder.append(barrage.getMsg());

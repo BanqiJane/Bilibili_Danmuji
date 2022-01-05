@@ -764,18 +764,18 @@ public class HttpUserData {
             int nowPage = 1;
             while (true) {
                 params.put("page", String.valueOf(nowPage));
-                params.put("pageSize", "10");
+                params.put("page_size", "10");
                 data = OkHttp3Utils.getHttp3Utils()
-                        .httpGet("http://api.live.bilibili.com/fans_medal/v5/live_fans_medal/iApiMedal", headers, params)
+                        .httpGet("https://api.live.bilibili.com/xlive/app-ucenter/v1/user/GetMyMedals", headers, params)
                         .body().string();
                 if (data == null)
                     return null;
                 jsonObject = JSONObject.parseObject(data);
                 code = jsonObject.getShort("code");
                 if (code == 0) {
-                    int totalPage = jsonObject.getJSONObject("data").getJSONObject("pageinfo").getInteger("totalpages");
+                    int totalPage = jsonObject.getJSONObject("data").getJSONObject("page_info").getInteger("total_page");
                     if (totalPage != 0) {
-                        jsonArray = jsonObject.getJSONObject("data").getJSONArray("fansMedalList");
+                        jsonArray = jsonObject.getJSONObject("data").getJSONArray("items");
                         if (jsonArray != null) {
                             List<UserMedal> userMedalList = jsonArray.toJavaList(UserMedal.class);
                             userMedals.addAll(userMedalList);
