@@ -11,7 +11,6 @@ import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
@@ -131,24 +130,7 @@ public class SetServiceImpl implements SetService {
             PublicDataConf.centerSetConf = JSONObject.parseObject(
                     new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
                     CenterSetConf.class);
-            if (PublicDataConf.centerSetConf.getAdvert() == null) {
-                PublicDataConf.centerSetConf.setAdvert(new AdvertSetConf());
-            }
-            if (PublicDataConf.centerSetConf.getFollow() == null) {
-                PublicDataConf.centerSetConf.setFollow(new ThankFollowSetConf());
-            }
-            if (PublicDataConf.centerSetConf.getThank_gift() == null) {
-                PublicDataConf.centerSetConf.setThank_gift(new ThankGiftSetConf());
-            }
-            if (PublicDataConf.centerSetConf.getReply() == null) {
-                PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
-            }
-            if (PublicDataConf.centerSetConf.getClock_in() == null) {
-                PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false, "签到"));
-            }
-            if (PublicDataConf.centerSetConf.getWelcome() == null) {
-                PublicDataConf.centerSetConf.setWelcome(new ThankWelcomeSetConf());
-            }
+            PublicDataConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(PublicDataConf.centerSetConf);
             if (PublicDataConf.ROOMID != null) {
                 holdSet(centerSetConf);
             }

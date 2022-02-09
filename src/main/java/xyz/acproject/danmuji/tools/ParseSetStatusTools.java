@@ -3,6 +3,7 @@ package xyz.acproject.danmuji.tools;
 import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.enums.AdvertStatus;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.enums.ShieldMessage;
@@ -58,6 +59,10 @@ public class ParseSetStatusTools {
 		}
 	}
 
+
+	/**
+	* 等待移除
+	*/
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 			short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(
@@ -226,4 +231,27 @@ public class ParseSetStatusTools {
 		return messageConcurrentHashMap;
 	}
 
+	public static CenterSetConf initCenterChildConfig(CenterSetConf centerSetConf){
+		if (centerSetConf != null) {
+			if (centerSetConf.getAdvert() == null) {
+				centerSetConf.setAdvert(new AdvertSetConf());
+			}
+			if (centerSetConf.getFollow() == null) {
+				centerSetConf.setFollow(new ThankFollowSetConf());
+			}
+			if (centerSetConf.getThank_gift() == null) {
+				centerSetConf.setThank_gift(new ThankGiftSetConf());
+			}
+			if (centerSetConf.getReply() == null) {
+				centerSetConf.setReply(new AutoReplySetConf());
+			}
+			if (centerSetConf.getWelcome() == null) {
+				centerSetConf.setWelcome(new ThankWelcomeSetConf());
+			}
+			if (centerSetConf.getAuto_gift() == null) {
+				centerSetConf.setAuto_gift(new AutoSendGiftConf());
+			}
+		}
+		return centerSetConf;
+	}
 }

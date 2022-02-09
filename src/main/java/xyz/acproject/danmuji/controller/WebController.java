@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.config.DanmujiInitConfig;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
@@ -27,6 +26,7 @@ import xyz.acproject.danmuji.returnJson.Response;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
+import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 import xyz.acproject.danmuji.utils.QrcodeUtils;
 import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
@@ -380,6 +380,7 @@ public class WebController {
         }
     }
 
+    //配置文件导入
     @ResponseBody
     @PostMapping(value = "/setImport")
     public Response<?> setImport(@RequestParam("file") MultipartFile file, HttpServletRequest req) throws IOException {
@@ -391,21 +392,7 @@ public class WebController {
         try {
             CenterSetConf centerSetConf = FastJsonUtils.parseObject(jsonString, CenterSetConf.class);
             if (centerSetConf != null) {
-                if (centerSetConf.getAdvert() == null) {
-                    centerSetConf.setAdvert(new AdvertSetConf());
-                }
-                if (centerSetConf.getFollow() == null) {
-                    centerSetConf.setFollow(new ThankFollowSetConf());
-                }
-                if (centerSetConf.getThank_gift() == null) {
-                    centerSetConf.setThank_gift(new ThankGiftSetConf());
-                }
-                if (centerSetConf.getReply() == null) {
-                    centerSetConf.setReply(new AutoReplySetConf());
-                }
-                if (centerSetConf.getWelcome() == null) {
-                    centerSetConf.setWelcome(new ThankWelcomeSetConf());
-                }
+                centerSetConf = ParseSetStatusTools.initCenterChildConfig(centerSetConf);
                 centerSetConf.setClock_in(PublicDataConf.centerSetConf.getClock_in());
                 BeanUtils.copyProperties(centerSetConf, PublicDataConf.centerSetConf);
                 //如果有密钥 如果没密
