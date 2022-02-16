@@ -19,6 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public interface ThreadComponent {
+
+	void closeAll();
+
+	void closeUser();
+
 	// 开启处理弹幕包线程 core
 	boolean startParseMessageThread(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap,
 			CenterSetConf centerSetConf);

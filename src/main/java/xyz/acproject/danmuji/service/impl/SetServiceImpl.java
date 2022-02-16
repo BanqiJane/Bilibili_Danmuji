@@ -284,66 +284,23 @@ public class SetServiceImpl implements SetService {
                     && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
                     && PublicDataConf.autoReplyThread == null) {
                 threadComponent.closeSendBarrageThread();
-                PublicDataConf.replys.clear();
-                PublicDataConf.thankGiftConcurrentHashMap.clear();
-                PublicDataConf.barrageString.clear();
-                PublicDataConf.interacts.clear();
-                PublicDataConf.interactWelcome.clear();
+                PublicDataConf.init_send();
             } else {
                 threadComponent.startSendBarrageThread();
             }
         } else {
-
-            PublicDataConf.COOKIE = null;
-            PublicDataConf.USER = null;
-            PublicDataConf.USERCOOKIE = null;
-            PublicDataConf.USERBARRAGEMESSAGE = null;
-            threadComponent.closeAdvertThread();
-            threadComponent.closeUserOnlineThread();
-            threadComponent.closeGiftShieldThread();
-            threadComponent.closeSendBarrageThread();
-            threadComponent.closeFollowShieldThread();
-            threadComponent.closeWelcomeShieldThread();
-            threadComponent.closeSmallHeartThread();
+            PublicDataConf.init_user();
+            threadComponent.closeUser();
         }
         if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
-            threadComponent.closeHeartByteThread();
-            threadComponent.closeParseMessageThread();
-            threadComponent.closeUserOnlineThread();
-            threadComponent.closeFollowShieldThread();
-            threadComponent.closeAdvertThread();
-            threadComponent.closeSendBarrageThread();
-            threadComponent.closeLogThread();
-            threadComponent.closeGiftShieldThread();
-            threadComponent.closeAutoReplyThread();
-            threadComponent.closeSmallHeartThread();
-            threadComponent.closeWelcomeShieldThread();
-            PublicDataConf.SHIELDGIFTNAME = null;
-            PublicDataConf.replys.clear();
-            PublicDataConf.resultStrs.clear();
-            PublicDataConf.thankGiftConcurrentHashMap.clear();
-            PublicDataConf.barrageString.clear();
-            PublicDataConf.logString.clear();
-            PublicDataConf.interacts.clear();
-            PublicDataConf.interactWelcome.clear();
-            PublicDataConf.ISSHIELDFOLLOW = false;
-            PublicDataConf.ISSHIELDWELCOME = false;
+            threadComponent.closeAll();
+            PublicDataConf.init_all();
         }
     }
 
     public void quit() {
-        PublicDataConf.COOKIE = null;
-        PublicDataConf.USER = null;
-        PublicDataConf.USERCOOKIE = null;
-        PublicDataConf.USERBARRAGEMESSAGE = null;
-        threadComponent.closeAdvertThread();
-        threadComponent.closeUserOnlineThread();
-        threadComponent.closeGiftShieldThread();
-        threadComponent.closeFollowShieldThread();
-        threadComponent.closeAutoReplyThread();
-        threadComponent.closeSendBarrageThread();
-        threadComponent.closeSmallHeartThread();
-        threadComponent.closeWelcomeShieldThread();
+        PublicDataConf.init_user();
+        threadComponent.closeUser();
         // remove task all shutdown !!!!!!
         try {
             taskRegisterComponent.destroy();
@@ -351,11 +308,7 @@ public class SetServiceImpl implements SetService {
             // TODO 自动生成的 catch 块
             LOGGER.error("清理定时任务错误：" + e);
         }
-        PublicDataConf.replys.clear();
-        PublicDataConf.thankGiftConcurrentHashMap.clear();
-        PublicDataConf.barrageString.clear();
-        PublicDataConf.interacts.clear();
-        PublicDataConf.interactWelcome.clear();
+        PublicDataConf.init_send();
         holdSet(PublicDataConf.centerSetConf);
         LOGGER.debug("用户退出成功");
     }

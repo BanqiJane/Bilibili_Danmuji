@@ -152,17 +152,7 @@ public class ClientServiceImpl implements ClientService {
 
     public void reConnService() throws Exception {
         if (!PublicDataConf.webSocketProxy.isOpen()) {
-            threadComponent.closeHeartByteThread();
-            threadComponent.closeUserOnlineThread();
-            threadComponent.closeAdvertThread();
-            threadComponent.closeSendBarrageThread();
-            threadComponent.closeLogThread();
-            threadComponent.closeGiftShieldThread();
-            threadComponent.closeFollowShieldThread();
-            threadComponent.closeWelcomeShieldThread();
-            threadComponent.closeAutoReplyThread();
-            threadComponent.closeSmallHeartThread();
-            threadComponent.closeParseMessageThread();
+            threadComponent.closeAll();
             RoomInit roomInit = HttpRoomData.httpGetRoomInit(PublicDataConf.ROOMID);
             Room room = HttpRoomData.httpGetRoomData(PublicDataConf.ROOMID);
             try {
@@ -232,34 +222,8 @@ public class ClientServiceImpl implements ClientService {
                     PublicDataConf.webSocketProxy.closeConnection(1000, "手动关闭");
                     PublicDataConf.webSocketProxy = null;
                 }
-                threadComponent.closeHeartByteThread();
-                threadComponent.closeUserOnlineThread();
-                threadComponent.closeAdvertThread();
-                threadComponent.closeSendBarrageThread();
-                threadComponent.closeLogThread();
-                threadComponent.closeGiftShieldThread();
-                threadComponent.closeFollowShieldThread();
-                threadComponent.closeWelcomeShieldThread();
-                threadComponent.closeAutoReplyThread();
-                threadComponent.closeSmallHeartThread();
-                threadComponent.closeParseMessageThread();
-                PublicDataConf.SHIELDGIFTNAME = null;
-                PublicDataConf.replys.clear();
-                PublicDataConf.resultStrs.clear();
-                PublicDataConf.thankGiftConcurrentHashMap.clear();
-                PublicDataConf.barrageString.clear();
-                PublicDataConf.interacts.clear();
-                PublicDataConf.logString.clear();
-                PublicDataConf.interactWelcome.clear();
-                PublicDataConf.ISSHIELDWELCOME=false;
-                PublicDataConf.ISSHIELDFOLLOW=false;
-                PublicDataConf.ROOMID = null;
-                PublicDataConf.ANCHOR_NAME = null;
-                PublicDataConf.AUID = null;
-                PublicDataConf.FANSNUM = null;
-                PublicDataConf.SHORTROOMID = null;
-                PublicDataConf.lIVE_STATUS = 0;
-                PublicDataConf.ROOM_POPULARITY = 1L;
+                threadComponent.closeAll();
+                PublicDataConf.init_connect();
                 if (null == PublicDataConf.webSocketProxy || !PublicDataConf.webSocketProxy.isOpen()) {
                     flag = true;
                 }

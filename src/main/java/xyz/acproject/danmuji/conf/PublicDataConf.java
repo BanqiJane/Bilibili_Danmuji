@@ -154,4 +154,56 @@ public class PublicDataConf {
 //
 	//可以赠送礼物集合 要初始化
 	public static Map<Integer,AutoSendGift> autoSendGiftMap = null;
+
+
+
+	//方法区
+
+	public static void init_user(){
+		PublicDataConf.COOKIE = null;
+		PublicDataConf.USER = null;
+		PublicDataConf.USERCOOKIE = null;
+		PublicDataConf.USERBARRAGEMESSAGE = null;
+	}
+
+	public static void init_send(){
+		PublicDataConf.replys.clear();
+		PublicDataConf.thankGiftConcurrentHashMap.clear();
+		PublicDataConf.barrageString.clear();
+		PublicDataConf.interacts.clear();
+		PublicDataConf.interactWelcome.clear();
+	}
+
+	public static void init_all(){
+		PublicDataConf.replys.clear();
+		PublicDataConf.resultStrs.clear();
+		PublicDataConf.thankGiftConcurrentHashMap.clear();
+		PublicDataConf.barrageString.clear();
+		PublicDataConf.logString.clear();
+		PublicDataConf.interacts.clear();
+		PublicDataConf.interactWelcome.clear();
+		PublicDataConf.SHIELDGIFTNAME = null;
+		PublicDataConf.ISSHIELDFOLLOW = false;
+		PublicDataConf.ISSHIELDWELCOME = false;
+	}
+
+	public static void init_connect(){
+		PublicDataConf.SHIELDGIFTNAME = null;
+		PublicDataConf.replys.clear();
+		PublicDataConf.resultStrs.clear();
+		PublicDataConf.thankGiftConcurrentHashMap.clear();
+		PublicDataConf.barrageString.clear();
+		PublicDataConf.interacts.clear();
+		PublicDataConf.logString.clear();
+		PublicDataConf.interactWelcome.clear();
+		PublicDataConf.ISSHIELDWELCOME=false;
+		PublicDataConf.ISSHIELDFOLLOW=false;
+		PublicDataConf.ROOMID = null;
+		PublicDataConf.ANCHOR_NAME = null;
+		PublicDataConf.AUID = null;
+		PublicDataConf.FANSNUM = null;
+		PublicDataConf.SHORTROOMID = null;
+		PublicDataConf.lIVE_STATUS = 0;
+		PublicDataConf.ROOM_POPULARITY = 1L;
+	}
 }

@@ -31,6 +31,38 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class ThreadComponentImpl implements ThreadComponent {
+	
+	
+	
+	
+	
+	
+	public void closeAll(){
+		closeHeartByteThread();
+		closeUserOnlineThread();
+		closeAdvertThread();
+		closeSendBarrageThread();
+		closeLogThread();
+		closeGiftShieldThread();
+		closeFollowShieldThread();
+		closeWelcomeShieldThread();
+		closeAutoReplyThread();
+		closeSmallHeartThread();
+		closeParseMessageThread();
+	}
+	public void closeUser(){
+		closeHeartByteThread();
+		closeUserOnlineThread();
+		closeAdvertThread();
+		closeSendBarrageThread();
+		closeLogThread();
+		closeGiftShieldThread();
+		closeFollowShieldThread();
+		closeWelcomeShieldThread();
+		closeAutoReplyThread();
+		closeSmallHeartThread();
+		closeParseMessageThread();
+	}
 
 	/**
 	 * O
