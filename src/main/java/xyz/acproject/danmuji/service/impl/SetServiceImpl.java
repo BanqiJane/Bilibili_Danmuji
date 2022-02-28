@@ -11,7 +11,6 @@ import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.service.ClientService;
@@ -215,7 +214,6 @@ public class SetServiceImpl implements SetService {
         if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) return;
         // parsemessagethread start
         threadComponent.startParseMessageThread(
-                ParseSetStatusTools.getMessageConcurrentHashMap(centerSetConf, PublicDataConf.lIVE_STATUS),
                 centerSetConf);
         // logthread
         if (centerSetConf.isIs_log()) {
@@ -226,45 +224,47 @@ public class SetServiceImpl implements SetService {
         // need login
         if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             // advertthread
-            if (centerSetConf.getAdvert().isIs_live_open()) {
-                if (PublicDataConf.lIVE_STATUS != 1) {
-                    threadComponent.closeAdvertThread();
-                } else {
-                    if (centerSetConf.getAdvert().isIs_open()) {
-                        threadComponent.startAdvertThread(centerSetConf);
-                    } else {
-                        threadComponent.setAdvertThread(centerSetConf);
-                        threadComponent.closeAdvertThread();
-                    }
-                }
-            } else {
-                if (centerSetConf.getAdvert().isIs_open()) {
-                    threadComponent.startAdvertThread(centerSetConf);
-                } else {
-                    threadComponent.setAdvertThread(centerSetConf);
-                    threadComponent.closeAdvertThread();
-                }
-            }
+            centerSetConf.getAdvert().start(threadComponent);
+//            if (centerSetConf.getAdvert().isIs_live_open()) {
+//                if (PublicDataConf.lIVE_STATUS != 1) {
+//                    threadComponent.closeAdvertThread();
+//                } else {
+//                    if (centerSetConf.getAdvert().isIs_open()) {
+//                        threadComponent.startAdvertThread(centerSetConf);
+//                    } else {
+//                        threadComponent.setAdvertThread(centerSetConf);
+//                        threadComponent.closeAdvertThread();
+//                    }
+//                }
+//            } else {
+//                if (centerSetConf.getAdvert().isIs_open()) {
+//                    threadComponent.startAdvertThread(centerSetConf);
+//                } else {
+//                    threadComponent.setAdvertThread(centerSetConf);
+//                    threadComponent.closeAdvertThread();
+//                }
+//            }
             // autoreplythread
-            if (centerSetConf.getReply().isIs_live_open()) {
-                if (PublicDataConf.lIVE_STATUS != 1) {
-                    threadComponent.closeAutoReplyThread();
-                } else {
-                    if (centerSetConf.getReply().isIs_open()) {
-                        threadComponent.startAutoReplyThread(centerSetConf);
-                    } else {
-                        threadComponent.setAutoReplyThread(centerSetConf);
-                        threadComponent.closeAutoReplyThread();
-                    }
-                }
-            } else {
-                if (centerSetConf.getReply().isIs_open()) {
-                    threadComponent.startAutoReplyThread(centerSetConf);
-                } else {
-                    threadComponent.setAutoReplyThread(centerSetConf);
-                    threadComponent.closeAutoReplyThread();
-                }
-            }
+            centerSetConf.getReply().start(threadComponent);
+//            if (centerSetConf.getReply().isIs_live_open()) {
+//                if (PublicDataConf.lIVE_STATUS != 1) {
+//                    threadComponent.closeAutoReplyThread();
+//                } else {
+//                    if (centerSetConf.getReply().isIs_open()) {
+//                        threadComponent.startAutoReplyThread(centerSetConf);
+//                    } else {
+//                        threadComponent.setAutoReplyThread(centerSetConf);
+//                        threadComponent.closeAutoReplyThread();
+//                    }
+//                }
+//            } else {
+//                if (centerSetConf.getReply().isIs_open()) {
+//                    threadComponent.startAutoReplyThread(centerSetConf);
+//                } else {
+//                    threadComponent.setAutoReplyThread(centerSetConf);
+//                    threadComponent.closeAutoReplyThread();
+//                }
+//            }
             // useronlinethread && smallHeartThread
             if (centerSetConf.isIs_online()) {
                 threadComponent.startUserOnlineThread();
@@ -279,9 +279,9 @@ public class SetServiceImpl implements SetService {
             }
             // sendbarragethread
             if (PublicDataConf.advertThread == null
-                    && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_followThank)
-                    && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_welcomeThank)
-                    && !PublicDataConf.parseMessageThread.getMessageControlMap().get(ShieldMessage.is_giftThank)
+                    && !PublicDataConf.centerSetConf.getFollow().is_followThank()
+                    && !PublicDataConf.centerSetConf.getWelcome().is_welcomeThank()
+                    && !PublicDataConf.centerSetConf.getThank_gift().is_giftThank()
                     && PublicDataConf.autoReplyThread == null) {
                 threadComponent.closeSendBarrageThread();
                 PublicDataConf.init_send();
@@ -289,6 +289,7 @@ public class SetServiceImpl implements SetService {
                 threadComponent.startSendBarrageThread();
             }
         } else {
+            //没有登录
             PublicDataConf.init_user();
             threadComponent.closeUser();
         }

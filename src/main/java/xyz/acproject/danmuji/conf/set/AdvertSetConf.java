@@ -1,5 +1,9 @@
 package xyz.acproject.danmuji.conf.set;
 
+import org.apache.commons.lang3.StringUtils;
+import xyz.acproject.danmuji.component.ThreadComponent;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+
 import java.io.Serializable;
 
 /**
@@ -92,9 +96,34 @@ public class AdvertSetConf implements Serializable{
 	public void setAdverts(String adverts) {
 		this.adverts = adverts;
 	}
-	
-	
-	
+
+
+	//方法区
+
+	public void start(ThreadComponent threadComponent){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return;
+		}
+		if (is_live_open) {
+			if (PublicDataConf.lIVE_STATUS != 1) {
+				threadComponent.closeAdvertThread();
+			} else {
+				if (is_open) {
+					threadComponent.startAdvertThread(this);
+				} else {
+					threadComponent.setAdvertThread(this);
+					threadComponent.closeAdvertThread();
+				}
+			}
+		} else {
+			if (is_open) {
+				threadComponent.startAdvertThread(this);
+			} else {
+				threadComponent.setAdvertThread(this);
+				threadComponent.closeAdvertThread();
+			}
+		}
+	}
 	
 	
 }

@@ -1,5 +1,8 @@
 package xyz.acproject.danmuji.conf.set;
 
+import org.apache.commons.lang3.StringUtils;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+
 import java.io.Serializable;
 
 /**
@@ -85,5 +88,55 @@ public class ThankWelcomeSetConf implements Serializable {
 
     public void setWelcomes(String welcomes) {
         this.welcomes = welcomes;
+    }
+
+
+    //方法区
+    public boolean is_welcomeThank(){
+        if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+            return false;
+        }
+        if(is_live_open) {
+            //没在直播
+            if(PublicDataConf.lIVE_STATUS !=1){
+                return false;
+            }else{
+                if(is_open) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }else{
+            if(is_open) {
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    public boolean is_welcomeThank(short live_status){
+        if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+            return false;
+        }
+        if(is_live_open) {
+            //没在直播
+            if(live_status!=1){
+                return false;
+            }else{
+                if(is_open) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }else{
+            if(is_open) {
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 }

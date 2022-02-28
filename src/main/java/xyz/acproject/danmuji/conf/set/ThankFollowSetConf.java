@@ -1,5 +1,8 @@
 package xyz.acproject.danmuji.conf.set;
 
+import org.apache.commons.lang3.StringUtils;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+
 import java.io.Serializable;
 
 /**
@@ -92,7 +95,54 @@ public class ThankFollowSetConf implements Serializable{
 	}
 	
 	
-	
-	
-	
+	// 方法区
+	public boolean is_followThank(){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return false;
+		}
+		//是否开启仅在直播中运行
+		if(is_live_open) {
+			//没在直播
+			if(PublicDataConf.lIVE_STATUS !=1){
+				return false;
+			}else{
+				if(is_open) {
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			if(is_open) {
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+
+	public boolean is_followThank(short live_status){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return false;
+		}
+		//是否开启仅在直播中运行
+		if(is_live_open) {
+			//没在直播
+			if(live_status!=1){
+				return false;
+			}else{
+				if(is_open) {
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			if(is_open) {
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
 }

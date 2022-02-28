@@ -63,6 +63,7 @@ public class ParseSetStatusTools {
 	/**
 	* 等待移除
 	*/
+	@Deprecated
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,
 			short live_status) {
 		ConcurrentHashMap<ShieldMessage, Boolean> messageConcurrentHashMap = new ConcurrentHashMap<ShieldMessage, Boolean>(

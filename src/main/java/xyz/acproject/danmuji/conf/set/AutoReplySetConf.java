@@ -1,5 +1,9 @@
 package xyz.acproject.danmuji.conf.set;
 
+import org.apache.commons.lang3.StringUtils;
+import xyz.acproject.danmuji.component.ThreadComponent;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+
 import java.io.Serializable;
 import java.util.HashSet;
 
@@ -56,5 +60,33 @@ public class AutoReplySetConf implements Serializable{
 	public void setAutoReplySets(HashSet<AutoReplySet> autoReplySets) {
 		this.autoReplySets = autoReplySets;
 	}
-	
+
+
+
+	//方法区
+
+	public void start(ThreadComponent threadComponent){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return;
+		}
+		if (is_live_open) {
+			if (PublicDataConf.lIVE_STATUS != 1) {
+				threadComponent.closeAutoReplyThread();
+			} else {
+				if (is_open) {
+					threadComponent.startAutoReplyThread(this);
+				} else {
+					threadComponent.setAutoReplyThread(this);
+					threadComponent.closeAutoReplyThread();
+				}
+			}
+		} else {
+			if (is_open) {
+				threadComponent.startAutoReplyThread(this);
+			} else {
+				threadComponent.setAutoReplyThread(this);
+				threadComponent.closeAutoReplyThread();
+			}
+		}
+	}
 }

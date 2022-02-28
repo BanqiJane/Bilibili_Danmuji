@@ -344,6 +344,7 @@ public class CurrencyTools {
                             }
                         }
                     } catch (Exception e) {
+                        LOGGER.error("自动送礼异常：{}", e);
                     }
                 }
             }

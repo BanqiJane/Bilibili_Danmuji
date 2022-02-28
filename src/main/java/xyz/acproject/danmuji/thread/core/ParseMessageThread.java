@@ -7,11 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.component.ThreadComponent;
+import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
-import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
-import xyz.acproject.danmuji.conf.set.ThankWelcomeSetConf;
 import xyz.acproject.danmuji.controller.DanmuWebsocket;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeGuard;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeVip;
@@ -20,7 +18,6 @@ import xyz.acproject.danmuji.entity.danmu_data.*;
 import xyz.acproject.danmuji.entity.high_level_danmu.Hbarrage;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
 import xyz.acproject.danmuji.enums.ShieldGift;
-import xyz.acproject.danmuji.enums.ShieldMessage;
 import xyz.acproject.danmuji.file.GuardFileTools;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.returnJson.WsPackage;
@@ -38,7 +35,6 @@ import xyz.acproject.danmuji.utils.SpringUtils;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName ParseMessageThread
@@ -51,14 +47,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParseMessageThread extends Thread{
 	private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
 	public volatile boolean FLAG = false;
-	private ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap;
 	private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
 	private SetService setService = SpringUtils.getBean(SetService.class);
 	private ThreadComponent threadComponent = SpringUtils.getBean(ThreadComponent.class);
-	private ThankGiftSetConf thankGiftSetConf;
-	private ThankFollowSetConf thankFollowSetConf;
 	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
-	private ThankWelcomeSetConf thankWelcomeSetConf;
+	private CenterSetConf centerSetConf;
+
 
 	@Override
 	public void run() {
@@ -139,8 +133,7 @@ public class ParseMessageThread extends Thread{
 							array.getShort(7));
 
 					boolean is_xunzhang= true;
-					if (getMessageControlMap().get(ShieldMessage.is_barrage_anchor_shield) != null
-							&& getMessageControlMap().get(ShieldMessage.is_barrage_anchor_shield)) {
+					if (getCenterSetConf().isIs_barrage_anchor_shield()) {
 						// 房管
 						if(barrage.getMedal_room()!=(long)PublicDataConf.ROOMID)is_xunzhang=false;
 					}
@@ -153,31 +146,27 @@ public class ParseMessageThread extends Thread{
 						// 判断类型输出
 						stringBuilder.append(JodaTimeUtils.formatDateTime(barrage.getTimestamp()));
 						stringBuilder.append(":收到弹幕:");
-						if (getMessageControlMap().get(ShieldMessage.is_barrage_vip) != null
-								&& getMessageControlMap().get(ShieldMessage.is_barrage_vip)) {
+						if (getCenterSetConf().isIs_barrage_vip()) {
 							// 老爷
 								stringBuilder.append(ParseIndentityTools.parseVip(barrage));
 						}else {
 							hbarrage.setVip((short)0);
 							hbarrage.setSvip((short)0);
 						}
-						if (getMessageControlMap().get(ShieldMessage.is_barrage_guard) != null
-								&& getMessageControlMap().get(ShieldMessage.is_barrage_guard)) {
+						if (getCenterSetConf().isIs_barrage_guard()) {
 							// 舰长
 							stringBuilder.append(ParseIndentityTools.parseGuard(barrage.getUguard()));
 						}else {
 							hbarrage.setUguard((short)0);
 						}
-						if (getMessageControlMap().get(ShieldMessage.is_barrage_manager) != null
-								&& getMessageControlMap().get(ShieldMessage.is_barrage_manager)) {
+						if (getCenterSetConf().isIs_barrage_manager()) {
 							// 房管
 							stringBuilder
 									.append(ParseIndentityTools.parseManager(barrage.getUid(), barrage.getManager()));
 						}else {
 							hbarrage.setManager((short)0);
 						}
-						if (getMessageControlMap().get(ShieldMessage.is_barrage_medal) != null
-								&& getMessageControlMap().get(ShieldMessage.is_barrage_medal)) {
+						if (getCenterSetConf().isIs_barrage_medal()) {
 							// 勋章+勋章等级
 							if (!StringUtils.isEmpty(barrage.getMedal_name())) {
 								stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
@@ -189,8 +178,7 @@ public class ParseMessageThread extends Thread{
 							hbarrage.setMedal_room(null);
 							hbarrage.setMedal_anchor(null);
 						}
-						if (getMessageControlMap().get(ShieldMessage.is_barrage_ul) != null
-								&& getMessageControlMap().get(ShieldMessage.is_barrage_ul)) {
+						if (getCenterSetConf().isIs_barrage_ul()) {
 							// ul等级
 							stringBuilder.append("[").append("UL").append(barrage.getUlevel()).append("]");
 						}else {
@@ -202,8 +190,7 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append(" 它说:");
 						stringBuilder.append(barrage.getMsg());
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -246,8 +233,7 @@ public class ParseMessageThread extends Thread{
 
 				// 送普通礼物
 				case "SEND_GIFT":
-					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
-							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
+					if (getCenterSetConf().isIs_gift()) {
 						jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
 						gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
 								jsonObject.getString("giftName"), jsonObject.getInteger("num"),
@@ -270,8 +256,7 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append(" x ");
 						stringBuilder.append(gift.getNum());
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -303,15 +288,14 @@ public class ParseMessageThread extends Thread{
 						}
 					}
 					// 感谢礼物处理
-					if (gift != null && getMessageControlMap().get(ShieldMessage.is_giftThank) != null
-							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
+					if (gift != null && getCenterSetConf().getThank_gift().is_giftThank()) {
 						if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
 							if (ParseSetStatusTools.getGiftShieldStatus(
-									getThankGiftSetConf().getShield_status()) != ShieldGift.CUSTOM_RULE) {
+									getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
 								gift = ShieldGiftTools.shieldGift(gift,
 										ParseSetStatusTools
-												.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
-										getThankGiftSetConf().getGiftStrings(), null);
+												.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+										getCenterSetConf().getThank_gift().getGiftStrings(), null);
 							}
 							if (gift != null) {
 								if (!StringUtils.isEmpty(PublicDataConf.SHIELDGIFTNAME)) {
@@ -344,8 +328,7 @@ public class ParseMessageThread extends Thread{
 
 				// 上舰
 				case "GUARD_BUY":
-					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
-							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
+					if (getCenterSetConf().isIs_gift()) {
 						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
 						stringBuilder.append(JodaTimeUtils.formatDateTime(guard.getStart_time() * 1000));
 						stringBuilder.append(":有人上船:");
@@ -355,8 +338,7 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append("个月");
 						stringBuilder.append(guard.getGift_name());
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						gift = new Gift();
@@ -383,8 +365,7 @@ public class ParseMessageThread extends Thread{
 						}
 						stringBuilder.delete(0, stringBuilder.length());
 					}
-					if (getMessageControlMap().get(ShieldMessage.is_giftThank) != null
-							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
+					if (getCenterSetConf().getThank_gift().is_giftThank()) {
 						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
 							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
 							gift = new Gift();
@@ -398,8 +379,8 @@ public class ParseMessageThread extends Thread{
 							gift.setUname(guard.getUsername());
 							gift.setUid(guard.getUid());
 							gift = ShieldGiftTools.shieldGift(gift,
-									ParseSetStatusTools.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
-									getThankGiftSetConf().getGiftStrings(), null);
+									ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+									getCenterSetConf().getThank_gift().getGiftStrings(), null);
 							if (gift != null) {
 								try {
 									parseGiftSetting(gift);
@@ -411,8 +392,7 @@ public class ParseMessageThread extends Thread{
 						}
 					}
 					//开启舰长存放本地
-					if (getMessageControlMap().get(ShieldMessage.is_guard_local) != null
-							&& getMessageControlMap().get(ShieldMessage.is_guard_local)) {
+					if (getCenterSetConf().getThank_gift().isIs_guard_local()) {
 						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
 						Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
 						if (guardHashtable_local == null) {
@@ -421,21 +401,19 @@ public class ParseMessageThread extends Thread{
 						if (!guardHashtable_local.containsKey(guard.getUid())) {
 							GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
 
-							if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
-									&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
-								String report =StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
+							if (getCenterSetConf().getThank_gift().isIs_guard_report()) {
+								String report =StringUtils.replace(getCenterSetConf().getThank_gift().getReport(),"\n","\\n");
 								report = StringUtils.replace(report,"%uName%",guard.getUsername());
 								//礼品码
-								if (getMessageControlMap().get(ShieldMessage.is_giftCode) != null
-										&& getMessageControlMap().get(ShieldMessage.is_giftCode)
-										&& !CollectionUtils.isEmpty(PublicDataConf.centerSetConf.getThank_gift().getCodeStrings())) {
+								if (getCenterSetConf().getThank_gift().isIs_gift_code()
+										&& !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
 									report = StringUtils.replace(report,"%giftCode%",this.sendCode());
 								}
 								try {
 //									if (PublicDataConf.ROOMID == 5067) {
-									if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+									if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
 										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-											PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
+											PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
 											synchronized (PublicDataConf.sendBarrageThread) {
 												PublicDataConf.sendBarrageThread.notify();
 											}
@@ -455,24 +433,22 @@ public class ParseMessageThread extends Thread{
 
 						}
 					} else {
-						if (getMessageControlMap().get(ShieldMessage.is_guard_report) != null
-								&& getMessageControlMap().get(ShieldMessage.is_guard_report)) {
+						if (getCenterSetConf().getThank_gift().isIs_guard_report()) {
 							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-							String report =StringUtils.replace(PublicDataConf.centerSetConf.getThank_gift().getReport(),"\n","\\n");
+							String report =StringUtils.replace(getCenterSetConf().getThank_gift().getReport(),"\n","\\n");
 							report = StringUtils.replace(report,"%uName%",guard.getUsername());
 							//礼品码
-							if (getMessageControlMap().get(ShieldMessage.is_giftCode) != null
-									&& getMessageControlMap().get(ShieldMessage.is_giftCode)
-									&& !CollectionUtils.isEmpty(PublicDataConf.centerSetConf.getThank_gift().getCodeStrings())) {
+							if (getCenterSetConf().getThank_gift().isIs_gift_code()
+									&& !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
 								report = StringUtils.replace(report,"%giftCode%",this.sendCode());
 							}else{
 								report = StringUtils.replace(report,"%giftCode%","");
 							}
 							try {
 //								if (PublicDataConf.ROOMID == 5067) {
-								if (!StringUtils.isEmpty(getThankGiftSetConf().getReport_barrage().trim())) {
+								if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
 									if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-										PublicDataConf.barrageString.add(getThankGiftSetConf().getReport_barrage());
+										PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
 									}
 									synchronized (PublicDataConf.sendBarrageThread) {
 										PublicDataConf.sendBarrageThread.notify();
@@ -505,8 +481,7 @@ public class ParseMessageThread extends Thread{
 
 				// 醒目留言
 				case "SUPER_CHAT_MESSAGE":
-					if (getMessageControlMap().get(ShieldMessage.is_gift) != null
-							&& getMessageControlMap().get(ShieldMessage.is_gift)) {
+					if (getCenterSetConf().isIs_gift()) {
 						superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
 						stringBuilder.append(JodaTimeUtils.formatDateTime(superChat.getStart_time() * 1000));
 						stringBuilder.append(":收到留言:");
@@ -520,8 +495,7 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append(superChat.getMessage());
 						superChat.setTime(ParseIndentityTools.parseTime(superChat.getTime()));
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -539,8 +513,7 @@ public class ParseMessageThread extends Thread{
 
 						stringBuilder.delete(0, stringBuilder.length());
 					}
-					if (getMessageControlMap().get(ShieldMessage.is_giftThank) != null
-							&& getMessageControlMap().get(ShieldMessage.is_giftThank)) {
+					if (getCenterSetConf().getThank_gift().is_giftThank()) {
 						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
 							superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
 							gift = new Gift();
@@ -558,8 +531,8 @@ public class ParseMessageThread extends Thread{
 							gift.setUname(superChat.getUser_info().getUname());
 							gift.setUid(superChat.getUid());
 							gift = ShieldGiftTools.shieldGift(gift,
-									ParseSetStatusTools.getGiftShieldStatus(getThankGiftSetConf().getShield_status()),
-									getThankGiftSetConf().getGiftStrings(), null);
+									ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+									getCenterSetConf().getThank_gift().getGiftStrings(), null);
 							if (gift != null) {
 								try {
 									parseGiftSetting(gift);
@@ -594,16 +567,14 @@ public class ParseMessageThread extends Thread{
 					 * System.out.println(JodaTimeUtils.getCurrentTimeString()+":欢迎月费老爷:"+welcomeVip
 					 * .getUname()+" 进入直播间"); }
 					 */
-					if (getMessageControlMap().get(ShieldMessage.is_welcome) != null
-							&& getMessageControlMap().get(ShieldMessage.is_welcome)) {
+					if (getCenterSetConf().isIs_welcome()) {
 						welcomeVip = JSONObject.parseObject(jsonObject.getString("data"), WelcomeVip.class);
 						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						stringBuilder.append(":欢迎老爷:");
 						stringBuilder.append(welcomeVip.getUname());
 						stringBuilder.append(" 进入直播间");
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -627,8 +598,7 @@ public class ParseMessageThread extends Thread{
 				// 欢迎舰长进入直播间
 				case "WELCOME_GUARD":
 
-					if (getMessageControlMap().get(ShieldMessage.is_welcome) != null
-							&& getMessageControlMap().get(ShieldMessage.is_welcome)) {
+					if (getCenterSetConf().isIs_welcome()) {
 						welcomeGuard = JSONObject.parseObject(jsonObject.getString("data"), WelcomeGuard.class);
 						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						switch (welcomeGuard.getGuard_level()) {
@@ -645,8 +615,7 @@ public class ParseMessageThread extends Thread{
 						stringBuilder.append(welcomeGuard.getUsername());
 						stringBuilder.append(" 进入直播间");
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -678,8 +647,7 @@ public class ParseMessageThread extends Thread{
 
 				// 禁言消息
 				case "ROOM_BLOCK_MSG":
-					if (getMessageControlMap().get(ShieldMessage.is_block) != null
-							&& getMessageControlMap().get(ShieldMessage.is_block)) {
+					if (getCenterSetConf().isIs_block()) {
 						blockMessage = JSONObject.parseObject(jsonObject.getString("data"), BlockMessage.class);
 						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
 						stringBuilder.append(":禁言消息:");
@@ -692,8 +660,7 @@ public class ParseMessageThread extends Thread{
 							stringBuilder.append("已被管理员禁言");
 						}
 						//控制台打印
-						if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-								&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+						if (getCenterSetConf().isIs_cmd()) {
 						System.out.println(stringBuilder.toString());
 						}
 						try {
@@ -781,8 +748,7 @@ public class ParseMessageThread extends Thread{
 					if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
 						try {
 							//屏蔽礼物
-							if (getMessageControlMap().get(ShieldMessage.is_giftShield) != null
-									&& getMessageControlMap().get(ShieldMessage.is_giftShield)) {
+							if (getCenterSetConf().getThank_gift().isIs_tx_shield()) {
 								if (PublicDataConf.parsethankGiftThread != null
 										&& !PublicDataConf.parsethankGiftThread.TFLAG
 										&& !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
@@ -806,8 +772,7 @@ public class ParseMessageThread extends Thread{
 								}
 							}
 							//开启天选 屏蔽关注
-							if (getMessageControlMap().get(ShieldMessage.is_followShield) != null
-									&& getMessageControlMap().get(ShieldMessage.is_followShield)) {
+							if (getCenterSetConf().getFollow().isIs_tx_shield()) {
 								if (PublicDataConf.parsethankFollowThread != null
 										&& !PublicDataConf.parsethankFollowThread.FLAG
 										&& !PublicDataConf.followShieldThread.getState().toString()
@@ -825,8 +790,7 @@ public class ParseMessageThread extends Thread{
 								}
 							}
 							//开启天选 屏蔽欢迎
-							if (getMessageControlMap().get(ShieldMessage.is_welcomeShield) != null
-									&& getMessageControlMap().get(ShieldMessage.is_welcomeShield)) {
+							if (getCenterSetConf().getWelcome().isIs_tx_shield()) {
 								if (PublicDataConf.parseThankWelcomeThread != null
 										&& !PublicDataConf.parseThankWelcomeThread.FLAG
 										&& !PublicDataConf.welcomeShieldThread.getState().toString()
@@ -1071,7 +1035,7 @@ public class ParseMessageThread extends Thread{
 //					room_id = jsonObject.getLong("roomid");
 //					if (room_id == PublicDataConf.ROOMID) {
 					// 仅在直播有效 广告线程 改为配置文件
-					setService.holdSet(PublicDataConf.centerSetConf);
+					setService.holdSet(getCenterSetConf());
 					PublicDataConf.IS_ROOM_POPULARITY = true;
 //					LOGGER.debug("直播开启:::" + message);
 					break;
@@ -1089,7 +1053,7 @@ public class ParseMessageThread extends Thread{
 				// 直播准备中(或者是关闭直播)
 				case "PREPARING":
 					PublicDataConf.lIVE_STATUS = 0;
-					setService.holdSet(PublicDataConf.centerSetConf);
+					setService.holdSet(getCenterSetConf());
 					PublicDataConf.IS_ROOM_POPULARITY = false;
 //					LOGGER.debug("直播准备中(或者是关闭直播):::" + message);
 					break;
@@ -1102,16 +1066,14 @@ public class ParseMessageThread extends Thread{
 				// msg_type 1 为进入直播间 2 为关注 3为分享直播间
 				case "INTERACT_WORD":
 					// 关注
-					if (getMessageControlMap().get(ShieldMessage.is_follow) != null
-							&& getMessageControlMap().get(ShieldMessage.is_follow)) {
+					if (getCenterSetConf().isIs_follow()) {
 						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 						if (msg_type == 2) {
 							interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
 							stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
 									.append(interact.getUname()).append(" 关注了直播间");
 							//控制台打印
-							if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-									&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+							if (getCenterSetConf().isIs_cmd()) {
 							System.out.println(stringBuilder.toString());
 							}
 							//日志
@@ -1131,8 +1093,7 @@ public class ParseMessageThread extends Thread{
 							stringBuilder.delete(0, stringBuilder.length());
 						}
 					}
-					if (getMessageControlMap().get(ShieldMessage.is_followThank) != null
-							&& getMessageControlMap().get(ShieldMessage.is_followThank)) {
+					if (getCenterSetConf().getFollow().is_followThank()) {
 						if (!PublicDataConf.ISSHIELDFOLLOW) {
 							msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 							if (msg_type == 2) {
@@ -1147,16 +1108,14 @@ public class ParseMessageThread extends Thread{
 						}
 					}
 					//欢迎进入直播间
-					if(getMessageControlMap().get(ShieldMessage.is_welcome_all) != null
-							&& getMessageControlMap().get(ShieldMessage.is_welcome_all)) {
+					if(getCenterSetConf().isIs_welcome_all()) {
 						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 						if (msg_type == 1) {
 							interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
 							stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的访客:")
 									.append(interact.getUname()).append(" 进入了直播间");
 							//控制台打印
-							if (getMessageControlMap().get(ShieldMessage.is_cmd) != null
-									&& getMessageControlMap().get(ShieldMessage.is_cmd)) {
+							if (getCenterSetConf().isIs_cmd()) {
 								System.out.println(stringBuilder.toString());
 							}
 							//日志
@@ -1176,8 +1135,7 @@ public class ParseMessageThread extends Thread{
 							stringBuilder.delete(0, stringBuilder.length());
 						}
 					}
-					if(getMessageControlMap().get(ShieldMessage.is_welcomeThank) != null
-							&& getMessageControlMap().get(ShieldMessage.is_welcomeThank)){
+					if(getCenterSetConf().getWelcome().is_welcomeThank()){
 						if (!PublicDataConf.ISSHIELDWELCOME) {
 							msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 							if (msg_type == 1) {
@@ -1233,9 +1191,9 @@ public class ParseMessageThread extends Thread{
 	//获取发送礼物code
 	public String sendCode(){
 		String code = "";
-		synchronized (PublicDataConf.centerSetConf) {
+		synchronized (getCenterSetConf()) {
 			code = CurrencyTools.sendGiftCode();
-			setService.changeSet(PublicDataConf.centerSetConf);
+			setService.changeSet(getCenterSetConf());
 		}
 		return code;
 	}
@@ -1245,7 +1203,7 @@ public class ParseMessageThread extends Thread{
 	public void DelayGiftTimeSetting() {
 		synchronized (PublicDataConf.parsethankGiftThread) {
 			if (PublicDataConf.parsethankGiftThread != null) {
-				threadComponent.startParseThankGiftThread(getThankGiftSetConf(), getThankGiftRuleSets());
+				threadComponent.startParseThankGiftThread(getCenterSetConf().getThank_gift(), getThankGiftRuleSets());
 //				if (PublicDataConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankGiftThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
@@ -1319,7 +1277,7 @@ public class ParseMessageThread extends Thread{
 	public void DelayFollowTimeSetting() {
 		synchronized (PublicDataConf.parsethankFollowThread) {
 			if (PublicDataConf.parsethankFollowThread != null) {
-				threadComponent.startParseThankFollowThread(getThankFollowSetConf());
+				threadComponent.startParseThankFollowThread(getCenterSetConf().getFollow());
 //				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
@@ -1352,7 +1310,7 @@ public class ParseMessageThread extends Thread{
 	public void DelayWelcomeTimeSetting() {
 		synchronized (PublicDataConf.parseThankWelcomeThread) {
 			if (PublicDataConf.parseThankWelcomeThread != null) {
-				threadComponent.startParseThankWelcomThread(getThankWelcomeSetConf());
+				threadComponent.startParseThankWelcomThread(getCenterSetConf().getWelcome());
 //				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
@@ -1381,29 +1339,14 @@ public class ParseMessageThread extends Thread{
 			}
 		}
 	}
-	
-	public ThankGiftSetConf getThankGiftSetConf() {
-		return thankGiftSetConf;
+
+	public CenterSetConf getCenterSetConf() {
+		if(centerSetConf==null)return PublicDataConf.centerSetConf;
+		return centerSetConf;
 	}
 
-	public void setThankGiftSetConf(ThankGiftSetConf thankGiftSetConf) {
-		this.thankGiftSetConf = thankGiftSetConf;
-	}
-
-	public ThankFollowSetConf getThankFollowSetConf() {
-		return thankFollowSetConf;
-	}
-
-	public void setThankFollowSetConf(ThankFollowSetConf thankFollowSetConf) {
-		this.thankFollowSetConf = thankFollowSetConf;
-	}
-
-	public ConcurrentHashMap<ShieldMessage, Boolean> getMessageControlMap() {
-		return messageControlMap;
-	}
-
-	public void setMessageControlMap(ConcurrentHashMap<ShieldMessage, Boolean> messageControlMap) {
-		this.messageControlMap = messageControlMap;
+	public void setCenterSetConf(CenterSetConf centerSetConf) {
+		this.centerSetConf = centerSetConf;
 	}
 
 	public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
@@ -1414,13 +1357,6 @@ public class ParseMessageThread extends Thread{
 		this.thankGiftRuleSets = thankGiftRuleSets;
 	}
 
-	public ThankWelcomeSetConf getThankWelcomeSetConf() {
-		return thankWelcomeSetConf;
-	}
-
-	public void setThankWelcomeSetConf(ThankWelcomeSetConf thankWelcomeSetConf) {
-		this.thankWelcomeSetConf = thankWelcomeSetConf;
-	}
 
 	public static String parseCmd(String cmd) {
 		if (cmd.startsWith("DANMU_MSG")) {

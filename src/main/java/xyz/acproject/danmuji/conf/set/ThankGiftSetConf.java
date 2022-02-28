@@ -1,5 +1,8 @@
 package xyz.acproject.danmuji.conf.set;
 
+import org.apache.commons.lang3.StringUtils;
+import xyz.acproject.danmuji.conf.PublicDataConf;
+
 import java.io.Serializable;
 import java.util.HashSet;
 
@@ -194,5 +197,55 @@ public class ThankGiftSetConf implements Serializable{
 	}
 	public void setIs_num(boolean is_num) {
 		this.is_num = is_num;
+	}
+
+
+	//方法区
+	public boolean is_giftThank(){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return false;
+		}
+		if(is_live_open) {
+			//没在直播
+			if(PublicDataConf.lIVE_STATUS !=1){
+				return false;
+			}else{
+				if(is_open) {
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			if(is_open) {
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+
+	public boolean is_giftThank(short live_status){
+		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+			return false;
+		}
+		if(is_live_open) {
+			//没在直播
+			if(live_status!=1){
+				return false;
+			}else{
+				if(is_open) {
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			if(is_open) {
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
 }
