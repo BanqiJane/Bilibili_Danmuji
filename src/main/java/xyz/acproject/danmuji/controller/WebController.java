@@ -244,7 +244,7 @@ public class WebController {
             if(centerSetConf.getAuto_gift()!=null&&centerSetConf.getAuto_gift().isIs_open()&&
                     !centerSetConf.getAuto_gift().getTime().equals(PublicDataConf.centerSetConf.getAuto_gift().getTime())){
                 SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
-                taskRegisterComponent.removeTask(autoSendGiftTask);
+                taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
             }
             checkService.changeSet(centerSetConf);
         } catch (Exception e) {
