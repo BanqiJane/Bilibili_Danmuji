@@ -80,6 +80,8 @@ public class CenterSetConf implements Serializable {
     private ThankWelcomeSetConf welcome;
     //是否开启自动送礼对象体
     private AutoSendGiftConf auto_gift;
+    //是否开启隐私模式 不再调用服务器
+    private PrivacySetConf privacy;
 
 
     public CenterSetConf() {
@@ -88,7 +90,7 @@ public class CenterSetConf implements Serializable {
     }
 
     public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,
-                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift) {
+                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift,PrivacySetConf privacy) {
         super();
         this.thank_gift = thank_gift;
         this.advert = advert;
@@ -97,10 +99,11 @@ public class CenterSetConf implements Serializable {
         this.clock_in = clock_in;
         this.welcome = welcome;
         this.auto_gift= auto_gift;
+        this.privacy = privacy;
     }
 
 
-    public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager, boolean is_barrage_medal, boolean is_barrage_ul,boolean is_barrage_anchor_shield, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_welcome_all, boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto,boolean win_auto_openSet, boolean is_manager_login, String manager_key, int manager_maxSize, boolean is_online, boolean is_sh, boolean is_dosign, String sign_time, ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift) {
+    public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager, boolean is_barrage_medal, boolean is_barrage_ul,boolean is_barrage_anchor_shield, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_welcome_all, boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto,boolean win_auto_openSet, boolean is_manager_login, String manager_key, int manager_maxSize, boolean is_online, boolean is_sh, boolean is_dosign, String sign_time, ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift,PrivacySetConf privacy) {
         this.is_barrage_guard = is_barrage_guard;
         this.is_barrage_vip = is_barrage_vip;
         this.is_barrage_manager = is_barrage_manager;
@@ -131,6 +134,7 @@ public class CenterSetConf implements Serializable {
         this.clock_in = clock_in;
         this.welcome = welcome;
         this.auto_gift= auto_gift;
+        this.privacy = privacy;
     }
 
     public boolean isIs_barrage_guard() {
@@ -374,7 +378,16 @@ public class CenterSetConf implements Serializable {
         this.auto_gift = auto_gift;
     }
 
+    public PrivacySetConf getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(PrivacySetConf privacy) {
+        this.privacy = privacy;
+    }
+
     public String toJson() {
-        return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul,is_barrage_anchor_shield, is_block, is_gift, is_welcome, is_welcome_all, is_follow, is_log, is_cmd, roomid, is_auto,win_auto_openSet,is_manager_login,manager_key,manager_maxSize, is_online, is_sh, is_dosign,sign_time ,thank_gift, advert, follow, reply, clock_in, welcome,auto_gift));
+        return FastJsonUtils.toJson(this);
+       // return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul,is_barrage_anchor_shield, is_block, is_gift, is_welcome, is_welcome_all, is_follow, is_log, is_cmd, roomid, is_auto,win_auto_openSet,is_manager_login,manager_key,manager_maxSize, is_online, is_sh, is_dosign,sign_time ,thank_gift, advert, follow, reply, clock_in, welcome,auto_gift,privacy));
     }
 }

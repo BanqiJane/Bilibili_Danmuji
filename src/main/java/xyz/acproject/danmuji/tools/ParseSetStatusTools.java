@@ -252,6 +252,9 @@ public class ParseSetStatusTools {
 			if (centerSetConf.getAuto_gift() == null) {
 				centerSetConf.setAuto_gift(new AutoSendGiftConf());
 			}
+			if(centerSetConf.getPrivacy()==null){
+				centerSetConf.setPrivacy(new PrivacySetConf());
+			}
 		}
 		return centerSetConf;
 	}

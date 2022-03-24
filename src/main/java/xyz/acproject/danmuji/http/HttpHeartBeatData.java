@@ -205,6 +205,7 @@ public class HttpHeartBeatData {
 //		String[] devices = {CurrencyTools.deviceHash(),CurrencyTools.getUUID()};
 		long ts =System.currentTimeMillis();
 		xData.setId(ids);
+		// s参数处理
 		final CompletableFuture<String> completableFuture =CompletableFuture.supplyAsync(()->{
 			String s = null;
 			long startTime = xData.getStartTime();

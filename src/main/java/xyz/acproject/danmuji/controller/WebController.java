@@ -2,6 +2,8 @@ package xyz.acproject.danmuji.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +58,7 @@ public class WebController {
     @Resource
     private DanmujiInitConfig danmujiInitConfig;
     private TaskRegisterComponent taskRegisterComponent;
+    private static final Logger LOGGER = LogManager.getLogger(WebController.class);
 
     @RequestMapping(value = {"/", "index"})
     public String index(HttpServletRequest req, Model model) {
@@ -399,6 +402,7 @@ public class WebController {
                 checkService.changeSet(centerSetConf);
             }
         } catch (Exception e) {
+            LOGGER.error("setImport error", e);
             return Response.success(1, req);
         }
         return Response.success(0, req);

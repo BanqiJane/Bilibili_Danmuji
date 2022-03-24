@@ -74,7 +74,7 @@ public class DanmujiInitConfig {
         //初始化配置文件开始
         if (PublicDataConf.centerSetConf == null) {
             PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
-                    new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf(),new AutoSendGiftConf());
+                    new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf(),new AutoSendGiftConf(),new PrivacySetConf());
         } else {
             if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
                 PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
@@ -101,6 +101,9 @@ public class DanmujiInitConfig {
         }
         if(PublicDataConf.centerSetConf.getAuto_gift()==null){
             PublicDataConf.centerSetConf.setAuto_gift(new AutoSendGiftConf());
+        }
+        if(PublicDataConf.centerSetConf.getPrivacy()==null){
+            PublicDataConf.centerSetConf.setPrivacy(new PrivacySetConf());
         }
         //初始化配置文件结束
         hashtable.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
