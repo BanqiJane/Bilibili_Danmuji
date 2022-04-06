@@ -308,11 +308,17 @@ public class CurrencyTools {
             PublicDataConf.autoSendGiftMap.put(30607, new AutoSendGift(30607, "小心心", 50, (short) 0));
         }
         //房间集合-轮询勋章(获得对应房间勋章差值) -> 获取礼物包裹(过期排序，计算勋章亲密度)
-        if(StringUtils.isBlank(PublicDataConf.USERCOOKIE))return;
+        if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+            LOGGER.info("自动给送礼 -> 未登录");
+            return;
+        }
         if(!PublicDataConf.centerSetConf.getAuto_gift().isIs_open()||StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))return;
         List<UserMedal> userMedals = HttpUserData.httpGetMedalList();
         List<UserMedal> wait_send_rooms = new LinkedList<>();
-        if (CollectionUtils.isEmpty(userMedals)) return;
+        if (CollectionUtils.isEmpty(userMedals)){
+            LOGGER.info("自动给送礼 -> 获取勋章列表失败");
+            return;
+        }
         //礼物包 姑且写死？
         List<UserBag> userBagList = HttpUserData.httpGetBagList(5067l);
         if (userBagList != null) {
@@ -320,15 +326,18 @@ public class CurrencyTools {
                     PublicDataConf.autoSendGiftMap.containsKey(userBag.getGift_id())
             ).collect(Collectors.toList());
         }
-        if (CollectionUtils.isEmpty(userBagList)) return;
+        if (CollectionUtils.isEmpty(userBagList)){
+            LOGGER.info("自动给送礼 -> 获取礼物列表失败");
+            return;
+        }
         String[] roomidStrs =   PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
         for (String roomidStr : roomidStrs) {
             if (StringUtils.isNumeric(roomidStr)) {
                 long roomid = Long.valueOf(roomidStr);
                 //先查找  如果不是短号 就去获取
-                Optional<UserMedal> userMedalOptional = userMedals.stream().filter(um -> {
-                    return roomid == um.getRoomid();
-                }).findFirst();
+                Optional<UserMedal> userMedalOptional = userMedals.stream().filter(um ->
+                    roomid == um.getRoomid()
+                ).findFirst();
                 if (userMedalOptional.isPresent()) {
                     wait_send_rooms.add(userMedalOptional.get());
                 } else {
@@ -359,7 +368,7 @@ public class CurrencyTools {
                 .collect(Collectors.toList());
         long total = userBagList.stream().map(userBag -> (long) userBag.getFeed() * (long) userBag.getGift_num()).collect(Collectors.summingLong(Long::longValue));
         //未来可能添加 补足策略 和先送策略 现在就先送策略把
-
+        LOGGER.debug("自动给送礼 -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}",total,wait_send_rooms, userBagList);
         for (UserMedal userMedal : wait_send_rooms) {
             if (CollectionUtils.isEmpty(userBagList)) break;
             if (userMedal.getToday_feed() == userMedal.getDay_limit().intValue()) continue;

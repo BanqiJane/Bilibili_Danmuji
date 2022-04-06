@@ -14,4 +14,19 @@ public class PrivacySetConf {
     private String small_heart_url = "";
 
 
+    public boolean isIs_open() {
+        return is_open;
+    }
+
+    public void setIs_open(boolean is_open) {
+        this.is_open = is_open;
+    }
+
+    public String getSmall_heart_url() {
+        return small_heart_url;
+    }
+
+    public void setSmall_heart_url(String small_heart_url) {
+        this.small_heart_url = small_heart_url;
+    }
 }

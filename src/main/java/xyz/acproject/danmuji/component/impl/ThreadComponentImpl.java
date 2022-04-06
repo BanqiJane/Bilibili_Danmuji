@@ -294,7 +294,11 @@ public class ThreadComponentImpl implements ThreadComponent {
 		if(null==PublicDataConf.userOnlineHeartThread) {
 			return false;
 		}
-		PublicDataConf.SMALLHEART_ADRESS = HttpOtherData.httpPostEncsUrl();
+		if(PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+			PublicDataConf.SMALLHEART_ADRESS = PublicDataConf.centerSetConf.getPrivacy().getSmall_heart_url();
+		}else{
+			PublicDataConf.SMALLHEART_ADRESS = HttpOtherData.httpPostEncsUrl();
+		}
 		PublicDataConf.smallHeartThread = new SmallHeartThread();
 		PublicDataConf.smallHeartThread.FLAG = false;
 		PublicDataConf.smallHeartThread.start();
