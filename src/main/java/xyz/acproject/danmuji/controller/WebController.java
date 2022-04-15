@@ -36,9 +36,8 @@ import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -382,6 +381,26 @@ public class WebController {
             return Response.success(1, req);
         }
     }
+
+    @ResponseBody
+    @GetMapping(value = "/setExportWeb")
+    public void setExportWeb(HttpServletRequest req,HttpServletResponse response) throws Exception {
+        File file = JsonFileTools.createJsonFileReturnFile(PublicDataConf.centerSetConf.toJson());
+        FileInputStream fileInputStream = new FileInputStream(file);
+        InputStream fis = new BufferedInputStream(fileInputStream);
+        byte[] buffer = new byte[fis.available()];
+        fis.read(buffer);
+        fis.close();
+        response.reset();
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("set.json", "UTF-8"));
+        response.addHeader("Content-Length", "" + file.length());
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        response.setContentType("application/octet-stream");
+        outputStream.write(buffer);
+        outputStream.flush();
+    }
+
 
     //配置文件导入
     @ResponseBody

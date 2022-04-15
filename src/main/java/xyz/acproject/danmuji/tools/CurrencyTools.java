@@ -331,6 +331,7 @@ public class CurrencyTools {
             return;
         }
         String[] roomidStrs =   PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
+        LOGGER.debug("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;",PublicDataConf.centerSetConf.getAuto_gift(),roomidStrs);
         for (String roomidStr : roomidStrs) {
             if (StringUtils.isNumeric(roomidStr)) {
                 long roomid = Long.valueOf(roomidStr);
@@ -368,7 +369,7 @@ public class CurrencyTools {
                 .collect(Collectors.toList());
         long total = userBagList.stream().map(userBag -> (long) userBag.getFeed() * (long) userBag.getGift_num()).collect(Collectors.summingLong(Long::longValue));
         //未来可能添加 补足策略 和先送策略 现在就先送策略把
-        LOGGER.debug("自动给送礼 -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}",total,wait_send_rooms, userBagList);
+        LOGGER.debug("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}",total,wait_send_rooms, userBagList);
         for (UserMedal userMedal : wait_send_rooms) {
             if (CollectionUtils.isEmpty(userBagList)) break;
             if (userMedal.getToday_feed() == userMedal.getDay_limit().intValue()) continue;

@@ -18,7 +18,7 @@ public class TimeTaskConfig {
         try {
             setService.holdSet(PublicDataConf.centerSetConf);
         } catch (Exception e) {
-            LOGGER.error("定时,检查配置文件出错");
+            LOGGER.error("定时,检查配置文件出错 -> {}",e);
         }
     }
 

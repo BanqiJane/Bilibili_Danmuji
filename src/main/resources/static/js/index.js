@@ -378,6 +378,9 @@ $(document).on('click', '.import-set', function () {
 $(document).on('click', '.export-set', function () {
     method.setExprot();
 });
+$(document).on('click', '.export-set-web', function () {
+    method.setExprotWeb();
+});
 $(document).on('click', '.is_clockin', function () {
     if ($(".is_clockin").is(':checked')) {
         $(".clockin_barrage").show();
@@ -1271,6 +1274,9 @@ const method = {
                 }
             }
         });
+    },
+    setExprotWeb:function (){
+        window.open(window.location.origin+"/setExportWeb");
     },
 //导入附件
     importDfFile: function () {
