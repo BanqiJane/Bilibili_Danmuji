@@ -99,6 +99,10 @@ $(function () {
             $(this).attr("disabled", true);
         }
     });
+    $(document).on('click', '#danmu_open', function () {
+        let url_start = window.location.host;
+        $(".connect-docket").val("ws://" + url_start + "/danmu/sub");
+    });
     $('body').click(function (e) {
         let target = $(e.target);
         if (!target.is('.danmu-child-li')) {
@@ -136,6 +140,7 @@ $(document).on(
             "clock_in": {},
             "welcome": {},
             "auto_gift":{},
+            "privacy":{},
         };
         set.is_auto = $(".is_autoStart").is(
             ':checked');
@@ -241,6 +246,8 @@ $(document).on(
         set.auto_gift.is_open = $(".is_autoGift_open").is(':checked');
         set.auto_gift.time = method.time_parse($(".autoGift_time").val());
         set.auto_gift.room_id = $(".autoGift_roomids").val();
+        set.privacy.is_open = $(".is_privacy_open").is(':checked');
+        set.privacy.small_heart_url = $(".privacy_heart_url").val();
         /*处理验证?*/
         if (set.clock_in.is_open) {
             set.clock_in.sign_day = (new Date()).getTime();
@@ -621,6 +628,7 @@ $(document).on('click', '.btn-closeri', function () {
     }
 });
 $(document).on('click', '#checkupdate', function () {
+    
     $(".tips-wrap").show();
     $(".tips-t").html("<span>少女祈祷中<img src='../img/loading-1.gif'></span>");
     $.when(method.checkUpdate()).done(function (data) {
@@ -918,6 +926,8 @@ const method = {
             $(".is_autoGift_open").prop('checked',set.auto_gift.is_open);
             $(".autoGift_time").val(set.auto_gift.time);
             $(".autoGift_roomids").val(set.auto_gift.room_id);
+            $(".is_privacy_open").prop('checked',set.privacy.is_open);
+            $(".privacy_heart_url").val(set.privacy.small_heart_url);
 
             /* 处理？ */
             if (Number($(".thankgift_shield_status")
@@ -1194,22 +1204,23 @@ const method = {
             }
         }
     },
-    getIp: function () {
-        let ip = null;
-        $.ajax({
-            url: '../getIp',
-            async: false,
-            cache: false,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                if (data.code == "200") {
-                    ip = data.result
-                }
-            }
-        });
-        return ip;
-    },
+    //隐私模式版本后移除
+    // getIp: function () {
+    //     let ip = null;
+    //     $.ajax({
+    //         url: '../getIp',
+    //         async: false,
+    //         cache: false,
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             if (data.code == "200") {
+    //                 ip = data.result
+    //             }
+    //         }
+    //     });
+    //     return ip;
+    // },
     delBlock: function (id) {
         $.ajax({
             url: '../del_block?id=' + id,

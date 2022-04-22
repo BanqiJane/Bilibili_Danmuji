@@ -37,6 +37,8 @@ public class SetServiceImpl implements SetService {
     private final String cookies = "ySZL4SBB";
     private ClientService clientService;
     private ThreadComponent threadComponent;
+
+    private SetService setService;
     private ServerAddressComponent serverAddressComponent;
     private TaskRegisterComponent taskRegisterComponent;
 
@@ -51,18 +53,22 @@ public class SetServiceImpl implements SetService {
         System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
         System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
         System.out.println();
-        PublicDataConf.ANNOUNCE = HttpOtherData.httpGetNewAnnounce();
+        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
         System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
-        String edition = HttpOtherData.httpGetNewEdition();
-        if (!StringUtils.isEmpty(edition)) {
-            if (!edition.equals(PublicDataConf.EDITION)) {
-                System.out.println("查询最新版本：" + edition
-                        + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
+        if(!PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+            String edition = HttpOtherData.httpGetNewEdition();
+            if (!StringUtils.isEmpty(edition)) {
+                if (!edition.equals(PublicDataConf.EDITION)) {
+                    System.out.println("查询最新版本：" + edition
+                            + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
+                } else {
+                    System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
+                }
             } else {
-                System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
+                System.out.println("查询最新版本失败,目前版本：" + PublicDataConf.EDITION);
             }
-        } else {
-            System.out.println("查询最新版本失败,打印目前版本：" + PublicDataConf.EDITION);
+        }else{
+            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + PublicDataConf.EDITION);
         }
         System.out.println();
         // 自动连接
@@ -89,57 +95,61 @@ public class SetServiceImpl implements SetService {
 
     // 保存配置文件
     public void changeSet(CenterSetConf centerSetConf) {
-        if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())) {
-            LOGGER.debug("保存配置文件成功");
-            return;
+        synchronized (centerSetConf) {
+            if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())) {
+                LOGGER.debug("保存配置文件成功");
+                return;
+            }
+            if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0) {
+                centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
+            }
+            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            BASE64Encoder base64Encoder = new BASE64Encoder();
+            if (PublicDataConf.USER != null) {
+                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            }
+            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(hashtable, "DanmujiProfile");
+            try {
+                PublicDataConf.centerSetConf = JSONObject.parseObject(
+                        new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
+                        CenterSetConf.class);
+                holdSet(centerSetConf);
+                LOGGER.debug("保存配置文件成功");
+            } catch (Exception e) {
+                // TODO: handle exception
+                LOGGER.error("保存配置文件失败:" + e);
+            }
+            base64Encoder = null;
+            hashtable.clear();
         }
-        if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0) {
-            centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
-        }
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        if (PublicDataConf.USER != null) {
-            hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
-        }
-        hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-        ProFileTools.write(hashtable, "DanmujiProfile");
-        try {
-            PublicDataConf.centerSetConf = JSONObject.parseObject(
-                    new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
-                    CenterSetConf.class);
-            holdSet(centerSetConf);
-            LOGGER.debug("保存配置文件成功");
-        } catch (Exception e) {
-            // TODO: handle exception
-            LOGGER.error("保存配置文件失败:" + e);
-        }
-        base64Encoder = null;
-        hashtable.clear();
     }
 
     public void connectSet(CenterSetConf centerSetConf) {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        if (PublicDataConf.USER != null) {
-            hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
-        }
-        hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-        ProFileTools.write(hashtable, "DanmujiProfile");
-        try {
-            PublicDataConf.centerSetConf = JSONObject.parseObject(
-                    new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
-                    CenterSetConf.class);
-            PublicDataConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(PublicDataConf.centerSetConf);
-            if (PublicDataConf.ROOMID != null) {
-                holdSet(centerSetConf);
+        synchronized (centerSetConf) {
+            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            BASE64Encoder base64Encoder = new BASE64Encoder();
+            if (PublicDataConf.USER != null) {
+                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
-            LOGGER.debug("读取配置文件历史房间成功");
-        } catch (Exception e) {
-            // TODO: handle exception
-            LOGGER.error("读取配置文件历史房间失败:" + e);
+            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(hashtable, "DanmujiProfile");
+            try {
+                PublicDataConf.centerSetConf = JSONObject.parseObject(
+                        new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
+                        CenterSetConf.class);
+                PublicDataConf.centerSetConf = ParseSetStatusTools.initCenterChildConfig(PublicDataConf.centerSetConf);
+                if (PublicDataConf.ROOMID != null) {
+                    holdSet(centerSetConf);
+                }
+                LOGGER.debug("读取配置文件历史房间成功");
+            } catch (Exception e) {
+                // TODO: handle exception
+                LOGGER.error("读取配置文件历史房间失败:" + e);
+            }
+            base64Encoder = null;
+            hashtable.clear();
         }
-        base64Encoder = null;
-        hashtable.clear();
     }
 
 
@@ -147,30 +157,35 @@ public class SetServiceImpl implements SetService {
      * 保存配置并执行
      */
     public void holdSet(CenterSetConf centerSetConf) {
-        SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
-        SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
-        SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
-        //每日签到
-        if (PublicDataConf.centerSetConf.isIs_dosign()) {
-                //移除
-//                if (!PublicDataConf.is_sign) {
+        synchronized (centerSetConf) {
+            SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
+            SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
+            SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask", "autosendgift");
+            //每日签到
+            if (PublicDataConf.centerSetConf.isIs_dosign()) {
+                //判断签到
+                boolean flag = CurrencyTools.signNow();
+                if (flag) {
+                    setService.holdSet(PublicDataConf.centerSetConf);
+                }
+//                if (PublicDataConf.is_sign) {
 //                    HttpUserData.httpGetDoSign();
 //                    PublicDataConf.is_sign = true;
 //                }
                 if (!taskRegisterComponent.hasTask(task)) {
                     taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
                 }
-        } else {
-            try {
-                taskRegisterComponent.removeTask(task);
-            } catch (Exception e) {
-                // TODO 自动生成的 catch 块
-                LOGGER.error("清理定时任务错误：" + e);
+            } else {
+                try {
+                    taskRegisterComponent.removeTask(task);
+                } catch (Exception e) {
+                    // TODO 自动生成的 catch 块
+                    LOGGER.error("清理定时任务错误：" + e);
+                }
             }
-        }
-        //每日打卡
-        if (centerSetConf.getClock_in().isIs_open()) {
-            //移除
+            //每日打卡
+            if (centerSetConf.getClock_in().isIs_open()) {
+                //移除
                 //这里开启一个匿名线程用于打卡
 //                new Thread(() -> {
 //                    List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
@@ -179,52 +194,52 @@ public class SetServiceImpl implements SetService {
 //                        HttpOtherData.httpPOSTSetClockInRecord();
 //                    }
 //                }).start();
-            if (!taskRegisterComponent.hasTask(dakatask)) {
-                taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
+                if (!taskRegisterComponent.hasTask(dakatask)) {
+                    taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
+                }
+            } else {
+                try {
+                    taskRegisterComponent.removeTask(dakatask);
+                } catch (Exception e) {
+                    // TODO 自动生成的 catch 块
+                    LOGGER.error("清理定时任务错误：" + e);
+                }
             }
-        } else {
-            try {
-                taskRegisterComponent.removeTask(dakatask);
-            } catch (Exception e) {
-                // TODO 自动生成的 catch 块
-                LOGGER.error("清理定时任务错误：" + e);
+            //每日定时自动送礼
+            if (centerSetConf.getAuto_gift().isIs_open()) {
+                if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
+                    taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
+                }
+            } else {
+                try {
+                    taskRegisterComponent.removeTask(autoSendGiftTask);
+                } catch (Exception e) {
+                    // TODO 自动生成的 catch 块
+                    LOGGER.error("清理定时任务错误：" + e);
+                }
             }
-        }
-        //每日定时自动送礼
-        if(centerSetConf.getAuto_gift().isIs_open()){
-            if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
-                taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
-            }
-        }else{
-            try {
-                taskRegisterComponent.removeTask(autoSendGiftTask);
-            } catch (Exception e) {
-                // TODO 自动生成的 catch 块
-                LOGGER.error("清理定时任务错误：" + e);
-            }
-        }
 
-        //need roomid set
-        if (PublicDataConf.ROOMID == null || PublicDataConf.ROOMID <= 0) {
-            return;
-        }
-        if (PublicDataConf.webSocketProxy == null) {
-            return;
-        }
-        if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) return;
-        // parsemessagethread start
-        threadComponent.startParseMessageThread(
-                centerSetConf);
-        // logthread
-        if (centerSetConf.isIs_log()) {
-            threadComponent.startLogThread();
-        } else {
-            threadComponent.closeLogThread();
-        }
-        // need login
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-            // advertthread
-            centerSetConf.getAdvert().start(threadComponent);
+            //need roomid set
+            if (PublicDataConf.ROOMID == null || PublicDataConf.ROOMID <= 0) {
+                return;
+            }
+            if (PublicDataConf.webSocketProxy == null) {
+                return;
+            }
+            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) return;
+            // parsemessagethread start
+            threadComponent.startParseMessageThread(
+                    centerSetConf);
+            // logthread
+            if (centerSetConf.isIs_log()) {
+                threadComponent.startLogThread();
+            } else {
+                threadComponent.closeLogThread();
+            }
+            // need login
+            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                // advertthread
+                centerSetConf.getAdvert().start(threadComponent);
 //            if (centerSetConf.getAdvert().isIs_live_open()) {
 //                if (PublicDataConf.lIVE_STATUS != 1) {
 //                    threadComponent.closeAdvertThread();
@@ -244,8 +259,8 @@ public class SetServiceImpl implements SetService {
 //                    threadComponent.closeAdvertThread();
 //                }
 //            }
-            // autoreplythread
-            centerSetConf.getReply().start(threadComponent);
+                // autoreplythread
+                centerSetConf.getReply().start(threadComponent);
 //            if (centerSetConf.getReply().isIs_live_open()) {
 //                if (PublicDataConf.lIVE_STATUS != 1) {
 //                    threadComponent.closeAutoReplyThread();
@@ -265,37 +280,38 @@ public class SetServiceImpl implements SetService {
 //                    threadComponent.closeAutoReplyThread();
 //                }
 //            }
-            // useronlinethread && smallHeartThread
-            if (centerSetConf.isIs_online()) {
-                threadComponent.startUserOnlineThread();
-                if (centerSetConf.isIs_sh() && PublicDataConf.lIVE_STATUS == 1) {
-                    threadComponent.startSmallHeartThread();
+                // useronlinethread && smallHeartThread
+                if (centerSetConf.isIs_online()) {
+                    threadComponent.startUserOnlineThread();
+                    if (centerSetConf.isIs_sh() && PublicDataConf.lIVE_STATUS == 1) {
+                        threadComponent.startSmallHeartThread();
+                    } else {
+                        threadComponent.closeSmallHeartThread();
+                    }
                 } else {
                     threadComponent.closeSmallHeartThread();
+                    threadComponent.closeUserOnlineThread();
+                }
+                // sendbarragethread
+                if (PublicDataConf.advertThread == null
+                        && !PublicDataConf.centerSetConf.getFollow().is_followThank()
+                        && !PublicDataConf.centerSetConf.getWelcome().is_welcomeThank()
+                        && !PublicDataConf.centerSetConf.getThank_gift().is_giftThank()
+                        && PublicDataConf.autoReplyThread == null) {
+                    threadComponent.closeSendBarrageThread();
+                    PublicDataConf.init_send();
+                } else {
+                    threadComponent.startSendBarrageThread();
                 }
             } else {
-                threadComponent.closeSmallHeartThread();
-                threadComponent.closeUserOnlineThread();
+                //没有登录
+                PublicDataConf.init_user();
+                threadComponent.closeUser();
             }
-            // sendbarragethread
-            if (PublicDataConf.advertThread == null
-                    && !PublicDataConf.centerSetConf.getFollow().is_followThank()
-                    && !PublicDataConf.centerSetConf.getWelcome().is_welcomeThank()
-                    && !PublicDataConf.centerSetConf.getThank_gift().is_giftThank()
-                    && PublicDataConf.autoReplyThread == null) {
-                threadComponent.closeSendBarrageThread();
-                PublicDataConf.init_send();
-            } else {
-                threadComponent.startSendBarrageThread();
+            if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
+                threadComponent.closeAll();
+                PublicDataConf.init_all();
             }
-        } else {
-            //没有登录
-            PublicDataConf.init_user();
-            threadComponent.closeUser();
-        }
-        if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
-            threadComponent.closeAll();
-            PublicDataConf.init_all();
         }
     }
 
@@ -332,5 +348,10 @@ public class SetServiceImpl implements SetService {
     @Autowired
     public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
         this.taskRegisterComponent = taskRegisterComponent;
+    }
+
+    @Autowired
+    public void setSetService(SetService setService) {
+        this.setService = setService;
     }
 }

@@ -11,8 +11,12 @@ public class PrivacySetConf {
     //是否开启
     private boolean is_open = false;
     //必须得满足弹幕姬的请求参数 和 返回参数的小心心s参数地址
-    private String small_heart_url = "";
+    private String small_heart_url = "http://biliheart-1.herokuapp.com/enc";
 
+
+    private int signDay=0;
+
+    private int clockInDay=0;
 
     public boolean isIs_open() {
         return is_open;
@@ -28,5 +32,21 @@ public class PrivacySetConf {
 
     public void setSmall_heart_url(String small_heart_url) {
         this.small_heart_url = small_heart_url;
+    }
+
+    public int getSignDay() {
+        return signDay;
+    }
+
+    public void setSignDay(int signDay) {
+        this.signDay = signDay;
+    }
+
+    public int getClockInDay() {
+        return clockInDay;
+    }
+
+    public void setClockInDay(int clockInDay) {
+        this.clockInDay = clockInDay;
     }
 }

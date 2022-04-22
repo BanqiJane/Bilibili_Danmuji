@@ -16,16 +16,16 @@ public class ClockInSetConf implements Serializable {
 
     private static final long serialVersionUID = 3354141280551660852L;
     /**
-    * 是否开启自动签到
+    * 是否开启自动打卡
     */
     private boolean is_open = false;
 
     /**
-    * 自定义签到时间
+    * 自定义打卡时间
     */
     private String time = "00:35:00";
     /**
-    * 自动签到发送的弹幕
+    * 自动打卡发送的弹幕
     */
     private String barrage = "签到";
 

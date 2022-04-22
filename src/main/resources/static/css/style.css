@@ -70,11 +70,13 @@ input {
 
 .login-qrcode-wrapper img {
 	display: flex;
+	width: 20em;
+	height: 20em;
 }
 
 .qrcode-text {
 	display: flex;
-	font-size: 12px;
+	font-size: 14px;
 	-ms-flex-pack: center !important;
 	justify-content: center !important;
 }

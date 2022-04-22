@@ -106,6 +106,12 @@ public final class JodaTimeUtils {
 	    return date;
 	}
 
+
+	public static Date getPointDateTime(Date date,Integer hour,Integer minute,Integer seconds) {
+		DateTime dt = new DateTime(getYear(date), getMoth(date), getDay(date), hour, minute, seconds);
+		return dt.toDate();
+	}
+
 	/**
 	 *
 	 * @param year 年
@@ -163,40 +169,51 @@ public final class JodaTimeUtils {
 	}
 
 	/**
-	 * 获取当前是一周星期几
+	 * 获取当前是一周星期几 返回中文
+	 * @return
+	 */
+	public static int getWeekByDateReturnNumber(Date date) {
+		if(date==null) date = new Date();
+		DateTime dts = new DateTime(date);
+		return dts.getDayOfWeek();
+	}
+
+	/**
+	 * 获取当前是一周星期几 返回数字
 	 * @return
 	 */
 	public static String getCurrentWeek() {
-	    DateTime dts = new DateTime();
-	    String week = null;
-	    switch (dts.getDayOfWeek()) {
-	    case DateTimeConstants.SUNDAY:
-	        week = "星期日";
-	        break;
+		DateTime dts = new DateTime();
+		String week = null;
+		switch (dts.getDayOfWeek()) {
+			case DateTimeConstants.SUNDAY:
+				week = "星期日";
+				break;
 
-	    case DateTimeConstants.MONDAY:
-	        week = "星期一";
-	        break;
+			case DateTimeConstants.MONDAY:
+				week = "星期一";
+				break;
 
-	    case DateTimeConstants.TUESDAY:
-	        week = "星期二";
-	        break;
-	    case DateTimeConstants.WEDNESDAY:
-	        week = "星期三";
-	        break;
-	    case DateTimeConstants.THURSDAY:
-	        week = "星期四";
-	        break;
-	    case DateTimeConstants.FRIDAY:
-	        week = "星期五";
-	        break;
-	    case DateTimeConstants.SATURDAY:
-	        week = "星期六";
-	    default:
-	        break;
-	    }
-	    return week;
+			case DateTimeConstants.TUESDAY:
+				week = "星期二";
+				break;
+			case DateTimeConstants.WEDNESDAY:
+				week = "星期三";
+				break;
+			case DateTimeConstants.THURSDAY:
+				week = "星期四";
+				break;
+			case DateTimeConstants.FRIDAY:
+				week = "星期五";
+				break;
+			case DateTimeConstants.SATURDAY:
+				week = "星期六";
+			default:
+				break;
+		}
+		return week;
 	}
+
 
 	/**
 	 * 获取当前是一周星期几
@@ -369,6 +386,14 @@ public final class JodaTimeUtils {
 		return dateTime.toString(pattern);
 	}
 
+	public static Integer formatToInt(Date date, String pattern) {
+		if (date == null) {
+			return null;
+		}
+		DateTime dateTime = new DateTime(date);
+		return Integer.parseInt(dateTime.toString(pattern));
+	}
+
 	/**
 	 * 解析日期
 	 * @param date 日期字符串
@@ -508,6 +533,28 @@ public final class JodaTimeUtils {
 	}
 
 	/**
+	 * 获取当天00:00:00 默认返回当天
+	 * @param date
+	 * @return
+	 */
+	public static Date day00(Date date) {
+		DateTime dt = new DateTime(date);
+		DateTime y = dt.withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
+		return y.toDate();
+	}
+
+	/**
+	 *获取当天23:59:59 默认返回当天
+	 * @param date 偏移量
+	 * @return
+	 */
+	public static Date day59(Date date) {
+		DateTime dt = new DateTime(date);
+		DateTime y = dt.withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+		return y.toDate();
+	}
+
+	/**
 	 * 计算两个时间相差多少天
 	 * @param startDate
 	 * @param endDate
@@ -516,13 +563,24 @@ public final class JodaTimeUtils {
 	@Nullable
 	public static Integer diffDay(Date startDate, Date endDate) {
 	    if (startDate == null || endDate == null) {
-	        return null;
+	        return 0;
 	    }
 	    DateTime dt1 = new DateTime(startDate);
 	    DateTime dt2 = new DateTime(endDate);
 	    int day = Days.daysBetween(dt1, dt2).getDays();
 	    return Math.abs(day);
 	}
+
+	public static long diffSecond(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return 0;
+		}
+		DateTime dt1 = new DateTime(startDate);
+		DateTime dt2 = new DateTime(endDate);
+		long seconds = Seconds.secondsBetween(dt1,dt2).getSeconds();
+		return Math.abs(seconds);
+	}
+
 
 	/**
 	 * 获取某月之前,之后某一个月最后一天,24:59:59
@@ -573,6 +631,55 @@ public final class JodaTimeUtils {
 	 * @param offset
 	 * @return
 	 */
+	public static Date changeYear(Date date, int offset) {
+		DateTime dt1;
+		if(offset>=0) {
+			if (date == null) {
+				dt1 = new DateTime().plusYears(offset);
+				return dt1.toDate();
+			}
+			dt1 = new DateTime(date).plusYears(offset);
+		}else{
+			if (date == null) {
+				dt1 = new DateTime().minusYears(-1*offset);
+				return dt1.toDate();
+			}
+			dt1 = new DateTime(date).minusYears(-1*offset);
+		}
+		return dt1.toDate();
+
+	}
+
+
+	/**
+	 * @param date
+	 * @param offset
+	 * @return
+	 */
+	public static Date changeMonth(Date date, int offset) {
+		DateTime dt1;
+		if(offset>=0) {
+			if (date == null) {
+				dt1 = new DateTime().plusMonths(offset);
+				return dt1.toDate();
+			}
+			dt1 = new DateTime(date).plusMonths(offset);
+		}else{
+			if (date == null) {
+				dt1 = new DateTime().minusMonths(-1*offset);
+				return dt1.toDate();
+			}
+			dt1 = new DateTime(date).minusMonths(-1*offset);
+		}
+		return dt1.toDate();
+
+	}
+
+	/**
+	 * @param date
+	 * @param offset
+	 * @return
+	 */
 	public static Date changeDay(Date date, int offset) {
 	    DateTime dt1;
 	    if(offset>=0) {
@@ -611,30 +718,6 @@ public final class JodaTimeUtils {
 				return dt1.toDate();
 			}
 			dt1 = new DateTime(date).minusHours(-1*offset);
-		}
-		return dt1.toDate();
-
-	}
-
-	/**
-	 * @param date
-	 * @param offset
-	 * @return
-	 */
-	public static Date changeMonth(Date date, int offset) {
-		DateTime dt1;
-		if(offset>=0) {
-			if (date == null) {
-				dt1 = new DateTime().plusMonths(offset);
-				return dt1.toDate();
-			}
-			dt1 = new DateTime(date).plusMonths(offset);
-		}else{
-			if (date == null) {
-				dt1 = new DateTime().minusMonths(-1*offset);
-				return dt1.toDate();
-			}
-			dt1 = new DateTime(date).minusMonths(-1*offset);
 		}
 		return dt1.toDate();
 
@@ -745,17 +828,37 @@ public final class JodaTimeUtils {
 		if(date==null){
 			date = new Date();
 		}
+
 		DateTime dateTime = new DateTime(date);
+
 		return dateTime.getMonthOfYear();
 	}
 
-	public static int get(Date date){
+	public static int getDay(Date date){
 		if(date==null){
 			date = new Date();
 		}
 		DateTime dateTime = new DateTime(date);
-		return dateTime.getMonthOfYear();
+		return dateTime.getDayOfMonth();
 	}
+
+	public static int getHour(Date date){
+		if(date==null){
+			date = new Date();
+		}
+		DateTime dateTime = new DateTime(date);
+		return dateTime.getHourOfDay();
+	}
+
+
+	public static int getMinute(Date date){
+		if(date==null){
+			date = new Date();
+		}
+		DateTime dateTime = new DateTime(date);
+		return dateTime.getMinuteOfHour();
+	}
+
 	public static Date getZero(Date date){
 		DateTime dateTime = new DateTime(date);
 		dateTime = dateTime.withMillisOfDay(0);
@@ -766,4 +869,174 @@ public final class JodaTimeUtils {
 		DateTime sourceDate = new DateTime(sourceTime);
 		return sourceDate.isBeforeNow();
 	}
+
+	//几个月一个季度 2 3 4 6
+	public static Date[] getQuarterlys(Date date,Integer quarterlyNum){
+		Date[] qs = new Date[2];
+		int month = getMoth(date);
+		if(quarterlyNum==2){
+			if((month&2)==1){
+				qs[0]=monthFirstDay(date,0);
+				qs[1]=monthLastDay(date,1);
+			}else{
+				qs[0]=monthFirstDay(date,-1);
+				qs[1]=monthLastDay(date,0);
+			}
+		}else if(quarterlyNum==3){
+			switch (month){
+				case 1:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 2:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 3:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 4:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 5:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 6:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 7:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 8:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 9:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 10:
+					qs[0]=monthFirstDay(date,-0);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 11:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 12:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,0);
+					break;
+			}
+		}else if(quarterlyNum==4){
+			switch (month){
+				case 1:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,3);
+					break;
+				case 2:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 3:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 4:
+					qs[0]=monthFirstDay(date,-3);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 5:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,3);
+					break;
+				case 6:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 7:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 8:
+					qs[0]=monthFirstDay(date,-3);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 9:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,3);
+					break;
+				case 10:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 11:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 12:
+					qs[0]=monthFirstDay(date,-3);
+					qs[1]=monthLastDay(date,0);
+					break;
+			}
+		}else if(quarterlyNum==6){
+			switch (month){
+				case 1:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,5);
+					break;
+				case 2:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,4);
+					break;
+				case 3:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,3);
+					break;
+				case 4:
+					qs[0]=monthFirstDay(date,-3);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 5:
+					qs[0]=monthFirstDay(date,-4);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 6:
+					qs[0]=monthFirstDay(date,-5);
+					qs[1]=monthLastDay(date,0);
+					break;
+				case 7:
+					qs[0]=monthFirstDay(date,0);
+					qs[1]=monthLastDay(date,5);
+					break;
+				case 8:
+					qs[0]=monthFirstDay(date,-1);
+					qs[1]=monthLastDay(date,4);
+					break;
+				case 9:
+					qs[0]=monthFirstDay(date,-2);
+					qs[1]=monthLastDay(date,3);
+					break;
+				case 10:
+					qs[0]=monthFirstDay(date,-3);
+					qs[1]=monthLastDay(date,2);
+					break;
+				case 11:
+					qs[0]=monthFirstDay(date,-4);
+					qs[1]=monthLastDay(date,1);
+					break;
+				case 12:
+					qs[0]=monthFirstDay(date,-5);
+					qs[1]=monthLastDay(date,0);
+					break;
+			}
+		}
+		return qs;
+	}
+
 }

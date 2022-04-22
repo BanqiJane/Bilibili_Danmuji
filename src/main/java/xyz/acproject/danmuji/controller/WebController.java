@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 @Controller
-@Deprecated
 public class WebController {
     private SetService checkService;
     private ClientService clientService;
@@ -235,6 +234,10 @@ public class WebController {
             }
             //签到时间 & 打卡时间
             if(centerSetConf.isIs_dosign()&&!centerSetConf.getSign_time().equals(PublicDataConf.centerSetConf.getSign_time())){
+                boolean flag = CurrencyTools.signNow();
+                if (flag) {
+                    checkService.holdSet(PublicDataConf.centerSetConf);
+                }
                 SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
                 taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
             }
@@ -256,17 +259,19 @@ public class WebController {
         return Response.success(true, req);
     }
 
-    @ResponseBody
-    @GetMapping(value = "/getIp")
-    public Response<?> getIp(HttpServletRequest req) {
-        String ip = HttpOtherData.httpGetIp();
-        if (!StringUtils.isEmpty(ip)) {
-            return Response.success(ip, req);
-        } else {
-            return Response.success(null, req);
-        }
 
-    }
+    //隐私模式后移除网络调用
+//    @ResponseBody
+//    @GetMapping(value = "/getIp")
+//    public Response<?> getIp(HttpServletRequest req) {
+//        String ip = HttpOtherData.httpGetIp();
+//        if (!StringUtils.isEmpty(ip)) {
+//            return Response.success(ip, req);
+//        } else {
+//            return Response.success(null, req);
+//        }
+//
+//    }
 
     @ResponseBody
     @GetMapping("/checkWebInit")
@@ -292,7 +297,7 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/checkupdate")
     public Response<?> checkUpdate(HttpServletRequest req) {
-        String edition = HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
         EditionResult editionResult = new EditionResult();
         editionResult.setEdition(edition);
         if (!StringUtils.isEmpty(edition)) {
@@ -318,7 +323,7 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/getNewEdition")
     public Response<?> getNewEdition(HttpServletRequest req) {
-        String edition = HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
         if (!StringUtils.isEmpty(edition)) {
             if (edition.equals("获取公告失败")) {
                 return Response.success(-1, req);

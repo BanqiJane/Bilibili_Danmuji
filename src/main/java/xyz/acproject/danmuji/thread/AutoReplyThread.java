@@ -5,11 +5,12 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.AutoReplySet;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.other.Weather;
-import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
+import xyz.acproject.danmuji.service.ApiService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
+import xyz.acproject.danmuji.utils.SpringUtils;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +27,8 @@ public class AutoReplyThread extends Thread {
     public volatile boolean FLAG = false;
     private short time = 3;
     private HashSet<AutoReplySet> autoReplySets;
+
+    private ApiService apiService = SpringUtils.getBean(ApiService.class);
 
     @Override
     public void run() {
@@ -272,7 +275,8 @@ public class AutoReplyThread extends Thread {
                 } else {
                     day = 0;
                 }
-                weather = HttpOtherData.httpPostWeather(city, day);
+                weather = apiService.getWeather(city, day);
+//                weather = HttpOtherData.httpPostWeather(city, day);
                 if (null != weather) {
                     if (replyString.contains("%WEATHER%") && !StringUtils.containsAny(replyString, "%W_CITY%", "%W_DATE%", "%H_WENDU%", "%L_WENDU%", "%WENDU%", "%W_FX%", "%W_TYPE%", "%W_FL%", "%W_TIPS%")) {
                         if (day == 0) {

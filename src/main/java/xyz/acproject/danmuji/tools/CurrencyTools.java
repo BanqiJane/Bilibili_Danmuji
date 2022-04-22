@@ -194,15 +194,25 @@ public class CurrencyTools {
 
     //打卡 保持其同步性
     public synchronized static int clockIn(List<UserMedal> userMedals) {
-        Long uid = HttpOtherData.httpGetClockInRecord();
-        if (uid != null && uid > 0) return 0;
+        //判定是否有签到
+        Date date = new Date();
+        int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
+        if (PublicDataConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
+            return 0;
+        }
+        if (!PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+            Long uid = HttpOtherData.httpGetClockInRecord();
+            if (uid != null && uid > 0) return 0;
+        }
+
+        //逻辑开始
         if (StringUtils.isEmpty(PublicDataConf.centerSetConf.getClock_in().getBarrage())) return 0;
         int max = 0;
         RoomInit roomInit;
         if (!CollectionUtils.isEmpty(userMedals)) {
             for (UserMedal userMedal : userMedals) {
                 try {
-                    LOGGER.debug("第{}次打卡开始,勋章数据", max + 1,userMedal);
+                    LOGGER.debug("第{}次打卡开始,勋章数据", max + 1, userMedal);
                     roomInit = HttpRoomData.httpGetRoomInit(userMedal.getRoomid());
                     try {
                         Thread.sleep(4050);
@@ -308,14 +318,15 @@ public class CurrencyTools {
             PublicDataConf.autoSendGiftMap.put(30607, new AutoSendGift(30607, "小心心", 50, (short) 0));
         }
         //房间集合-轮询勋章(获得对应房间勋章差值) -> 获取礼物包裹(过期排序，计算勋章亲密度)
-        if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
+        if (StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
             LOGGER.info("自动给送礼 -> 未登录");
             return;
         }
-        if(!PublicDataConf.centerSetConf.getAuto_gift().isIs_open()||StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))return;
+        if (!PublicDataConf.centerSetConf.getAuto_gift().isIs_open() || StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))
+            return;
         List<UserMedal> userMedals = HttpUserData.httpGetMedalList();
         List<UserMedal> wait_send_rooms = new LinkedList<>();
-        if (CollectionUtils.isEmpty(userMedals)){
+        if (CollectionUtils.isEmpty(userMedals)) {
             LOGGER.info("自动给送礼 -> 获取勋章列表失败");
             return;
         }
@@ -326,18 +337,18 @@ public class CurrencyTools {
                     PublicDataConf.autoSendGiftMap.containsKey(userBag.getGift_id())
             ).collect(Collectors.toList());
         }
-        if (CollectionUtils.isEmpty(userBagList)){
+        if (CollectionUtils.isEmpty(userBagList)) {
             LOGGER.info("自动给送礼 -> 获取礼物列表失败");
             return;
         }
-        String[] roomidStrs =   PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
-        LOGGER.debug("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;",PublicDataConf.centerSetConf.getAuto_gift(),roomidStrs);
+        String[] roomidStrs = PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
+        LOGGER.debug("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", PublicDataConf.centerSetConf.getAuto_gift(), roomidStrs);
         for (String roomidStr : roomidStrs) {
             if (StringUtils.isNumeric(roomidStr)) {
                 long roomid = Long.valueOf(roomidStr);
                 //先查找  如果不是短号 就去获取
                 Optional<UserMedal> userMedalOptional = userMedals.stream().filter(um ->
-                    roomid == um.getRoomid()
+                        roomid == um.getRoomid()
                 ).findFirst();
                 if (userMedalOptional.isPresent()) {
                     wait_send_rooms.add(userMedalOptional.get());
@@ -369,57 +380,71 @@ public class CurrencyTools {
                 .collect(Collectors.toList());
         long total = userBagList.stream().map(userBag -> (long) userBag.getFeed() * (long) userBag.getGift_num()).collect(Collectors.summingLong(Long::longValue));
         //未来可能添加 补足策略 和先送策略 现在就先送策略把
-        LOGGER.debug("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}",total,wait_send_rooms, userBagList);
+        LOGGER.debug("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}", total, wait_send_rooms, userBagList);
         for (UserMedal userMedal : wait_send_rooms) {
             if (CollectionUtils.isEmpty(userBagList)) break;
             if (userMedal.getToday_feed() == userMedal.getDay_limit().intValue()) continue;
             long diff_feed = userMedal.getDay_limit() - userMedal.getToday_feed();
             if (diff_feed >= total) {
-                for (Iterator<UserBag> iterator = userBagList.iterator();iterator.hasNext();) {
+                for (Iterator<UserBag> iterator = userBagList.iterator(); iterator.hasNext(); ) {
                     UserBag userBag = iterator.next();
                     HttpUserData.httpPostSendBag(userBag, userMedal.getTarget_id(), userMedal.getRoomid());
                     diff_feed = diff_feed - total;
-                    userMedal.setToday_feed(userMedal.getToday_feed()+total);
+                    userMedal.setToday_feed(userMedal.getToday_feed() + total);
                     //remove
                     iterator.remove();
                 }
                 userBagList = new ArrayList<>();
             } else {
                 //超出 轮询送
-                userBagList = handleSendGift(userBagList,diff_feed,userMedal);
+                userBagList = handleSendGift(userBagList, diff_feed, userMedal);
             }
         }
     }
 
-    public static List<UserBag>  handleSendGift(List<UserBag> userBagList,long diff_feed,UserMedal userMedal){
-        for(Iterator<UserBag> iterator = userBagList.iterator();iterator.hasNext();){
+    public static List<UserBag> handleSendGift(List<UserBag> userBagList, long diff_feed, UserMedal userMedal) {
+        for (Iterator<UserBag> iterator = userBagList.iterator(); iterator.hasNext(); ) {
             UserBag userBag = iterator.next();
-            long now_feed = userBag.getFeed()* userBag.getGift_num();
-            if(diff_feed>=now_feed) {
+            long now_feed = userBag.getFeed() * userBag.getGift_num();
+            if (diff_feed >= now_feed) {
                 HttpUserData.httpPostSendBag(userBag, userMedal.getTarget_id(), userMedal.getRoomid());
                 diff_feed = diff_feed - now_feed;
-                userMedal.setToday_feed(userMedal.getToday_feed()+now_feed);
+                userMedal.setToday_feed(userMedal.getToday_feed() + now_feed);
                 //remove
                 iterator.remove();
-            }else{
+            } else {
                 int count = 0;
                 //如果是辣条
-                if(userBag.getGift_num()==1){
-                    count = (int)diff_feed;
-                }else{
-                    count = (int)Math.floor(diff_feed/ userBag.getFeed());
+                if (userBag.getGift_num() == 1) {
+                    count = (int) diff_feed;
+                } else {
+                    count = (int) Math.floor(diff_feed / userBag.getFeed());
                 }
-                if(count==0) break;
+                if (count == 0) break;
                 UserBag userBagCopy = new UserBag();
-                BeanUtils.copyProperties(userBag,userBagCopy);
+                BeanUtils.copyProperties(userBag, userBagCopy);
                 userBagCopy.setGift_num(count);
                 HttpUserData.httpPostSendBag(userBagCopy, userMedal.getTarget_id(), userMedal.getRoomid());
-                userBag.setGift_num(userBag.getGift_num()-count);
-                diff_feed = diff_feed - (count* userBag.getFeed());
-                userMedal.setToday_feed(userMedal.getToday_feed()+(count* userBag.getFeed()));
+                userBag.setGift_num(userBag.getGift_num() - count);
+                diff_feed = diff_feed - (count * userBag.getFeed());
+                userMedal.setToday_feed(userMedal.getToday_feed() + (count * userBag.getFeed()));
             }
         }
         return userBagList;
+    }
+
+    public static boolean signNow(){
+        Date date = new Date();
+        int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
+        if(!PublicDataConf.is_sign) {
+            if (PublicDataConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
+                HttpUserData.httpGetDoSign();
+                PublicDataConf.centerSetConf.getPrivacy().setSignDay(nowDay);
+                PublicDataConf.is_sign = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String dateToCron(Date date) {

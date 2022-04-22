@@ -176,6 +176,7 @@ public class HttpOtherData {
         return uid;
     }
 
+
     public static String httpGetIp() {
         String data = null;
         JSONObject jsonObject = null;
@@ -303,13 +304,15 @@ public class HttpOtherData {
             // TODO 自动生成的 catch 块
             LOGGER.error("连接至加密服务器错误？不存在");
             data = null;
-            s=null;
+            s = null;
 //			e.printStackTrace();
         }
 
         return s;
     }
 
+    //隐私版本 移除了天气功能调用服务器
+    @Deprecated
     public static Weather httpPostWeather(String city, Short day) {
         String data = null;
         JSONObject jsonObject = null;
@@ -378,7 +381,6 @@ public class HttpOtherData {
                 cname = ((JSONObject) jsonObject.get("data")).getString("city");
                 ganmao = ((JSONObject) jsonObject.get("data")).getString("ganmao");
                 wendu = ((JSONObject) jsonObject.get("data")).getString("wendu");
-
                 List<Weather> oldWeathers = new ArrayList<>();
                 Weather oldWeather = JSONObject.parseObject(((JSONObject) jsonObject.get("data")).getString("yesterday"), Weather.class);
                 oldWeather.setCity(cname);

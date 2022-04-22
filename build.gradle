@@ -4,12 +4,12 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.4.9beta'
+version = '2.5.0beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 repositories {
-	//mavenCentral()
+	mavenCentral()
 	maven{
 	      name 'aliyunmaven'
 	      url 'http://maven.aliyun.com/nexus/content/groups/public/'
