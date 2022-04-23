@@ -43,7 +43,7 @@ public class DoSignTask {
                 int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
                 if (PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
                     PublicDataConf.centerSetConf.getPrivacy().setClockInDay(nowDay);
-                    setService.changeSet(PublicDataConf.centerSetConf);
+                    setService.holdSet(PublicDataConf.centerSetConf);
                 } else {
                     HttpOtherData.httpPOSTSetClockInRecord();
                 }
