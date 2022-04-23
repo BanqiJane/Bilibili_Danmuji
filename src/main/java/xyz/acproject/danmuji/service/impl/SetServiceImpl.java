@@ -44,6 +44,7 @@ public class SetServiceImpl implements SetService {
 
 
     public void init() {
+        PublicDataConf.is_sign= false;
         // 公告和检查更新
         System.out.println();
         System.out.println();

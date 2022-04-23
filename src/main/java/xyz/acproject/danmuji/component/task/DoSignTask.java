@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component("dosignTask")
 public class DoSignTask {
-    @Autowired
+
     private SetService setService;
     private static Logger LOGGER = LogManager.getLogger(DoSignTask.class);
 
@@ -61,4 +61,8 @@ public class DoSignTask {
         }
     }
 
+    @Autowired
+    public void setSetService(SetService setService) {
+        this.setService = setService;
+    }
 }
