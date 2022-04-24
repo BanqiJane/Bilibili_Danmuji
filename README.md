@@ -256,6 +256,13 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 <blockquote>
   <blockquote>
+<h2>Beta2.5.0</h2>
+ <p>修复自动送礼</p>
+ <p>新增隐私模式</p>
+  <p>新增网页配置文件下载</p>
+<p>修复部分bug</p>
+</blockquote>
+  <blockquote>
 <h2>Beta2.4.9</h2>
  <p>修复每日勋章打卡</p>
  <p>新增勋章弹幕屏蔽</p>
