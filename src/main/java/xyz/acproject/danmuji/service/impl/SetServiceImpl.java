@@ -94,10 +94,25 @@ public class SetServiceImpl implements SetService {
         }
     }
 
-    // 保存配置文件
     public void changeSet(CenterSetConf centerSetConf) {
         synchronized (centerSetConf) {
-            if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())) {
+            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            BASE64Encoder base64Encoder = new BASE64Encoder();
+            if (PublicDataConf.USER != null) {
+                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            }
+            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(hashtable, "DanmujiProfile");
+            LOGGER.debug("保存配置文件成功");
+            base64Encoder = null;
+            hashtable.clear();
+        }
+    }
+
+    // 保存配置文件
+    public void changeSet(CenterSetConf centerSetConf,boolean check) {
+        synchronized (centerSetConf) {
+            if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())&&check) {
                 LOGGER.debug("保存配置文件成功");
                 return;
             }
@@ -167,7 +182,7 @@ public class SetServiceImpl implements SetService {
                 //判断签到
                 boolean flag = CurrencyTools.signNow();
                 if (flag) {
-                    setService.holdSet(PublicDataConf.centerSetConf);
+                    changeSet(PublicDataConf.centerSetConf);
                 }
 //                if (PublicDataConf.is_sign) {
 //                    HttpUserData.httpGetDoSign();

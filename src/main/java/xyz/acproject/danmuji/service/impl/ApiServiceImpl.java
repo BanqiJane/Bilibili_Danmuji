@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import xyz.acproject.danmuji.entity.other.Weather;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.service.ApiService;
+import xyz.acproject.danmuji.utils.XmlUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ public class ApiServiceImpl implements ApiService {
                 default:
                     break;
             }
+        }
+        if(null != weather){
+            weather.setFl(XmlUtils.getData(weather.getFl(),String.class));
         }
         return weather;
     }

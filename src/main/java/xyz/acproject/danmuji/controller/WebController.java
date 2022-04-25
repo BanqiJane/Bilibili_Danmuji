@@ -234,24 +234,23 @@ public class WebController {
             }
             //签到时间 & 打卡时间
             if(centerSetConf.isIs_dosign()&&!centerSetConf.getSign_time().equals(PublicDataConf.centerSetConf.getSign_time())){
-                boolean flag = CurrencyTools.signNow();
-                if (flag) {
-                    checkService.holdSet(PublicDataConf.centerSetConf);
-                }
                 SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
+                taskRegisterComponent.removeTask(task);
                 taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
             }
             if(centerSetConf.getClock_in()!=null&&centerSetConf.getClock_in().isIs_open()&&!centerSetConf.getClock_in().getTime().equals(PublicDataConf.centerSetConf.getClock_in().getTime())){
                 SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
+                taskRegisterComponent.removeTask(dakatask);
                 taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
             }
             //自动送礼时间
             if(centerSetConf.getAuto_gift()!=null&&centerSetConf.getAuto_gift().isIs_open()&&
                     !centerSetConf.getAuto_gift().getTime().equals(PublicDataConf.centerSetConf.getAuto_gift().getTime())){
                 SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
+                taskRegisterComponent.removeTask(autoSendGiftTask);
                 taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
             }
-            checkService.changeSet(centerSetConf);
+            checkService.changeSet(centerSetConf,true);
         } catch (Exception e) {
             // TODO: handle exception
             return Response.success(false, req);
@@ -420,10 +419,10 @@ public class WebController {
             CenterSetConf centerSetConf = FastJsonUtils.parseObject(jsonString, CenterSetConf.class);
             if (centerSetConf != null) {
                 centerSetConf = ParseSetStatusTools.initCenterChildConfig(centerSetConf);
-                centerSetConf.setClock_in(PublicDataConf.centerSetConf.getClock_in());
+//                centerSetConf.setClock_in(PublicDataConf.centerSetConf.getClock_in());
                 BeanUtils.copyProperties(centerSetConf, PublicDataConf.centerSetConf);
                 //如果有密钥 如果没密
-                checkService.changeSet(centerSetConf);
+                checkService.changeSet(centerSetConf,true);
             }
         } catch (Exception e) {
             LOGGER.error("setImport error", e);

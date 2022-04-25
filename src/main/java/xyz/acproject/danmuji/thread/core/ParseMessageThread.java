@@ -1193,7 +1193,7 @@ public class ParseMessageThread extends Thread{
 		String code = "";
 		synchronized (getCenterSetConf()) {
 			code = CurrencyTools.sendGiftCode();
-			setService.changeSet(getCenterSetConf());
+			setService.changeSet(getCenterSetConf(),true);
 		}
 		return code;
 	}

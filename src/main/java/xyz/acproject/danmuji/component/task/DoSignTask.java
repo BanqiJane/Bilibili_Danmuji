@@ -26,7 +26,7 @@ public class DoSignTask {
         if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             boolean flag = CurrencyTools.signNow();
             if (flag) {
-                setService.holdSet(PublicDataConf.centerSetConf);
+                setService.changeSet(PublicDataConf.centerSetConf,false);
             }
         } else {
             LOGGER.error("定时任务抛出： 未登录 签到失败");
@@ -43,7 +43,7 @@ public class DoSignTask {
                 int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
                 if (PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
                     PublicDataConf.centerSetConf.getPrivacy().setClockInDay(nowDay);
-                    setService.holdSet(PublicDataConf.centerSetConf);
+                    setService.changeSet(PublicDataConf.centerSetConf,false);
                 } else {
                     HttpOtherData.httpPOSTSetClockInRecord();
                 }
