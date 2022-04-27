@@ -18,6 +18,7 @@ import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.utils.ByteUtils;
+import xyz.acproject.danmuji.utils.FastJsonUtils;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
 import java.util.*;
@@ -342,7 +343,7 @@ public class CurrencyTools {
             return;
         }
         String[] roomidStrs = PublicDataConf.centerSetConf.getAuto_gift().getRoom_id().split("，");
-        LOGGER.debug("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", PublicDataConf.centerSetConf.getAuto_gift(), roomidStrs);
+        LOGGER.debug("自动给送礼pre -> 配置文件:{} ; 发送房间:{} ;", FastJsonUtils.toJson(PublicDataConf.centerSetConf.getAuto_gift()), roomidStrs);
         for (String roomidStr : roomidStrs) {
             if (StringUtils.isNumeric(roomidStr)) {
                 long roomid = Long.valueOf(roomidStr);
@@ -352,6 +353,7 @@ public class CurrencyTools {
                 ).findFirst();
                 if (userMedalOptional.isPresent()) {
                     wait_send_rooms.add(userMedalOptional.get());
+                    LOGGER.info("自动送礼ing -> 添加房间1:{}", roomid);
                 } else {
                     RoomInit roomInit = HttpRoomData.httpGetRoomInit(roomid);
                     try {
@@ -362,6 +364,7 @@ public class CurrencyTools {
                             ).findFirst();
                             if (userMedalOptional.isPresent()) {
                                 wait_send_rooms.add(userMedalOptional.get());
+                                LOGGER.info("自动送礼ing -> 添加房间2:{}", roomid);
                             }
                         }
                     } catch (Exception e) {
@@ -379,7 +382,8 @@ public class CurrencyTools {
                 .sorted(Comparator.comparingLong(UserBag::getExpire_at).thenComparingInt(UserBag::getGift_id))
                 .collect(Collectors.toList());
         long total = userBagList.stream().map(userBag -> (long) userBag.getFeed() * (long) userBag.getGift_num()).collect(Collectors.summingLong(Long::longValue));
-        //未来可能添加 补足策略 和先送策略 现在就先送策略把
+        //未来可能添加 补足策略 和先送策略 现在就先
+        // 送策略把
         LOGGER.debug("自动给送礼total -> 总量:{} ; 发送房间:{} ; 待发送礼物包裹：{}", total, wait_send_rooms, userBagList);
         for (UserMedal userMedal : wait_send_rooms) {
             if (CollectionUtils.isEmpty(userBagList)) break;
@@ -433,16 +437,13 @@ public class CurrencyTools {
         return userBagList;
     }
 
-    public static boolean signNow(){
+    public static boolean signNow() {
         Date date = new Date();
         int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-        if(!PublicDataConf.is_sign) {
-            if (PublicDataConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
-                HttpUserData.httpGetDoSign();
-                PublicDataConf.centerSetConf.getPrivacy().setSignDay(nowDay);
-                PublicDataConf.is_sign = true;
-                return true;
-            }
+        if (PublicDataConf.centerSetConf.getPrivacy().getSignDay() != nowDay) {
+            HttpUserData.httpGetDoSign();
+            PublicDataConf.centerSetConf.getPrivacy().setSignDay(nowDay);
+            return true;
         }
         return false;
     }

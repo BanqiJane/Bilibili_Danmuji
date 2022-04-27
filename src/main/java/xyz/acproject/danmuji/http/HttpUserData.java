@@ -596,7 +596,7 @@ public class HttpUserData {
         } else {
             LOGGER.error("赠送礼物失败,未知错误,原因未知" + jsonObject.toString());
         }
-       // LOGGER.debug("赠送礼物成功,赠送房间:{},赠送主播:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
+//        LOGGER.debug("赠送礼物成功,赠送房间:{},赠送主播:{},送出礼物:{},个数:{},亲密度:{}",roomid,ruid,userBag.getGift_name(),userBag.getGift_num(),userBag.getFeed()*userBag.getGift_num());
         return 1;
     }
 
