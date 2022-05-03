@@ -68,7 +68,7 @@ jobs:
           
           echo "仅在本机有jdk8或jre8版本以上的环境下" > danmuji/readme.txt
           echo "window下：直接run.bat运行" >> danmuji/readme.txt
-          echo "其它系统或方法：在本软件目录下cmd命令行执行 java -jar  -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}.jar --server.port=23333 即可运行" >> danmuji/readme.txt
+          echo "其它系统或方法：在本软件目录下cmd命令行执行 java -jar  -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}-bete.jar --server.port=23333 即可运行" >> danmuji/readme.txt
           echo "--server.port=23333为端口 想修改端口可以修改run.bat里面的这个参数" >> danmuji/readme.txt
           echo "如何设置？打开浏览器地址栏输入http://127.0.0.1:23333进行设置；" >> danmuji/readme.txt
           echo "如何退出？直接关闭命令行窗口即可退出" >> danmuji/readme.txt
@@ -76,14 +76,14 @@ jobs:
           echo "不会使用？有问题反馈？ GitHub上开个issue提问 或者 主页 点击联系我 邮件发送" >> danmuji/readme.txt
 
           echo "@echo off" > danmuji/run.bat
-          echo "title BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}-%date%-%time%-%cd%" >> danmuji/run.bat
-          echo "java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}.jar --server.port=23333" >> danmuji/run.bat
+          echo "title BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}-%date%-%time%-%cd%" >> danmuji/run.bat
+          echo "java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333" >> danmuji/run.bat
 
 
           echo "该版本为window绿色版本，" > danmuji-green/readme.txt
           echo "运行方法：" >> danmuji-green/readme.txt
           echo "直接运行run.bat（window下）记得允许网络" >> danmuji-green/readme.txt
-          echo "其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行jdk8u282-b08-jre\bin\java -jar -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}.jar --server.port=23333 即可运行" >> danmuji-green/readme.txt
+          echo "其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行jdk8u282-b08-jre\bin\java -jar -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333 即可运行" >> danmuji-green/readme.txt
           echo "--server.port=23333为端口 想修改端口可以修改run.bat里面的这个参数" >> danmuji-green/readme.txt
           echo "如何设置？打开浏览器地址栏输入 http://127.0.0.1:23333进行设置；" >> danmuji-green/readme.txt
           echo "如何退出？直接关闭命令行窗口即可退出" >> danmuji-green/readme.txt
@@ -91,8 +91,8 @@ jobs:
           echo "不会使用？有问题反馈？ GitHub上开个issue提问 或者 主页 点击联系我 邮件发送" >> danmuji-green/readme.txt
 
           echo "@echo off" > danmuji-green/run.bat
-          echo "title BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}-%date%-%time%-%cd%" >> danmuji-green/run.bat
-          echo "jdk8u282-b08-jre\bin\java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}.jar --server.port=23333" >> danmuji-green/run.bat
+          echo "title BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}-%date%-%time%-%cd%" >> danmuji-green/run.bat
+          echo "jdk8u282-b08-jre\bin\java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333" >> danmuji-green/run.bat
 
       # 压缩文件
       - name: Compressed Files
