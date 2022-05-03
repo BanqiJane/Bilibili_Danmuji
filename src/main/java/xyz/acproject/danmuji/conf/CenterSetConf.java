@@ -102,6 +102,17 @@ public class CenterSetConf implements Serializable {
         this.privacy = privacy;
     }
 
+    public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,
+                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift) {
+        super();
+        this.thank_gift = thank_gift;
+        this.advert = advert;
+        this.follow = follow;
+        this.reply = reply;
+        this.clock_in = clock_in;
+        this.welcome = welcome;
+        this.auto_gift= auto_gift;
+    }
 
     public CenterSetConf(boolean is_barrage_guard, boolean is_barrage_vip, boolean is_barrage_manager, boolean is_barrage_medal, boolean is_barrage_ul,boolean is_barrage_anchor_shield, boolean is_block, boolean is_gift, boolean is_welcome, boolean is_welcome_all, boolean is_follow, boolean is_log, boolean is_cmd, Long roomid, boolean is_auto,boolean win_auto_openSet, boolean is_manager_login, String manager_key, int manager_maxSize, boolean is_online, boolean is_sh, boolean is_dosign, String sign_time, ThankGiftSetConf thank_gift, AdvertSetConf advert, ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome,AutoSendGiftConf auto_gift,PrivacySetConf privacy) {
         this.is_barrage_guard = is_barrage_guard;
