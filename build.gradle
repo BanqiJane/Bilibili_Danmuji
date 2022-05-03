@@ -24,25 +24,25 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-	implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.0'
+    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.0'
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.2'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.78'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.70'
     // https://mvnrepository.com/artifact/joda-time/joda-time
-	implementation group: 'joda-time', name: 'joda-time', version: '2.10.5'
+    compile group: 'joda-time', name: 'joda-time', version: '2.10.5'
     // https://mvnrepository.com/artifact/com.google.zxing/core
-	implementation group: 'com.google.zxing', name: 'core', version: '3.4.0'
+    compile group: 'com.google.zxing', name: 'core', version: '3.4.0'
     // https://mvnrepository.com/artifact/net.glxn/qrgen
-	implementation group: 'net.glxn', name: 'qrgen', version: '1.4'
+    compile group: 'net.glxn', name: 'qrgen', version: '1.4'
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
-	implementation group: 'commons-codec', name: 'commons-codec', version: '1.14'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
 
-	implementation fileTree(dir: 'lib', includes: ['*.jar'])
+	compile fileTree(dir: 'lib', includes: ['*.jar'])
 }
 configurations {
 	//remove default logger
