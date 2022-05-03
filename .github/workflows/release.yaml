@@ -28,6 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     # 步骤
     steps:
+      # 切换到主分支
+      - name: Checkout
+        uses: actions/checkout@master
+      
+      # 获取一些参数
       - name: Prepare
         id: prepare
         run: |
@@ -41,10 +46,6 @@ jobs:
           TAG_VERSION=$(cat version)
           echo ::set-output name=tag_version::${TAG_VERSION}
           echo ::set-output name=file_name::${FILE_NAME}
-
-      # 切换到主分支
-      - name: Checkout
-        uses: actions/checkout@master
 
       # 初始化 JDK8 环境
       - name: Set up JDK 8
