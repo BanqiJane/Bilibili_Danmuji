@@ -1,3 +1,8 @@
+[![Github](https://img.shields.io/github/stars/BanqiJane/Bilibili_Danmuji?logo=github&style=flat)](https://github.com/BanqiJane/Bilibili_Danmuji)
+[![GitHub release](https://img.shields.io/github/v/release/BanqiJane/Bilibili_Danmuji.svg)](https://github.com/BanqiJane/Bilibili_Danmuji/releases)
+[![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-%E6%94%AF%E6%8C%81-blue.svg)](https://www.jetbrains.com/?from=WxJava-weixin-java-tools)
+[![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
+
 # 运行环境
 
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
