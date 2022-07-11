@@ -26,6 +26,14 @@ java version "1.8.0_121"
     </tr>
   </thead>
   <tbody>
+  <tr>
+      <th scope="row">Linux</th>
+      <td>支持</td>
+      <td>支持</td>
+      <td class="text-muted">—</td>
+      <td class="text-muted">—</td>
+     <td class="text-muted">—</td>
+    </tr>
     <tr>
       <th scope="row">Mac</th>
       <td>支持</td>
