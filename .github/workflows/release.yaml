@@ -49,10 +49,10 @@ jobs:
 
           TAG=${{ github.event.inputs.releaseTag }}
           if [ "${TAG}" = "v" ]
-          then TAG=${TAG_VERSION}
+          then TAG=v${TAG_VERSION}
           else TAG=${{ github.event.inputs.releaseTag }}
           fi
-          echo "TAG=v${TAG}" >> $GITHUB_OUTPUT
+          echo "TAG=${TAG}" >> $GITHUB_OUTPUT
 
           echo ${TAG}
 
