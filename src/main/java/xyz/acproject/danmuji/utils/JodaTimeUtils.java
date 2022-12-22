@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.springframework.lang.Nullable;
 
 import java.sql.Timestamp;
@@ -1037,6 +1039,20 @@ public final class JodaTimeUtils {
 			}
 		}
 		return qs;
+	}
+	public static String formatSecond(int second) {
+		Seconds seconds = Seconds.seconds(second);
+		Period period = new Period(seconds);
+		PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
+				.appendDays()
+				.appendSuffix("天")
+				.appendHours()
+				.appendSuffix("时")
+				.appendMinutes()
+				.appendSuffix("分")
+				.appendSeconds()
+				.appendSuffix("秒").toFormatter();
+		return periodFormatter.print(period.normalizedStandard());
 	}
 
 }

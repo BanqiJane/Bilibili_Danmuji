@@ -1,8 +1,14 @@
 package xyz.acproject.danmuji.entity.heart;
 
 
-import java.util.Arrays;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class XData {
 	private long[] id;
 	private String device;
@@ -16,10 +22,6 @@ public class XData {
 	//以下是额外参数
 	private Boolean error;
 	private long startTime;
-	public XData() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
 
 	public XData(long[] id, String device, Long ets, String benchmark, Short time, Long ts, short[] secret_rule, Boolean error) {
 		super();
@@ -33,89 +35,9 @@ public class XData {
 		this.error = error;
 	}
 
-	public long[] getId() {
-		return id;
-	}
-	public void setId(long[] id) {
-		this.id = id;
-	}
-	public String getDevice() {
-		return device;
-	}
-	public void setDevice(String device) {
-		this.device = device;
-	}
-	public Long getEts() {
-		return ets;
-	}
-	public void setEts(Long ets) {
-		this.ets = ets;
-	}
-	public String getBenchmark() {
-		return benchmark;
-	}
-	public void setBenchmark(String benchmark) {
-		this.benchmark = benchmark;
-	}
-	public Short getTime() {
-		return time;
-	}
-	public void setTime(Short time) {
-		this.time = time;
-	}
-	public Long getTs() {
-		return ts;
-	}
-	public void setTs(Long ts) {
-		this.ts = ts;
-	}
-	public String getUa() {
-		return ua;
-	}
-	public void setUa(String ua) {
-		this.ua = ua;
-	}
-	public short[] getSecret_rule() {
-		return secret_rule;
-	}
-	public void setSecret_rule(short[] secret_rule) {
-		this.secret_rule = secret_rule;
-	}
-
-	public Boolean getError() {
-		return error;
-	}
-
-	public void setError(Boolean error) {
-		this.error = error;
-	}
-
-	public long getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(long startTime) {
-		this.startTime = startTime;
-	}
-
-
 	public XData startTime(long startTime){
 		this.startTime = startTime;
 		return this;
 	}
 
-	@Override
-	public String toString() {
-		return "XData{" +
-				"id=" + Arrays.toString(id) +
-				", device='" + device + '\'' +
-				", ets=" + ets +
-				", benchmark='" + benchmark + '\'' +
-				", time=" + time +
-				", ts=" + ts +
-				", ua='" + ua + '\'' +
-				", secret_rule=" + Arrays.toString(secret_rule) +
-				", error=" + error +
-				'}';
-	}
 }

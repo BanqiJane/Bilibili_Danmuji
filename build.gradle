@@ -1,10 +1,10 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
+	id 'org.springframework.boot' version '2.6.8'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.5.0beta'
+version = '2.6.0beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -20,17 +20,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.0'
+    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3'
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.8'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.70'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.83'
     // https://mvnrepository.com/artifact/joda-time/joda-time
     compile group: 'joda-time', name: 'joda-time', version: '2.10.5'
     // https://mvnrepository.com/artifact/com.google.zxing/core

@@ -34,7 +34,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 	
 	
 	
-	
+	//关闭全部线程
 	public void closeAll(){
 		closeHeartByteThread();
 		closeUserOnlineThread();
@@ -48,8 +48,11 @@ public class ThreadComponentImpl implements ThreadComponent {
 		closeSmallHeartThread();
 		closeParseMessageThread();
 	}
-	public void closeUser(){
-		closeHeartByteThread();
+
+
+	//关闭用户相关线程
+	public void closeUser(boolean close){
+
 		closeUserOnlineThread();
 		closeAdvertThread();
 		closeSendBarrageThread();
@@ -59,7 +62,11 @@ public class ThreadComponentImpl implements ThreadComponent {
 		closeWelcomeShieldThread();
 		closeAutoReplyThread();
 		closeSmallHeartThread();
-		closeParseMessageThread();
+		if (close) {
+			closeHeartByteThread();
+			closeParseMessageThread();
+		}
+
 	}
 
 	/**
@@ -77,7 +84,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
 				.iterator(); iterator.hasNext();) {
 			ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-			if (thankGiftRuleSet.isIs_open()) {
+			if (thankGiftRuleSet.is_open()) {
 				thankGiftRuleSets.add(thankGiftRuleSet);
 			}
 		}
@@ -186,7 +193,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 //		for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator
 //				.hasNext();) {
 //			AutoReplySet autoReplySet = iterator.next();
-//			if (autoReplySet.isIs_open()) {
+//			if (autoReplySet.is_open()) {
 //				autoReplySets.add(autoReplySet);
 //			}
 //		}
@@ -215,7 +222,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		for (Iterator<AutoReplySet> iterator = autoReplySetConf.getAutoReplySets().iterator(); iterator
 				.hasNext();) {
 			AutoReplySet autoReplySet = iterator.next();
-			if (autoReplySet.isIs_open()) {
+			if (autoReplySet.is_open()) {
 				autoReplySets.add(autoReplySet);
 			}
 		}
@@ -294,7 +301,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		if(null==PublicDataConf.userOnlineHeartThread) {
 			return false;
 		}
-		if(PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+		if(PublicDataConf.centerSetConf.getPrivacy().is_open()) {
 			PublicDataConf.SMALLHEART_ADRESS = PublicDataConf.centerSetConf.getPrivacy().getSmall_heart_url();
 		}else{
 			PublicDataConf.SMALLHEART_ADRESS = HttpOtherData.httpPostEncsUrl();
@@ -389,7 +396,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
-			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.isIs_num());
+			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.is_num());
 		} else {
 			PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 			PublicDataConf.parsethankGiftThread.setThankGiftString(thankGiftSetConf.getThank());
@@ -397,7 +404,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
-			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.isIs_num());
+			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.is_num());
 		}
 	}
 
@@ -446,7 +453,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 			for (Iterator<ThankGiftRuleSet> iterator = centerSetConf.getThank_gift().getThankGiftRuleSets()
 					.iterator(); iterator.hasNext();) {
 				ThankGiftRuleSet thankGiftRuleSet = iterator.next();
-				if (thankGiftRuleSet.isIs_open()) {
+				if (thankGiftRuleSet.is_open()) {
 					thankGiftRuleSets.add(thankGiftRuleSet);
 				}
 			}
@@ -485,7 +492,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 //			for (Iterator<AutoReplySet> iterator = centerSetConf.getReply().getAutoReplySets().iterator(); iterator
 //					.hasNext();) {
 //				AutoReplySet autoReplySet = iterator.next();
-//				if (autoReplySet.isIs_open()) {
+//				if (autoReplySet.is_open()) {
 //					autoReplySets.add(autoReplySet);
 //				}
 //			}
@@ -502,7 +509,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 			for (Iterator<AutoReplySet> iterator = autoReplySetConf.getAutoReplySets().iterator(); iterator
 					.hasNext();) {
 				AutoReplySet autoReplySet = iterator.next();
-				if (autoReplySet.isIs_open()) {
+				if (autoReplySet.is_open()) {
 					autoReplySets.add(autoReplySet);
 				}
 			}
@@ -550,8 +557,8 @@ public class ThreadComponentImpl implements ThreadComponent {
 			PublicDataConf.advertThread = null;
 		}
 		if (PublicDataConf.ROOMID != null) {
-			if (!PublicDataConf.centerSetConf.getFollow().isIs_open()
-					&& !PublicDataConf.centerSetConf.getThank_gift().isIs_open()
+			if (!PublicDataConf.centerSetConf.getFollow().is_open()
+					&& !PublicDataConf.centerSetConf.getThank_gift().is_open()
 					&& null == PublicDataConf.autoReplyThread) {
 				closeSendBarrageThread();
 			}

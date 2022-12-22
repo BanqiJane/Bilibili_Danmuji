@@ -10,5 +10,5 @@
        ## hh      wwww      hh ##           \ \_______\\ \__\\ \_______\\ \__\\ \_______\\ \__\\ \_______\\ \__\
        ## hh                hh ##            \|_______| \|__| \|_______| \|__| \|_______| \|__| \|_______| \|__|
        ## MMMMMMMMMMMMMMMMMMMM ##                      
-       ##MMMMMMMMMMMMMMMMMMMMMM#                 Danmuji Release 2.5.0 Powered by BanQiJane(zjianf2014@outlook.com)
+       ##MMMMMMMMMMMMMMMMMMMMMM#                 Danmuji Release 2.6.0 Powered by BanQiJane(zjianf2014@outlook.com)
             \/            \/

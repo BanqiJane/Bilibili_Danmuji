@@ -1,8 +1,10 @@
 package xyz.acproject.danmuji.entity.danmu_data;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import xyz.acproject.danmuji.utils.FastJsonUtils;
+import java.io.Serializable;
 
 /**
  * @ClassName Guard
@@ -12,6 +14,9 @@ import xyz.acproject.danmuji.utils.FastJsonUtils;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Guard implements Serializable{
 
 	/**
@@ -36,84 +41,4 @@ public class Guard implements Serializable{
 	private Long start_time;
 	//结束时间
 	private Long end_time;
-	public Guard() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
-	public Guard(Long uid, String username, Short guard_level, Integer num, Integer price, Long role_name,
-			String gift_name, Long start_time, Long end_time) {
-		super();
-		this.uid = uid;
-		this.username = username;
-		this.guard_level = guard_level;
-		this.num = num;
-		this.price = price;
-		this.role_name = role_name;
-		this.gift_name = gift_name;
-		this.start_time = start_time;
-		this.end_time = end_time;
-	}
-	public Long getUid() {
-		return uid;
-	}
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public Short getGuard_level() {
-		return guard_level;
-	}
-	public void setGuard_level(Short guard_level) {
-		this.guard_level = guard_level;
-	}
-	public Integer getNum() {
-		return num;
-	}
-	public void setNum(Integer num) {
-		this.num = num;
-	}
-	public Integer getPrice() {
-		return price;
-	}
-	public void setPrice(Integer price) {
-		this.price = price;
-	}
-	public Long getRole_name() {
-		return role_name;
-	}
-	public void setRole_name(Long role_name) {
-		this.role_name = role_name;
-	}
-	public String getGift_name() {
-		return gift_name;
-	}
-	public void setGift_name(String gift_name) {
-		this.gift_name = gift_name;
-	}
-	public Long getStart_time() {
-		return start_time;
-	}
-	public void setStart_time(Long start_time) {
-		this.start_time = start_time;
-	}
-	public Long getEnd_time() {
-		return end_time;
-	}
-	public void setEnd_time(Long end_time) {
-		this.end_time = end_time;
-	}
-	@Override
-	public String toString() {
-		return "Guard [uid=" + uid + ", username=" + username + ", guard_level=" + guard_level + ", num=" + num
-				+ ", price=" + price + ", role_name=" + role_name + ", gift_name=" + gift_name + ", start_time="
-				+ start_time + ", end_time=" + end_time + "]";
-	}
-	public String toJson() {
-		return FastJsonUtils.toJson(new Guard(uid,username,guard_level,num,price,role_name,gift_name,start_time,end_time));
-	}
 }

@@ -133,7 +133,7 @@ public class CurrencyTools {
         if (PublicDataConf.SHORTROOMID != null && PublicDataConf.SHORTROOMID > 0) {
             return PublicDataConf.SHORTROOMID;
         }
-        return PublicDataConf.ROOMID;
+        return PublicDataConf.ROOMID!=null?PublicDataConf.ROOMID:0;
 
     }
 
@@ -201,7 +201,7 @@ public class CurrencyTools {
         if (PublicDataConf.centerSetConf.getPrivacy().getClockInDay() == nowDay) {
             return 0;
         }
-        if (!PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+        if (!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
             Long uid = HttpOtherData.httpGetClockInRecord();
             if (uid != null && uid > 0) return 0;
         }
@@ -311,7 +311,7 @@ public class CurrencyTools {
 
 
     public synchronized static void autoSendGift() {
-        //PublicDataConf.centerSetConf.getAuto_gift().isIs_open()
+        //PublicDataConf.centerSetConf.getAuto_gift().is_open()
         if (CollectionUtils.isEmpty(PublicDataConf.autoSendGiftMap)) {
             PublicDataConf.autoSendGiftMap = new ConcurrentHashMap<>(5);
             PublicDataConf.autoSendGiftMap.put(1, new AutoSendGift(1, "辣条", 1, (short) 0));
@@ -323,7 +323,7 @@ public class CurrencyTools {
             LOGGER.info("自动给送礼 -> 未登录");
             return;
         }
-        if (!PublicDataConf.centerSetConf.getAuto_gift().isIs_open() || StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))
+        if (!PublicDataConf.centerSetConf.getAuto_gift().is_open() || StringUtils.isBlank(PublicDataConf.centerSetConf.getAuto_gift().getRoom_id()))
             return;
         List<UserMedal> userMedals = HttpUserData.httpGetMedalList();
         List<UserMedal> wait_send_rooms = new LinkedList<>();

@@ -3,8 +3,11 @@ package xyz.acproject.danmuji.thread;
 import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.AutoReplySet;
+import xyz.acproject.danmuji.entity.apex.ApexMessage;
+import xyz.acproject.danmuji.entity.apex.PredatorResult;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.other.Weather;
+import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ApiService;
@@ -94,7 +97,7 @@ public class AutoReplyThread extends Thread {
                         kNum = 0;
                         is_shield = false;
                         // 精确匹配
-                        if (autoReplySet.getKeywords().size() < 2 && autoReplySet.isIs_accurate()) {
+                        if (autoReplySet.getKeywords().size() < 2 && autoReplySet.is_accurate()) {
                             for (String keyword : autoReplySet.getKeywords()) {
                                 if (StringUtils.indexOf(keyword, "||") != -1) {
                                     keywords = StringUtils.split(keyword, "||");
@@ -243,6 +246,7 @@ public class AutoReplyThread extends Thread {
                 }
             }
         }
+        //天气
         if (StringUtils.containsAny(replyString, "%WEATHER%", "%W_CITY%", "%W_DATE%", "%H_WENDU%", "%L_WENDU%", "%WENDU%", "%W_FX%", "%W_TYPE%", "%W_FL%", "%W_TIPS%")) {
             if (autoReply.getBarrage().contains("天气") && (autoReply.getBarrage().contains("@") || autoReply.getBarrage().contains("#"))) {
                 int path1 = autoReply.getBarrage().indexOf("@") >= 0 ? autoReply.getBarrage().indexOf("@") : autoReply.getBarrage().indexOf("#");
@@ -352,6 +356,212 @@ public class AutoReplyThread extends Thread {
                     replyString = "";
                 }
                 weatherSB.delete(0, weatherSB.length());
+            }
+        }
+        //apex 排位
+        if (StringUtils.containsAny(replyString,"%PC_RP_DFEN%","%PC_RP_MTOTAL%","%PC_AP_DFEN%","%PC_AP_MTOTAL%","%PS4_RP_DFEN%","%PS4_RP_MTOTAL%","%PS4_AP_DFEN%","%PS4_AP_MTOTAL%")) {
+            PredatorResult predatorResult=null;
+            //pc大逃杀猎杀低分
+            if (replyString.contains("%PC_RP_DFEN%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("","0");
+                if(predatorResult!=null&&predatorResult.getVal()!=null){
+                    replyString = StringUtils.replace(replyString, "%PC_RP_DFEN%", String.valueOf(predatorResult.getVal()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //pc大逃杀猎杀大师总数
+            if (replyString.contains("%PC_RP_MTOTAL%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("","0");
+                if(predatorResult!=null&&predatorResult.getTotalMastersAndPreds()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PC_RP_MTOTAL%", String.valueOf(predatorResult.getTotalMastersAndPreds()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //pc竞技场猎杀大师低分
+            if (replyString.contains("%PC_AP_DFEN%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("","1");
+                if(predatorResult!=null&&predatorResult.getVal()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PC_AP_DFEN%", String.valueOf(predatorResult.getVal()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //pc竞技场猎杀大师总数
+            if (replyString.contains("%PC_AP_MTOTAL%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("","1");
+                if(predatorResult!=null&&predatorResult.getTotalMastersAndPreds()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PC_AP_MTOTAL%", String.valueOf(predatorResult.getTotalMastersAndPreds()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //ps4大逃杀猎杀低分
+            if (replyString.contains("%PS4_RP_DFEN%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("ps4","2");
+                if(predatorResult!=null&&predatorResult.getVal()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PS4_RP_DFEN%", String.valueOf(predatorResult.getVal()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //ps4大逃杀猎杀大师总数
+            if (replyString.contains("%PS4_RP_MTOTAL%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("ps4","2");
+                if(predatorResult!=null&&predatorResult.getTotalMastersAndPreds()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PS4_RP_MTOTAL%", String.valueOf(predatorResult.getTotalMastersAndPreds()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //ps4竞技场猎杀大师低分
+            if (replyString.contains("%PS4_AP_DFEN%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("ps4","3");
+                if(predatorResult!=null&&predatorResult.getVal()!=null){
+                    replyString = StringUtils.replace(replyString, "%PS4_AP_DFEN%", String.valueOf(predatorResult.getVal()));
+                }else{
+                    replyString = "";
+                }
+            }
+            //ps4竞技场猎杀大师总数
+            if (replyString.contains("%PS4_AP_MTOTAL%")) {
+                predatorResult = HttpOtherData.httpGetApexPredator("ps4","3");
+                if(predatorResult!=null&&predatorResult.getTotalMastersAndPreds()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PS4_AP_MTOTAL%", String.valueOf(predatorResult.getTotalMastersAndPreds()));
+                }else{
+                    replyString = "";
+                }
+            }
+        }
+        //apex 综合
+        if (StringUtils.containsAny(replyString,"%MAKER_DAY1%","%MAKER_DAY2%","%MAKER_WEEK1%","%MAKER_WEEK2%","%PASS_END%","%SHOP_REFRESH%","%PW_RP_NOWMAP%","%PW_RP_OTHERMAP%","%PW_RP_ENDTIME%","%PW_AP_NOWMAP%","%PW_AP_NEXMAP%","%PW_AP_ENDTIME%","%PP_RP_NOWMAP%","%PP_RP_NEXMAP%","%PP_RP_ENDTIME%","%PP_AP_NOWMAP%","%PP_AP_NEXMAP%","%PP_AP_ENDTIME%")) {
+            ApexMessage apexMessage = HttpOtherData.httpGetApexMessage();
+            if(apexMessage!=null){
+                //如轮换
+                if (replyString.contains("%MAKER_DAY1%")&&StringUtils.isNotBlank(apexMessage.getMaker_day1())) {
+                    replyString = StringUtils.replace(replyString, "%MAKER_DAY1%", apexMessage.getMaker_day1());
+                }else{
+                    replyString = StringUtils.replace(replyString, "%MAKER_DAY1%","");
+                }
+                if (replyString.contains("%MAKER_DAY2%")&&StringUtils.isNotBlank(apexMessage.getMaker_day2())) {
+                    replyString = StringUtils.replace(replyString, "%MAKER_DAY2%", apexMessage.getMaker_day2());
+                }else{
+                    replyString = StringUtils.replace(replyString, "%MAKER_DAY2%","");
+                }
+                //周轮换
+                if (replyString.contains("%MAKER_WEEK1%")&&StringUtils.isNotBlank(apexMessage.getMaker_week1())) {
+                    replyString = StringUtils.replace(replyString, "%MAKER_WEEK1%", apexMessage.getMaker_week1());
+                }else{
+                    replyString = StringUtils.replace(replyString, "%MAKER_WEEK1%","");
+                }
+                if (replyString.contains("%MAKER_WEEK2%")&&StringUtils.isNotBlank(apexMessage.getMaker_week2())) {
+                    replyString = StringUtils.replace(replyString, "%MAKER_WEEK2%", apexMessage.getMaker_week2());
+                }else{
+                    replyString = StringUtils.replace(replyString, "%MAKER_WEEK2%","");
+                }
+                //通行证时间
+                if (replyString.contains("%PASS_END%")&&apexMessage.getPass_endDownTime()!=null) {
+                    replyString = StringUtils.replace(replyString, "%PASS_END%",JodaTimeUtils.format(apexMessage.getPass_endDownTime(),"yyyy年MM月dd日HH时mm分ss秒"));
+                }else{
+                    replyString = StringUtils.replace(replyString, "%PASS_END%","");
+                }
+                //商店刷新
+                if (replyString.contains("%SHOP_REFRESH%")&&apexMessage.getShop_refreshTime()!=null) {
+                    replyString = StringUtils.replace(replyString, "%SHOP_REFRESH%",JodaTimeUtils.format(apexMessage.getShop_refreshTime(),"yyyy年MM月dd日HH时mm分ss秒"));
+                }else{
+                    replyString = StringUtils.replace(replyString, "%SHOP_REFRESH%","");
+                }
+                if(apexMessage.getPw_battle()!=null) {
+                    //大逃杀当前地图
+                    if (replyString.contains("%PW_RP_NOWMAP%")&&StringUtils.isNotBlank(apexMessage.getPw_battle().getNow_name())) {
+                        replyString = StringUtils.replace(replyString, "%PW_RP_NOWMAP%", apexMessage.getPw_battle().getNow_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_RP_NOWMAP%","");
+                    }
+                    //大逃杀排位其他地图 当上半赛季返回上半赛季 下半赛季返回上半赛季
+                    if (replyString.contains("%PW_RP_OTHERMAP%")&&StringUtils.isNotBlank(apexMessage.getPw_battle().getPre_name())) {
+                        replyString = StringUtils.replace(replyString, "%PW_RP_OTHERMAP%", apexMessage.getPw_battle().getPre_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_RP_OTHERMAP%","");
+                    }
+                    //大逃杀结束时间
+                    if (replyString.contains("%PW_RP_ENDTIME%")&&StringUtils.isNotBlank(apexMessage.getPw_battle().getRemainder_time())) {
+                        replyString = StringUtils.replace(replyString, "%PW_RP_ENDTIME%", apexMessage.getPw_battle().getRemainder_time());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_RP_ENDTIME%","");
+                    }
+                }else{
+                    replyString = "";
+                }
+                if(apexMessage.getPw_arena()!=null) {
+                    //竞技场当前地图
+                    if (replyString.contains("%PW_AP_NOWMAP%")&&StringUtils.isNotBlank(apexMessage.getPw_arena().getNow_name())) {
+                        replyString = StringUtils.replace(replyString, "%PW_AP_NOWMAP%", apexMessage.getPw_arena().getNow_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_AP_NOWMAP%","");
+                    }
+                    //竞技场下一地图
+                    if (replyString.contains("%PW_AP_NEXMAP%")&&StringUtils.isNotBlank(apexMessage.getPw_arena().getNext_name())) {
+                        replyString = StringUtils.replace(replyString, "%PW_AP_NEXMAP%", apexMessage.getPw_arena().getNext_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_AP_NEXMAP%","");
+                    }
+                    //竞技场结束时间
+                    if (replyString.contains("%PW_AP_ENDTIME%")&&StringUtils.isNotBlank(apexMessage.getPw_arena().getRemainder_time())) {
+                        replyString = StringUtils.replace(replyString, "%PW_AP_ENDTIME%", apexMessage.getPw_arena().getRemainder_time());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PW_AP_ENDTIME%","");
+                    }
+                }else{
+                    replyString = "";
+                }
+                if(apexMessage.getPp_battle()!=null) {
+                    //大逃杀当前地图
+                    if (replyString.contains("%PP_RP_NOWMAP%")&&StringUtils.isNotBlank(apexMessage.getPp_battle().getNow_name())) {
+                        replyString = StringUtils.replace(replyString, "%PP_RP_NOWMAP%", apexMessage.getPp_battle().getNow_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_RP_NOWMAP%","");
+                    }
+                    //大逃杀下一地图
+                    if (replyString.contains("%PP_RP_NEXMAP%")&&StringUtils.isNotBlank(apexMessage.getPp_battle().getNext_name())) {
+                        replyString = StringUtils.replace(replyString, "%PP_RP_NEXMAP%", apexMessage.getPp_battle().getNext_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_RP_NEXMAP%","");
+                    }
+                    //大逃杀结束时间
+                    if (replyString.contains("%PP_RP_ENDTIME%")&&StringUtils.isNotBlank(apexMessage.getPp_battle().getRemainder_time())) {
+                        replyString = StringUtils.replace(replyString, "%PP_RP_ENDTIME%", apexMessage.getPp_battle().getRemainder_time());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_RP_ENDTIME%","");
+                    }
+                }else{
+                    replyString = "";
+                }
+                if(apexMessage.getPp_arena()!=null) {
+                    //竞技场当前地图
+                    if (replyString.contains("%PP_AP_NOWMAP%")&&StringUtils.isNotBlank(apexMessage.getPp_arena().getNow_name())) {
+                        replyString = StringUtils.replace(replyString, "%PP_AP_NOWMAP%", apexMessage.getPp_arena().getNow_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_AP_NOWMAP%","");
+                    }
+                    //竞技场下一地图
+                    if (replyString.contains("%PP_AP_NEXMAP%")&&StringUtils.isNotBlank(apexMessage.getPp_arena().getNext_name())) {
+                        replyString = StringUtils.replace(replyString, "%PP_AP_NEXMAP%", apexMessage.getPp_arena().getNext_name());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_AP_NEXMAP%","");
+                    }
+                    //竞技场结束时间
+                    if (replyString.contains("%PP_AP_ENDTIME%")&&StringUtils.isNotBlank(apexMessage.getPp_arena().getRemainder_time())) {
+                        replyString = StringUtils.replace(replyString, "%PP_AP_ENDTIME%", apexMessage.getPp_arena().getRemainder_time());
+                    }else{
+                        replyString = StringUtils.replace(replyString, "%PP_AP_ENDTIME%","");
+                    }
+                }else{
+                    replyString = "";
+                }
+            }else{
+                replyString = "";
             }
         }
         if (!StringUtils.isEmpty(replyString)) {

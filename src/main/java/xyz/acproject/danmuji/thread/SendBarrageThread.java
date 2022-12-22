@@ -32,8 +32,10 @@ public class SendBarrageThread extends Thread {
 					&& !StringUtils.isEmpty(PublicDataConf.barrageString.get(0))) {
 				barrageStr = PublicDataConf.barrageString.get(0);
 				int strLength = barrageStr.length();
-				
-				int maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
+				int maxLength=20;
+				if( PublicDataConf.USERBARRAGEMESSAGE!=null) {
+					 maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
+				}
 				if (strLength > maxLength) {
 					int num = (int) Math.ceil((float) maxLength / (float) strLength);
 					for (int i = 0; i <= num; i++) {

@@ -26,7 +26,7 @@ public class LoginController {
     private Logger LOGGER = LogManager.getLogger(LoginController.class);
     @RequestMapping(value = "/login")
     public String loginPage(){
-        if(!PublicDataConf.centerSetConf.isIs_manager_login()){
+        if(!PublicDataConf.centerSetConf.is_manager_login()){
             return "redirect:/";
         }
         return "manager_login";
@@ -35,7 +35,7 @@ public class LoginController {
     @PostMapping(value = "/logins")
     public Response<?> login(HttpServletRequest req, @RequestParam("key")String key){
         boolean flag = false;
-        if(!PublicDataConf.centerSetConf.isIs_manager_login()){
+        if(!PublicDataConf.centerSetConf.is_manager_login()){
             Response.success(flag, req);
         }
         String ip =  IpUtils.getIpAddr(req);

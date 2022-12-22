@@ -72,7 +72,6 @@ public class ClientServiceImpl implements ClientService {
             HttpUserData.httpGetUserBarrageMsg();
         }
         FristSecurityData fristSecurityData = null;
-        PublicDataConf.webSocketProxy = new WebSocketProxy(PublicDataConf.URL, room);
         if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
                     conf.getToken());
@@ -80,18 +79,20 @@ public class ClientServiceImpl implements ClientService {
             fristSecurityData = new FristSecurityData(PublicDataConf.ROOMID, conf.getToken());
         }
         byte[] byte_1 = HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
-                fristSecurityData.toJson().toString().getBytes().length + PublicDataConf.packageHeadLength,
+                fristSecurityData.toJson().getBytes().length + PublicDataConf.packageHeadLength,
                 PublicDataConf.packageHeadLength, PublicDataConf.packageVersion, PublicDataConf.firstPackageType,
                 PublicDataConf.packageOther));
         byte[] byte_2 = fristSecurityData.toJson().getBytes();
         byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
+        //开启websocket 和 发送验证包和心跳包
+        PublicDataConf.webSocketProxy = new WebSocketProxy(PublicDataConf.URL, room);
         PublicDataConf.webSocketProxy.send(req);
         PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
         threadComponent.startHeartByteThread();
         setService.holdSet(PublicDataConf.centerSetConf);
         CheckTx checkTx = null;
         // 登录发现天选屏蔽礼物
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().isIs_tx_shield()) {
+        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().is_tx_shield()) {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                checkTx = HttpRoomData.httpGetCheckTX();
                 if (checkTx != null) {
@@ -104,7 +105,7 @@ public class ClientServiceImpl implements ClientService {
             }
         }
         // 登录发现天选屏蔽关注
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().isIs_tx_shield()) {
+        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().is_tx_shield()) {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                 if(checkTx==null) {
                     checkTx = HttpRoomData.httpGetCheckTX();
@@ -118,7 +119,7 @@ public class ClientServiceImpl implements ClientService {
             }
         }
         // 登录发现天选屏蔽欢迎
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().isIs_tx_shield()) {
+        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().is_tx_shield()) {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                 if(checkTx==null) {
                    checkTx = HttpRoomData.httpGetCheckTX();
@@ -133,7 +134,7 @@ public class ClientServiceImpl implements ClientService {
         }
         if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.centerSetConf != null
-                    && PublicDataConf.centerSetConf.getThank_gift().isIs_guard_local()) {
+                    && PublicDataConf.centerSetConf.getThank_gift().is_guard_local()) {
                 if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
                 } else {
                     ConcurrentHashMap<Long, String> guards = HttpRoomData.httpGetGuardList();

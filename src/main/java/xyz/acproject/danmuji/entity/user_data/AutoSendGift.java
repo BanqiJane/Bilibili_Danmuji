@@ -1,5 +1,9 @@
 package xyz.acproject.danmuji.entity.user_data;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -9,6 +13,9 @@ import java.io.Serializable;
  * @date 2021/7/26 12:09
  * @Copyright:2021
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AutoSendGift implements Serializable {
     private static final long serialVersionUID = 1247970966228534932L;
     private Integer id;
@@ -17,9 +24,6 @@ public class AutoSendGift implements Serializable {
     private Integer num;
     private Short coin_type;
 
-    public AutoSendGift() {
-    }
-
     public AutoSendGift(Integer id, String name,Integer feed, Short coin_type) {
         this.id = id;
         this.name = name;
@@ -27,43 +31,4 @@ public class AutoSendGift implements Serializable {
         this.coin_type = coin_type;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getFeed() {
-        return feed;
-    }
-
-    public void setFeed(Integer feed) {
-        this.feed = feed;
-    }
-
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
-    public Short getCoin_type() {
-        return coin_type;
-    }
-
-    public void setCoin_type(Short coin_type) {
-        this.coin_type = coin_type;
-    }
 }

@@ -1,8 +1,11 @@
 package xyz.acproject.danmuji.entity.Welcome;
 
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
+
+import java.io.Serializable;
 
 /**
  * @ClassName WelcomeGuard
@@ -12,6 +15,9 @@ import xyz.acproject.danmuji.utils.FastJsonUtils;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WelcomeGuard implements Serializable{
 	
 	/**
@@ -26,47 +32,4 @@ public class WelcomeGuard implements Serializable{
 	private Short guard_level;
 	//未知
 	private Short mock_effect;
-	public WelcomeGuard() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
-	public WelcomeGuard(Long uid, String username, Short guard_level, Short mock_effect) {
-		super();
-		this.uid = uid;
-		this.username = username;
-		this.guard_level = guard_level;
-		this.mock_effect = mock_effect;
-	}
-	public Long getUid() {
-		return uid;
-	}
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public Short getGuard_level() {
-		return guard_level;
-	}
-	public void setGuard_level(Short guard_level) {
-		this.guard_level = guard_level;
-	}
-	public Short getMock_effect() {
-		return mock_effect;
-	}
-	public void setMock_effect(Short mock_effect) {
-		this.mock_effect = mock_effect;
-	}
-	@Override
-	public String toString() {
-		return "WelcomeGuard [uid=" + uid + ", username=" + username + ", guard_level=" + guard_level + ", mock_effect="
-				+ mock_effect + "]";
-	}
-	public String toJson() {
-		return FastJsonUtils.toJson(new WelcomeGuard(uid,username,guard_level,mock_effect));
-	}
 }

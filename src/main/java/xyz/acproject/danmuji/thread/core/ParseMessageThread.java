@@ -37,1173 +37,1272 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 /**
+ * @author BanqiJane
  * @ClassName ParseMessageThread
  * @Description TODO
- * @author BanqiJane
  * @date 2020年8月10日 下午12:16:51
- *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
-public class ParseMessageThread extends Thread{
-	private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
-	public volatile boolean FLAG = false;
-	private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
-	private SetService setService = SpringUtils.getBean(SetService.class);
-	private ThreadComponent threadComponent = SpringUtils.getBean(ThreadComponent.class);
-	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
-	private CenterSetConf centerSetConf;
+public class ParseMessageThread extends Thread {
+    private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
+    public volatile boolean FLAG = false;
+    private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
+    private SetService setService = SpringUtils.getBean(SetService.class);
+    private ThreadComponent threadComponent = SpringUtils.getBean(ThreadComponent.class);
+    private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
+    private CenterSetConf centerSetConf;
 
 
-	@Override
-	public void run() {
-		// TODO 自动生成的方法存根
-		super.run();
-		JSONObject jsonObject = null;
-		JSONArray array = null;
-		Barrage barrage = null;
-		Gift gift = null;
-		Interact interact = null;
+    @Override
+    public void run() {
+        // TODO 自动生成的方法存根
+        super.run();
+        try {
+            JSONObject jsonObject = null;
+            JSONArray array = null;
+            Barrage barrage = null;
+            Gift gift = null;
+            Interact interact = null;
 //		Fans fans = null;
 //		Rannk rannk = null;
-		Guard guard = null;
-		SuperChat superChat = null;
-		BlockMessage blockMessage = null;
-		WelcomeGuard welcomeGuard = null;
-		WelcomeVip welcomeVip = null;
+            Guard guard = null;
+            SuperChat superChat = null;
+            BlockMessage blockMessage = null;
+            WelcomeGuard welcomeGuard = null;
+            WelcomeVip welcomeVip = null;
 //		GiftFile giftFile = null;
-		String message = "";
-		String cmd = "";
-		short msg_type = 0;
-		//high_level danmu
-		Hbarrage hbarrage =null;
-		StringBuilder stringBuilder = new StringBuilder(200);
-		while (!FLAG) {
-			if (FLAG) {
-				LOGGER.debug("数据解析线程手动中止");
-				return;
-			}
-			if (null != PublicDataConf.resultStrs && !PublicDataConf.resultStrs.isEmpty()
-					&& !StringUtils.isEmpty(PublicDataConf.resultStrs.get(0))) {
-				message = PublicDataConf.resultStrs.get(0);
-				try {
-					jsonObject = JSONObject.parseObject(message);
-				} catch (Exception e) {
-					// TODO: handle exception
-					LOGGER.debug("抛出解析异常:" + e);
-//					LOGGER.debug(message);
-					synchronized (PublicDataConf.parseMessageThread) {
-						try {
-							PublicDataConf.parseMessageThread.wait();
-						} catch (InterruptedException e1) {
-							// TODO 自动生成的 catch 块
-							LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
-//							e.printStackTrace();
-						}
-					}
-				}
-				cmd = jsonObject.getString("cmd");
-				if (StringUtils.isEmpty(cmd)) {
-					synchronized (PublicDataConf.parseMessageThread) {
-						try {
-							PublicDataConf.parseMessageThread.wait();
-						} catch (InterruptedException e1) {
-							// TODO 自动生成的 catch 块
-							LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
-//							e.printStackTrace();
-						}
-					}
-				}
-				cmd = parseCmd(cmd);
-				switch (cmd) {
-				// 弹幕
-				case "DANMU_MSG":
-					array = jsonObject.getJSONArray("info");
-					barrage = Barrage.getBarrage(((JSONArray) array.get(2)).getLong(0),
-							((JSONArray) array.get(2)).getString(1), array.getString(1),
-							((JSONArray) array.get(0)).getShort(9), ((JSONArray) array.get(0)).getLong(4),
-							((JSONArray) array.get(2)).getShort(2), ((JSONArray) array.get(2)).getShort(3),
-							((JSONArray) array.get(2)).getShort(4), ((JSONArray) array.get(2)).getInteger(5),
-							((JSONArray) array.get(2)).getShort(6),
-							((JSONArray) array.get(3)).size() <= 0 ? 0 : ((JSONArray) array.get(3)).getShort(0),
-							((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(1),
-							((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(2),
-							((JSONArray) array.get(3)).size() <= 0 ? 0L : ((JSONArray) array.get(3)).getLong(3),
-							((JSONArray) array.get(4)).getShort(0), ((JSONArray) array.get(4)).getString(3),
-							((JSONArray) array.get(5)).getString(0), ((JSONArray) array.get(5)).getString(1),
-							array.getShort(7));
-
-					boolean is_xunzhang= true;
-					if (getCenterSetConf().isIs_barrage_anchor_shield()) {
-						// 房管
-						if(barrage.getMedal_room()!=(long)PublicDataConf.ROOMID)is_xunzhang=false;
-					}
-					// 过滤礼物自动弹幕 & 可能非主播勋章弹幕
-					if (barrage.getMsg_type() == 0&&is_xunzhang) {
-						hbarrage = Hbarrage.copyHbarrage(barrage);
-					    if(barrage.getUid().equals(PublicDataConf.AUID)) {
-					    	hbarrage.setManager((short)2);
-					    }
-						// 判断类型输出
-						stringBuilder.append(JodaTimeUtils.formatDateTime(barrage.getTimestamp()));
-						stringBuilder.append(":收到弹幕:");
-						if (getCenterSetConf().isIs_barrage_vip()) {
-							// 老爷
-								stringBuilder.append(ParseIndentityTools.parseVip(barrage));
-						}else {
-							hbarrage.setVip((short)0);
-							hbarrage.setSvip((short)0);
-						}
-						if (getCenterSetConf().isIs_barrage_guard()) {
-							// 舰长
-							stringBuilder.append(ParseIndentityTools.parseGuard(barrage.getUguard()));
-						}else {
-							hbarrage.setUguard((short)0);
-						}
-						if (getCenterSetConf().isIs_barrage_manager()) {
-							// 房管
-							stringBuilder
-									.append(ParseIndentityTools.parseManager(barrage.getUid(), barrage.getManager()));
-						}else {
-							hbarrage.setManager((short)0);
-						}
-						if (getCenterSetConf().isIs_barrage_medal()) {
-							// 勋章+勋章等级
-							if (!StringUtils.isEmpty(barrage.getMedal_name())) {
-								stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
-										.append(barrage.getMedal_level()).append("]");
-							}
-						}else {
-							hbarrage.setMedal_level(null);
-							hbarrage.setMedal_name(null);
-							hbarrage.setMedal_room(null);
-							hbarrage.setMedal_anchor(null);
-						}
-						if (getCenterSetConf().isIs_barrage_ul()) {
-							// ul等级
-							stringBuilder.append("[").append("UL").append(barrage.getUlevel()).append("]");
-						}else {
-							hbarrage.setUlevel(null);
-						}
-
-
-						stringBuilder.append(barrage.getUname());
-						stringBuilder.append(" 它说:");
-						stringBuilder.append(barrage.getMsg());
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short)0, hbarrage));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						//高级显示处理
-						
-//						try {
-//							danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short)0, barrage));
-//						} catch (Exception e) {
-//							// TODO 自动生成的 catch 块
-//							e.printStackTrace();
-//						}
-						//日志处理
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						//自动回复姬处理
-						if (PublicDataConf.autoReplyThread != null && !PublicDataConf.autoReplyThread.FLAG) {
-							if (!PublicDataConf.autoReplyThread.getState().toString().equals("TIMED_WAITING")) {
-								PublicDataConf.replys.add(
-										AutoReply.getAutoReply(barrage.getUid(), barrage.getUname(), barrage.getMsg()));
-								synchronized (PublicDataConf.autoReplyThread) {
-									PublicDataConf.autoReplyThread.notify();
-								}
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-//						LOGGER.debug("弹幕test：" + message);
-					} else {
-//				    LOGGER.debug("test中貌似为礼物弹幕：" + message);
-					}
-					break;
-
-				// 送普通礼物
-				case "SEND_GIFT":
-					if (getCenterSetConf().isIs_gift()) {
-						jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
-						gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
-								jsonObject.getString("giftName"), jsonObject.getInteger("num"),
-								jsonObject.getString("uname"), jsonObject.getString("face"),
-								jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
-								jsonObject.getLong("timestamp"), jsonObject.getString("action"),
-								jsonObject.getInteger("price"),
-								ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
-								jsonObject.getLong("total_coin"));
-//							giftFile = new GiftFile(jsonObject.getInteger("giftId"), jsonObject.getString("giftName"),
-//									jsonObject.getInteger("price"), jsonObject.getString("coin_type"));
-//							GiftFileTools.addGiftToFile(giftFile.toJson());
-						stringBuilder.append(JodaTimeUtils.formatDateTime(gift.getTimestamp() * 1000));
-						stringBuilder.append(":收到道具:");
-						stringBuilder.append(gift.getUname());
-						stringBuilder.append(" ");
-						stringBuilder.append(gift.getAction());
-						stringBuilder.append("的:");
-						stringBuilder.append(gift.getGiftName());
-						stringBuilder.append(" x ");
-						stringBuilder.append(gift.getNum());
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short)0, gift));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					} else {
-						if (PublicDataConf.sendBarrageThread != null) {
-							if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
-								jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
-								gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
-										jsonObject.getString("giftName"), jsonObject.getInteger("num"),
-										jsonObject.getString("uname"), jsonObject.getString("face"),
-										jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
-										jsonObject.getLong("timestamp"), jsonObject.getString("action"),
-										jsonObject.getInteger("price"),
-										ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
-										jsonObject.getLong("total_coin"));
-							}
-						}
-					}
-					// 感谢礼物处理
-					if (gift != null && getCenterSetConf().getThank_gift().is_giftThank()) {
-						if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
-							if (ParseSetStatusTools.getGiftShieldStatus(
-									getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
-								gift = ShieldGiftTools.shieldGift(gift,
-										ParseSetStatusTools
-												.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
-										getCenterSetConf().getThank_gift().getGiftStrings(), null);
-							}
-							if (gift != null) {
-								if (!StringUtils.isEmpty(PublicDataConf.SHIELDGIFTNAME)) {
-									if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
-										gift = null;
-									}
-								}
-							}
-
-							try {
-								parseGiftSetting(gift);
-							} catch (Exception e) {
-								// TODO 自动生成的 catch 块
-								e.printStackTrace();
-							}
-						}
-					}
-//		            LOGGER.debug("让我看看是谁送礼物:::"+jsonObject);
-					break;
-
-				// 部分金瓜子礼物连击
-				case "COMBO_SEND":
-//					LOGGER.debug("部分金瓜子礼物连击:::" + message);
-					break;
-
-				// 部分金瓜子礼物连击
-				case "COMBO_END":
-//					LOGGER.debug("部分金瓜子礼物连击:::" + message);
-					break;
-
-				// 上舰
-				case "GUARD_BUY":
-					if (getCenterSetConf().isIs_gift()) {
-						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-						stringBuilder.append(JodaTimeUtils.formatDateTime(guard.getStart_time() * 1000));
-						stringBuilder.append(":有人上船:");
-						stringBuilder.append(guard.getUsername());
-						stringBuilder.append("在本房间开通了");
-						stringBuilder.append(guard.getNum());
-						stringBuilder.append("个月");
-						stringBuilder.append(guard.getGift_name());
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						gift = new Gift();
-						gift.setGiftName(guard.getGift_name());
-						gift.setNum(guard.getNum());
-						gift.setPrice(guard.getPrice());
-						gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
-						gift.setTimestamp(guard.getStart_time());
-						gift.setAction("赠送");
-						gift.setCoin_type((short) 1);
-						gift.setUname(guard.getUsername());
-						gift.setUid(guard.getUid());
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short)0, gift));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-					if (getCenterSetConf().getThank_gift().is_giftThank()) {
-						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
-							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-							gift = new Gift();
-							gift.setGiftName(guard.getGift_name());
-							gift.setNum(guard.getNum());
-							gift.setPrice(guard.getPrice());
-							gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
-							gift.setTimestamp(guard.getStart_time());
-							gift.setAction("赠送");
-							gift.setCoin_type((short) 1);
-							gift.setUname(guard.getUsername());
-							gift.setUid(guard.getUid());
-							gift = ShieldGiftTools.shieldGift(gift,
-									ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
-									getCenterSetConf().getThank_gift().getGiftStrings(), null);
-							if (gift != null) {
-								try {
-									parseGiftSetting(gift);
-								} catch (Exception e) {
-									// TODO 自动生成的 catch 块
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-					//开启舰长存放本地
-					if (getCenterSetConf().getThank_gift().isIs_guard_local()) {
-						guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-						Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
-						if (guardHashtable_local == null) {
-							guardHashtable_local = new Hashtable<Long, String>();
-						}
-						if (!guardHashtable_local.containsKey(guard.getUid())) {
-							GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
-
-							if (getCenterSetConf().getThank_gift().isIs_guard_report()) {
-								String report =StringUtils.replace(getCenterSetConf().getThank_gift().getReport(),"\n","\\n");
-								report = StringUtils.replace(report,"%uName%",guard.getUsername());
-								//礼品码
-								if (getCenterSetConf().getThank_gift().isIs_gift_code()
-										&& !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
-									report = StringUtils.replace(report,"%giftCode%",this.sendCode());
-								}
-								try {
-//									if (PublicDataConf.ROOMID == 5067) {
-									if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
-										if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-											PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
-											synchronized (PublicDataConf.sendBarrageThread) {
-												PublicDataConf.sendBarrageThread.notify();
-											}
-										}
-									} else {
-										HttpUserData.httpPostSendMsg(guard.getUid(), report);
-									}
-//									} else {
-//										LOGGER.debug(report);
-//										LOGGER.debug(getThankGiftSetConf().getReport_barrage());
-//									}
-								} catch (Exception e) {
-									// TODO: handle exception
-									LOGGER.error("发送舰长私信失败，原因：" + e);
-								}
-							}
-
-						}
-					} else {
-						if (getCenterSetConf().getThank_gift().isIs_guard_report()) {
-							guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-							String report =StringUtils.replace(getCenterSetConf().getThank_gift().getReport(),"\n","\\n");
-							report = StringUtils.replace(report,"%uName%",guard.getUsername());
-							//礼品码
-							if (getCenterSetConf().getThank_gift().isIs_gift_code()
-									&& !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
-								report = StringUtils.replace(report,"%giftCode%",this.sendCode());
-							}else{
-								report = StringUtils.replace(report,"%giftCode%","");
-							}
-							try {
-//								if (PublicDataConf.ROOMID == 5067) {
-								if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
-									if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-										PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
-									}
-									synchronized (PublicDataConf.sendBarrageThread) {
-										PublicDataConf.sendBarrageThread.notify();
-									}
-								} else {
-									HttpUserData.httpPostSendMsg(guard.getUid(), report);
-								}
-//								} else {
-//									LOGGER.debug(report);
-//									LOGGER.debug(getThankGiftSetConf().getReport_barrage());
-//								}
-							} catch (Exception e) {
-								// TODO: handle exception
-								LOGGER.error("发送舰长私信失败，原因：" + e);
-							}
-						}
-					}
-//					LOGGER.debug("有人上舰长啦:::" + message);
-					break;
-
-				// 上舰消息推送
-				case "GUARD_LOTTERY_START":
-//					LOGGER.debug("上舰消息推送:::" + message);
-					break;
-
-				// 上舰抽奖消息推送
-				case "USER_TOAST_MSG":
-//					LOGGER.debug("上舰抽奖消息推送:::" + message);
-					break;
-
-				// 醒目留言
-				case "SUPER_CHAT_MESSAGE":
-					if (getCenterSetConf().isIs_gift()) {
-						superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
-						stringBuilder.append(JodaTimeUtils.formatDateTime(superChat.getStart_time() * 1000));
-						stringBuilder.append(":收到留言:");
-						stringBuilder.append(superChat.getUser_info().getUname());
-						stringBuilder.append(" 他用了");
-						//适配6.11破站更新金瓜子为电池  叔叔真有你的
-						stringBuilder.append(superChat.getPrice() * 10);
-						stringBuilder.append("电池留言了");
-						stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
-						stringBuilder.append("秒说: ");
-						stringBuilder.append(superChat.getMessage());
-						superChat.setTime(ParseIndentityTools.parseTime(superChat.getTime()));
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("superchat", (short)0, superChat));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-					if (getCenterSetConf().getThank_gift().is_giftThank()) {
-						if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
-							superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
-							gift = new Gift();
-							stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
-							stringBuilder.append("秒");
-							stringBuilder.append(superChat.getGift().getGift_name());
-							gift.setGiftName(stringBuilder.toString());
-							gift.setNum(superChat.getGift().getNum());
-							//适配6.11破站更新金瓜子为电池  叔叔真有你的
-							gift.setPrice(superChat.getPrice() * 10);
-							gift.setTotal_coin((long) superChat.getPrice() * 10l);
-							gift.setTimestamp(superChat.getStart_time() * 1000);
-							gift.setAction("赠送");
-							gift.setCoin_type((short) 1);
-							gift.setUname(superChat.getUser_info().getUname());
-							gift.setUid(superChat.getUid());
-							gift = ShieldGiftTools.shieldGift(gift,
-									ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
-									getCenterSetConf().getThank_gift().getGiftStrings(), null);
-							if (gift != null) {
-								try {
-									parseGiftSetting(gift);
-								} catch (Exception e) {
-									// TODO 自动生成的 catch 块
-									e.printStackTrace();
-								}
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-//					LOGGER.debug("收到醒目留言:::" + message);
-					break;
-
-				// 醒目留言日文翻译
-				case "SUPER_CHAT_MESSAGE_JPN":
-//					LOGGER.debug("醒目留言日文翻译消息推送:::" + message);
-					break;
-
-				// 删除醒目留言
-				case "SUPER_CHAT_MESSAGE_DELETE":
-//					LOGGER.debug("该条醒目留言已被删除:::" + message);
-					break;
-
-				// 欢迎老爷进来本直播间
-				case "WELCOME":
-					// 区分年月费老爷
-					/*
-					 * if(welcomVip.getSvip()==1) {
-					 * System.out.println(JodaTimeUtils.getCurrentTimeString()+":欢迎年费老爷:"+welcomeVip
-					 * .getUname()+" 进入直播间"); }else {
-					 * System.out.println(JodaTimeUtils.getCurrentTimeString()+":欢迎月费老爷:"+welcomeVip
-					 * .getUname()+" 进入直播间"); }
-					 */
-					if (getCenterSetConf().isIs_welcome()) {
-						welcomeVip = JSONObject.parseObject(jsonObject.getString("data"), WelcomeVip.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
-						stringBuilder.append(":欢迎老爷:");
-						stringBuilder.append(welcomeVip.getUname());
-						stringBuilder.append(" 进入直播间");
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("welcomeVip", (short)0, welcomeVip));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-
-//					LOGGER.debug("让我看看哪个老爷大户进来了:::" + message);
-					break;
-
-				// 欢迎舰长进入直播间
-				case "WELCOME_GUARD":
-
-					if (getCenterSetConf().isIs_welcome()) {
-						welcomeGuard = JSONObject.parseObject(jsonObject.getString("data"), WelcomeGuard.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
-						switch (welcomeGuard.getGuard_level()) {
-						case 3:
-							stringBuilder.append(":欢迎舰长:");
-							break;
-						case 2:
-							stringBuilder.append(":欢迎提督:");
-							break;
-						case 1:
-							stringBuilder.append(":欢迎总督:");
-							break;
-						}
-						stringBuilder.append(welcomeGuard.getUsername());
-						stringBuilder.append(" 进入直播间");
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("welcomeGuard", (short)0, welcomeGuard));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-//					LOGGER.debug("舰长大大进来直播间了:::" + message);
-					break;
-
-				// 舰长进入直播间消息
-				case "ENTRY_EFFECT":
-//					LOGGER.debug("舰长大大进入直播间消息推送:::" + message);
-					break;
-
-				// 节奏风暴推送 action 为start和end
-				case "SPECIAL_GIFT":
-//					LOGGER.debug("节奏风暴推送:::" + message);
-					break;
-
-				// 禁言消息
-				case "ROOM_BLOCK_MSG":
-					if (getCenterSetConf().isIs_block()) {
-						blockMessage = JSONObject.parseObject(jsonObject.getString("data"), BlockMessage.class);
-						stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
-						stringBuilder.append(":禁言消息:");
-						stringBuilder.append(blockMessage.getUname());
-						if (blockMessage.getOperator() == 2) {
-							stringBuilder.append("已被主播禁言");
-						} else if (blockMessage.getOperator() == 1) {
-							stringBuilder.append("已被房管禁言");
-						} else {
-							stringBuilder.append("已被管理员禁言");
-						}
-						//控制台打印
-						if (getCenterSetConf().isIs_cmd()) {
-						System.out.println(stringBuilder.toString());
-						}
-						try {
-							danmuWebsocket.sendMessage(WsPackage.toJson("block", (short)0,blockMessage));
-						} catch (Exception e) {
-							// TODO 自动生成的 catch 块
-							e.printStackTrace();
-						}
-						if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-							PublicDataConf.logString.add(stringBuilder.toString());
-							synchronized (PublicDataConf.logThread) {
-								PublicDataConf.logThread.notify();
-							}
-						}
-						stringBuilder.delete(0, stringBuilder.length());
-					}
-//					LOGGER.debug("谁这么惨被禁言了:::" + message);
-					break;
-
-				// 本主播在本分区小时榜排名更新推送 不会更新页面的排行显示信息
-				case "ACTIVITY_BANNER_UPDATE_V2":
-//					LOGGER.debug("小时榜消息更新推送:::" + message);
-					break;
-
-				// 本房间分区修改
-				case "ROOM_CHANGE":
-//					LOGGER.debug("房间分区已更新:::" + message);
-					break;
-
-				// 本房间分区排行榜更新 更新页面的排行显示信息
-				case "ROOM_RANK":
-//					rannk = JSONObject.parseObject(jsonObject.getString("data"), Rannk.class);
-//					stringBuilder.append(JodaTimeUtils.format(rannk.getTimestamp() * 1000)).append(":榜单更新:")
-//							.append(rannk.getRank_desc());
-//
-//					System.out.println(stringBuilder.toString());
-//					stringBuilder.delete(0, stringBuilder.length());
-//					LOGGER.debug("小时榜信息更新推送:::" + message);
-					break;
-
-				// 推测为获取本小时榜榜单第一名主播的信息 推测激活条件为本直播间获得第一
-				case "new_anchor_reward":
-//					LOGGER.debug("获取本小时榜榜单第一名主播的信息:::" + message);
-					break;
-
-				// 小时榜榜单信息推送 推测激活条件为本直播间获得第一
-				case "HOUR_RANK_AWARDS":
-//					LOGGER.debug("恭喜xxxx直播间获得:::" + message);
-					break;
-
-				// 直播间粉丝数更新 经常
-				case "ROOM_REAL_TIME_MESSAGE_UPDATE":
-//					fans = JSONObject.parseObject(jsonObject.getString("data"), Fans.class);
-//					stringBuilder.append(JodaTimeUtils.getCurrentTimeString()).append(":消息推送:").append("房间号")
-//							.append(fans.getRoomid()).append("的粉丝数:").append(fans.getFans());
-					PublicDataConf.FANSNUM = JSONObject.parseObject(jsonObject.getString("data")).getLong("fans");
-//					System.out.println(stringBuilder.toString());
-//					stringBuilder.delete(0, stringBuilder.length());
-//					LOGGER.debug("直播间粉丝数更新消息推送:::" + message);
-					break;
-
-				// 直播间许愿瓶消息推送更新
-				case "WISH_BOTTLE":
-//					LOGGER.debug("直播间许愿瓶消息推送更新:::" + message);
-					break;
-
-				// 广播小电视类抽奖信息推送,包括本房间的舰长礼物包括,本直播间所在小时榜榜单主播信息的推送 需要unicode转义 免费辣条再见！！！！
-				case "NOTICE_MSG":
-//					message = ByteUtils.unicodeToString(message);
-//					LOGGER.debug("小电视类抽奖信息推送:::" + message);
-					break;
-
-				// 本房间开启活动抽奖(33图,小电视图,任意门等) 也指本房间内赠送的小电视 摩天大楼类抽奖
-				case "RAFFLE_START":
-//					LOGGER.debug("本房间开启了活动抽奖:::" + message);
-					break;
-
-				// 本房间活动中奖用户信息推送 也指抽奖结束
-				case "RAFFLE_END":
-//					LOGGER.debug("看看谁是幸运儿:::" + message);
-					break;
-
-				// 本房间主播开启了天选时刻
-				case "ANCHOR_LOT_START":
-					if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-						try {
-							//屏蔽礼物
-							if (getCenterSetConf().getThank_gift().isIs_tx_shield()) {
-								if (PublicDataConf.parsethankGiftThread != null
-										&& !PublicDataConf.parsethankGiftThread.TFLAG
-										&& !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
-									String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
-									int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-									if (!StringUtils.isEmpty(giftName)) {
-										if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
-												|| PublicDataConf.giftShieldThread.getState().toString()
-														.equals("NEW")) {
-											PublicDataConf.giftShieldThread = new GiftShieldThread();
-											PublicDataConf.giftShieldThread.FLAG = false;
-											PublicDataConf.giftShieldThread.setGiftName(giftName);
-											PublicDataConf.giftShieldThread
-													.setTime(ParseIndentityTools.parseTime(time));
-											PublicDataConf.giftShieldThread.start();
-										} else {
-											PublicDataConf.giftShieldThread.setTime(time);
-											PublicDataConf.giftShieldThread.setGiftName(giftName);
-										}
-									}
-								}
-							}
-							//开启天选 屏蔽关注
-							if (getCenterSetConf().getFollow().isIs_tx_shield()) {
-								if (PublicDataConf.parsethankFollowThread != null
-										&& !PublicDataConf.parsethankFollowThread.FLAG
-										&& !PublicDataConf.followShieldThread.getState().toString()
-												.equals("RUNNABLE")) {
-									int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-									if (PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")
-											|| PublicDataConf.followShieldThread.getState().toString().equals("NEW")) {
-										PublicDataConf.followShieldThread = new FollowShieldThread();
-										PublicDataConf.followShieldThread.FLAG = false;
-										PublicDataConf.followShieldThread.setTime(time);
-										PublicDataConf.followShieldThread.start();
-									} else {
-										PublicDataConf.followShieldThread.setTime(time);
-									}
-								}
-							}
-							//开启天选 屏蔽欢迎
-							if (getCenterSetConf().getWelcome().isIs_tx_shield()) {
-								if (PublicDataConf.parseThankWelcomeThread != null
-										&& !PublicDataConf.parseThankWelcomeThread.FLAG
-										&& !PublicDataConf.welcomeShieldThread.getState().toString()
-										.equals("RUNNABLE")) {
-									int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-									if (PublicDataConf.welcomeShieldThread.getState().toString().equals("TERMINATED")
-											|| PublicDataConf.welcomeShieldThread.getState().toString().equals("NEW")) {
-										PublicDataConf.welcomeShieldThread = new WelcomeShieldThread();
-										PublicDataConf.welcomeShieldThread.FLAG = false;
-										PublicDataConf.welcomeShieldThread.setTime(time);
-										PublicDataConf.welcomeShieldThread.start();
-									} else {
-										PublicDataConf.welcomeShieldThread.setTime(time);
-									}
-								}
-							}
-
-						} catch (Exception e) {
-							// TODO: handle exception
-							e.printStackTrace();
-						}
-					}
-//					LOGGER.debug("本房间主播开启了天选时刻:::" + message);
-					break;
-
-				// 本房间天选时刻结束
-				case "ANCHOR_LOT_END":
-//					LOGGER.debug("本房间天选时刻结束:::" + message);
-					break;
-
-				// 本房间天选时刻获奖信息推送
-				case "ANCHOR_LOT_AWARD":
-//					LOGGER.debug("本房间天选时刻中奖用户是:::" + message);
-					break;
-
-				// 获得推荐位推荐消息
-				case "ANCHOR_NORMAL_NOTIFY":
-//					LOGGER.debug("本房间获得推荐位:::" + message);				
-					break;
-				// 周星消息推送
-				case "WEEK_STAR_CLOCK":
-//			        LOGGER.debug("周星消息推送:::" + message);
-					break;
-
-				// 推测本主播周星信息更新
-				case "ROOM_BOX_MASTER":
-//					LOGGER.debug("周星信息更新:::" + message);
-					break;
-
-				// 周星消息推送关闭
-				case "ROOM_SKIN_MSG":
-//					LOGGER.debug("周星消息推送关闭:::" + message);
-					break;
-
-				// 中型礼物多数量赠送消息推送 例如b克拉 亿元
-				case "SYS_GIFT":
-//					LOGGER.debug("中型礼物多数量赠送消息推送:::" + message);
-					break;
-
-				// lol活动礼物？？？
-				case "ACTIVITY_MATCH_GIFT":
-//					LOGGER.debug("lol专属房间礼物赠送消息推送:::" + message);
-					break;
-
-//----------------------------------------pk信息多为要uicode解码-------------------------------------------------
-				// 推测为房间pk信息推送
-				case "PK_BATTLE_ENTRANCE":
-//			        LOGGER.debug("房间pk活动信息推送:::" + message);
-					break;
-
-				// 活动pk准备
-				case "PK_BATTLE_PRE":
-//			        LOGGER.debug("房间活动pk准备:::" + message);
-					break;
-
-				// 活动pk开始
-				case "PK_BATTLE_START":
-//			        LOGGER.debug("房间活动pk开始:::" + message);
-					break;
-
-				// 活动pk中
-				case "PK_BATTLE_PROCESS":
-//			        LOGGER.debug("房间活动pk中:::" + message);
-					break;
-
-				// 活动pk详细信息
-				case "PK_BATTLE_CRIT":
-//			        LOGGER.debug("房间活动pk详细信息推送:::" + message);
-					break;
-
-				// 活动pk类型推送
-				case "PK_BATTLE_PRO_TYPE":
-//			        LOGGER.debug("房间活动pk类型推送:::" + message);
-					break;
-
-				// 房间活动pk结束
-				case "PK_BATTLE_END":
-//			        LOGGER.debug("房间pk活动结束::" + message);
-					break;
-
-				// 活动pk结果用户 推送
-				case "PK_BATTLE_SETTLE_USER":
-//			        LOGGER.debug("活动pk结果用户 推送::" + message);	
-					break;
-
-				// 活动pk礼物开始 1辣条
-				case "PK_LOTTERY_START":
-//			        LOGGER.debug("活动pk礼物开始 推送::" + message);			
-					break;
-
-				// 活动pk结果房间
-				case "PK_BATTLE_SETTLE":
-//			        LOGGER.debug("活动pk结果房间推送::" + message);
-					break;
-
-				// pk开始
-				case "PK_START":
-//					LOGGER.debug("房间pk开始:::" + message);
-					break;
-
-				// pk准备中
-				case "PK_PRE":
-//					LOGGER.debug("房间pk准备中:::" + message);
-					break;
-
-				// pk载入中
-				case "PK_MATCH":
-//					LOGGER.debug("房间pk载入中:::" + message);
-					break;
-
-				// pk再来一次触发
-				case "PK_CLICK_AGAIN":
-//					LOGGER.debug("房间pk再来一次:::" + message);			
-					break;
-				// pk结束
-				case "PK_MIC_END":
-//					LOGGER.debug("房间pk结束:::" + message);	
-					break;
-
-				// pk礼物信息推送 激活条件推测为pk胜利 可获得一个辣条
-				case "PK_PROCESS":
-//					LOGGER.debug("房间pk礼物推送:::" + message);				
-					break;
-
-				// pk结果信息推送
-				case "PK_SETTLE":
-//					LOGGER.debug("房间pk结果信息推送:::" + message);					
-					break;
-
-				// pk结束信息推送
-				case "PK_END":
-//					LOGGER.debug("房间pk结束信息推送:::" + message);					
-					break;
-
-				// 系统信息推送
-				case "SYS_MSG":
-//					LOGGER.debug("系统信息推送:::" + message);					
-					break;
-
-				// 总督登场消息
-				case "GUARD_MSG":
-//					LOGGER.debug("总督帅气登场:::" + message);
-					break;
-
-				// 热门房间？？？？广告房间？？ 不知道这是什么 推测本直播间激活 目前常见于打广告的官方直播间 例如手游 碧蓝航线 啥的。。
-				case "HOT_ROOM_NOTIFY":
-//					LOGGER.debug("热门房间推送消息:::" + message);
-					break;
-
-				// 小时榜面板消息推送
-				case "PANEL":
-//					LOGGER.debug("热小时榜面板消息推送:::" + message);	
-					break;
-
-				// 星之耀宝箱使用 n
-				case "ROOM_BOX_USER":
-//					LOGGER.debug("星之耀宝箱使用:::" + message);
-					break;
-
-				// 语音加入？？？？ 暂不知道
-				case "VOICE_JOIN_ROOM_COUNT_INFO":
-//					LOGGER.debug("语音加入:::" + message);
-					break;
-
-				// 语音加入list？？？？ 暂不知道
-				case "VOICE_JOIN_LIST":
-//					LOGGER.debug("语音加入list:::" + message);
-					break;
-
-				// lol活动
-				case "LOL_ACTIVITY":
-//					LOGGER.debug("lol活动:::" + message);
-					break;
-
-				// 队伍礼物排名 目前只在6号lol房间抓取过
-				case "MATCH_TEAM_GIFT_RANK":
-//					LOGGER.debug("队伍礼物排名:::" + message);		
-					break;
-
-				// 6.13端午节活动粽子新增活动更新命令 激活条件有人赠送活动礼物
-				case "ROOM_BANNER":
-//					LOGGER.debug("收到活动礼物赠送，更新信息:::" + message);	
-					break;
-
-				// 设定房管消息 新房管的诞生
-				case "room_admin_entrance":
-//					LOGGER.debug("有人被设为了房管:::" + message);
-					break;
-
-				// 房管列表更新消息 激活条件为新房管的诞生
-				case "ROOM_ADMINS":
-//					LOGGER.debug("房管列表更新推送:::" + message);	
-					break;
-
-				// 房间护盾 推测推送消息为破站官方屏蔽的关键字 触发条件未知
-				case "ROOM_SHIELD":
-//					LOGGER.debug("房间护盾触发消息:::" + message);
-					break;
-
-				// 主播开启房间全局禁言
-				case "ROOM_SILENT_ON":
-//					LOGGER.debug("主播开启房间全局禁言:::" + message);
-					break;
-
-				// 主播关闭房间全局禁言
-				case "ROOM_SILENT_OFF":
-//					LOGGER.debug("主播关闭房间全局禁言:::" + message);
-					break;
-
-				// 主播状态检测 直译 不知道什么情况 statue 1 ，2 ，3 ，4
-				case "ANCHOR_LOT_CHECKSTATUS":
-//					LOGGER.debug("主播房间状态检测:::" + message);
-					break;
-
-				// 房间警告消息 目前已知触发条件为 房间分区不正确
-				case "WARNING":
-//					LOGGER.debug("房间警告消息:::" + message);
-					break;
-				// 直播开启
-				case "LIVE":
-					PublicDataConf.lIVE_STATUS = 1;
-//					room_id = jsonObject.getLong("roomid");
-//					if (room_id == PublicDataConf.ROOMID) {
-					// 仅在直播有效 广告线程 改为配置文件
-					setService.holdSet(getCenterSetConf());
-					PublicDataConf.IS_ROOM_POPULARITY = true;
-//					LOGGER.debug("直播开启:::" + message);
-					break;
-
-				// 直播超管被切断
-				case "CUT_OFF":
-//					LOGGER.debug("很不幸，本房间直播被切断:::" + message);	
-					break;
-
-				// 本房间已被封禁
-				case "ROOM_LOCK":
-//					LOGGER.debug("很不幸，本房间已被封禁:::" + message);	
-					break;
-
-				// 直播准备中(或者是关闭直播)
-				case "PREPARING":
-					PublicDataConf.lIVE_STATUS = 0;
-					setService.holdSet(getCenterSetConf());
-					PublicDataConf.IS_ROOM_POPULARITY = false;
-//					LOGGER.debug("直播准备中(或者是关闭直播):::" + message);
-					break;
-
-				// 勋章亲密度达到上每日上限通知
-				case "LITTLE_TIPS":
-//					LOGGER.debug("勋章亲密度达到上每日上限:::" + message);		
-					break;
-
-				// msg_type 1 为进入直播间 2 为关注 3为分享直播间
-				case "INTERACT_WORD":
-					// 关注
-					if (getCenterSetConf().isIs_follow()) {
-						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-						if (msg_type == 2) {
-							interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-							stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
-									.append(interact.getUname()).append(" 关注了直播间");
-							//控制台打印
-							if (getCenterSetConf().isIs_cmd()) {
-							System.out.println(stringBuilder.toString());
-							}
-							//日志
-							if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-								PublicDataConf.logString.add(stringBuilder.toString());
-								synchronized (PublicDataConf.logThread) {
-									PublicDataConf.logThread.notify();
-								}
-							}
-							//前端弹幕发送
-							try {
-								danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short)0, interact));
-							} catch (Exception e) {
-								// TODO 自动生成的 catch 块
-								e.printStackTrace();
-							}
-							stringBuilder.delete(0, stringBuilder.length());
-						}
-					}
-					if (getCenterSetConf().getFollow().is_followThank()) {
-						if (!PublicDataConf.ISSHIELDFOLLOW) {
-							msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-							if (msg_type == 2) {
-								interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-								try {
-									parseFollowSetting(interact);
-								} catch (Exception e) {
-									// TODO 自动生成的 catch 块
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-					//欢迎进入直播间
-					if(getCenterSetConf().isIs_welcome_all()) {
-						msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-						if (msg_type == 1) {
-							interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-							stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的访客:")
-									.append(interact.getUname()).append(" 进入了直播间");
-							//控制台打印
-							if (getCenterSetConf().isIs_cmd()) {
-								System.out.println(stringBuilder.toString());
-							}
-							//日志
-							if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
-								PublicDataConf.logString.add(stringBuilder.toString());
-								synchronized (PublicDataConf.logThread) {
-									PublicDataConf.logThread.notify();
-								}
-							}
-							//前端显示
-//						try {
-//							danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short)0, interact));
-//						} catch (Exception e) {
-//							// TODO 自动生成的 catch 块
-//							e.printStackTrace();
-//						}
-							stringBuilder.delete(0, stringBuilder.length());
-						}
-					}
-					if(getCenterSetConf().getWelcome().is_welcomeThank()){
-						if (!PublicDataConf.ISSHIELDWELCOME) {
-							msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-							if (msg_type == 1) {
-								interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-								try {
-									parseWelcomeSetting(interact);
-								} catch (Exception e) {
-									// TODO 自动生成的 catch 块
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-
-					//打印测试用
-//					msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-//					if(msg_type!=3&&msg_type!=2) {
-//			        LOGGER.debug("直播间信息:::" + message);
-//					}
-					break;
-				// 礼物bag bot
-				case "GIFT_BAG_DOT":
-//					LOGGER.debug("礼物bag" + message);
-					break;
-				case "ONLINERANK":
-//					LOGGER.debug("新在线排名更新信息推送:::" + message);
-					break;
-				case "MESSAGEBOX_USER_MEDAL_CHANGE":
-//					LOGGER.debug("本人勋章升级推送:::" + message);
-					break;
-				default:
-//					LOGGER.debug("其他未处理消息:" + message);
-					break;
-				}
-				PublicDataConf.resultStrs.remove(0);
-			} else
-
-			{
-				synchronized (PublicDataConf.parseMessageThread) {
-					try {
-						PublicDataConf.parseMessageThread.wait();
-					} catch (InterruptedException e) {
-						// TODO 自动生成的 catch 块
-//						LOGGER.debug("处理弹幕包信息线程关闭:" + e);
-//						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-	}
-
-	//获取发送礼物code
-	public String sendCode(){
-		String code = "";
-		synchronized (getCenterSetConf()) {
-			code = CurrencyTools.sendGiftCode();
-			setService.changeSet(getCenterSetConf(),true);
-		}
-		return code;
-	}
-
-
-
-	public void DelayGiftTimeSetting() {
-		synchronized (PublicDataConf.parsethankGiftThread) {
-			if (PublicDataConf.parsethankGiftThread != null) {
-				threadComponent.startParseThankGiftThread(getCenterSetConf().getThank_gift(), getThankGiftRuleSets());
+            String message = "";
+            String cmd = "";
+            short msg_type = 0;
+            //high_level danmu
+            Hbarrage hbarrage = null;
+            StringBuilder stringBuilder = new StringBuilder(200);
+            while (!FLAG) {
+                if (FLAG) {
+                    LOGGER.debug("数据解析线程手动中止");
+                    return;
+                }
+                if (null != PublicDataConf.resultStrs && !PublicDataConf.resultStrs.isEmpty()
+                        && !StringUtils.isEmpty(PublicDataConf.resultStrs.get(0))) {
+                    message = PublicDataConf.resultStrs.get(0);
+                    try {
+                        jsonObject = JSONObject.parseObject(message);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        LOGGER.debug("抛出解析异常:" + e);
+                        //					LOGGER.debug(message);
+                        synchronized (PublicDataConf.parseMessageThread) {
+                            try {
+                                PublicDataConf.parseMessageThread.wait();
+                            } catch (InterruptedException e1) {
+                                // TODO 自动生成的 catch 块
+                                LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
+                                //							e.printStackTrace();
+                            }
+                        }
+                    }
+                    cmd = jsonObject.getString("cmd");
+                    if (StringUtils.isEmpty(cmd)) {
+                        synchronized (PublicDataConf.parseMessageThread) {
+                            try {
+                                PublicDataConf.parseMessageThread.wait();
+                            } catch (InterruptedException e1) {
+                                // TODO 自动生成的 catch 块
+                                LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
+                                //							e.printStackTrace();
+                            }
+                        }
+                    }
+                    cmd = parseCmd(cmd);
+                    switch (cmd) {
+                        // 弹幕
+                        case "DANMU_MSG":
+                            array = jsonObject.getJSONArray("info");
+                            barrage = Barrage.getBarrage(((JSONArray) array.get(2)).getLong(0),
+                                    ((JSONArray) array.get(2)).getString(1), array.getString(1),
+                                    ((JSONArray) array.get(0)).getShort(9), ((JSONArray) array.get(0)).getShort(12),
+                                    ((JSONArray) array.get(0)).getLong(4),
+                                    ((JSONArray) array.get(2)).getShort(2), ((JSONArray) array.get(2)).getShort(3),
+                                    ((JSONArray) array.get(2)).getShort(4), ((JSONArray) array.get(2)).getInteger(5),
+                                    ((JSONArray) array.get(2)).getShort(6),
+                                    ((JSONArray) array.get(3)).size() <= 0 ? 0 : ((JSONArray) array.get(3)).getShort(0),
+                                    ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(1),
+                                    ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(2),
+                                    ((JSONArray) array.get(3)).size() <= 0 ? 0L : ((JSONArray) array.get(3)).getLong(3),
+                                    ((JSONArray) array.get(4)).getShort(0), ((JSONArray) array.get(4)).getString(3),
+                                    ((JSONArray) array.get(5)).getString(0), ((JSONArray) array.get(5)).getString(1),
+                                    array.getShort(7),
+                                    JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("emoticon_unique"),
+                                    JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("url"));
+                            boolean is_xunzhang = true;
+                            boolean is_emoticon = barrage.getMsg_emoticon() != null && barrage.getMsg_emoticon() == 1;
+                            if (getCenterSetConf().is_barrage_anchor_shield()) {
+                                // 房管
+                                if (barrage.getMedal_room() != (long) PublicDataConf.ROOMID) is_xunzhang = false;
+                            }
+                            // 过滤礼物自动弹幕 & 可能非主播勋章弹幕
+                            if (barrage.getMsg_type() == 0 && is_xunzhang) {
+                                hbarrage = Hbarrage.copyHbarrage(barrage);
+                                if (barrage.getUid().equals(PublicDataConf.AUID)) {
+                                    hbarrage.setManager((short) 2);
+                                }
+                                // 判断类型输出
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(barrage.getTimestamp()));
+                                if (is_emoticon) {
+                                    stringBuilder.append(":收到表情:");
+                                } else {
+                                    stringBuilder.append(":收到弹幕:");
+                                }
+                                if (getCenterSetConf().is_barrage_vip()) {
+                                    // 老爷
+                                    stringBuilder.append(ParseIndentityTools.parseVip(barrage));
+                                } else {
+                                    hbarrage.setVip((short) 0);
+                                    hbarrage.setSvip((short) 0);
+                                }
+                                if (getCenterSetConf().is_barrage_guard()) {
+                                    // 舰长
+                                    stringBuilder.append(ParseIndentityTools.parseGuard(barrage.getUguard()));
+                                } else {
+                                    hbarrage.setUguard((short) 0);
+                                }
+                                if (getCenterSetConf().is_barrage_manager()) {
+                                    // 房管
+                                    stringBuilder
+                                            .append(ParseIndentityTools.parseManager(barrage.getUid(), barrage.getManager()));
+                                } else {
+                                    hbarrage.setManager((short) 0);
+                                }
+                                if (getCenterSetConf().is_barrage_medal()) {
+                                    // 勋章+勋章等级
+                                    if (!StringUtils.isEmpty(barrage.getMedal_name())) {
+                                        stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
+                                                .append(barrage.getMedal_level()).append("]");
+                                    }
+                                } else {
+                                    hbarrage.setMedal_level(null);
+                                    hbarrage.setMedal_name(null);
+                                    hbarrage.setMedal_room(null);
+                                    hbarrage.setMedal_anchor(null);
+                                }
+                                if (getCenterSetConf().is_barrage_ul()) {
+                                    // ul等级
+                                    stringBuilder.append("[").append("UL").append(barrage.getUlevel()).append("]");
+                                } else {
+                                    hbarrage.setUlevel(null);
+                                }
+
+
+                                stringBuilder.append(barrage.getUname());
+                                stringBuilder.append(" 它说:");
+                                stringBuilder.append(barrage.getMsg());
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short) 0, hbarrage));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                //高级显示处理
+
+                                //						try {
+                                //							danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short)0, barrage));
+                                //						} catch (Exception e) {
+                                //							// TODO 自动生成的 catch 块
+                                //							e.printStackTrace();
+                                //						}
+                                //日志处理
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                //自动回复姬处理
+                                if (PublicDataConf.autoReplyThread != null && !PublicDataConf.autoReplyThread.FLAG) {
+                                    if (!PublicDataConf.autoReplyThread.getState().toString().equals("TIMED_WAITING")) {
+                                        PublicDataConf.replys.add(
+                                                AutoReply.getAutoReply(barrage.getUid(), barrage.getUname(), barrage.getMsg()));
+                                        synchronized (PublicDataConf.autoReplyThread) {
+                                            PublicDataConf.autoReplyThread.notify();
+                                        }
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                                //						LOGGER.debug("弹幕信息：" + message);
+                            } else {
+                                //				    LOGGER.debug("test中貌似为礼物弹幕：" + message);
+                            }
+                            break;
+
+                        // 送普通礼物
+                        case "SEND_GIFT":
+                            if (getCenterSetConf().is_gift()) {
+                                jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
+                                gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
+                                        jsonObject.getString("giftName"), jsonObject.getInteger("num"),
+                                        jsonObject.getString("uname"), jsonObject.getString("face"),
+                                        jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
+                                        jsonObject.getLong("timestamp"), jsonObject.getString("action"),
+                                        jsonObject.getInteger("price"),
+                                        ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
+                                        jsonObject.getLong("total_coin"));
+                                //							giftFile = new GiftFile(jsonObject.getInteger("giftId"), jsonObject.getString("giftName"),
+                                //									jsonObject.getInteger("price"), jsonObject.getString("coin_type"));
+                                //							GiftFileTools.addGiftToFile(giftFile.toJson());
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(gift.getTimestamp() * 1000));
+                                stringBuilder.append(":收到道具:");
+                                stringBuilder.append(gift.getUname());
+                                stringBuilder.append(" ");
+                                stringBuilder.append(gift.getAction());
+                                stringBuilder.append("的:");
+                                stringBuilder.append(gift.getGiftName());
+                                stringBuilder.append(" x ");
+                                stringBuilder.append(gift.getNum());
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            } else {
+                                //感谢礼物御前处理
+                                if (PublicDataConf.sendBarrageThread != null) {
+                                    if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
+                                        jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
+                                        gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
+                                                jsonObject.getString("giftName"), jsonObject.getInteger("num"),
+                                                jsonObject.getString("uname"), jsonObject.getString("face"),
+                                                jsonObject.getShort("guard_level"), jsonObject.getLong("uid"),
+                                                jsonObject.getLong("timestamp"), jsonObject.getString("action"),
+                                                jsonObject.getInteger("price"),
+                                                ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
+                                                jsonObject.getLong("total_coin"));
+                                    }
+                                }
+                            }
+                            // 感谢礼物处理
+                            if (gift != null && getCenterSetConf().getThank_gift().is_giftThank()) {
+                                if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
+                                    if (ParseSetStatusTools.getGiftShieldStatus(
+                                            getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
+                                        gift = ShieldGiftTools.shieldGift(gift,
+                                                ParseSetStatusTools
+                                                        .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                                                getCenterSetConf().getThank_gift().getGiftStrings(), null);
+                                    }
+                                    if (gift != null) {
+                                        if (!StringUtils.isEmpty(PublicDataConf.SHIELDGIFTNAME)) {
+                                            if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
+                                                gift = null;
+                                            }
+                                        }
+                                    }
+
+                                    try {
+                                        parseGiftSetting(gift);
+                                    } catch (Exception e) {
+                                        // TODO 自动生成的 catch 块
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            //		            LOGGER.debug("让我看看是谁送礼物:::"+jsonObject);
+                            break;
+
+                        // 部分金瓜子礼物连击
+                        case "COMBO_SEND":
+                            //					LOGGER.debug("部分金瓜子礼物连击:::" + message);
+                            break;
+
+                        // 部分金瓜子礼物连击
+                        case "COMBO_END":
+                            //					LOGGER.debug("部分金瓜子礼物连击:::" + message);
+                            break;
+
+                        // 上舰
+                        case "GUARD_BUY":
+                            if (getCenterSetConf().is_gift()) {
+                                guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(guard.getStart_time() * 1000));
+                                stringBuilder.append(":有人上船:");
+                                stringBuilder.append(guard.getUsername());
+                                stringBuilder.append("在本房间开通了");
+                                stringBuilder.append(guard.getNum());
+                                stringBuilder.append("个月");
+                                stringBuilder.append(guard.getGift_name());
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                gift = new Gift();
+                                gift.setGiftName(guard.getGift_name());
+                                gift.setNum(guard.getNum());
+                                gift.setPrice(guard.getPrice());
+                                gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
+                                gift.setTimestamp(guard.getStart_time());
+                                gift.setAction("赠送");
+                                gift.setCoin_type((short) 1);
+                                gift.setUname(guard.getUsername());
+                                gift.setUid(guard.getUid());
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            if (getCenterSetConf().getThank_gift().is_giftThank()) {
+                                if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
+                                    guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+                                    gift = new Gift();
+                                    gift.setGiftName(guard.getGift_name());
+                                    gift.setNum(guard.getNum());
+                                    gift.setPrice(guard.getPrice());
+                                    gift.setTotal_coin((long) guard.getNum() * guard.getPrice());
+                                    gift.setTimestamp(guard.getStart_time());
+                                    gift.setAction("赠送");
+                                    gift.setCoin_type((short) 1);
+                                    gift.setUname(guard.getUsername());
+                                    gift.setUid(guard.getUid());
+                                    gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                                            getCenterSetConf().getThank_gift().getGiftStrings(), null);
+                                    if (gift != null) {
+                                        try {
+                                            parseGiftSetting(gift);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                            //开启舰长存放本地
+                            if (getCenterSetConf().getThank_gift().is_guard_local()) {
+                                guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+                                Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
+                                if (guardHashtable_local == null) {
+                                    guardHashtable_local = new Hashtable<Long, String>();
+                                }
+                                if (!guardHashtable_local.containsKey(guard.getUid())) {
+                                    GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
+
+                                    if (getCenterSetConf().getThank_gift().is_guard_report()) {
+                                        String report = StringUtils.replace(getCenterSetConf().getThank_gift().getReport(), "\n", "\\n");
+                                        report = StringUtils.replace(report, "%uName%", guard.getUsername());
+                                        //礼品码
+                                        if (getCenterSetConf().getThank_gift().is_gift_code()
+                                                && !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
+                                            report = StringUtils.replace(report, "%giftCode%", this.sendCode());
+                                        }
+                                        try {
+                                            //									if (PublicDataConf.ROOMID == 5067) {
+                                            if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
+                                                if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+                                                    PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
+                                                    synchronized (PublicDataConf.sendBarrageThread) {
+                                                        PublicDataConf.sendBarrageThread.notify();
+                                                    }
+                                                }
+                                            } else {
+                                                HttpUserData.httpPostSendMsg(guard.getUid(), report);
+                                            }
+                                            //									} else {
+                                            //										LOGGER.debug(report);
+                                            //										LOGGER.debug(getThankGiftSetConf().getReport_barrage());
+                                            //									}
+                                        } catch (Exception e) {
+                                            // TODO: handle exception
+                                            LOGGER.error("发送舰长私信失败，原因：" + e);
+                                        }
+                                    }
+
+                                }
+                            } else {
+                                if (getCenterSetConf().getThank_gift().is_guard_report()) {
+                                    guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+                                    String report = StringUtils.replace(getCenterSetConf().getThank_gift().getReport(), "\n", "\\n");
+                                    report = StringUtils.replace(report, "%uName%", guard.getUsername());
+                                    //礼品码
+                                    if (getCenterSetConf().getThank_gift().is_gift_code()
+                                            && !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
+                                        report = StringUtils.replace(report, "%giftCode%", this.sendCode());
+                                    } else {
+                                        report = StringUtils.replace(report, "%giftCode%", "");
+                                    }
+                                    try {
+                                        //								if (PublicDataConf.ROOMID == 5067) {
+                                        if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
+                                            if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
+                                                PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
+                                            }
+                                            synchronized (PublicDataConf.sendBarrageThread) {
+                                                PublicDataConf.sendBarrageThread.notify();
+                                            }
+                                        } else {
+                                            HttpUserData.httpPostSendMsg(guard.getUid(), report);
+                                        }
+                                        //								} else {
+                                        //									LOGGER.debug(report);
+                                        //									LOGGER.debug(getThankGiftSetConf().getReport_barrage());
+                                        //								}
+                                    } catch (Exception e) {
+                                        // TODO: handle exception
+                                        LOGGER.error("发送舰长私信失败，原因：" + e);
+                                    }
+                                }
+                            }
+                            //					LOGGER.debug("有人上舰长啦:::" + message);
+                            break;
+
+                        // 上舰消息推送
+                        case "GUARD_LOTTERY_START":
+                            //					LOGGER.debug("上舰消息推送:::" + message);
+                            break;
+
+                        // 上舰抽奖消息推送
+                        case "USER_TOAST_MSG":
+                            //					LOGGER.debug("上舰抽奖消息推送:::" + message);
+                            break;
+
+                        // 醒目留言
+                        case "SUPER_CHAT_MESSAGE":
+                            if (getCenterSetConf().is_gift()) {
+                                superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(superChat.getStart_time() * 1000));
+                                stringBuilder.append(":收到留言:");
+                                stringBuilder.append(superChat.getUser_info().getUname());
+                                stringBuilder.append(" 他用了");
+                                //适配6.11破站更新金瓜子为电池  叔叔真有你的
+                                stringBuilder.append(superChat.getPrice() * 10);
+                                stringBuilder.append("电池留言了");
+                                stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
+                                stringBuilder.append("秒说: ");
+                                stringBuilder.append(superChat.getMessage());
+                                superChat.setTime(ParseIndentityTools.parseTime(superChat.getTime()));
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("superchat", (short) 0, superChat));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            if (getCenterSetConf().getThank_gift().is_giftThank()) {
+                                if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
+                                    superChat = JSONObject.parseObject(jsonObject.getString("data"), SuperChat.class);
+                                    gift = new Gift();
+                                    stringBuilder.append(ParseIndentityTools.parseTime(superChat.getTime()));
+                                    stringBuilder.append("秒");
+                                    stringBuilder.append(superChat.getGift().getGift_name());
+                                    gift.setGiftName(stringBuilder.toString());
+                                    gift.setNum(superChat.getGift().getNum());
+                                    //适配6.11破站更新金瓜子为电池  叔叔真有你的
+                                    gift.setPrice(superChat.getPrice() * 10);
+                                    gift.setTotal_coin((long) superChat.getPrice() * 10l);
+                                    gift.setTimestamp(superChat.getStart_time() * 1000);
+                                    gift.setAction("赠送");
+                                    gift.setCoin_type((short) 1);
+                                    gift.setUname(superChat.getUser_info().getUname());
+                                    gift.setUid(superChat.getUid());
+                                    gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                                            getCenterSetConf().getThank_gift().getGiftStrings(), null);
+                                    if (gift != null) {
+                                        try {
+                                            parseGiftSetting(gift);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            //					LOGGER.debug("收到醒目留言:::" + message);
+                            break;
+
+                        // 醒目留言日文翻译
+                        case "SUPER_CHAT_MESSAGE_JPN":
+                            //					LOGGER.debug("醒目留言日文翻译消息推送:::" + message);
+                            break;
+
+                        // 删除醒目留言
+                        case "SUPER_CHAT_MESSAGE_DELETE":
+                            //					LOGGER.debug("该条醒目留言已被删除:::" + message);
+                            break;
+
+                        // 欢迎老爷进来本直播间
+                        case "WELCOME":
+                            // 区分年月费老爷
+                            /*
+                             * if(welcomVip.getSvip()==1) {
+                             * System.out.println(JodaTimeUtils.getCurrentTimeString()+":欢迎年费老爷:"+welcomeVip
+                             * .getUname()+" 进入直播间"); }else {
+                             * System.out.println(JodaTimeUtils.getCurrentTimeString()+":欢迎月费老爷:"+welcomeVip
+                             * .getUname()+" 进入直播间"); }
+                             */
+                            if (getCenterSetConf().is_welcome_ye()) {
+                                welcomeVip = JSONObject.parseObject(jsonObject.getString("data"), WelcomeVip.class);
+                                stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
+                                stringBuilder.append(":欢迎老爷:");
+                                stringBuilder.append(welcomeVip.getUname());
+                                stringBuilder.append(" 进入直播间");
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("welcomeVip", (short) 0, welcomeVip));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+
+                            //					LOGGER.debug("让我看看哪个老爷大户进来了:::" + message);
+                            break;
+
+                        // 欢迎舰长进入直播间
+                        case "WELCOME_GUARD":
+
+                            if (getCenterSetConf().is_welcome_ye()) {
+                                welcomeGuard = JSONObject.parseObject(jsonObject.getString("data"), WelcomeGuard.class);
+                                stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
+                                switch (welcomeGuard.getGuard_level()) {
+                                    case 3:
+                                        stringBuilder.append(":欢迎舰长:");
+                                        break;
+                                    case 2:
+                                        stringBuilder.append(":欢迎提督:");
+                                        break;
+                                    case 1:
+                                        stringBuilder.append(":欢迎总督:");
+                                        break;
+                                }
+                                stringBuilder.append(welcomeGuard.getUsername());
+                                stringBuilder.append(" 进入直播间");
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("welcomeGuard", (short) 0, welcomeGuard));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            //					LOGGER.debug("舰长大大进来直播间了:::" + message);
+                            break;
+
+                        // 舰长进入直播间消息
+                        case "ENTRY_EFFECT":
+                            //					LOGGER.debug("舰长大大进入直播间消息推送:::" + message);
+                            break;
+
+                        // 节奏风暴推送 action 为start和end
+                        case "SPECIAL_GIFT":
+                            //					LOGGER.debug("节奏风暴推送:::" + message);
+                            break;
+
+                        // 禁言消息
+                        case "ROOM_BLOCK_MSG":
+                            if (getCenterSetConf().is_block()) {
+                                blockMessage = JSONObject.parseObject(jsonObject.getString("data"), BlockMessage.class);
+                                stringBuilder.append(JodaTimeUtils.getCurrentDateTimeString());
+                                stringBuilder.append(":禁言消息:");
+                                stringBuilder.append(blockMessage.getUname());
+                                if (blockMessage.getOperator() == 2) {
+                                    stringBuilder.append("已被主播禁言");
+                                } else if (blockMessage.getOperator() == 1) {
+                                    stringBuilder.append("已被房管禁言");
+                                } else {
+                                    stringBuilder.append("已被管理员禁言");
+                                }
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("block", (short) 0, blockMessage));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            //					LOGGER.debug("谁这么惨被禁言了:::" + message);
+                            break;
+
+                        // 本主播在本分区小时榜排名更新推送 不会更新页面的排行显示信息
+                        case "ACTIVITY_BANNER_UPDATE_V2":
+                            //					LOGGER.debug("小时榜消息更新推送:::" + message);
+                            break;
+
+                        // 本房间分区修改
+                        case "ROOM_CHANGE":
+                            //					LOGGER.debug("房间分区已更新:::" + message);
+                            break;
+
+                        // 本房间分区排行榜更新 更新页面的排行显示信息
+                        case "ROOM_RANK":
+                            //					rannk = JSONObject.parseObject(jsonObject.getString("data"), Rannk.class);
+                            //					stringBuilder.append(JodaTimeUtils.format(rannk.getTimestamp() * 1000)).append(":榜单更新:")
+                            //							.append(rannk.getRank_desc());
+                            //
+                            //					System.out.println(stringBuilder.toString());
+                            //					stringBuilder.delete(0, stringBuilder.length());
+                            //					LOGGER.debug("小时榜信息更新推送:::" + message);
+                            break;
+
+                        // 推测为获取本小时榜榜单第一名主播的信息 推测激活条件为本直播间获得第一
+                        case "new_anchor_reward":
+                            //					LOGGER.debug("获取本小时榜榜单第一名主播的信息:::" + message);
+                            break;
+
+                        // 小时榜榜单信息推送 推测激活条件为本直播间获得第一
+                        case "HOUR_RANK_AWARDS":
+                            //					LOGGER.debug("恭喜xxxx直播间获得:::" + message);
+                            break;
+
+                        // 直播间粉丝数更新 经常
+                        case "ROOM_REAL_TIME_MESSAGE_UPDATE":
+                            //					fans = JSONObject.parseObject(jsonObject.getString("data"), Fans.class);
+                            //					stringBuilder.append(JodaTimeUtils.getCurrentTimeString()).append(":消息推送:").append("房间号")
+                            //							.append(fans.getRoomid()).append("的粉丝数:").append(fans.getFans());
+                            PublicDataConf.FANSNUM = JSONObject.parseObject(jsonObject.getString("data")).getLong("fans");
+                            //					System.out.println(stringBuilder.toString());
+                            //					stringBuilder.delete(0, stringBuilder.length());
+                            //					LOGGER.debug("直播间粉丝数更新消息推送:::" + message);
+                            break;
+
+                        // 直播间许愿瓶消息推送更新
+                        case "WISH_BOTTLE":
+                            //					LOGGER.debug("直播间许愿瓶消息推送更新:::" + message);
+                            break;
+
+                        // 广播小电视类抽奖信息推送,包括本房间的舰长礼物包括,本直播间所在小时榜榜单主播信息的推送 需要unicode转义 免费辣条再见！！！！
+                        case "NOTICE_MSG":
+                            //					message = ByteUtils.unicodeToString(message);
+                            //					LOGGER.debug("小电视类抽奖信息推送:::" + message);
+                            break;
+
+                        // 本房间开启活动抽奖(33图,小电视图,任意门等) 也指本房间内赠送的小电视 摩天大楼类抽奖
+                        case "RAFFLE_START":
+                            //					LOGGER.debug("本房间开启了活动抽奖:::" + message);
+                            break;
+
+                        // 本房间活动中奖用户信息推送 也指抽奖结束
+                        case "RAFFLE_END":
+                            //					LOGGER.debug("看看谁是幸运儿:::" + message);
+                            break;
+
+                        // 本房间主播开启了天选时刻
+                        case "ANCHOR_LOT_START":
+                            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                                try {
+                                    //屏蔽礼物
+                                    if (getCenterSetConf().getThank_gift().is_tx_shield()) {
+                                        if (PublicDataConf.parsethankGiftThread != null
+                                                && !PublicDataConf.parsethankGiftThread.TFLAG
+                                                && !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
+                                            String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
+                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+                                            if (!StringUtils.isEmpty(giftName)) {
+                                                if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
+                                                        || PublicDataConf.giftShieldThread.getState().toString()
+                                                        .equals("NEW")) {
+                                                    PublicDataConf.giftShieldThread = new GiftShieldThread();
+                                                    PublicDataConf.giftShieldThread.FLAG = false;
+                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
+                                                    PublicDataConf.giftShieldThread
+                                                            .setTime(ParseIndentityTools.parseTime(time));
+                                                    PublicDataConf.giftShieldThread.start();
+                                                } else {
+                                                    PublicDataConf.giftShieldThread.setTime(time);
+                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    //开启天选 屏蔽关注
+                                    if (getCenterSetConf().getFollow().is_tx_shield()) {
+                                        if (PublicDataConf.parsethankFollowThread != null
+                                                && !PublicDataConf.parsethankFollowThread.FLAG
+                                                && !PublicDataConf.followShieldThread.getState().toString()
+                                                .equals("RUNNABLE")) {
+                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+                                            if (PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")
+                                                    || PublicDataConf.followShieldThread.getState().toString().equals("NEW")) {
+                                                PublicDataConf.followShieldThread = new FollowShieldThread();
+                                                PublicDataConf.followShieldThread.FLAG = false;
+                                                PublicDataConf.followShieldThread.setTime(time);
+                                                PublicDataConf.followShieldThread.start();
+                                            } else {
+                                                PublicDataConf.followShieldThread.setTime(time);
+                                            }
+                                        }
+                                    }
+                                    //开启天选 屏蔽欢迎
+                                    if (getCenterSetConf().getWelcome().is_tx_shield()) {
+                                        if (PublicDataConf.parseThankWelcomeThread != null
+                                                && !PublicDataConf.parseThankWelcomeThread.FLAG
+                                                && !PublicDataConf.welcomeShieldThread.getState().toString()
+                                                .equals("RUNNABLE")) {
+                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+                                            if (PublicDataConf.welcomeShieldThread.getState().toString().equals("TERMINATED")
+                                                    || PublicDataConf.welcomeShieldThread.getState().toString().equals("NEW")) {
+                                                PublicDataConf.welcomeShieldThread = new WelcomeShieldThread();
+                                                PublicDataConf.welcomeShieldThread.FLAG = false;
+                                                PublicDataConf.welcomeShieldThread.setTime(time);
+                                                PublicDataConf.welcomeShieldThread.start();
+                                            } else {
+                                                PublicDataConf.welcomeShieldThread.setTime(time);
+                                            }
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+                                    // TODO: handle exception
+                                    e.printStackTrace();
+                                }
+                            }
+                            //					LOGGER.debug("本房间主播开启了天选时刻:::" + message);
+                            break;
+
+                        // 本房间天选时刻结束
+                        case "ANCHOR_LOT_END":
+                            //					LOGGER.debug("本房间天选时刻结束:::" + message);
+                            break;
+
+                        // 本房间天选时刻获奖信息推送
+                        case "ANCHOR_LOT_AWARD":
+                            //					LOGGER.debug("本房间天选时刻中奖用户是:::" + message);
+                            break;
+
+                        // 获得推荐位推荐消息
+                        case "ANCHOR_NORMAL_NOTIFY":
+                            //					LOGGER.debug("本房间获得推荐位:::" + message);
+                            break;
+                        // 周星消息推送
+                        case "WEEK_STAR_CLOCK":
+                            //			        LOGGER.debug("周星消息推送:::" + message);
+                            break;
+
+                        // 推测本主播周星信息更新
+                        case "ROOM_BOX_MASTER":
+                            //					LOGGER.debug("周星信息更新:::" + message);
+                            break;
+
+                        // 周星消息推送关闭
+                        case "ROOM_SKIN_MSG":
+                            //					LOGGER.debug("周星消息推送关闭:::" + message);
+                            break;
+
+                        // 中型礼物多数量赠送消息推送 例如b克拉 亿元
+                        case "SYS_GIFT":
+                            //					LOGGER.debug("中型礼物多数量赠送消息推送:::" + message);
+                            break;
+
+                        // lol活动礼物？？？
+                        case "ACTIVITY_MATCH_GIFT":
+                            //					LOGGER.debug("lol专属房间礼物赠送消息推送:::" + message);
+                            break;
+
+                        //----------------------------------------pk信息多为要uicode解码-------------------------------------------------
+                        // 推测为房间pk信息推送
+                        case "PK_BATTLE_ENTRANCE":
+                            //			        LOGGER.debug("房间pk活动信息推送:::" + message);
+                            break;
+
+                        // 活动pk准备
+                        case "PK_BATTLE_PRE":
+                            //			        LOGGER.debug("房间活动pk准备:::" + message);
+                            break;
+
+                        // 活动pk开始
+                        case "PK_BATTLE_START":
+                            //			        LOGGER.debug("房间活动pk开始:::" + message);
+                            break;
+
+                        // 活动pk中
+                        case "PK_BATTLE_PROCESS":
+                            //			        LOGGER.debug("房间活动pk中:::" + message);
+                            break;
+
+                        // 活动pk详细信息
+                        case "PK_BATTLE_CRIT":
+                            //			        LOGGER.debug("房间活动pk详细信息推送:::" + message);
+                            break;
+
+                        // 活动pk类型推送
+                        case "PK_BATTLE_PRO_TYPE":
+                            //			        LOGGER.debug("房间活动pk类型推送:::" + message);
+                            break;
+
+                        // 房间活动pk结束
+                        case "PK_BATTLE_END":
+                            //			        LOGGER.debug("房间pk活动结束::" + message);
+                            break;
+
+                        // 活动pk结果用户 推送
+                        case "PK_BATTLE_SETTLE_USER":
+                            //			        LOGGER.debug("活动pk结果用户 推送::" + message);
+                            break;
+
+                        // 活动pk礼物开始 1辣条
+                        case "PK_LOTTERY_START":
+                            //			        LOGGER.debug("活动pk礼物开始 推送::" + message);
+                            break;
+
+                        // 活动pk结果房间
+                        case "PK_BATTLE_SETTLE":
+                            //			        LOGGER.debug("活动pk结果房间推送::" + message);
+                            break;
+
+                        // pk开始
+                        case "PK_START":
+                            //					LOGGER.debug("房间pk开始:::" + message);
+                            break;
+
+                        // pk准备中
+                        case "PK_PRE":
+                            //					LOGGER.debug("房间pk准备中:::" + message);
+                            break;
+
+                        // pk载入中
+                        case "PK_MATCH":
+                            //					LOGGER.debug("房间pk载入中:::" + message);
+                            break;
+
+                        // pk再来一次触发
+                        case "PK_CLICK_AGAIN":
+                            //					LOGGER.debug("房间pk再来一次:::" + message);
+                            break;
+                        // pk结束
+                        case "PK_MIC_END":
+                            //					LOGGER.debug("房间pk结束:::" + message);
+                            break;
+
+                        // pk礼物信息推送 激活条件推测为pk胜利 可获得一个辣条
+                        case "PK_PROCESS":
+                            //					LOGGER.debug("房间pk礼物推送:::" + message);
+                            break;
+
+                        // pk结果信息推送
+                        case "PK_SETTLE":
+                            //					LOGGER.debug("房间pk结果信息推送:::" + message);
+                            break;
+
+                        // pk结束信息推送
+                        case "PK_END":
+                            //					LOGGER.debug("房间pk结束信息推送:::" + message);
+                            break;
+
+                        // 系统信息推送
+                        case "SYS_MSG":
+                            //					LOGGER.debug("系统信息推送:::" + message);
+                            break;
+
+                        // 总督登场消息
+                        case "GUARD_MSG":
+                            //					LOGGER.debug("总督帅气登场:::" + message);
+                            break;
+
+                        // 热门房间？？？？广告房间？？ 不知道这是什么 推测本直播间激活 目前常见于打广告的官方直播间 例如手游 碧蓝航线 啥的。。
+                        case "HOT_ROOM_NOTIFY":
+                            //					LOGGER.debug("热门房间推送消息:::" + message);
+                            break;
+
+                        // 小时榜面板消息推送
+                        case "PANEL":
+                            //					LOGGER.debug("热小时榜面板消息推送:::" + message);
+                            break;
+
+                        // 星之耀宝箱使用 n
+                        case "ROOM_BOX_USER":
+                            //					LOGGER.debug("星之耀宝箱使用:::" + message);
+                            break;
+
+                        // 语音加入？？？？ 暂不知道
+                        case "VOICE_JOIN_ROOM_COUNT_INFO":
+                            //					LOGGER.debug("语音加入:::" + message);
+                            break;
+
+                        // 语音加入list？？？？ 暂不知道
+                        case "VOICE_JOIN_LIST":
+                            //					LOGGER.debug("语音加入list:::" + message);
+                            break;
+
+                        // lol活动
+                        case "LOL_ACTIVITY":
+                            //					LOGGER.debug("lol活动:::" + message);
+                            break;
+
+                        // 队伍礼物排名 目前只在6号lol房间抓取过
+                        case "MATCH_TEAM_GIFT_RANK":
+                            //					LOGGER.debug("队伍礼物排名:::" + message);
+                            break;
+
+                        // 6.13端午节活动粽子新增活动更新命令 激活条件有人赠送活动礼物
+                        case "ROOM_BANNER":
+                            //					LOGGER.debug("收到活动礼物赠送，更新信息:::" + message);
+                            break;
+
+                        // 设定房管消息 新房管的诞生
+                        case "room_admin_entrance":
+                            //					LOGGER.debug("有人被设为了房管:::" + message);
+                            break;
+
+                        // 房管列表更新消息 激活条件为新房管的诞生
+                        case "ROOM_ADMINS":
+                            //					LOGGER.debug("房管列表更新推送:::" + message);
+                            break;
+
+                        // 房间护盾 推测推送消息为破站官方屏蔽的关键字 触发条件未知
+                        case "ROOM_SHIELD":
+                            //					LOGGER.debug("房间护盾触发消息:::" + message);
+                            break;
+
+                        // 主播开启房间全局禁言
+                        case "ROOM_SILENT_ON":
+                            //					LOGGER.debug("主播开启房间全局禁言:::" + message);
+                            break;
+
+                        // 主播关闭房间全局禁言
+                        case "ROOM_SILENT_OFF":
+                            //					LOGGER.debug("主播关闭房间全局禁言:::" + message);
+                            break;
+
+                        // 主播状态检测 直译 不知道什么情况 statue 1 ，2 ，3 ，4
+                        case "ANCHOR_LOT_CHECKSTATUS":
+                            //					LOGGER.debug("主播房间状态检测:::" + message);
+                            break;
+
+                        // 房间警告消息 目前已知触发条件为 房间分区不正确
+                        case "WARNING":
+                            //					LOGGER.debug("房间警告消息:::" + message);
+                            break;
+                        // 直播开启
+                        case "LIVE":
+                            PublicDataConf.lIVE_STATUS = 1;
+                            //					room_id = jsonObject.getLong("roomid");
+                            //					if (room_id == PublicDataConf.ROOMID) {
+                            // 仅在直播有效 广告线程 改为配置文件
+                            setService.holdSet(getCenterSetConf());
+                            PublicDataConf.IS_ROOM_POPULARITY = true;
+                            //					LOGGER.debug("直播开启:::" + message);
+                            break;
+
+                        // 直播超管被切断
+                        case "CUT_OFF":
+                            //					LOGGER.debug("很不幸，本房间直播被切断:::" + message);
+                            break;
+
+                        // 本房间已被封禁
+                        case "ROOM_LOCK":
+                            //					LOGGER.debug("很不幸，本房间已被封禁:::" + message);
+                            break;
+
+                        // 直播准备中(或者是关闭直播)
+                        case "PREPARING":
+                            PublicDataConf.lIVE_STATUS = 0;
+                            setService.holdSet(getCenterSetConf());
+                            PublicDataConf.IS_ROOM_POPULARITY = false;
+                            //					LOGGER.debug("直播准备中(或者是关闭直播):::" + message);
+                            break;
+
+                        // 勋章亲密度达到上每日上限通知
+                        case "LITTLE_TIPS":
+                            //					LOGGER.debug("勋章亲密度达到上每日上限:::" + message);
+                            break;
+
+                        // msg_type 1 为进入直播间 2 为关注 3为分享直播间
+                        case "INTERACT_WORD":
+                            // 关注
+                            if (getCenterSetConf().is_follow_dm()) {
+                                msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                if (msg_type == 2) {
+                                    interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                    stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
+                                            .append(interact.getUname()).append(" 关注了直播间");
+                                    //控制台打印
+                                    if (getCenterSetConf().is_cmd()) {
+                                        System.out.println(stringBuilder.toString());
+                                    }
+                                    //日志
+                                    if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                        PublicDataConf.logString.add(stringBuilder.toString());
+                                        synchronized (PublicDataConf.logThread) {
+                                            PublicDataConf.logThread.notify();
+                                        }
+                                    }
+                                    //前端弹幕发送
+                                    try {
+                                        danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short) 0, interact));
+                                    } catch (Exception e) {
+                                        // TODO 自动生成的 catch 块
+                                        e.printStackTrace();
+                                    }
+                                    stringBuilder.delete(0, stringBuilder.length());
+                                }
+                            }
+                            if (getCenterSetConf().getFollow().is_followThank()) {
+                                if (!PublicDataConf.ISSHIELDFOLLOW) {
+                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                    if (msg_type == 2) {
+                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                        try {
+                                            parseFollowSetting(interact);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                            //欢迎进入直播间
+                            if (getCenterSetConf().is_welcome_all()) {
+                                msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                if (msg_type == 1) {
+                                    interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                    stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的访客:")
+                                            .append(interact.getUname()).append(" 进入了直播间");
+                                    //控制台打印
+                                    if (getCenterSetConf().is_cmd()) {
+                                        System.out.println(stringBuilder.toString());
+                                    }
+                                    //日志
+                                    if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                        PublicDataConf.logString.add(stringBuilder.toString());
+                                        synchronized (PublicDataConf.logThread) {
+                                            PublicDataConf.logThread.notify();
+                                        }
+                                    }
+                                    //前端显示
+                                    //						try {
+                                    //							danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short)0, interact));
+                                    //						} catch (Exception e) {
+                                    //							// TODO 自动生成的 catch 块
+                                    //							e.printStackTrace();
+                                    //						}
+                                    stringBuilder.delete(0, stringBuilder.length());
+                                }
+                            }
+                            if (getCenterSetConf().getWelcome().is_welcomeThank()) {
+                                if (!PublicDataConf.ISSHIELDWELCOME) {
+                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                    if (msg_type == 1) {
+                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                        try {
+                                            parseWelcomeSetting(interact);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+
+                            //打印测试用
+                            //					msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                            //					if(msg_type!=3&&msg_type!=2) {
+                            //			        LOGGER.debug("直播间信息:::" + message);
+                            //					}
+                            break;
+                        // 礼物bag bot
+                        case "GIFT_BAG_DOT":
+                            //					LOGGER.debug("礼物bag" + message);
+                            break;
+                        case "ONLINERANK":
+                            //					LOGGER.debug("新在线排名更新信息推送:::" + message);
+                            break;
+                        case "ONLINE_RANK_COUNT":
+                            //					LOGGER.debug("在线排名人数更新信息推送:::" + message);
+                            break;
+                        case "ONLINE_RANK_V2":
+                            //					LOGGER.debug("在线排名v2版本信息推送(即高能榜:::" + message);
+                            break;
+                        case "ONLINE_RANK_TOP3":
+                            //					LOGGER.debug("在线排名前三信息推送(即高能榜:::" + message);
+                            break;
+                        case "HOT_RANK_CHANGED":
+                            //					LOGGER.debug("热门榜推送:::" + message);
+                            break;
+                        case "HOT_RANK_CHANGED_V2":
+                            //					LOGGER.debug("热门榜v2版本changed推送:::" + message);
+                            break;
+                        case "HOT_RANK_SETTLEMENT_V2":
+                            //					LOGGER.debug("热门榜v2版本set推送:::" + message);
+                            break;
+                        case "WIDGET_BANNER":
+                            //					LOGGER.debug("直播横幅广告推送:::" + message);
+                            break;
+                        case "MESSAGEBOX_USER_MEDAL_CHANGE":
+                            //					LOGGER.debug("本人勋章升级推送:::" + message);
+                            break;
+                        case "LIVE_INTERACTIVE_GAME":
+                            //					LOGGER.debug("互动游戏？？？推送:::" + message);
+                            break;
+                        case "WATCHED_CHANGE":
+                            //					LOGGER.debug("多少人观看过:::" + message);
+                            break;
+                        case "STOP_LIVE_ROOM_LIST":
+                            //					LOGGER.debug("直播间关闭集合推送:::" + message);
+                            break;
+                        case "DANMU_AGGREGATION":
+                            //					LOGGER.debug("天选时刻条件是表情推送:::" + message);
+                            break;
+                        case "COMMON_NOTICE_DANMAKU":
+                            //					LOGGER.debug("警告信息推送（例如任务快完成之类的）:::" + message);
+                            break;
+                        case "POPULARITY_RED_POCKET_NEW":
+                            //					LOGGER.debug("红包抽奖推送:::" + message);
+                            break;
+                        case "POPULARITY_RED_POCKET_WINNER_LIST":
+                            //					LOGGER.debug("红包抽奖结果推送:::" + message);
+                            break;
+                        case "LIKE_INFO_V3_UPDATE":
+                            //					LOGGER.debug("点赞信息v3推送:::" + message);
+                            break;
+                        case "LIKE_INFO_V3_CLICK":
+                            //					LOGGER.debug("点赞信息v3推送:::" + message);
+                            break;
+                        case "CORE_USER_ATTENTION":
+                            //					LOGGER.debug("中心用户推送:::" + message);
+                            break;
+                        case "HOT_RANK_SETTLEMENT":
+                            //					LOGGER.debug("热榜排名推送:::" + message);
+                            break;
+                        case "MESSAGEBOX_USER_GAIN_MEDAL":
+                            //					LOGGER.debug("粉丝勋章消息盒子推送:::" + message);
+                            break;
+                        case "POPULARITY_RED_POCKET_START":
+                            //					LOGGER.debug("礼物推送:::" + message);
+                            break;
+                        case "LITTLE_MESSAGE_BOX":
+                            //					LOGGER.debug("小消息box推送:::" + message);
+                            break;
+                        case "ANCHOR_HELPER_DANMU":
+                            //					LOGGER.debug("直播小助手信息推送:::" + message);
+                            break;
+                        case "ENTRY_EFFECT_MUST_RECEIVE":
+                            //					LOGGER.debug("直播小助手信息推送:::" + message);
+                            break;
+                        case "GIFT_STAR_PROCESS":
+                            //					LOGGER.debug("礼物开始进度条信息推送:::" + message);
+                            break;
+                        case "GUARD_HONOR_THOUSAND":
+                            //					LOGGER.debug("千舰推送:::" + message);
+                            break;
+                        case "FULL_SCREEN_SPECIAL_EFFECT":
+                            //					LOGGER.debug("FULL_SCREEN_SPECIAL_EFFECT:::" + message);
+                            break;
+                        case "CARD_MSG":
+                            //					LOGGER.debug("CARD_MSG:::" + message);
+                            break;
+                        case "USER_PANEL_RED_ALARM":
+                            //					LOGGER.debug("USER_PANEL_RED_ALARM:::" + message);
+                            break;
+                        case "TRADING_SCORE":
+                            //					LOGGER.debug("TRADING_SCORE:::" + message);
+                            break;
+                        case "USER_TASK_PROGRESS":
+                            //					LOGGER.debug("USER_TASK_PROGRESS:::" + message);
+                            break;
+                        default:
+//                            LOGGER.debug("其他未处理消息:" + message);
+                            break;
+                    }
+                    PublicDataConf.resultStrs.remove(0);
+                } else {
+                    synchronized (PublicDataConf.parseMessageThread) {
+                        try {
+                            PublicDataConf.parseMessageThread.wait();
+                        } catch (InterruptedException e) {
+                            // TODO 自动生成的 catch 块
+                            //						LOGGER.debug("处理弹幕包信息线程关闭:" + e);
+                            //						e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+        }
+
+    }
+
+    //获取发送礼物code
+    public String sendCode() {
+        String code = "";
+        synchronized (getCenterSetConf()) {
+            code = CurrencyTools.sendGiftCode();
+            setService.changeSet(getCenterSetConf(), true);
+        }
+        return code;
+    }
+
+
+    public void DelayGiftTimeSetting() {
+        synchronized (PublicDataConf.parsethankGiftThread) {
+            if (PublicDataConf.parsethankGiftThread != null) {
+                threadComponent.startParseThankGiftThread(getCenterSetConf().getThank_gift(), getThankGiftRuleSets());
 //				if (PublicDataConf.parsethankGiftThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankGiftThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankGiftThread = new ParseThankGiftThread();
@@ -1217,7 +1316,7 @@ public class ParseMessageThread extends Thread{
 //					PublicDataConf.parsethankGiftThread
 //							.setThankGiftRuleSets(getThankGiftRuleSets());
 //					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
-//					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().isIs_num());
+//					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().is_num());
 //				} else {
 //					PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 //					PublicDataConf.parsethankGiftThread.setThankGiftString(getThankGiftSetConf().getThank());
@@ -1226,58 +1325,58 @@ public class ParseMessageThread extends Thread{
 //					PublicDataConf.parsethankGiftThread
 //							.setThankGiftRuleSets(getThankGiftRuleSets());
 //					PublicDataConf.parsethankGiftThread.setNum(getThankGiftSetConf().getNum());
-//					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().isIs_num());
+//					PublicDataConf.parsethankGiftThread.setIs_num(getThankGiftSetConf().is_num());
 //				}
-			}
-		}
-	}
+            }
+        }
+    }
 
-	public synchronized void parseGiftSetting(Gift gift) throws Exception {
-		Vector<Gift> gifts = null;
-		if (gift != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-			if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankGiftThread != null) {
-				if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
-					if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
-						gifts = PublicDataConf.thankGiftConcurrentHashMap.get(gift.getUname());
-						if (gifts != null) {
-							int flagNum = 0;
-							for (Gift giftChild : gifts) {
-								int num1 = giftChild.getNum();
-								int num2 = gift.getNum();
-								long total_coin1 = giftChild.getTotal_coin();
-								long total_coin2 = gift.getTotal_coin();
-								if (giftChild.getGiftName().equals(gift.getGiftName())) {
-									giftChild.setNum(num1 + num2);
-									giftChild.setTotal_coin(total_coin1 + total_coin2);
-									DelayGiftTimeSetting();
-									flagNum++;
-								}
-							}
-							if (flagNum == 0) {
-								gifts.add(gift);
-								DelayGiftTimeSetting();
-							}
-						} else {
-							gifts = new Vector<Gift>();
-							gifts.add(gift);
-							PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-							DelayGiftTimeSetting();
-						}
-					} else {
-						gifts = new Vector<Gift>();
-						gifts.add(gift);
-						PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
-						DelayGiftTimeSetting();
-					}
-				}
-			}
-		}
-	}
+    public synchronized void parseGiftSetting(Gift gift) throws Exception {
+        Vector<Gift> gifts = null;
+        if (gift != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankGiftThread != null) {
+                if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
+                    if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
+                        gifts = PublicDataConf.thankGiftConcurrentHashMap.get(gift.getUname());
+                        if (gifts != null) {
+                            int flagNum = 0;
+                            for (Gift giftChild : gifts) {
+                                int num1 = giftChild.getNum();
+                                int num2 = gift.getNum();
+                                long total_coin1 = giftChild.getTotal_coin();
+                                long total_coin2 = gift.getTotal_coin();
+                                if (giftChild.getGiftName().equals(gift.getGiftName())) {
+                                    giftChild.setNum(num1 + num2);
+                                    giftChild.setTotal_coin(total_coin1 + total_coin2);
+                                    DelayGiftTimeSetting();
+                                    flagNum++;
+                                }
+                            }
+                            if (flagNum == 0) {
+                                gifts.add(gift);
+                                DelayGiftTimeSetting();
+                            }
+                        } else {
+                            gifts = new Vector<Gift>();
+                            gifts.add(gift);
+                            PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
+                            DelayGiftTimeSetting();
+                        }
+                    } else {
+                        gifts = new Vector<Gift>();
+                        gifts.add(gift);
+                        PublicDataConf.thankGiftConcurrentHashMap.put(gift.getUname(), gifts);
+                        DelayGiftTimeSetting();
+                    }
+                }
+            }
+        }
+    }
 
-	public void DelayFollowTimeSetting() {
-		synchronized (PublicDataConf.parsethankFollowThread) {
-			if (PublicDataConf.parsethankFollowThread != null) {
-				threadComponent.startParseThankFollowThread(getCenterSetConf().getFollow());
+    public void DelayFollowTimeSetting() {
+        synchronized (PublicDataConf.parsethankFollowThread) {
+            if (PublicDataConf.parsethankFollowThread != null) {
+                threadComponent.startParseThankFollowThread(getCenterSetConf().getFollow());
 //				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
@@ -1292,25 +1391,25 @@ public class ParseMessageThread extends Thread{
 //					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
 //					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
 //				}
-			}
-		}
-	}
+            }
+        }
+    }
 
-	public synchronized void parseFollowSetting(Interact interact) throws Exception {
-		if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-			if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankFollowThread != null) {
-				if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankFollowThread.FLAG) {
-					PublicDataConf.interacts.add(interact);
-					DelayFollowTimeSetting();
-				}
-			}
-		}
-	}
+    public synchronized void parseFollowSetting(Interact interact) throws Exception {
+        if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankFollowThread != null) {
+                if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankFollowThread.FLAG) {
+                    PublicDataConf.interacts.add(interact);
+                    DelayFollowTimeSetting();
+                }
+            }
+        }
+    }
 
-	public void DelayWelcomeTimeSetting() {
-		synchronized (PublicDataConf.parseThankWelcomeThread) {
-			if (PublicDataConf.parseThankWelcomeThread != null) {
-				threadComponent.startParseThankWelcomThread(getCenterSetConf().getWelcome());
+    public void DelayWelcomeTimeSetting() {
+        synchronized (PublicDataConf.parseThankWelcomeThread) {
+            if (PublicDataConf.parseThankWelcomeThread != null) {
+                threadComponent.startParseThankWelcomThread(getCenterSetConf().getWelcome());
 //				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
@@ -1325,49 +1424,49 @@ public class ParseMessageThread extends Thread{
 //					PublicDataConf.parsethankFollowThread.setThankFollowString(getThankFollowSetConf().getFollows());
 //					PublicDataConf.parsethankFollowThread.setNum(getThankFollowSetConf().getNum());
 //				}
-			}
-		}
-	}
+            }
+        }
+    }
 
-	public synchronized void parseWelcomeSetting(Interact interact) throws Exception {
-		if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-			if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parseThankWelcomeThread != null) {
-				if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parseThankWelcomeThread.FLAG) {
-					PublicDataConf.interactWelcome.add(interact);
-					DelayWelcomeTimeSetting();
-				}
-			}
-		}
-	}
+    public synchronized void parseWelcomeSetting(Interact interact) throws Exception {
+        if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parseThankWelcomeThread != null) {
+                if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parseThankWelcomeThread.FLAG) {
+                    PublicDataConf.interactWelcome.add(interact);
+                    DelayWelcomeTimeSetting();
+                }
+            }
+        }
+    }
 
-	public CenterSetConf getCenterSetConf() {
-		if(centerSetConf==null)return PublicDataConf.centerSetConf;
-		return centerSetConf;
-	}
+    public CenterSetConf getCenterSetConf() {
+        if (centerSetConf == null) return PublicDataConf.centerSetConf;
+        return centerSetConf;
+    }
 
-	public void setCenterSetConf(CenterSetConf centerSetConf) {
-		this.centerSetConf = centerSetConf;
-	}
+    public void setCenterSetConf(CenterSetConf centerSetConf) {
+        this.centerSetConf = centerSetConf;
+    }
 
-	public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
-		return thankGiftRuleSets;
-	}
+    public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
+        return thankGiftRuleSets;
+    }
 
-	public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
-		this.thankGiftRuleSets = thankGiftRuleSets;
-	}
+    public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
+        this.thankGiftRuleSets = thankGiftRuleSets;
+    }
 
 
-	public static String parseCmd(String cmd) {
-		if (cmd.startsWith("DANMU_MSG")) {
-			return "DANMU_MSG";
-		}
-		if (cmd.startsWith("SEND_GIFT")) {
-			return "SEND_GIFT";
-		}
-		if (cmd.startsWith("GUARD_BUY")) {
-			return "GUARD_BUY";
-		}
+    public static String parseCmd(String cmd) {
+        if (cmd.startsWith("DANMU_MSG")) {
+            return "DANMU_MSG";
+        }
+        if (cmd.startsWith("SEND_GIFT")) {
+            return "SEND_GIFT";
+        }
+        if (cmd.startsWith("GUARD_BUY")) {
+            return "GUARD_BUY";
+        }
 //		if(cmd.startsWith("SUPER_CHAT_MESSAGE")) {
 //			return "SUPER_CHAT_MESSAGE";
 //		}
@@ -1531,6 +1630,6 @@ public class ParseMessageThread extends Thread{
 //			return "";
 //		}
 
-		return cmd;
-	}
+        return cmd;
+    }
 }

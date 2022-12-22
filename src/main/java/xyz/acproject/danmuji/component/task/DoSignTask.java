@@ -41,7 +41,7 @@ public class DoSignTask {
             if (max == userMedals.size()) {
                 Date date = new Date();
                 int nowDay = JodaTimeUtils.formatToInt(date, "yyyyMMdd");
-                if (PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+                if (PublicDataConf.centerSetConf.getPrivacy().is_open()) {
                     PublicDataConf.centerSetConf.getPrivacy().setClockInDay(nowDay);
                     setService.changeSet(PublicDataConf.centerSetConf,false);
                 } else {

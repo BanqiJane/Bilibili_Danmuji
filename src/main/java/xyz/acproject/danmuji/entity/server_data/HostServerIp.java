@@ -1,8 +1,11 @@
 package xyz.acproject.danmuji.entity.server_data;
 
-import java.io.Serializable;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
+
+import java.io.Serializable;
 
 /**
  * @ClassName HostServerIp
@@ -12,6 +15,9 @@ import xyz.acproject.danmuji.utils.FastJsonUtils;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HostServerIp implements Serializable {
 	/**
 	 * 
@@ -19,32 +25,4 @@ public class HostServerIp implements Serializable {
 	private static final long serialVersionUID = -5416269632134092211L;
 	private String Host;
 	private Integer port;
-	public HostServerIp() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
-	public HostServerIp(String host, Integer port) {
-		super();
-		Host = host;
-		this.port = port;
-	}
-	public String getHost() {
-		return Host;
-	}
-	public void setHost(String host) {
-		Host = host;
-	}
-	public Integer getPort() {
-		return port;
-	}
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-	@Override
-	public String toString() {
-		return "HostServerIp [Host=" + Host + ", port=" + port + "]";
-	}
-	public String toJson() {
-		return FastJsonUtils.toJson(new HostServerIp(Host,port));
-	}
 }

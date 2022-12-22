@@ -224,7 +224,7 @@ public class HttpUserData {
             if (PublicDataConf.ROOMID != null && PublicDataConf.ROOMID > 0) {
                 Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
                 PublicDataConf.USERMANAGER = new UserManager();
-                PublicDataConf.USERMANAGER.setIs_manager(manager != null ? manager : false);
+                PublicDataConf.USERMANAGER.set_manager(manager != null ? manager : false);
                 PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
                 PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
             }
@@ -241,6 +241,7 @@ public class HttpUserData {
      * 获取用户在目标房间所能发送弹幕的最大长度
      */
     public static void httpGetUserBarrageMsg() {
+        if(CurrencyTools.parseRoomId()==0)return;
         String data = null;
         JSONObject jsonObject = null;
         Map<String, String> headers = null;
@@ -271,7 +272,7 @@ public class HttpUserData {
                     .parseObject((((JSONObject) jsonObject.get("data")).getString("property")), UserBarrageMsg.class);
             Boolean manager = jsonObject.getJSONObject("data").getJSONObject("badge").getBoolean("is_room_admin");
             PublicDataConf.USERMANAGER = new UserManager();
-            PublicDataConf.USERMANAGER.setIs_manager(manager != null ? manager : false);
+            PublicDataConf.USERMANAGER.set_manager(manager != null ? manager : false);
             PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
             PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
         } else if (code == -101) {

@@ -1,9 +1,10 @@
 package xyz.acproject.danmuji.returnJson;
 
-import java.io.Serializable;
-
+import lombok.Data;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+import java.io.Serializable;
+@Data
 public class WsPackage implements Serializable,Cloneable{
 	
 	/**
@@ -15,11 +16,7 @@ public class WsPackage implements Serializable,Cloneable{
 	private Short status;
 	private Object result;
 	
-	
-	public WsPackage() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
+
 
 	public static WsPackage getWsPackage() {
 		try {
@@ -55,28 +52,5 @@ public class WsPackage implements Serializable,Cloneable{
 			e.printStackTrace();
 		}
 		return "";
-	}
-	public String getCmd() {
-		return cmd;
-	}
-
-	public void setCmd(String cmd) {
-		this.cmd = cmd;
-	}
-
-	public Short getStatus() {
-		return status;
-	}
-
-	public void setStatus(Short status) {
-		this.status = status;
-	}
-
-	public Object getResult() {
-		return result;
-	}
-
-	public void setResult(Object result) {
-		this.result = result;
 	}
 }

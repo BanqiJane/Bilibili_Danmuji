@@ -24,6 +24,8 @@ public class SmallHeartThread extends Thread {
 	private XData xData;
 	@Override
 	public void run() {
+		//废除小心心线程了
+		this.FLAG = true;
 		int num=0;
 		long startETime = 0;
 		long endETime = 0;

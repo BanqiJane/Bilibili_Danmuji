@@ -21,7 +21,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     private Logger LOGGER = LogManager.getLogger(LoginInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(PublicDataConf.centerSetConf.isIs_manager_login()) {
+        if(PublicDataConf.centerSetConf.is_manager_login()) {
             String manager= (String) request.getSession().getAttribute("manager");
             if (StringUtils.isBlank(manager)||!manager.equals("manager_login")) {
                 response.sendRedirect("/manager/login");

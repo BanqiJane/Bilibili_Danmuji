@@ -1,5 +1,11 @@
 package xyz.acproject.danmuji.conf.set;
 
+
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -9,36 +15,17 @@ import java.io.Serializable;
  * @date 2021/7/24 23:40
  * @Copyright:2021
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AutoSendGiftConf implements Serializable {
     private static final long serialVersionUID = -264415209929286293L;
     //是否开启
+    @JSONField(name = "is_open")
     private boolean is_open = false;
 
     private String room_id;
 
     private String time = "23:45:00";
 
-    public boolean isIs_open() {
-        return is_open;
-    }
-
-    public void setIs_open(boolean is_open) {
-        this.is_open = is_open;
-    }
-
-    public String getRoom_id() {
-        return room_id;
-    }
-
-    public void setRoom_id(String room_id) {
-        this.room_id = room_id;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 }

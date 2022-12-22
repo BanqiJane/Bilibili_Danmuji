@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.entity.danmu_data;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ import java.io.Serializable;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
 public class Gift implements Serializable,Cloneable{
 
 	/**
@@ -99,110 +102,6 @@ public class Gift implements Serializable,Cloneable{
 			e.printStackTrace();
 		}
 		return new Gift();
-	}
-
-	public Integer getGiftId() {
-		return giftId;
-	}
-
-	public void setGiftId(Integer giftId) {
-		this.giftId = giftId;
-	}
-
-	public Short getGiftType() {
-		return giftType;
-	}
-
-	public void setGiftType(Short giftType) {
-		this.giftType = giftType;
-	}
-
-	public String getGiftName() {
-		return giftName;
-	}
-
-	public void setGiftName(String giftName) {
-		this.giftName = giftName;
-	}
-
-	public Integer getNum() {
-		return num;
-	}
-
-	public void setNum(Integer num) {
-		this.num = num;
-	}
-
-	public String getUname() {
-		return uname;
-	}
-
-	public void setUname(String uname) {
-		this.uname = uname;
-	}
-
-	public String getFace() {
-		return face;
-	}
-
-	public void setFace(String face) {
-		this.face = face;
-	}
-
-	public Short getGuard_level() {
-		return guard_level;
-	}
-
-	public void setGuard_level(Short guard_level) {
-		this.guard_level = guard_level;
-	}
-
-	public Long getUid() {
-		return uid;
-	}
-
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-
-	public Long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public Integer getPrice() {
-		return price;
-	}
-
-	public void setPrice(Integer price) {
-		this.price = price;
-	}
-
-	public Short getCoin_type() {
-		return coin_type;
-	}
-
-	public void setCoin_type(Short coin_type) {
-		this.coin_type = coin_type;
-	}
-
-	public Long getTotal_coin() {
-		return total_coin;
-	}
-
-	public void setTotal_coin(Long total_coin) {
-		this.total_coin = total_coin;
 	}
 
 

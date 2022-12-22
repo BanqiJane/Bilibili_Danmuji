@@ -58,6 +58,7 @@ public class ParseThankGiftThread extends Thread {
 				}
 				long nowTime = System.currentTimeMillis();
 				if (nowTime - getTimestamp() < getDelaytime()) {
+
 				} else {
 					if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
 
@@ -103,7 +104,7 @@ public class ParseThankGiftThread extends Thread {
 										}
 										thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()),
 												"%uName%", entry.getKey());
-										if (isIs_num()) {
+										if (is_num()) {
 											stringBuilder.append(gifts.get(j).getNum()).append("个")
 													.append(gifts.get(j).getGiftName()).append(",");
 										} else {
@@ -173,7 +174,7 @@ public class ParseThankGiftThread extends Thread {
 											}
 											thankGiftStr = StringUtils.replace(handleThankStr(getThankGiftString()),
 													"%uNames%", entry.getKey());
-											if (isIs_num()) {
+											if (is_num()) {
 												stringBuilder.append(gifts.get(j).getNum()).append("个")
 														.append(gifts.get(j).getGiftName()).append(",");
 											} else {
@@ -219,7 +220,7 @@ public class ParseThankGiftThread extends Thread {
 			Map.Entry<String, Vector<Gift>> entryMap = iterator.next();
 			stringBuilderName.append(entryMap.getKey()).append(",");
 			for (Gift gift : entryMap.getValue()) {
-				if (isIs_num()) {
+				if (is_num()) {
 //				if(!stringBuilderGifts.toString().contains(gift.getGiftName())) {
 					stringBuilderGifts.append(gift.getNum()).append("个").append(gift.getGiftName()).append(",");
 //				}
@@ -303,7 +304,7 @@ public class ParseThankGiftThread extends Thread {
 		this.thankGiftRuleSets = thankGiftRuleSets;
 	}
 
-	public boolean isIs_num() {
+	public boolean is_num() {
 		return is_num;
 	}
 

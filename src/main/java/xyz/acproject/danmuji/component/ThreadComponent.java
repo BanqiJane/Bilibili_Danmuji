@@ -17,7 +17,7 @@ public interface ThreadComponent {
 
 	void closeAll();
 
-	void closeUser();
+	void closeUser(boolean close);
 
 	// 开启处理弹幕包线程 core
 	boolean startParseMessageThread(

@@ -54,11 +54,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.5.0
+# 版本2.6.0
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.5.0 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.0 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.5.0 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.0 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -85,6 +85,7 @@ java version "1.8.0_121"
 - **弹幕保存本地**
 - **网页弹幕显示**
 - **扫码登录**
+- **cookie登录**
 - **自动获取弹幕长度及颜色**
 - **发送弹幕长度超出上限自动分条发送**
 - **礼物感谢**
@@ -94,7 +95,7 @@ java version "1.8.0_121"
 2. 是否仅在直播中开启
 3. **4种感谢屏蔽模式(1自定义礼物名称，2屏蔽所有免费礼物，3低价值礼物，4自定义规则)**
 4. 可屏蔽天选时刻下的礼物
-5. **3种礼物感谢模式(单人单种，单人多种，多人多种)**
+5. **3种礼物感谢模式(单人单种，单人多种，~~多人多种~~)**
 6. 可调节每次感谢人数，礼物数
 7. 触发直播间有人上舰长后发送私信(用于发送舰长群)
 8. 感谢舰队和留言
@@ -136,14 +137,47 @@ java version "1.8.0_121"
 1. 是否仅在直播中开启
 2. 可调节多少秒间隔才能识别弹幕并自动回复
 3. 可设置多个关键字与屏蔽词
-4. 回复语提供%NAME%参数表示提问的人 %FANS% 实时获取关注数 %LIVETIME% 当前直播时间 %HOT% 当前人气值 %TIME% 打印北京时间 %WEATHER% 以打印推荐天气
-5. 含关键字封禁功能 提供%BLOCK%参数表示当前是一个封禁功能 和{{time}}参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送;
+4. 基础回复替换参数：
+   - 触发回复姬人的名字：%NAME%
+   - 实时获取关注数：%FANS%
+   - 当前直播时长：%LIVETIME%
+   - 当前人气值：%HOT%
+   - 北京时间：%TIME%
+   - ~~推荐天气：%WEATHER%~~
+5. 含关键字封禁功能 提供 %BLOCK% 参数表示当前是一个封禁功能和 {{time}} 参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送 例如 %BLOCK%{{1}} 表示禁言一小时;
 6. 可设置精确匹配
 7. 关键字可有满足条件A或条件B 发送内容C的功能(该功能多关键字也能用)
-8. 天气接口：固定参数 提问弹幕里面必须为@或#号开头 "天气"(实际种没有双引号)结尾 中间为城市和时间结合体(时间取数为：昨天，明天，后天，后两天，后三天)
+8. ~~天气接口：固定参数 提问弹幕里面必须为@或#号开头 "天气"(实际种没有双引号)结尾 中间为城市和时间结合体(时间取数为：昨天，明天，后天，后两天，后三天)
    例如 `#广州天气` 或者 `@广州天气` 或者 `#广州后天天气` 或者 `#广州昨天天气` ;推荐关键字配置为  `#||@，天气`
    推荐配置参数为%WEATHER% 高级自定义配置参数有 %W_CITY% 城市名称 %W_DATE% 时间 %WENDU% 温度(仅当天有效) %L_WENDU% 最低温度 %H_WENDU% 最高温度 %W_FX% 风向
-   %W_TYPE% 天气类型 %W_FL% 风力 %W_TIPS% 感冒小提示
+   %W_TYPE% 天气类型 %W_FL% 风力 %W_TIPS% 感冒小提示~~  2022.12.22注：天气接口失效 正寻找代替
+9. apex英雄数据接口:
+   - 轮换（即复制器）（天）：%MAKER_DAY1% 
+   - 轮换（天）：%MAKER_DAY2%
+   - 轮换（周）：%MAKER_WEEK1%
+   - 轮换（周）：%MAKER_WEEK2%  推荐4个轮换一起用
+   - 赛季通行证结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PASS_END% 
+   - 商店刷新时间（yyyy年MM月dd日HH时mm分ss秒）：%SHOP_REFRESH%
+   - PC排位大逃杀当前轮换地图：%PW_RP_NOWMAP%
+   - PC排位大逃杀下一轮或者上一轮地图（根据赛季返回，需自行判断赛季）：%PW_RP_OTHERMAP%
+   - PC排位大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PW_RP_ENDTIME%
+   - PC排位竞技场当前轮换地图：%PW_AP_NOWMAP%
+   - PC排位竞技场下一轮地图：%PW_AP_NEXMAP%
+   - PC排位竞技场结束时间：%PW_AP_ENDTIME%
+   - PC匹配大逃杀当前地图：%PP_RP_NOWMAP%
+   - PC匹配大逃杀下一轮地图：%PP_RP_NEXMAP%
+   - PC匹配大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PP_RP_ENDTIME%
+   - PC匹配竞技场当前地图：%PP_AP_NOWMAP%
+   - PC匹配竞技场下一轮地图：%PP_AP_NEXMAP%
+   - PC匹配竞技场结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PP_AP_ENDTIME%
+   - PC大逃杀猎杀底分：%PC_RP_DFEN%
+   - PC大逃杀大师总数：%PC_RP_MTOTAL%
+   - PC竞技场猎杀底分：%PC_AP_DFEN%
+   - PC竞技场大师总数：%PC_AP_MTOTAL%
+   - PS4大逃杀猎杀底分：%PS4_RP_DFEN%
+   - PS4大逃杀大师总数：%PS4_RP_MTOTAL%
+   - PS4竞技场猎杀底分：%PS4_AP_DFEN%
+   - PS4竞技场大师总数：%PS4_AP_MTOTAL%
 
 - **礼物自动赠送姬**
 
@@ -160,7 +194,7 @@ java version "1.8.0_121"
 - **房间管理(可以撤销禁言)**
 - **模拟在线(老爷可增加在线经验)**
 - **断线自动重连(实验性)**
-- **在线小心心(实验性)**
+- ~~**在线小心心(实验性)**~~
 - **直播自动签到(实验性)**
 - **每日打卡-每日按现有勋章列表完成首日+100亲密度打卡(实验性)**
 - **弹幕姬所发出的任意弹幕 都可以完成首日+100亲密度任务**
@@ -201,7 +235,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 - **首次开启舰长保存本地 会在项目目录下生成guardFile文件夹 用来存放舰长uid和名称**<br/>
 - **生成的用于存放弹幕文件名命名规则为 当天时间+房间号**<br/>
 - **localhost:23333/connect 连接房间地址**<br/>
-- **http://localhost:23333/cookie_set 自定义cookie地址**<br/>
+- **localhost:23333/cookie_set 自定义cookie地址**<br/>
 - **localhost:23333/login 扫码登录地址**<br/><br/>
   
 # 关于修改端口<br/>
@@ -269,6 +303,15 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+  <blockquote>
+<h2>Beta2.6.0</h2>
+ <p>新增apex接口</p>
+ <p>新增配置实时生效</p>
+  <p>优化操作界面操作（适配手机端）</p>
+  <p>移除小心心和部分不实用功能</p>
+  <p>修复部分已知bug</p>
+<p>修复部分bug</p>
+</blockquote>
   <blockquote>
 <h2>Beta2.5.0</h2>
  <p>修复自动送礼</p>

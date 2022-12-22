@@ -1,5 +1,10 @@
 package xyz.acproject.danmuji.conf.set;
 
+
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
@@ -14,6 +19,9 @@ import java.util.HashSet;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ThankGiftSetConf implements Serializable{
 	
 	/**
@@ -22,10 +30,13 @@ public class ThankGiftSetConf implements Serializable{
 	private static final long serialVersionUID = -418947096472064467L;
 	
 	//是否开启
+	@JSONField(name = "is_open")
 	private boolean is_open= false;
 	//是否直播有效
+	@JSONField(name = "is_live_open")
 	private boolean is_live_open =false;
 	//是否开启屏蔽天选礼物
+	@JSONField(name = "is_tx_shield")
 	private boolean is_tx_shield=false;
 	//礼物屏蔽模式 0 自定义 1 免费 2 低价 3 规则
 	private short shield_status =0;
@@ -42,10 +53,13 @@ public class ThankGiftSetConf implements Serializable{
 	//感谢语 默认感谢模式0下的
 	private String thank ="感谢%uName%大佬%Type%的%GiftName% x%Num%~";
 	//是否舰长私信
+	@JSONField(name = "is_guard_report")
 	private boolean is_guard_report =false;
 	//是否开启本地存储舰长
+	@JSONField(name = "is_guard_local")
 	private boolean is_guard_local=false;
 	//是否开启礼物码模式
+	@JSONField(name = "is_gift_code")
 	private boolean is_gift_code = false;
 	//舰长私信语
 	private String report;
@@ -54,149 +68,11 @@ public class ThankGiftSetConf implements Serializable{
 	//礼物码HashSet
 	private HashSet<String> codeStrings;
 	//是否开启感谢数量显示
+	@JSONField(name = "is_num")
 	private boolean is_num=true;
-	public ThankGiftSetConf() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
-
 	public ThankGiftSetConf(boolean is_open) {
 		super();
 		this.is_open = is_open;
-	}
-
-	public ThankGiftSetConf(boolean is_open, boolean is_live_open, boolean is_tx_shield, short shield_status, HashSet<String> giftStrings, HashSet<ThankGiftRuleSet> thankGiftRuleSets, short thank_status, short num, double delaytime, String thank, boolean is_guard_report, boolean is_guard_local, boolean is_gift_code, String report, String report_barrage, HashSet<String> codeStrings, boolean is_num) {
-		this.is_open = is_open;
-		this.is_live_open = is_live_open;
-		this.is_tx_shield = is_tx_shield;
-		this.shield_status = shield_status;
-		this.giftStrings = giftStrings;
-		this.thankGiftRuleSets = thankGiftRuleSets;
-		this.thank_status = thank_status;
-		this.num = num;
-		this.delaytime = delaytime;
-		this.thank = thank;
-		this.is_guard_report = is_guard_report;
-		this.is_guard_local = is_guard_local;
-		this.is_gift_code = is_gift_code;
-		this.report = report;
-		this.report_barrage = report_barrage;
-		this.codeStrings = codeStrings;
-		this.is_num = is_num;
-	}
-
-	public boolean isIs_open() {
-		return is_open;
-	}
-	public void setIs_open(boolean is_open) {
-		this.is_open = is_open;
-	}
-	public boolean isIs_live_open() {
-		return is_live_open;
-	}
-	public void setIs_live_open(boolean is_live_open) {
-		this.is_live_open = is_live_open;
-	}
-	public boolean isIs_tx_shield() {
-		return is_tx_shield;
-	}
-	public void setIs_tx_shield(boolean is_tx_shield) {
-		this.is_tx_shield = is_tx_shield;
-	}
-	public short getShield_status() {
-		return shield_status;
-	}
-	public void setShield_status(short shield_status) {
-		this.shield_status = shield_status;
-	}
-	
-	
-	public boolean isIs_guard_local() {
-		return is_guard_local;
-	}
-
-
-
-	public void setIs_guard_local(boolean is_guard_local) {
-		this.is_guard_local = is_guard_local;
-	}
-
-	public boolean isIs_gift_code() {
-		return is_gift_code;
-	}
-
-	public void setIs_gift_code(boolean is_gift_code) {
-		this.is_gift_code = is_gift_code;
-	}
-
-	public HashSet<String> getCodeStrings() {
-		return codeStrings;
-	}
-
-	public void setCodeStrings(HashSet<String> codeStrings) {
-		this.codeStrings = codeStrings;
-	}
-
-	public HashSet<String> getGiftStrings() {
-		return giftStrings;
-	}
-	public void setGiftStrings(HashSet<String> giftStrings) {
-		this.giftStrings = giftStrings;
-	}
-	public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
-		return thankGiftRuleSets;
-	}
-	public void setThankGiftRuleSets(HashSet<ThankGiftRuleSet> thankGiftRuleSets) {
-		this.thankGiftRuleSets = thankGiftRuleSets;
-	}
-	public short getThank_status() {
-		return thank_status;
-	}
-	public void setThank_status(short thank_status) {
-		this.thank_status = thank_status;
-	}
-	public short getNum() {
-		return num;
-	}
-	public void setNum(short num) {
-		this.num = num;
-	}
-	public double getDelaytime() {
-		return delaytime;
-	}
-	public void setDelaytime(double delaytime) {
-		this.delaytime = delaytime;
-	}
-	public String getThank() {
-		return thank;
-	}
-	public void setThank(String thank) {
-		this.thank = thank;
-	}
-	public boolean isIs_guard_report() {
-		return is_guard_report;
-	}
-	public void setIs_guard_report(boolean is_guard_report) {
-		this.is_guard_report = is_guard_report;
-	}
-	public String getReport() {
-		return report;
-	}
-	public void setReport(String report) {
-		this.report = report;
-	}
-	public String getReport_barrage() {
-		return report_barrage;
-	}
-	public void setReport_barrage(String report_barrage) {
-		this.report_barrage = report_barrage;
-	}
-
-	public boolean isIs_num() {
-		return is_num;
-	}
-	public void setIs_num(boolean is_num) {
-		this.is_num = is_num;
 	}
 
 

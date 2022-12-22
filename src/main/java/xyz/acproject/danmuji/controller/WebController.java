@@ -70,7 +70,7 @@ public class WebController {
         model.addAttribute("NEW_EDITION", PublicDataConf.NEW_EDITION);
         model.addAttribute("ROOMID", PublicDataConf.ROOMID);
         model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
-        model.addAttribute("MANAGER", PublicDataConf.USERMANAGER != null ? PublicDataConf.USERMANAGER.isIs_manager() : false);
+        model.addAttribute("MANAGER", PublicDataConf.USERMANAGER != null ? PublicDataConf.USERMANAGER.is_manager() : false);
         if (PublicDataConf.USER != null) {
             model.addAttribute("USER", PublicDataConf.USER);
         }
@@ -160,6 +160,10 @@ public class WebController {
         boolean flag = CurrencyTools.pariseCookie(cookie);
         if(flag){
             danmujiInitConfig.init();
+            //弹幕长度刷新
+            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                HttpUserData.httpGetUserBarrageMsg();
+            }
         }
         return Response.success(flag,req);
     }
@@ -218,34 +222,34 @@ public class WebController {
 
     @ResponseBody
     @GetMapping(value = "/getSet")
-    public Response<?> getSet(HttpServletRequest req) {
+    public Response<?> get(HttpServletRequest req) {
         return Response.success(PublicDataConf.centerSetConf, req);
     }
 
     @ResponseBody
     @PostMapping(value = "/sendSet")
-    public Response<?> sendSet(HttpServletRequest req, @RequestParam("set") String set) {
+    public Response<?> send(HttpServletRequest req, @RequestParam("set") String set) {
         try {
             CenterSetConf centerSetConf = JSONObject.parseObject(set, CenterSetConf.class);
             //登录设置
-            if (centerSetConf.isIs_manager_login() && StringUtils.isNotBlank(centerSetConf.getManager_key())) {
+            if (centerSetConf.is_manager_login() && StringUtils.isNotBlank(centerSetConf.getManager_key())) {
                 centerSetConf.setManager_key(DigestUtils.md5DigestAsHex(centerSetConf.getManager_key().getBytes()));
             }else if(StringUtils.isBlank(centerSetConf.getManager_key())){
                 centerSetConf.setManager_key(PublicDataConf.centerSetConf.getManager_key());
             }
             //签到时间 & 打卡时间
-            if(centerSetConf.isIs_dosign()&&!centerSetConf.getSign_time().equals(PublicDataConf.centerSetConf.getSign_time())){
+            if(centerSetConf.is_dosign()&&!centerSetConf.getSign_time().equals(PublicDataConf.centerSetConf.getSign_time())){
                 SchedulingRunnableUtil task = new SchedulingRunnableUtil("dosignTask", "dosign");
                 taskRegisterComponent.removeTask(task);
                 taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
             }
-            if(centerSetConf.getClock_in()!=null&&centerSetConf.getClock_in().isIs_open()&&!centerSetConf.getClock_in().getTime().equals(PublicDataConf.centerSetConf.getClock_in().getTime())){
+            if(centerSetConf.getClock_in()!=null&&centerSetConf.getClock_in().is_open()&&!centerSetConf.getClock_in().getTime().equals(PublicDataConf.centerSetConf.getClock_in().getTime())){
                 SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
                 taskRegisterComponent.removeTask(dakatask);
                 taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
             }
             //自动送礼时间
-            if(centerSetConf.getAuto_gift()!=null&&centerSetConf.getAuto_gift().isIs_open()&&
+            if(centerSetConf.getAuto_gift()!=null&&centerSetConf.getAuto_gift().is_open()&&
                     !centerSetConf.getAuto_gift().getTime().equals(PublicDataConf.centerSetConf.getAuto_gift().getTime())){
                 SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask","autosendgift");
                 taskRegisterComponent.removeTask(autoSendGiftTask);
@@ -253,6 +257,7 @@ public class WebController {
             }
             checkService.changeSet(centerSetConf,true);
         } catch (Exception e) {
+            e.printStackTrace();
             // TODO: handle exception
             return Response.success(false, req);
         }
@@ -297,7 +302,7 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/checkupdate")
     public Response<?> checkUpdate(HttpServletRequest req) {
-        String edition = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
         EditionResult editionResult = new EditionResult();
         editionResult.setEdition(edition);
         if (!StringUtils.isEmpty(edition)) {
@@ -323,7 +328,7 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/getNewEdition")
     public Response<?> getNewEdition(HttpServletRequest req) {
-        String edition = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
         if (!StringUtils.isEmpty(edition)) {
             if (edition.equals("获取公告失败")) {
                 return Response.success(-1, req);
@@ -370,7 +375,7 @@ public class WebController {
             page = 1;
         }
         List<RoomBlock> roomBlockList = new ArrayList<>();
-        if (PublicDataConf.ROOMID != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE) && PublicDataConf.USERMANAGER != null && PublicDataConf.USERMANAGER.isIs_manager()) {
+        if (PublicDataConf.ROOMID != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE) && PublicDataConf.USERMANAGER != null && PublicDataConf.USERMANAGER.is_manager()) {
             roomBlockList = HttpRoomData.getBlockList(page);
         }
         return Response.success(roomBlockList, req);

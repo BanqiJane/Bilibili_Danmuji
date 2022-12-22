@@ -1,3 +1,16 @@
+.no-use-hide{
+	display: none;
+}
+
+.row .col-auto{
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+}
+
+.input-group.mb-1 h5{
+	font-weight: 800;
+	border-bottom: 1px solid #AAAAAA;
+}
 body {
 	background-color: #343a40;
 }
@@ -368,23 +381,25 @@ div#danmu .danmu-child a {
 }
 
 .shieldgifts-wrap {
-	position: fixed;
-	top: 50%;
-	left: 35%;
-	margin-left: -245px;
-	margin-top: -300px;
-	background: #fff;
-	border-radius: 4px;
-	width:1045px;
+	/*position: fixed;*/
+	/*top: 50%;*/
+	/*left: 35%;*/
+	/*margin-left: -245px;*/
+	/*margin-top: -300px;*/
+	/*background: #fff;*/
+	/*border-radius: 4px;*/
+	/*width:1045px;*/
+	/*overflow: auto;*/
+	/*resize: both;*/
 }
 
 .shieldgifts-wrap .t {
-	text-align: center;
-	font-size: 16px;
-	color: #222;
-	padding: 10px 20px;
-	border-bottom: 1px solid #AAAAAA;
-	background: rgba(238, 238, 238, 0.9);
+	/*text-align: center;*/
+	/*font-size: 16px;*/
+	/*color: #222;*/
+	/*padding: 10px 20px;*/
+	/*border-bottom: 1px solid #AAAAAA;*/
+	/*background: rgba(238, 238, 238, 0.9);*/
 }
 
 .shieldgifts-wrap .t .btn-close {
@@ -426,11 +441,11 @@ div#danmu .danmu-child a {
 
 .shieldgifts-wrap .con {
 	background: white;
-	padding: 20px;
+/*	padding: 20px;*/
 }
 
 .shieldgifts-tbody .small-input {
-	width: 150px !important;
+	width: 95% !important;
 }
 
 .shieldgifts_open {
@@ -480,14 +495,17 @@ div#danmu .danmu-child a {
 }
 
 .replys-wrap {
-	position: fixed;
+/*	position: fixed;
 	top: 50%;
 	left: 50%;
 	margin-left: -245px;
 	margin-top: -300px;
 	background: #fff;
 	border-radius: 4px;
-	width: 540px
+!*	width: 50%;*!
+	width: 540px;
+	overflow: auto;
+	resize: both*/;
 }
 
 .replys-wrap .t {
@@ -539,7 +557,6 @@ div#danmu .danmu-child a {
 
 .replys-wrap .con {
 	background: white;
-	padding: 20px;
 }
 
 .replys-wrap .con ul {
@@ -556,7 +573,7 @@ div#danmu .danmu-child a {
 .replys-wrap .con ul li {
 	display: inline-block;
 	width: 100%;
-	height: 40px;
+	height: auto;
 	border: solid 1px rgba(187, 187, 187, 0.637);
 	border-radius: 5px;
 	margin-bottom: 2px;
@@ -586,14 +603,14 @@ div#danmu .danmu-child a {
 .replys-wrap .con ul li .small-input {
 	margin-left: 5px;
 	vertical-align: middle;
-	width: 75px !important;
+	width: 15% !important;
 	cursor: pointer;
 }
 
 .replys-wrap .con ul li .big-input {
 	margin-left: 5px;
 	vertical-align: middle;
-	width: 140px !important;
+	width: 25% !important;
 	cursor: pointer;
 }
 
@@ -613,7 +630,7 @@ div#danmu .danmu-child a {
 }
 
 .radd-body {
-	position: fixed;
+/*	position: fixed;
 	top: 50%;
 	left: 50%;
 	margin-left: -640px;
@@ -621,7 +638,7 @@ div#danmu .danmu-child a {
 	background: rgba(255, 255, 255, 0.9);
 	border-radius: 4px;
 	width: 1270px;
-	border: solid 1px #7792FF;
+	border: solid 1px #7792FF;*/
 }
 
 .radd-body .t {
@@ -688,7 +705,7 @@ div#danmu .danmu-child a {
 
 .radd-body .con ul li {
 	display: inline-block;
-	height: 150px;
+	height: auto;
 	margin-bottom: 2px;
 	vertical-align: middle;
 }

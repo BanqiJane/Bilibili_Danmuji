@@ -53,9 +53,9 @@ public class SetServiceImpl implements SetService {
         System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
         System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
         System.out.println();
-        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().isIs_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
+        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
         System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
-        if(!PublicDataConf.centerSetConf.getPrivacy().isIs_open()) {
+        if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
             String edition = HttpOtherData.httpGetNewEdition();
             if (!StringUtils.isEmpty(edition)) {
                 if (!edition.equals(PublicDataConf.EDITION)) {
@@ -72,7 +72,7 @@ public class SetServiceImpl implements SetService {
         }
         System.out.println();
         // 自动连接
-        if (PublicDataConf.centerSetConf.isIs_auto() && PublicDataConf.centerSetConf.getRoomid() > 0) {
+        if (PublicDataConf.centerSetConf.is_auto() && PublicDataConf.centerSetConf.getRoomid() > 0) {
             try {
                 clientService.startConnService(PublicDataConf.centerSetConf.getRoomid());
             } catch (Exception e) {
@@ -177,7 +177,7 @@ public class SetServiceImpl implements SetService {
             SchedulingRunnableUtil dakatask = new SchedulingRunnableUtil("dosignTask", "clockin");
             SchedulingRunnableUtil autoSendGiftTask = new SchedulingRunnableUtil("dosignTask", "autosendgift");
             //每日签到
-            if (PublicDataConf.centerSetConf.isIs_dosign()) {
+            if (PublicDataConf.centerSetConf.is_dosign()) {
                 //判断签到
                 boolean flag = CurrencyTools.signNow();
                 if (flag) {
@@ -199,7 +199,7 @@ public class SetServiceImpl implements SetService {
                 }
             }
             //每日打卡
-            if (centerSetConf.getClock_in().isIs_open()) {
+            if (centerSetConf.getClock_in().is_open()) {
                 //移除
                 //这里开启一个匿名线程用于打卡
 //                new Thread(() -> {
@@ -221,7 +221,7 @@ public class SetServiceImpl implements SetService {
                 }
             }
             //每日定时自动送礼
-            if (centerSetConf.getAuto_gift().isIs_open()) {
+            if (centerSetConf.getAuto_gift().is_open()) {
                 if (!taskRegisterComponent.hasTask(autoSendGiftTask)) {
                     taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
                 }
@@ -246,7 +246,7 @@ public class SetServiceImpl implements SetService {
             threadComponent.startParseMessageThread(
                     centerSetConf);
             // logthread
-            if (centerSetConf.isIs_log()) {
+            if (centerSetConf.is_log()) {
                 threadComponent.startLogThread();
             } else {
                 threadComponent.closeLogThread();
@@ -255,11 +255,11 @@ public class SetServiceImpl implements SetService {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                 // advertthread
                 centerSetConf.getAdvert().start(threadComponent);
-//            if (centerSetConf.getAdvert().isIs_live_open()) {
+//            if (centerSetConf.getAdvert().is_live_open()) {
 //                if (PublicDataConf.lIVE_STATUS != 1) {
 //                    threadComponent.closeAdvertThread();
 //                } else {
-//                    if (centerSetConf.getAdvert().isIs_open()) {
+//                    if (centerSetConf.getAdvert().is_open()) {
 //                        threadComponent.startAdvertThread(centerSetConf);
 //                    } else {
 //                        threadComponent.setAdvertThread(centerSetConf);
@@ -267,7 +267,7 @@ public class SetServiceImpl implements SetService {
 //                    }
 //                }
 //            } else {
-//                if (centerSetConf.getAdvert().isIs_open()) {
+//                if (centerSetConf.getAdvert().is_open()) {
 //                    threadComponent.startAdvertThread(centerSetConf);
 //                } else {
 //                    threadComponent.setAdvertThread(centerSetConf);
@@ -276,11 +276,11 @@ public class SetServiceImpl implements SetService {
 //            }
                 // autoreplythread
                 centerSetConf.getReply().start(threadComponent);
-//            if (centerSetConf.getReply().isIs_live_open()) {
+//            if (centerSetConf.getReply().is_live_open()) {
 //                if (PublicDataConf.lIVE_STATUS != 1) {
 //                    threadComponent.closeAutoReplyThread();
 //                } else {
-//                    if (centerSetConf.getReply().isIs_open()) {
+//                    if (centerSetConf.getReply().is_open()) {
 //                        threadComponent.startAutoReplyThread(centerSetConf);
 //                    } else {
 //                        threadComponent.setAutoReplyThread(centerSetConf);
@@ -288,7 +288,7 @@ public class SetServiceImpl implements SetService {
 //                    }
 //                }
 //            } else {
-//                if (centerSetConf.getReply().isIs_open()) {
+//                if (centerSetConf.getReply().is_open()) {
 //                    threadComponent.startAutoReplyThread(centerSetConf);
 //                } else {
 //                    threadComponent.setAutoReplyThread(centerSetConf);
@@ -296,9 +296,9 @@ public class SetServiceImpl implements SetService {
 //                }
 //            }
                 // useronlinethread && smallHeartThread
-                if (centerSetConf.isIs_online()) {
+                if (centerSetConf.is_online()) {
                     threadComponent.startUserOnlineThread();
-                    if (centerSetConf.isIs_sh() && PublicDataConf.lIVE_STATUS == 1) {
+                    if (centerSetConf.is_sh() && PublicDataConf.lIVE_STATUS == 1) {
                         threadComponent.startSmallHeartThread();
                     } else {
                         threadComponent.closeSmallHeartThread();
@@ -321,7 +321,7 @@ public class SetServiceImpl implements SetService {
             } else {
                 //没有登录
                 PublicDataConf.init_user();
-                threadComponent.closeUser();
+                threadComponent.closeUser(false);
             }
             if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
                 threadComponent.closeAll();
@@ -332,7 +332,7 @@ public class SetServiceImpl implements SetService {
 
     public void quit() {
         PublicDataConf.init_user();
-        threadComponent.closeUser();
+        threadComponent.closeUser(true);
         // remove task all shutdown !!!!!!
         try {
             taskRegisterComponent.destroy();

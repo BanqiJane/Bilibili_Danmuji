@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.entity.danmu_data;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,7 @@ import java.io.Serializable;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
 public class Barrage implements Serializable,Cloneable {
 	
 	/**
@@ -30,7 +33,10 @@ public class Barrage implements Serializable,Cloneable {
 	// 弹幕 ()位置info[1]
 	private String msg;
 	//是否为礼物弹幕(现在推测0不是 2为礼物) 位置 info[0][9]
+	//已知 0普通弹幕  2礼物弹幕
 	private Short msg_type;
+	//表情弹幕( 0否 1是)位置 info[0][12]
+	private Short msg_emoticon;
 	//弹幕发送时间 ()位置info[0][4]
 	private Long timestamp;
 	//是否为房管( 0否 1是)位置 info[2][2] 0也是可以是主播 注意
@@ -61,7 +67,11 @@ public class Barrage implements Serializable,Cloneable {
 	private String title;
 	//用户本房间舰队身份(0非舰队，1总督，2提督，3舰长)位置info[7]
 	private Short uguard;
-	
+	//表情弹幕唯一标识(赞->"official_147")位置 info[0][13].emoticon_unique
+	private String msg_emoticon_name;
+	//表情弹幕的图片地址 () 位置 info[0][13].url
+	private String msg_emoticon_url;
+
 	
 	public Barrage() {
 		super();
@@ -76,15 +86,16 @@ public class Barrage implements Serializable,Cloneable {
 		}
 		return new Barrage();
 	}
-    public static Barrage getBarrage(Long uid, String uname, String msg, Short msg_type, Long timestamp, Short manager, Short vip,
+    public static Barrage getBarrage(Long uid, String uname, String msg, Short msg_type,Short msg_emoticon, Long timestamp, Short manager, Short vip,
 			Short svip, Integer uidentity, Short iphone, Short medal_level, String medal_name, String medal_anchor,
-			Long medal_room, Short ulevel, String ulevel_rank, String old_title, String title, Short uguard) {
+			Long medal_room, Short ulevel, String ulevel_rank, String old_title, String title, Short uguard,String msg_emoticon_name,String msg_emoticon_url) {
     	try {
 			Barrage b= (Barrage)barrage.clone();
 			b.uid = uid;
 			b.uname = uname;
 			b.msg = msg;
 			b.msg_type = msg_type;
+			b.msg_emoticon = msg_emoticon;
 			b.timestamp = timestamp;
 			b.manager = manager;
 			b.vip = vip;
@@ -100,6 +111,8 @@ public class Barrage implements Serializable,Cloneable {
 			b.old_title = old_title;
 			b.title = title;
 			b.uguard = uguard;
+			b.msg_emoticon_name = msg_emoticon_name;
+			b.msg_emoticon_url = msg_emoticon_url;
 			return b;
 		} catch (CloneNotSupportedException e) {
 			// TODO 自动生成的 catch 块
@@ -107,119 +120,4 @@ public class Barrage implements Serializable,Cloneable {
 		}
     	return new Barrage();
     }
-
-	public Long getUid() {
-		return uid;
-	}
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-	public String getUname() {
-		return uname;
-	}
-	public void setUname(String uname) {
-		this.uname = uname;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public Short getMsg_type() {
-		return msg_type;
-	}
-	public void setMsg_type(Short msg_type) {
-		this.msg_type = msg_type;
-	}
-	public Long getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
-	}
-	public Short getManager() {
-		return manager;
-	}
-	public void setManager(Short manager) {
-		this.manager = manager;
-	}
-	public Short getVip() {
-		return vip;
-	}
-	public void setVip(Short vip) {
-		this.vip = vip;
-	}
-	public Short getSvip() {
-		return svip;
-	}
-	public void setSvip(Short svip) {
-		this.svip = svip;
-	}
-	public Integer getUidentity() {
-		return uidentity;
-	}
-	public void setUidentity(Integer uidentity) {
-		this.uidentity = uidentity;
-	}
-	public Short getIphone() {
-		return iphone;
-	}
-	public void setIphone(Short iphone) {
-		this.iphone = iphone;
-	}
-	public Short getMedal_level() {
-		return medal_level;
-	}
-	public void setMedal_level(Short medal_level) {
-		this.medal_level = medal_level;
-	}
-	public String getMedal_name() {
-		return medal_name;
-	}
-	public void setMedal_name(String medal_name) {
-		this.medal_name = medal_name;
-	}
-	public String getMedal_anchor() {
-		return medal_anchor;
-	}
-	public void setMedal_anchor(String medal_anchor) {
-		this.medal_anchor = medal_anchor;
-	}
-	public Long getMedal_room() {
-		return medal_room;
-	}
-	public void setMedal_room(Long medal_room) {
-		this.medal_room = medal_room;
-	}
-	public Short getUlevel() {
-		return ulevel;
-	}
-	public void setUlevel(Short ulevel) {
-		this.ulevel = ulevel;
-	}
-	public String getUlevel_rank() {
-		return ulevel_rank;
-	}
-	public void setUlevel_rank(String ulevel_rank) {
-		this.ulevel_rank = ulevel_rank;
-	}
-	public String getOld_title() {
-		return old_title;
-	}
-	public void setOld_title(String old_title) {
-		this.old_title = old_title;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public Short getUguard() {
-		return uguard;
-	}
-	public void setUguard(Short uguard) {
-		this.uguard = uguard;
-	}
 }

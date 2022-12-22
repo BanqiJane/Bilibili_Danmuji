@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.entity.auto_reply;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ import java.io.Serializable;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
 public class AutoReply implements Serializable,Cloneable{
 	/**
 	 * 
@@ -49,25 +52,5 @@ public class AutoReply implements Serializable,Cloneable{
 		return new AutoReply();
 	}
 
-	public Long getUid() {
-		return uid;
-	}
-
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getBarrage() {
-		return barrage;
-	}
-	public void setBarrage(String barrage) {
-		this.barrage = barrage;
-	}
 	
 }

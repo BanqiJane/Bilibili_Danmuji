@@ -55,7 +55,7 @@ public class ShieldGiftTools {
 			if (thankGiftRuleSets != null && thankGiftRuleSets.size() > 0 && !thankGiftRuleSets.isEmpty()) {
 				for (ThankGiftRuleSet thankGiftRuleSet : thankGiftRuleSets) {
 					if (thankGiftRuleSet.getGift_name().trim().equals(gift.getGiftName().trim())) {
-						if (thankGiftRuleSet.isIs_open()) {
+						if (thankGiftRuleSet.is_open()) {
 							if (thankGiftRuleSet.getStatus() == 0) {
 								if (gift.getNum() >= thankGiftRuleSet.getNum()) {
 									return gift;

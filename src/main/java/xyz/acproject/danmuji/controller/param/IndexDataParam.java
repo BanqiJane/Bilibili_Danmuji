@@ -1,5 +1,8 @@
 package xyz.acproject.danmuji.controller.param;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import xyz.acproject.danmuji.entity.user_data.User;
 
 import java.io.Serializable;
@@ -11,6 +14,9 @@ import java.io.Serializable;
  * @date 2021/4/21 23:17
  * @Copyright:2021
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class IndexDataParam implements Serializable {
     private static final long serialVersionUID = 2056926334699107131L;
 
@@ -42,51 +48,4 @@ public class IndexDataParam implements Serializable {
     */
     private User user;
 
-    public String getAnchorName() {
-        return anchorName;
-    }
-
-    public void setAnchorName(String anchorName) {
-        this.anchorName = anchorName;
-    }
-
-    public String getEdition() {
-        return edition;
-    }
-
-    public void setEdition(String edition) {
-        this.edition = edition;
-    }
-
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
-    public Long getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Long popularity) {
-        this.popularity = popularity;
-    }
-
-    public Boolean getManager() {
-        return manager;
-    }
-
-    public void setManager(Boolean manager) {
-        this.manager = manager;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

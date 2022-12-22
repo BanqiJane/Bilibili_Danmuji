@@ -1,8 +1,10 @@
 package xyz.acproject.danmuji.entity.superchat;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import xyz.acproject.danmuji.utils.FastJsonUtils;
+import java.io.Serializable;
 
 /**
  * @ClassName UserInfo
@@ -12,6 +14,9 @@ import xyz.acproject.danmuji.utils.FastJsonUtils;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserInfo implements Serializable{
 
 	
@@ -42,102 +47,5 @@ public class UserInfo implements Serializable{
 	//房管0n 1y
 	private Short manager;
 	
-	public UserInfo() {
-		super();
-		// TODO 自动生成的构造函数存根
-	}
-	
-	public UserInfo(String uname, String face, String face_frame, Short guard_level, Short user_level,
-			String level_color, Short is_vip, Short is_svip, Short is_main_vip, String title, Short manager) {
-		super();
-		this.uname = uname;
-		this.face = face;
-		this.face_frame = face_frame;
-		this.guard_level = guard_level;
-		this.user_level = user_level;
-		this.level_color = level_color;
-		this.is_vip = is_vip;
-		this.is_svip = is_svip;
-		this.is_main_vip = is_main_vip;
-		this.title = title;
-		this.manager = manager;
-	}
 
-	public String getUname() {
-		return uname;
-	}
-	public void setUname(String uname) {
-		this.uname = uname;
-	}
-	public String getFace() {
-		return face;
-	}
-	public void setFace(String face) {
-		this.face = face;
-	}
-	public String getFace_frame() {
-		return face_frame;
-	}
-	public void setFace_frame(String face_frame) {
-		this.face_frame = face_frame;
-	}
-	public Short getGuard_level() {
-		return guard_level;
-	}
-	public void setGuard_level(Short guard_level) {
-		this.guard_level = guard_level;
-	}
-	public Short getUser_level() {
-		return user_level;
-	}
-	public void setUser_level(Short user_level) {
-		this.user_level = user_level;
-	}
-	public String getLevel_color() {
-		return level_color;
-	}
-	public void setLevel_color(String level_color) {
-		this.level_color = level_color;
-	}
-	public Short getIs_vip() {
-		return is_vip;
-	}
-	public void setIs_vip(Short is_vip) {
-		this.is_vip = is_vip;
-	}
-	public Short getIs_svip() {
-		return is_svip;
-	}
-	public void setIs_svip(Short is_svip) {
-		this.is_svip = is_svip;
-	}
-	public Short getIs_main_vip() {
-		return is_main_vip;
-	}
-	public void setIs_main_vip(Short is_main_vip) {
-		this.is_main_vip = is_main_vip;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public Short getManager() {
-		return manager;
-	}
-	public void setManager(Short manager) {
-		this.manager = manager;
-	}
-
-	@Override
-	public String toString() {
-		return "UserInfo [uname=" + uname + ", face=" + face + ", face_frame=" + face_frame + ", guard_level="
-				+ guard_level + ", user_level=" + user_level + ", level_color=" + level_color + ", is_vip=" + is_vip
-				+ ", is_svip=" + is_svip + ", is_main_vip=" + is_main_vip + ", title=" + title + ", manager=" + manager
-				+ "]";
-	}
-	public String toJson() {
-		return FastJsonUtils.toJson(new UserInfo(uname, face, face_frame, guard_level, user_level, level_color, is_vip, is_svip, is_main_vip, title, manager));
-	}
 }

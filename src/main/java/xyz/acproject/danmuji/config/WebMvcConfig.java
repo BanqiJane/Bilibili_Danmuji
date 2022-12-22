@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         danmujiInitConfig.init();
-        if (PublicDataConf.centerSetConf.isIs_manager_login()) {
+        if (PublicDataConf.centerSetConf.is_manager_login()) {
             registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*").excludePathPatterns("/manager/login", "/manager/logins");
         }else {
         WebMvcConfigurer.super.addInterceptors(registry);
