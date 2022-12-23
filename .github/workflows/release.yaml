@@ -129,7 +129,7 @@ jobs:
       #       danmuji.zip
 
       - name: Upload Files To Release
-        uses: ncipollo/release-action@v1.8.0
+        uses: ncipollo/release-action@main
         with:
           tag: ${{ steps.prepare.outputs.TAG }}
           allowUpdates: true
