@@ -47,8 +47,7 @@ jobs:
           echo "file_name=${FILE_NAME}" >> $GITHUB_OUTPUT
           echo "tag_version=${TAG_VERSION}" >> $GITHUB_OUTPUT
 
-          TAG = 弹幕姬发行版${TAG_VERSION}(含绿色版本)
-          echo "TAG=${TAG}" >> $GITHUB_OUTPUT
+          echo "TAG=弹幕姬发行版${TAG_VERSION}(含绿色版本)" >> $GITHUB_OUTPUT
 
           echo ${FILE_NAME}
           echo ${TAG}
