@@ -47,13 +47,9 @@ jobs:
           echo "file_name=${FILE_NAME}" >> $GITHUB_OUTPUT
           echo "tag_version=${TAG_VERSION}" >> $GITHUB_OUTPUT
 
-          TAG=${{ github.event.inputs.releaseTag }}
-          if [ "${TAG}" = "v" ]
-          then TAG=v${TAG_VERSION}
-          else TAG=${{ github.event.inputs.releaseTag }}
-          fi
-          echo "TAG=${TAG}" >> $GITHUB_OUTPUT
+          echo "TAG=弹幕姬发行版${TAG_VERSION}(含绿色版本)" >> $GITHUB_OUTPUT
 
+          echo ${FILE_NAME}
           echo ${TAG}
 
       # 初始化 JDK8 环境
@@ -71,12 +67,24 @@ jobs:
           sudo ./gradlew build -x test
           sudo mv $(find build -type f -size +10M) ./
 
+      # 下载openjdk-8-jre 的压缩包，网上没有下载Windows jre8的地方，所以使用danmuji docker构建的release下载
+      - name: Download OpenJDK8 Archive
+        run: |
+          sudo apt-get install -y rar zip unzip
+          wget https://github.com/zzcabc/Docker_Buildx_Danmuji/releases/download/openjdk-8-jre/openjdk-8-jre.zip
+          unzip openjdk-8-jre.zip -d openjdk-8-jre
+
       # 编辑文件
       - name: Edit files
         run: |
+          mkdir danmuji
+          mkdir danmuji-green
+
+          mv openjdk-8-jre danmuji-green/openjdk-8-jre
+
           echo "仅在本机有jdk8或jre8版本以上的环境下" > danmuji/readme.txt
           echo "window下：直接run.bat运行" >> danmuji/readme.txt
-          echo "其它系统或方法：在本软件目录下cmd命令行执行 java -jar  -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}-.jar --server.port=23333 即可运行" >> danmuji/readme.txt
+          echo "其它系统或方法：在本软件目录下cmd命令行执行 java -jar -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333 即可运行" >> danmuji/readme.txt
           echo "--server.port=23333为端口 想修改端口可以修改run.bat里面的这个参数" >> danmuji/readme.txt
           echo "如何设置？打开浏览器地址栏输入http://127.0.0.1:23333进行设置；" >> danmuji/readme.txt
           echo "如何退出？直接关闭命令行窗口即可退出" >> danmuji/readme.txt
@@ -91,7 +99,7 @@ jobs:
           echo "该版本为window绿色版本，" > danmuji-green/readme.txt
           echo "运行方法：" >> danmuji-green/readme.txt
           echo "直接运行run.bat（window下）记得允许网络" >> danmuji-green/readme.txt
-          echo "其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行openjdk-8-jre\bin\java -jar -Xms64m -Xmx128m  BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333 即可运行" >> danmuji-green/readme.txt
+          echo "其他系统或方法：解压完成 直接在本目录打开控制台 或者 控制台cd本目录命令执行openjdk-8-jre\bin\java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333 即可运行" >> danmuji-green/readme.txt
           echo "--server.port=23333为端口 想修改端口可以修改run.bat里面的这个参数" >> danmuji-green/readme.txt
           echo "如何设置？打开浏览器地址栏输入 http://127.0.0.1:23333进行设置；" >> danmuji-green/readme.txt
           echo "如何退出？直接关闭命令行窗口即可退出" >> danmuji-green/readme.txt
@@ -101,10 +109,11 @@ jobs:
           echo "@echo off" > danmuji-green/run.bat
           echo "title BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}-%date%-%time%-%cd%" >> danmuji-green/run.bat
           echo "openjdk-8-jre\bin\java -jar -Xms64m -Xmx128m BiliBili_Danmuji-${{ steps.prepare.outputs.file_name }}.jar --server.port=23333" >> danmuji-green/run.bat
+      
+    
       # 压缩文件
       - name: Compressed Files
         run: |
-          sudo apt-get install -y rar zip
           export BUILD_DATE=$(date +"%Y-%m-%d")
           echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
           cp ./*.jar danmuji/
@@ -114,19 +123,6 @@ jobs:
           rar a -r danmuji-green.rar danmuji-green/
           rar a danmuji.rar danmuji/
           tar cvf danmuji.tar danmuji/
-
-      # - name: Upload firmware to release
-      #   uses: softprops/action-gh-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.event.inputs.releaseTag }}
-      #     files: |
-      #       danmuji.tar
-      #       danmuji-green.rar
-      #       danmuji-green.zip
-      #       danmuji.rar
-      #       danmuji.zip
 
       - name: Upload Files To Release
         uses: ncipollo/release-action@main
