@@ -124,12 +124,19 @@ jobs:
           rar a danmuji.rar danmuji/
           tar cvf danmuji.tar danmuji/
 
+      # - name: Upload Files To Release
+      #   uses: ncipollo/release-action@main
+      #   with:
+      #     tag: ${{ steps.prepare.outputs.TAG }}
+      #     allowUpdates: true
+      #     replacesArtifacts: true
+      #     body: ${{ env.BUILD_DATE }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     artifacts: danmuji.tar,danmuji-green.rar,danmuji-green.zip,danmuji.rar,danmuji.zip
       - name: Upload Files To Release
-        uses: ncipollo/release-action@main
+        uses: softprops/action-gh-release@v1
         with:
-          tag: ${{ steps.prepare.outputs.TAG }}
-          allowUpdates: true
-          replacesArtifacts: true
-          body: ${{ env.BUILD_DATE }}
+          name: ${{ steps.prepare.outputs.TAG }}
+          tag_name: ${{ steps.prepare.outputs.tag_version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: danmuji.tar,danmuji-green.rar,danmuji-green.zip,danmuji.rar,danmuji.zip
+          files: danmuji.tar,danmuji-green.rar,danmuji-green.zip,danmuji.rar,danmuji.zip
