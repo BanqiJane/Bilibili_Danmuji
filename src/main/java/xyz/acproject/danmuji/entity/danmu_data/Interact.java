@@ -26,6 +26,7 @@ public class Interact implements Serializable{
 	private String uname;
 	private String uname_color;
 	private Integer[] identities;
+	//1欢迎 2关注
 	private Short msg_type;
 	private Long roomid;
 	private Long timestamp;

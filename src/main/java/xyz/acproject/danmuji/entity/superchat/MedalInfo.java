@@ -41,4 +41,8 @@ public class MedalInfo implements Serializable{
 	//勋章颜色
 	private String medal_color;
 
+	private Integer is_lighted = 0;
+
+	private Integer guard_level = 0;
+
 }

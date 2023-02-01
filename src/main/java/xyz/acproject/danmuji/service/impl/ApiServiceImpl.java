@@ -1,7 +1,10 @@
 package xyz.acproject.danmuji.service.impl;
 
 import org.springframework.stereotype.Service;
-import xyz.acproject.danmuji.entity.other.Weather;
+import xyz.acproject.danmuji.entity.Weather.Weather;
+import xyz.acproject.danmuji.entity.Weather.WeatherV2;
+import xyz.acproject.danmuji.entity.apex.ApexMessage;
+import xyz.acproject.danmuji.entity.apex.PredatorResult;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.service.ApiService;
 import xyz.acproject.danmuji.utils.XmlUtils;
@@ -49,9 +52,29 @@ public class ApiServiceImpl implements ApiService {
                     break;
             }
         }
-        if(null != weather){
-            weather.setFl(XmlUtils.getData(weather.getFl(),String.class));
+        if (null != weather) {
+            weather.setFl(XmlUtils.getData(weather.getFl(), String.class));
         }
         return weather;
+    }
+
+    public WeatherV2 getWeatherV2(String city, Short day) {
+        WeatherV2 weatherV2 = null;
+        Map<String, WeatherV2> weatherV2Maps = HttpOtherData.httpGetWeatherV2(city);
+        if (null != weatherV2Maps) {
+            weatherV2 = weatherV2Maps.get(day+"");
+        }
+        return weatherV2;
+    }
+
+    public PredatorResult getApexPredator(String key, String type) {
+        PredatorResult predatorResult=null;
+        predatorResult = HttpOtherData.httpGetApexPredator(key, type);
+        return predatorResult;
+    }
+    public ApexMessage getApexMessage() {
+        ApexMessage apexMessage=null;
+        apexMessage = HttpOtherData.httpGetApexMessage();
+        return apexMessage;
     }
 }

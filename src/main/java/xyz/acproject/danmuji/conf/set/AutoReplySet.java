@@ -5,6 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import xyz.acproject.danmuji.conf.base.OpenSetConf;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -20,16 +21,11 @@ import java.util.HashSet;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutoReplySet implements Serializable{
+public class AutoReplySet extends OpenSetConf implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 562887876061232840L;
-	/**
-	* 是否开启
-	*/
-	@JSONField(name = "is_open")
-	private boolean is_open = false;
 	/**
 	* 是否独特
 	*/

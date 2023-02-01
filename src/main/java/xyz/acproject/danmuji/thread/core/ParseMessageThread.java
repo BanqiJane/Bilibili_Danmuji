@@ -70,6 +70,7 @@ public class ParseMessageThread extends Thread {
             BlockMessage blockMessage = null;
             WelcomeGuard welcomeGuard = null;
             WelcomeVip welcomeVip = null;
+            RedPackage redPackage = null;
 //		GiftFile giftFile = null;
             String message = "";
             String cmd = "";
@@ -97,7 +98,7 @@ public class ParseMessageThread extends Thread {
                             } catch (InterruptedException e1) {
                                 // TODO 自动生成的 catch 块
                                 LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
-                                //							e.printStackTrace();
+                                //e.printStackTrace();
                             }
                         }
                     }
@@ -200,20 +201,13 @@ public class ParseMessageThread extends Thread {
                                 if (getCenterSetConf().is_cmd()) {
                                     System.out.println(stringBuilder.toString());
                                 }
+                                //高级显示处理
                                 try {
                                     danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short) 0, hbarrage));
                                 } catch (Exception e) {
                                     // TODO 自动生成的 catch 块
                                     e.printStackTrace();
                                 }
-                                //高级显示处理
-
-                                //						try {
-                                //							danmuWebsocket.sendMessage(WsPackage.toJson("danmu", (short)0, barrage));
-                                //						} catch (Exception e) {
-                                //							// TODO 自动生成的 catch 块
-                                //							e.printStackTrace();
-                                //						}
                                 //日志处理
                                 if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
                                     PublicDataConf.logString.add(stringBuilder.toString());
@@ -1072,7 +1066,7 @@ public class ParseMessageThread extends Thread {
                             break;
 
                         // msg_type 1 为进入直播间 2 为关注 3为分享直播间
-                        case "INTERACT_WORD":
+                        case "INTERACT_WORD": ;
                             // 关注
                             if (getCenterSetConf().is_follow_dm()) {
                                 msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
@@ -1159,10 +1153,10 @@ public class ParseMessageThread extends Thread {
                             }
 
                             //打印测试用
-                            //					msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                            //					if(msg_type!=3&&msg_type!=2) {
-                            //			        LOGGER.debug("直播间信息:::" + message);
-                            //					}
+//                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+//                            if (msg_type != 3 && msg_type != 2) {
+//                                LOGGER.debug("直播间信息:::" + message);
+//                            }
                             break;
                         // 礼物bag bot
                         case "GIFT_BAG_DOT":
@@ -1199,7 +1193,9 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.debug("互动游戏？？？推送:::" + message);
                             break;
                         case "WATCHED_CHANGE":
-                            //					LOGGER.debug("多少人观看过:::" + message);
+                            //{"cmd":"WATCHED_CHANGE","data":{"num":184547,"text_small":"18.4万","text_large":"18.4万人看过"}}
+                            PublicDataConf.ROOM_WATCHER = JSONObject.parseObject(jsonObject.getString("data")).getLong("num");
+//                            LOGGER.debug("多少人观看过:::" + message);
                             break;
                         case "STOP_LIVE_ROOM_LIST":
                             //					LOGGER.debug("直播间关闭集合推送:::" + message);
@@ -1211,13 +1207,87 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.debug("警告信息推送（例如任务快完成之类的）:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_NEW":
-                            //					LOGGER.debug("红包抽奖推送:::" + message);
+//                            LOGGER.debug("红包抽奖推送:::" + message);
+                            //{"cmd":"POPULARITY_RED_POCKET_NEW",
+                            // "data":{"lot_id":8677977,"start_time":1674572461,"current_time":1674572461,
+                            // "wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出",
+                            // "num":1,"gift_name":"红包","gift_id":13000,"price":5000,"name_color":"",
+                            // "medal_info":{"target_id":0,"special":"","icon_id":0,"anchor_uname":"",
+                            // "anchor_roomid":0,"medal_level":0,"medal_name":"","medal_color":0,"medal_color_start":0,
+                            // "medal_color_end":0,"medal_color_border":0,"is_lighted":0,"guard_level":0}}}
+                            if (getCenterSetConf().is_gift()) {
+                                redPackage = JSONObject.parseObject(jsonObject.getString("data"), RedPackage.class);
+                                stringBuilder.append(JodaTimeUtils.formatDateTime(redPackage.getStart_time() * 1000));
+                                stringBuilder.append(":收到红包:");
+                                stringBuilder.append(redPackage.getUname());
+                                stringBuilder.append(" ");
+                                stringBuilder.append(redPackage.getAction());
+                                stringBuilder.append("的:");
+                                stringBuilder.append(redPackage.getGift_name());
+                                stringBuilder.append(" x ");
+                                stringBuilder.append(redPackage.getNum());
+                                //控制台打印
+                                if (getCenterSetConf().is_cmd()) {
+                                    System.out.println(stringBuilder.toString());
+                                }
+                                gift = new Gift();
+                                gift.setGiftName(redPackage.getGift_name());
+                                gift.setNum(redPackage.getNum());
+                                gift.setPrice(redPackage.getPrice());
+                                gift.setTotal_coin((long) redPackage.getNum() * redPackage.getPrice());
+                                gift.setTimestamp(redPackage.getStart_time());
+                                gift.setAction(redPackage.getAction());
+                                gift.setCoin_type((short) 1);
+                                gift.setUname(redPackage.getUname());
+                                gift.setUid(redPackage.getUid());
+                                try {
+                                    danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
+                                } catch (Exception e) {
+                                    // TODO 自动生成的 catch 块
+                                    e.printStackTrace();
+                                }
+                                if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                    PublicDataConf.logString.add(stringBuilder.toString());
+                                    synchronized (PublicDataConf.logThread) {
+                                        PublicDataConf.logThread.notify();
+                                    }
+                                }
+                                stringBuilder.delete(0, stringBuilder.length());
+                            }
+                            if (getCenterSetConf().getThank_gift().is_giftThank()) {
+                                if (PublicDataConf.parsethankGiftThread != null && !PublicDataConf.parsethankGiftThread.TFLAG) {
+                                    redPackage = JSONObject.parseObject(jsonObject.getString("data"), RedPackage.class);
+                                    gift = new Gift();
+                                    gift.setGiftName(redPackage.getGift_name());
+                                    gift.setNum(redPackage.getNum());
+                                    gift.setPrice(redPackage.getPrice());
+                                    gift.setTotal_coin((long) redPackage.getNum() * redPackage.getPrice());
+                                    gift.setTimestamp(redPackage.getStart_time());
+                                    gift.setAction(redPackage.getAction());
+                                    gift.setCoin_type((short) 1);
+                                    gift.setUname(redPackage.getUname());
+                                    gift.setUid(redPackage.getUid());
+                                    gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                                            getCenterSetConf().getThank_gift().getGiftStrings(), null);
+                                    if (gift != null) {
+                                        try {
+                                            parseGiftSetting(gift);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
                             break;
                         case "POPULARITY_RED_POCKET_WINNER_LIST":
                             //					LOGGER.debug("红包抽奖结果推送:::" + message);
                             break;
                         case "LIKE_INFO_V3_UPDATE":
-                            //					LOGGER.debug("点赞信息v3推送:::" + message);
+//                            					LOGGER.debug("点赞信息v3推送:::" + message);
+                            //{"cmd":"LIKE_INFO_V3_UPDATE","data":{"click_count":371578}}
+                            PublicDataConf.ROOM_LIKE = JSONObject.parseObject(jsonObject.getString("data")).getLong("click_count");
                             break;
                         case "LIKE_INFO_V3_CLICK":
                             //					LOGGER.debug("点赞信息v3推送:::" + message);
@@ -1263,6 +1333,12 @@ public class ParseMessageThread extends Thread {
                             break;
                         case "USER_TASK_PROGRESS":
                             //					LOGGER.debug("USER_TASK_PROGRESS:::" + message);
+                            break;
+                        case "POPULAR_RANK_CHANGED":
+                            //					LOGGER.debug("POPULAR_RANK_CHANGED:::" + message);
+                            break;
+                        case "AREA_RANK_CHANGED":
+                            //					LOGGER.debug("AREA_RANK_CHANGED:::" + message);
                             break;
                         default:
 //                            LOGGER.debug("其他未处理消息:" + message);

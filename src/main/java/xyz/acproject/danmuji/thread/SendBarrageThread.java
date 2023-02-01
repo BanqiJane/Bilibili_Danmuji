@@ -33,11 +33,11 @@ public class SendBarrageThread extends Thread {
 				barrageStr = PublicDataConf.barrageString.get(0);
 				int strLength = barrageStr.length();
 				int maxLength=20;
-				if( PublicDataConf.USERBARRAGEMESSAGE!=null) {
+				if(PublicDataConf.USERBARRAGEMESSAGE!=null) {
 					 maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
 				}
 				if (strLength > maxLength) {
-					int num = (int) Math.ceil((float) maxLength / (float) strLength);
+					int num = (int) Math.ceil((float) strLength / (float) maxLength);
 					for (int i = 0; i <= num; i++) {
 //						if (PublicDataConf.ROOMID == 5067) {
 						try {

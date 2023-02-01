@@ -5,6 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import xyz.acproject.danmuji.conf.base.OpenSetConf;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
 import java.io.Serializable;
@@ -20,14 +21,9 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClockInSetConf implements Serializable {
+public class ClockInSetConf extends OpenSetConf implements Serializable {
 
     private static final long serialVersionUID = 3354141280551660852L;
-    /**
-    * 是否开启自动打卡
-    */
-    @JSONField(name = "is_open")
-    private boolean is_open = false;
 
     /**
     * 自定义打卡时间
@@ -41,7 +37,7 @@ public class ClockInSetConf implements Serializable {
 
     public ClockInSetConf(boolean is_open, String barrage) {
         super();
-        this.is_open = is_open;
+        super.set_open(is_open);
         this.barrage = barrage;
     }
 

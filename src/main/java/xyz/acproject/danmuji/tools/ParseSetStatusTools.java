@@ -255,6 +255,9 @@ public class ParseSetStatusTools {
 			if(centerSetConf.getPrivacy()==null){
 				centerSetConf.setPrivacy(new PrivacySetConf());
 			}
+			if(centerSetConf.getBlack()==null){
+				centerSetConf.setBlack(new BlackListSetConf());
+			}
 		}
 		return centerSetConf;
 	}

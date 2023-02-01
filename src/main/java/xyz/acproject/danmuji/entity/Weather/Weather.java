@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.entity.other;
+package xyz.acproject.danmuji.entity.Weather;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

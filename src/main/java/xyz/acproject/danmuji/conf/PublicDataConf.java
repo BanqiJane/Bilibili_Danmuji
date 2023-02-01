@@ -45,6 +45,10 @@ public class PublicDataConf {
 	public static String ANCHOR_NAME = null;
 	//房间人气
 	public static Long ROOM_POPULARITY =1L;
+	//房间观看人数（历史）
+	public static Long ROOM_WATCHER = 0L;
+	//点赞数量
+	public static Long ROOM_LIKE = 0L;
 	//直播状态 0不直播 1直播 2轮播
 	public static Short lIVE_STATUS = 0;
 	//cookie String串
@@ -141,8 +145,8 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.6.0";
-	public static String NEW_EDITION ="2.6.0";
+	public static String EDITION ="2.6.1";
+	public static String NEW_EDITION ="2.6.1";
 	public static String ANNOUNCE = null;
 	public static boolean INIT_CHECK_EDITION = false;
 	public static boolean INIT_CHECK_ANNOUNCE = false;

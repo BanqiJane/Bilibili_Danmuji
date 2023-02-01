@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.enums.AdvertStatus;
 
+import java.math.BigDecimal;
+
 /**
  * @ClassName AdvertThread
  * @Description TODO
@@ -17,7 +19,7 @@ public class AdvertThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(AdvertThread.class);
 	public volatile boolean FLAG = false;
-	private Short time;
+	private double time =0;
 	private String advertBarrage;
 	private AdvertStatus advertStatus;
 
@@ -33,6 +35,7 @@ public class AdvertThread extends Thread {
 			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
 				return;
 			}
+			long delay_time = new BigDecimal(getTime()).multiply(new BigDecimal("1000")).longValue();
 			if (StringUtils.indexOf(getAdvertBarrage(), "\n") != -1) {
 				strings = StringUtils.split(getAdvertBarrage(), "\n");
 
@@ -40,7 +43,7 @@ public class AdvertThread extends Thread {
 					// 顺序发
 					for (String string : strings) {
 						try {
-							Thread.sleep(getTime() * 1000);
+							Thread.sleep(delay_time);
 						} catch (InterruptedException e) {
 							// TODO 自动生成的 catch 块
 //							LOGGER.debug("广告姬线程关闭:" + e);
@@ -55,7 +58,7 @@ public class AdvertThread extends Thread {
 				} else {
 					// 随机发
 					try {
-						Thread.sleep(getTime() * 1000);
+						Thread.sleep(delay_time);
 					} catch (InterruptedException e) {
 						// TODO 自动生成的 catch 块
 //						LOGGER.debug("广告姬线程关闭:" + e);
@@ -82,7 +85,7 @@ public class AdvertThread extends Thread {
 
 			} else {
 				try {
-					Thread.sleep(getTime() * 1000);
+					Thread.sleep(delay_time);
 				} catch (InterruptedException e) {
 					// TODO 自动生成的 catch 块
 //					LOGGER.debug("广告姬线程关闭:" + e);
@@ -105,11 +108,11 @@ public class AdvertThread extends Thread {
 		}
 	}
 
-	public Short getTime() {
+	public double getTime() {
 		return time;
 	}
 
-	public void setTime(Short time) {
+	public void setTime(double time) {
 		this.time = time;
 	}
 

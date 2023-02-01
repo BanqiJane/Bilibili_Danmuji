@@ -96,22 +96,22 @@ public class CenterSetConf implements Serializable {
     private boolean is_dosign = false;
     //自定义的签到时间
     private String sign_time = "00:30:00";
-    //是否开启礼物感谢线程对象体
+    //是否开启礼物感谢线程对象体 black
     @JSONField(name = "thank_gift")
     private ThankGiftSetConf thank_gift;
     //是否开启广告公告线程对象体
     @JSONField(name = "advert")
     private AdvertSetConf advert;
-    //是否开启感谢关注线程对象体
+    //是否开启感谢关注线程对象体 black
     @JSONField(name = "follow")
     private ThankFollowSetConf follow;
-    //是否开启自动回复线程对象体
+    //是否开启自动回复线程对象体 black
     @JSONField(name = "reply")
     private AutoReplySetConf reply;
     //开启自动打卡设置对象体
     @JSONField(name = "clock_in")
     private ClockInSetConf clock_in;
-    //是否开启欢迎进入直播间线程对象体
+    //是否开启欢迎进入直播间线程对象体 black
     @JSONField(name = "welcome")
     private ThankWelcomeSetConf welcome;
     //是否开启自动送礼对象体
@@ -120,9 +120,14 @@ public class CenterSetConf implements Serializable {
     //是否开启隐私模式 不再调用服务器
     @JSONField(name = "privacy")
     private PrivacySetConf privacy;
+    //全局黑名单
+    @JSONField(name="black")
+    private BlackListSetConf black;
+
+
 
     public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,
-                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome, AutoSendGiftConf auto_gift, PrivacySetConf privacy) {
+                         ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome, AutoSendGiftConf auto_gift, PrivacySetConf privacy,BlackListSetConf black) {
         super();
         this.thank_gift = thank_gift;
         this.advert = advert;
@@ -132,6 +137,7 @@ public class CenterSetConf implements Serializable {
         this.welcome = welcome;
         this.auto_gift= auto_gift;
         this.privacy = privacy;
+        this.black= black;
     }
 
     public String toJson() {

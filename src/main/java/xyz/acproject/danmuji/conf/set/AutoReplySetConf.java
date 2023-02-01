@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.conf.base.StartThreadInterface;
+import xyz.acproject.danmuji.conf.base.TimingLiveSetConf;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -23,34 +25,26 @@ import java.util.HashSet;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutoReplySetConf implements Serializable{
+public class AutoReplySetConf extends TimingLiveSetConf implements Serializable, StartThreadInterface {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6387301110915854706L;
-	//是否开启
-	@JSONField(name = "is_open")
-	private boolean is_open = false;
-	//是否直播有效
-	@JSONField(name = "is_live_open")
-	private boolean is_live_open =false;
-	//间隔时间
-	private short time = 3;
 	//自动回复子对象集合
 	private HashSet<AutoReplySet> autoReplySets;
 
 
 	//方法区
-
+	@Override
 	public void start(ThreadComponent threadComponent){
 		if(StringUtils.isBlank(PublicDataConf.USERCOOKIE)){
 			return;
 		}
-		if (is_live_open) {
+		if (is_live_open()) {
 			if (PublicDataConf.lIVE_STATUS != 1) {
 				threadComponent.closeAutoReplyThread();
 			} else {
-				if (is_open) {
+				if (is_open()) {
 					threadComponent.startAutoReplyThread(this);
 				} else {
 					threadComponent.setAutoReplyThread(this);
@@ -58,7 +52,7 @@ public class AutoReplySetConf implements Serializable{
 				}
 			}
 		} else {
-			if (is_open) {
+			if (is_open()) {
 				threadComponent.startAutoReplyThread(this);
 			} else {
 				threadComponent.setAutoReplyThread(this);

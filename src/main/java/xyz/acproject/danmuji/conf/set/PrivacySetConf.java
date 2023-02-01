@@ -5,6 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import xyz.acproject.danmuji.conf.base.OpenSetConf;
 
 /**
  * @author Jane
@@ -16,10 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrivacySetConf {
-    //是否开启
-    @JSONField(name = "is_open")
-    private boolean is_open = false;
+public class PrivacySetConf extends OpenSetConf {
+
     //必须得满足弹幕姬的请求参数 和 返回参数的小心心s参数地址
     private String small_heart_url = "http://biliheart-1.herokuapp.com/enc";
 

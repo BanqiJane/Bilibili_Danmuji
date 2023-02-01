@@ -12,6 +12,7 @@ $ java -version
 java version "1.8.0_121"
 ```
 
+## 项目操作基于WebUI 即是浏览器网页操作
 ## 关于浏览器网页操作面板
 **Bootstrap5 放弃了对 IE 的支持。**<br/>
 **以最新版本浏览器示例:**
@@ -54,7 +55,7 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.0
+# 版本2.6.1
 
 - **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.0 "下载地址")**<br/><br/>
 - **danmuji-green(
@@ -98,7 +99,7 @@ java version "1.8.0_121"
 5. **3种礼物感谢模式(单人单种，单人多种，~~多人多种~~)**
 6. 可调节每次感谢人数，礼物数
 7. 触发直播间有人上舰长后发送私信(用于发送舰长群)
-8. 感谢舰队和留言
+8. 感谢舰队和留言和红包
 9. 可选择是否输出礼物数量
 10. 可设置多条感谢弹幕模板
 
@@ -138,46 +139,77 @@ java version "1.8.0_121"
 2. 可调节多少秒间隔才能识别弹幕并自动回复
 3. 可设置多个关键字与屏蔽词
 4. 基础回复替换参数：
-   - 触发回复姬人的名字：%NAME%
-   - 实时获取关注数：%FANS%
-   - 当前直播时长：%LIVETIME%
-   - 当前人气值：%HOT%
-   - 北京时间：%TIME%
-   - ~~推荐天气：%WEATHER%~~
-5. 含关键字封禁功能 提供 %BLOCK% 参数表示当前是一个封禁功能和 {{time}} 参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送 例如 %BLOCK%{{1}} 表示禁言一小时;
+   - 提问人的用户名称（触发回复姬的人）：`%NAME%`
+   - 实时获取关注数：`%FANS%`
+   - 实时获取多少人观看过：`%WATHER%`
+   - 实时获取直播间点赞数：`%LIKE%`
+   - 当前直播时长：`%LIVETIME%`
+   - 当前人气值：`%HOT%`
+   - 北京时间：`%TIME%`
+   - 推荐天气：`%WEATHER%`
+5. 含关键字封禁功能 提供 `%BLOCK%` 参数表示当前是一个封禁功能和 `{{time}}` 参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送 例如 `%BLOCK%{{1}}` 表示禁言一小时;
 6. 可设置精确匹配
 7. 关键字可有满足条件A或条件B 发送内容C的功能(该功能多关键字也能用)
-8. ~~天气接口：固定参数 提问弹幕里面必须为@或#号开头 "天气"(实际种没有双引号)结尾 中间为城市和时间结合体(时间取数为：昨天，明天，后天，后两天，后三天)
-   例如 `#广州天气` 或者 `@广州天气` 或者 `#广州后天天气` 或者 `#广州昨天天气` ;推荐关键字配置为  `#||@，天气`
-   推荐配置参数为%WEATHER% 高级自定义配置参数有 %W_CITY% 城市名称 %W_DATE% 时间 %WENDU% 温度(仅当天有效) %L_WENDU% 最低温度 %H_WENDU% 最高温度 %W_FX% 风向
-   %W_TYPE% 天气类型 %W_FL% 风力 %W_TIPS% 感冒小提示~~  2022.12.22注：天气接口失效 正寻找代替
+8. 天气接口：
+   + **↓教程↓**
+   + 固定参数：提问弹幕里面必须为`@或#号开头`+`时间`+`中文的"天气"`两字(实际种没有双引号)结尾 
+   + 中间的时间取数为：`昨天，明天，后天，后两天(大后天)，后三天，后四天，后五天，后六天`
+   + 提问弹幕示例： `#广州天气` 或者 `#广州天气` 或者 `#广州后天天气` 或者 `#广州昨天天气` ;
+   + 推荐关键字配置：  `#||@，天气`
+   + **↓配置↓**
+   + 推荐配置参数（懒人）：`%WEATHER%`
+   + 城市名称：`%W_CITY%`
+   + 时间（yyyy年MM月dd日）：`%W_DATE%`
+   + 星期几：`%W_WEEK%`
+   + 湿度：`%SHIDU%` (仅当天有效)
+   + 温度：`%WENDU%` (仅当天有效)
+   + 最低温度：`%L_WENDU%`
+   + 最高温度：`%H_WENDU%`
+   + 温度区间：`%WENDU_RANGE%`
+   + 风向：`%W_FX%`
+   + 白天风向：`%W_FX_D%`
+   + 晚上风向：`%W_FX_N%`
+   + 天气类型：`%W_TYPE%`
+   + 白天天气类型：`%W_TYPE_D%`
+   + 晚上天气类型：`%W_TYPE_N%`
+   + 风力：`%W_FL%`
+   + 白天风力：`%W_FL_D%`
+   + 晚上风力：`%W_FL_N%`
+   + 日出：`%RICHU%`
+   + 日落：`%RILUO%`
+   + 小提示：`%W_TIP%` (仅当天有效)
+   + 小提示-洗车：`%W_TIP_XICHE%` (仅当天有效)
+   + 小提示-出游：`%W_TIP_CHUYOU%` (仅当天有效)
+   + 小提示-化妆：`%W_TIP_HUAZHUANG%` (仅当天有效)
+   + 小提示-穿衣：`%W_TIP_CHUANYI%` (仅当天有效)
+   + 小提示-感冒：`%W_TIP_GANMAO%` (仅当天有效)
 9. apex英雄数据接口:
-   - 轮换（即复制器）（天）：%MAKER_DAY1% 
-   - 轮换（天）：%MAKER_DAY2%
-   - 轮换（周）：%MAKER_WEEK1%
-   - 轮换（周）：%MAKER_WEEK2%  推荐4个轮换一起用
-   - 赛季通行证结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PASS_END% 
-   - 商店刷新时间（yyyy年MM月dd日HH时mm分ss秒）：%SHOP_REFRESH%
-   - PC排位大逃杀当前轮换地图：%PW_RP_NOWMAP%
-   - PC排位大逃杀下一轮或者上一轮地图（根据赛季返回，需自行判断赛季）：%PW_RP_OTHERMAP%
-   - PC排位大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PW_RP_ENDTIME%
-   - PC排位竞技场当前轮换地图：%PW_AP_NOWMAP%
-   - PC排位竞技场下一轮地图：%PW_AP_NEXMAP%
-   - PC排位竞技场结束时间：%PW_AP_ENDTIME%
-   - PC匹配大逃杀当前地图：%PP_RP_NOWMAP%
-   - PC匹配大逃杀下一轮地图：%PP_RP_NEXMAP%
-   - PC匹配大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PP_RP_ENDTIME%
-   - PC匹配竞技场当前地图：%PP_AP_NOWMAP%
-   - PC匹配竞技场下一轮地图：%PP_AP_NEXMAP%
-   - PC匹配竞技场结束时间（yyyy年MM月dd日HH时mm分ss秒）：%PP_AP_ENDTIME%
-   - PC大逃杀猎杀底分：%PC_RP_DFEN%
-   - PC大逃杀大师总数：%PC_RP_MTOTAL%
-   - PC竞技场猎杀底分：%PC_AP_DFEN%
-   - PC竞技场大师总数：%PC_AP_MTOTAL%
-   - PS4大逃杀猎杀底分：%PS4_RP_DFEN%
-   - PS4大逃杀大师总数：%PS4_RP_MTOTAL%
-   - PS4竞技场猎杀底分：%PS4_AP_DFEN%
-   - PS4竞技场大师总数：%PS4_AP_MTOTAL%
+   - 轮换（即复制器）（天）：`%MAKER_DAY1% `
+   - 轮换（天）：`%MAKER_DAY2%`
+   - 轮换（周）：`%MAKER_WEEK1%`
+   - 轮换（周）：`%MAKER_WEEK2%`  推荐4个轮换一起用
+   - 赛季通行证结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PASS_END% `
+   - 商店刷新时间（yyyy年MM月dd日HH时mm分ss秒）：`%SHOP_REFRESH%`
+   - PC排位大逃杀当前轮换地图：`%PW_RP_NOWMAP%`
+   - PC排位大逃杀下一轮或者上一轮地图（根据赛季返回，需自行判断赛季）：`%PW_RP_OTHERMAP%`
+   - PC排位大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PW_RP_ENDTIME%`
+   - PC排位竞技场当前轮换地图：`%PW_AP_NOWMAP%`
+   - PC排位竞技场下一轮地图：`%PW_AP_NEXMAP%`
+   - PC排位竞技场结束时间：`%PW_AP_ENDTIME%`
+   - PC匹配大逃杀当前地图：`%PP_RP_NOWMAP%`
+   - PC匹配大逃杀下一轮地图：`%PP_RP_NEXMAP%`
+   - PC匹配大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_RP_ENDTIME%`
+   - PC匹配竞技场当前地图：`%PP_AP_NOWMAP%`
+   - PC匹配竞技场下一轮地图：`%PP_AP_NEXMAP%`
+   - PC匹配竞技场结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_AP_ENDTIME%`
+   - PC大逃杀猎杀底分：`%PC_RP_DFEN%`
+   - PC大逃杀大师总数：`%PC_RP_MTOTAL%`
+   - PC竞技场猎杀底分：`%PC_AP_DFEN%`
+   - PC竞技场大师总数：`%PC_AP_MTOTAL%`
+   - PS4大逃杀猎杀底分：`%PS4_RP_DFEN%`
+   - PS4大逃杀大师总数：`%PS4_RP_MTOTAL%`
+   - PS4竞技场猎杀底分：`%PS4_AP_DFEN%`
+   - PS4竞技场大师总数：`%PS4_AP_MTOTAL%`
 
 - **礼物自动赠送姬**
 
@@ -205,7 +237,7 @@ java version "1.8.0_121"
 
 # 如何运行<br/>
 
-### 发布版本(环境配置好的前提下）<br/>
+### 发布版本(java环境配置好的前提下）<br/>
 
 项目目录下控制台执行：
 
@@ -304,13 +336,19 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 <blockquote>
   <blockquote>
+<h2>Beta2.6.1</h2>
+ <p>回复姬天气接口回归</p>
+ <p>回复姬添加新参数 点赞数和观看人数</p>
+ <p>感谢姬和控制台增加红包打印和红包感谢</p>
+<p>修复部分已知bug（弹幕分行问题）</p>
+</blockquote>
+  <blockquote>
 <h2>Beta2.6.0</h2>
  <p>新增apex接口</p>
  <p>新增配置实时生效</p>
   <p>优化操作界面操作（适配手机端）</p>
   <p>移除小心心和部分不实用功能</p>
   <p>修复部分已知bug</p>
-<p>修复部分bug</p>
 </blockquote>
   <blockquote>
 <h2>Beta2.5.0</h2>
