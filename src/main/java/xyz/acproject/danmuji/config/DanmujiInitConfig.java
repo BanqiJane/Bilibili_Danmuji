@@ -114,7 +114,7 @@ public class DanmujiInitConfig {
         try {
             PublicDataConf.centerSetConf = JSONObject
                     .parseObject(new String(base64Encoder.decode(hashtable.get("set"))), CenterSetConf.class);
-            LOGGER.debug("读取配置文件成功");
+            LOGGER.info("读取配置文件成功");
         } catch (Exception e) {
             // TODO: handle exception
             LOGGER.error("读取配置文件失败" + e);
@@ -149,15 +149,15 @@ public class DanmujiInitConfig {
                         PublicDataConf.COOKIE.setSESSDATA(value);
                         controlNum++;
                     } else {
-//						LOGGER.debug("获取cookie失败，字段为" + key);
+//						LOGGER.info("获取cookie失败，字段为" + key);
                     }
                 }
             }
             if (controlNum >= 2) {
-                LOGGER.debug("用户cookie装载成功");
+                LOGGER.info("用户cookie装载成功");
                 controlNum = 0;
             } else {
-                LOGGER.debug("用户cookie装载失败");
+                LOGGER.info("用户cookie装载失败");
                 PublicDataConf.COOKIE = null;
             }
             checkService.holdSet(PublicDataConf.centerSetConf);

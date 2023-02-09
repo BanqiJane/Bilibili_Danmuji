@@ -375,6 +375,15 @@
                                         </select>
                                     </div>
                                     <div class="col-auto">
+                                        <select class="custom-select-sm thankgift_list_gift_shield_status live-save"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+
+                                                title="自定义礼物屏蔽模式选择（模式自定义）：<br/>①:黑名单（默认）；<br/>②:白名单（仅感谢叫这个名字的礼物）；">
+                                            <option value="1" selected>黑名单</option>
+                                            <option value="2">白名单</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
                                         <select class="custom-select-sm thankgift_thank_status live-save"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
                                                 id="thankgift_thank_status"
@@ -406,6 +415,16 @@
                                                value="0">
                                     </div>
                                     <div class="col-auto">
+                                        <select class="custom-select-sm thankgift_list_people_shield_status live-save"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+
+                                                title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅舰长；注：所有舰长（不仅限于本房间舰长）">
+                                            <option value="1" selected>不屏蔽</option>
+                                            <option value="2">仅勋章</option>
+                                            <option value="3">仅舰长</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
                                         <button class="btn btn-primary btn-sm" id="gift-shield-btn"
                                                 data-bs-toggle='modal' data-bs-target='#giftshield-model'>礼物自定义规则屏蔽设置
                                         </button>
@@ -414,9 +433,9 @@
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_shield live-save"
-                                              placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用"
+                                              placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用&#10;默认黑名单，相反白名单（仅感谢填写的）"
                                               data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                                              title="这里填写自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class='red-font'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用</span>"
+                                              title="这里填写自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class='red-font'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>"
                                     ></textarea>
                                 <textarea class="form-control input-margin-b thankgift_thank live-save"
                                           id="thankgift_thank"
@@ -473,10 +492,10 @@
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_report live-save"
-                                              placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称&#10;可选参数%giftCode%，礼品码"
+                                              placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称&#10;可选参数%guardLevel%，舰队等级&#10;可选参数%giftCode%，礼品码"
                                               data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
 
-                                              title="回车为换行，不能超过破站官方规定的500字<br/>可选参数<span class='red-font'>%uName%</span>，刚刚上舰的人的名称<br/>可选参数<span class='red-font'>%giftCode%</span>，礼品码"></textarea>
+                                              title="回车为换行，不能超过破站官方规定的500字<br/>可选参数<span class='red-font'>%uName%</span>，刚刚上舰的人的名称<br/>可选参数<span class='red-font'>%guardLevel%</span>，舰队等级<br/>可选参数<span class='red-font'>%giftCode%</span>，礼品码"></textarea>
                                 <input
                                         class="form-control input-margin-b thankgift_barrageReport live-save"
                                         placeholder="上舰私信发送成功后，发送的自定义弹幕，默认空不发送"
@@ -484,10 +503,10 @@
                                         data-bs-html="true"
                                         title="上舰私信发送成功后，发送的自定义弹幕，默认空不发送">
                                 <textarea class="form-control input-margin-b thankgift_codeStrings live-save"
-                                          placeholder="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份"
+                                          placeholder="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份&#10;以舰长-开头表示赠送给舰长，提督-开头，总督-开头；例如： 舰长-code&#10;没有特殊开头表示全部舰队等级都会赠送"
                                           data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
 
-                                          title="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份"></textarea>
+                                          title="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份<br/>以舰长-开头表示赠送给舰长，提督-开头，总督-开头；例如： 舰长-code<br/>没有特殊开头表示全部舰队等级都会赠送"></textarea>
                             </div>
                         </div>
                         <!-- 送礼姬设置结束 -->
@@ -601,6 +620,16 @@
                                                title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
                                                value="0">
                                     </div>
+                                    <div class="col-auto">
+                                        <select class="custom-select-sm welcome_list_people_shield_status live-save"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+
+                                                title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅舰长；注：所有舰长（不仅限于本房间舰长）">
+                                            <option value="1" selected>不屏蔽</option>
+                                            <option value="2">仅勋章</option>
+                                            <option value="3">仅舰长</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group footer-set">
@@ -648,6 +677,16 @@
                                                data-bs-html="true"
                                                title="<span class='red-font'>间隔多少秒才识别弹幕并自动回复</span><br/>默认为3秒"
                                                value="3">
+                                    </div>
+                                    <div class="col-auto">
+                                        <select class="custom-select-sm replys_list_people_shield_status live-save"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+
+                                                title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅本房间舰长；">
+                                            <option value="1" selected>不屏蔽</option>
+                                            <option value="2">仅勋章</option>
+                                            <option value="3">仅舰长</option>
+                                        </select>
                                     </div>
                                     <div class="col-auto">
                                         <!--      <button class="btn btn-primary btn-sm" id="replys-btn">自定义回复设置</button>-->

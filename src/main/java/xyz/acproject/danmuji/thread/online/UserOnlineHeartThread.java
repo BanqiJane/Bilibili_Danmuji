@@ -29,7 +29,7 @@ public class UserOnlineHeartThread extends Thread{
 				Thread.sleep(300*1000);
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
-//				LOGGER.debug("在线心跳线程post 5m关闭:"+e);
+//				LOGGER.info("在线心跳线程post 5m关闭:"+e);
 //				e.printStackTrace();
 			}
 			HttpHeartBeatData.httpPostUserOnlineHeartBeat();

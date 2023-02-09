@@ -38,7 +38,7 @@ public class HeartByteThread extends Thread {
 					PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
 				} catch (Exception e) {
 					// TODO: handle exception
-//					LOGGER.debug("心跳线程关闭:"+e);
+//					LOGGER.info("心跳线程关闭:"+e);
 //					e.printStackTrace();
 				}
 			}

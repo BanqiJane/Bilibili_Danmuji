@@ -4,10 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
-import xyz.acproject.danmuji.enums.AdvertStatus;
-import xyz.acproject.danmuji.enums.ShieldGift;
-import xyz.acproject.danmuji.enums.ShieldMessage;
-import xyz.acproject.danmuji.enums.ThankGiftStatus;
+import xyz.acproject.danmuji.enums.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,6 +56,30 @@ public class ParseSetStatusTools {
 		}
 	}
 
+	public static ListGiftShieldStatus getListGiftShieldStatus(short code) {
+		switch (code) {
+		case 0:
+			return ListGiftShieldStatus.BLACK;
+		case 1:
+			return ListGiftShieldStatus.WHITE;
+		default:
+			return ListGiftShieldStatus.BLACK;
+		}
+	}
+
+
+	public static ListPeopleShieldStatus getListPeopleShieldStatus(short code) {
+		switch (code) {
+		case 0:
+			return ListPeopleShieldStatus.ALL;
+		case 1:
+			return ListPeopleShieldStatus.MEDAL;
+		case 2:
+			return ListPeopleShieldStatus.GUARD;
+		default:
+			return ListPeopleShieldStatus.ALL;
+		}
+	}
 
 	/**
 	* 等待移除

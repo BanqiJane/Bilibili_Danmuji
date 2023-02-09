@@ -46,7 +46,7 @@ public class AdvertThread extends Thread {
 							Thread.sleep(delay_time);
 						} catch (InterruptedException e) {
 							// TODO 自动生成的 catch 块
-//							LOGGER.debug("广告姬线程关闭:" + e);
+//							LOGGER.info("广告姬线程关闭:" + e);
 						}
 						if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
 						PublicDataConf.barrageString.add(string);
@@ -61,7 +61,7 @@ public class AdvertThread extends Thread {
 						Thread.sleep(delay_time);
 					} catch (InterruptedException e) {
 						// TODO 自动生成的 catch 块
-//						LOGGER.debug("广告姬线程关闭:" + e);
+//						LOGGER.info("广告姬线程关闭:" + e);
 					}
 					int strLength = strings.length;
 					if (strLength > 1) {
@@ -88,7 +88,7 @@ public class AdvertThread extends Thread {
 					Thread.sleep(delay_time);
 				} catch (InterruptedException e) {
 					// TODO 自动生成的 catch 块
-//					LOGGER.debug("广告姬线程关闭:" + e);
+//					LOGGER.info("广告姬线程关闭:" + e);
 				}
 				if (PublicDataConf.sendBarrageThread != null&&!PublicDataConf.sendBarrageThread.FLAG) {
 				PublicDataConf.barrageString.add(getAdvertBarrage());
@@ -102,7 +102,7 @@ public class AdvertThread extends Thread {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
-//				LOGGER.debug("广告姬线程关闭:" + e);
+//				LOGGER.info("广告姬线程关闭:" + e);
 			}
 
 		}

@@ -43,6 +43,6 @@ public class MedalInfo implements Serializable{
 
 	private Integer is_lighted = 0;
 
-	private Integer guard_level = 0;
+	private Short guard_level = 0;
 
 }

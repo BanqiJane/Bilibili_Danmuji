@@ -3,6 +3,7 @@ package xyz.acproject.danmuji.entity.danmu_data;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import xyz.acproject.danmuji.entity.superchat.MedalInfo;
 
 import java.io.Serializable;
 
@@ -31,6 +32,8 @@ public class Interact implements Serializable{
 	private Long roomid;
 	private Long timestamp;
 	private Long score;
+
+	private MedalInfo fans_medal;
 
 	
 }

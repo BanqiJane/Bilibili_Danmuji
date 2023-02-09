@@ -31,7 +31,7 @@ public class HeartBeatsThread extends Thread{
 			} catch (InterruptedException e) {
 				// TODO 自动生成的 catch 块
 //				e.printStackTrace();
-//				LOGGER.debug("在线心跳线程5m关闭:"+e);
+//				LOGGER.info("在线心跳线程5m关闭:"+e);
 			}
 		}
 	}

@@ -16,7 +16,9 @@ import xyz.acproject.danmuji.entity.Welcome.WelcomeVip;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.*;
 import xyz.acproject.danmuji.entity.high_level_danmu.Hbarrage;
+import xyz.acproject.danmuji.entity.superchat.MedalInfo;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
+import xyz.acproject.danmuji.enums.ListPeopleShieldStatus;
 import xyz.acproject.danmuji.enums.ShieldGift;
 import xyz.acproject.danmuji.file.GuardFileTools;
 import xyz.acproject.danmuji.http.HttpUserData;
@@ -44,7 +46,7 @@ import java.util.Vector;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class ParseMessageThread extends Thread {
-    private Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
+    private final static Logger LOGGER = LogManager.getLogger(ParseMessageThread.class);
     public volatile boolean FLAG = false;
     private DanmuWebsocket danmuWebsocket = SpringUtils.getBean(DanmuWebsocket.class);
     private SetService setService = SpringUtils.getBean(SetService.class);
@@ -80,7 +82,7 @@ public class ParseMessageThread extends Thread {
             StringBuilder stringBuilder = new StringBuilder(200);
             while (!FLAG) {
                 if (FLAG) {
-                    LOGGER.debug("数据解析线程手动中止");
+                    LOGGER.info("数据解析线程手动中止");
                     return;
                 }
                 if (null != PublicDataConf.resultStrs && !PublicDataConf.resultStrs.isEmpty()
@@ -90,14 +92,14 @@ public class ParseMessageThread extends Thread {
                         jsonObject = JSONObject.parseObject(message);
                     } catch (Exception e) {
                         // TODO: handle exception
-                        LOGGER.debug("抛出解析异常:" + e);
-                        //					LOGGER.debug(message);
+                        LOGGER.info("抛出解析异常:" + e);
+                        //					LOGGER.info(message);
                         synchronized (PublicDataConf.parseMessageThread) {
                             try {
                                 PublicDataConf.parseMessageThread.wait();
                             } catch (InterruptedException e1) {
                                 // TODO 自动生成的 catch 块
-                                LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
+                                LOGGER.info("处理弹幕包信息线程关闭:" + e1);
                                 //e.printStackTrace();
                             }
                         }
@@ -109,7 +111,7 @@ public class ParseMessageThread extends Thread {
                                 PublicDataConf.parseMessageThread.wait();
                             } catch (InterruptedException e1) {
                                 // TODO 自动生成的 catch 块
-                                LOGGER.debug("处理弹幕包信息线程关闭:" + e1);
+                                LOGGER.info("处理弹幕包信息线程关闭:" + e1);
                                 //							e.printStackTrace();
                             }
                         }
@@ -218,17 +220,19 @@ public class ParseMessageThread extends Thread {
                                 //自动回复姬处理
                                 if (PublicDataConf.autoReplyThread != null && !PublicDataConf.autoReplyThread.FLAG) {
                                     if (!PublicDataConf.autoReplyThread.getState().toString().equals("TIMED_WAITING")) {
-                                        PublicDataConf.replys.add(
-                                                AutoReply.getAutoReply(barrage.getUid(), barrage.getUname(), barrage.getMsg()));
-                                        synchronized (PublicDataConf.autoReplyThread) {
-                                            PublicDataConf.autoReplyThread.notify();
+                                        if (parseAutoReplySetting(barrage)) {
+                                            PublicDataConf.replys.add(
+                                                    AutoReply.getAutoReply(barrage.getUid(), barrage.getUname(), barrage.getMsg()));
+                                            synchronized (PublicDataConf.autoReplyThread) {
+                                                PublicDataConf.autoReplyThread.notify();
+                                            }
                                         }
                                     }
                                 }
                                 stringBuilder.delete(0, stringBuilder.length());
-                                //						LOGGER.debug("弹幕信息：" + message);
+                                //						LOGGER.info("弹幕信息：" + message);
                             } else {
-                                //				    LOGGER.debug("test中貌似为礼物弹幕：" + message);
+                                //				    LOGGER.info("test中貌似为礼物弹幕：" + message);
                             }
                             break;
 
@@ -243,7 +247,7 @@ public class ParseMessageThread extends Thread {
                                         jsonObject.getLong("timestamp"), jsonObject.getString("action"),
                                         jsonObject.getInteger("price"),
                                         ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
-                                        jsonObject.getLong("total_coin"));
+                                        jsonObject.getLong("total_coin"), jsonObject.getObject("medal_info", MedalInfo.class));
                                 //							giftFile = new GiftFile(jsonObject.getInteger("giftId"), jsonObject.getString("giftName"),
                                 //									jsonObject.getInteger("price"), jsonObject.getString("coin_type"));
                                 //							GiftFileTools.addGiftToFile(giftFile.toJson());
@@ -285,7 +289,7 @@ public class ParseMessageThread extends Thread {
                                                 jsonObject.getLong("timestamp"), jsonObject.getString("action"),
                                                 jsonObject.getInteger("price"),
                                                 ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type")),
-                                                jsonObject.getLong("total_coin"));
+                                                jsonObject.getLong("total_coin"), jsonObject.getObject("medal_info", MedalInfo.class));
                                     }
                                 }
                             }
@@ -295,6 +299,10 @@ public class ParseMessageThread extends Thread {
                                     if (ParseSetStatusTools.getGiftShieldStatus(
                                             getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
                                         gift = ShieldGiftTools.shieldGift(gift,
+                                                ParseSetStatusTools.getListGiftShieldStatus(
+                                                        getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                                                ParseSetStatusTools.getListPeopleShieldStatus(
+                                                        getCenterSetConf().getThank_gift().getList_people_shield_status()),
                                                 ParseSetStatusTools
                                                         .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
                                                 getCenterSetConf().getThank_gift().getGiftStrings(), null);
@@ -315,17 +323,17 @@ public class ParseMessageThread extends Thread {
                                     }
                                 }
                             }
-                            //		            LOGGER.debug("让我看看是谁送礼物:::"+jsonObject);
+//                            LOGGER.info("让我看看是谁送礼物:::"+jsonObject);
                             break;
 
                         // 部分金瓜子礼物连击
                         case "COMBO_SEND":
-                            //					LOGGER.debug("部分金瓜子礼物连击:::" + message);
+                            //					LOGGER.info("部分金瓜子礼物连击:::" + message);
                             break;
 
                         // 部分金瓜子礼物连击
                         case "COMBO_END":
-                            //					LOGGER.debug("部分金瓜子礼物连击:::" + message);
+                            //					LOGGER.info("部分金瓜子礼物连击:::" + message);
                             break;
 
                         // 上舰
@@ -381,6 +389,10 @@ public class ParseMessageThread extends Thread {
                                     gift.setUname(guard.getUsername());
                                     gift.setUid(guard.getUid());
                                     gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getListGiftShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                                            ParseSetStatusTools.getListPeopleShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_people_shield_status()),
                                             ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
                                             getCenterSetConf().getThank_gift().getGiftStrings(), null);
                                     if (gift != null) {
@@ -400,85 +412,68 @@ public class ParseMessageThread extends Thread {
                                 if (guardHashtable_local == null) {
                                     guardHashtable_local = new Hashtable<Long, String>();
                                 }
+                                //写入
                                 if (!guardHashtable_local.containsKey(guard.getUid())) {
                                     GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
 
-                                    if (getCenterSetConf().getThank_gift().is_guard_report()) {
-                                        String report = StringUtils.replace(getCenterSetConf().getThank_gift().getReport(), "\n", "\\n");
-                                        report = StringUtils.replace(report, "%uName%", guard.getUsername());
-                                        //礼品码
-                                        if (getCenterSetConf().getThank_gift().is_gift_code()
-                                                && !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
-                                            report = StringUtils.replace(report, "%giftCode%", this.sendCode());
-                                        }
-                                        try {
-                                            //									if (PublicDataConf.ROOMID == 5067) {
-                                            if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
-                                                if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
-                                                    PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
-                                                    synchronized (PublicDataConf.sendBarrageThread) {
-                                                        PublicDataConf.sendBarrageThread.notify();
-                                                    }
-                                                }
-                                            } else {
-                                                HttpUserData.httpPostSendMsg(guard.getUid(), report);
-                                            }
-                                            //									} else {
-                                            //										LOGGER.debug(report);
-                                            //										LOGGER.debug(getThankGiftSetConf().getReport_barrage());
-                                            //									}
-                                        } catch (Exception e) {
-                                            // TODO: handle exception
-                                            LOGGER.error("发送舰长私信失败，原因：" + e);
-                                        }
-                                    }
-
                                 }
-                            } else {
-                                if (getCenterSetConf().getThank_gift().is_guard_report()) {
-                                    guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-                                    String report = StringUtils.replace(getCenterSetConf().getThank_gift().getReport(), "\n", "\\n");
-                                    report = StringUtils.replace(report, "%uName%", guard.getUsername());
-                                    //礼品码
-                                    if (getCenterSetConf().getThank_gift().is_gift_code()
-                                            && !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
-                                        report = StringUtils.replace(report, "%giftCode%", this.sendCode());
-                                    } else {
-                                        report = StringUtils.replace(report, "%giftCode%", "");
-                                    }
-                                    try {
-                                        //								if (PublicDataConf.ROOMID == 5067) {
+                            }
+                            // 发送上舰私聊
+                            if (getCenterSetConf().getThank_gift().is_guard_report()) {
+                                guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
+                                short guard_level = guard.getGuard_level();
+                                String report = StringUtils.replace(getCenterSetConf().getThank_gift().getReport(), "\n", "\\n");
+                                //替换名称
+                                report = StringUtils.replace(report, "%uName%", guard.getUsername());
+                                //替换舰队级别
+                                if (guard_level == 1) {
+                                    report = StringUtils.replace(report, "%guardLevel%", "总督");
+                                } else if (guard_level == 2) {
+                                    report = StringUtils.replace(report, "%guardLevel%", "提督");
+                                } else if (guard_level == 3) {
+                                    report = StringUtils.replace(report, "%guardLevel%", "舰长");
+                                } else {
+                                    report = StringUtils.replace(report, "%guardLevel%", "上船");
+                                }
+                                //礼品码
+                                if (getCenterSetConf().getThank_gift().is_gift_code()
+                                        && !CollectionUtils.isEmpty(getCenterSetConf().getThank_gift().getCodeStrings())) {
+                                    report = StringUtils.replace(report, "%giftCode%", this.sendCode(guard_level));
+                                } else {
+                                    report = StringUtils.replace(report, "%giftCode%", "");
+                                }
+                                try {
+                                    if (!PublicDataConf.TEST_MODE) {
                                         if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
                                             if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
                                                 PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
-                                            }
-                                            synchronized (PublicDataConf.sendBarrageThread) {
-                                                PublicDataConf.sendBarrageThread.notify();
+                                                synchronized (PublicDataConf.sendBarrageThread) {
+                                                    PublicDataConf.sendBarrageThread.notify();
+                                                }
                                             }
                                         } else {
                                             HttpUserData.httpPostSendMsg(guard.getUid(), report);
                                         }
-                                        //								} else {
-                                        //									LOGGER.debug(report);
-                                        //									LOGGER.debug(getThankGiftSetConf().getReport_barrage());
-                                        //								}
-                                    } catch (Exception e) {
-                                        // TODO: handle exception
-                                        LOGGER.error("发送舰长私信失败，原因：" + e);
+                                    } else {
+                                        LOGGER.info("私信姬：发送的弹幕:{}",getCenterSetConf().getThank_gift().getReport_barrage());
+                                        LOGGER.info("私信姬：发送的私聊:{}",report);
                                     }
+                                } catch (Exception e) {
+                                    // TODO: handle exception
+                                    LOGGER.error("发送舰长私信失败，原因：" + e);
                                 }
                             }
-                            //					LOGGER.debug("有人上舰长啦:::" + message);
+//                            LOGGER.info("有人上舰长啦:::" + message);
                             break;
 
                         // 上舰消息推送
                         case "GUARD_LOTTERY_START":
-                            //					LOGGER.debug("上舰消息推送:::" + message);
+                            //					LOGGER.info("上舰消息推送:::" + message);
                             break;
 
                         // 上舰抽奖消息推送
                         case "USER_TOAST_MSG":
-                            //					LOGGER.debug("上舰抽奖消息推送:::" + message);
+                            //					LOGGER.info("上舰抽奖消息推送:::" + message);
                             break;
 
                         // 醒目留言
@@ -532,7 +527,12 @@ public class ParseMessageThread extends Thread {
                                     gift.setCoin_type((short) 1);
                                     gift.setUname(superChat.getUser_info().getUname());
                                     gift.setUid(superChat.getUid());
+                                    gift.setMedal_info(superChat.getMedal_info());
                                     gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getListGiftShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                                            ParseSetStatusTools.getListPeopleShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_people_shield_status()),
                                             ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
                                             getCenterSetConf().getThank_gift().getGiftStrings(), null);
                                     if (gift != null) {
@@ -546,17 +546,17 @@ public class ParseMessageThread extends Thread {
                                 }
                                 stringBuilder.delete(0, stringBuilder.length());
                             }
-                            //					LOGGER.debug("收到醒目留言:::" + message);
+                            //					LOGGER.info("收到醒目留言:::" + message);
                             break;
 
                         // 醒目留言日文翻译
                         case "SUPER_CHAT_MESSAGE_JPN":
-                            //					LOGGER.debug("醒目留言日文翻译消息推送:::" + message);
+                            //					LOGGER.info("醒目留言日文翻译消息推送:::" + message);
                             break;
 
                         // 删除醒目留言
                         case "SUPER_CHAT_MESSAGE_DELETE":
-                            //					LOGGER.debug("该条醒目留言已被删除:::" + message);
+                            //					LOGGER.info("该条醒目留言已被删除:::" + message);
                             break;
 
                         // 欢迎老爷进来本直播间
@@ -594,7 +594,7 @@ public class ParseMessageThread extends Thread {
                                 stringBuilder.delete(0, stringBuilder.length());
                             }
 
-                            //					LOGGER.debug("让我看看哪个老爷大户进来了:::" + message);
+                            //					LOGGER.info("让我看看哪个老爷大户进来了:::" + message);
                             break;
 
                         // 欢迎舰长进入直播间
@@ -634,17 +634,17 @@ public class ParseMessageThread extends Thread {
                                 }
                                 stringBuilder.delete(0, stringBuilder.length());
                             }
-                            //					LOGGER.debug("舰长大大进来直播间了:::" + message);
+                            //					LOGGER.info("舰长大大进来直播间了:::" + message);
                             break;
 
                         // 舰长进入直播间消息
                         case "ENTRY_EFFECT":
-                            //					LOGGER.debug("舰长大大进入直播间消息推送:::" + message);
+                            //					LOGGER.info("舰长大大进入直播间消息推送:::" + message);
                             break;
 
                         // 节奏风暴推送 action 为start和end
                         case "SPECIAL_GIFT":
-                            //					LOGGER.debug("节奏风暴推送:::" + message);
+                            //					LOGGER.info("节奏风暴推送:::" + message);
                             break;
 
                         // 禁言消息
@@ -679,17 +679,17 @@ public class ParseMessageThread extends Thread {
                                 }
                                 stringBuilder.delete(0, stringBuilder.length());
                             }
-                            //					LOGGER.debug("谁这么惨被禁言了:::" + message);
+                            //					LOGGER.info("谁这么惨被禁言了:::" + message);
                             break;
 
                         // 本主播在本分区小时榜排名更新推送 不会更新页面的排行显示信息
                         case "ACTIVITY_BANNER_UPDATE_V2":
-                            //					LOGGER.debug("小时榜消息更新推送:::" + message);
+                            //					LOGGER.info("小时榜消息更新推送:::" + message);
                             break;
 
                         // 本房间分区修改
                         case "ROOM_CHANGE":
-                            //					LOGGER.debug("房间分区已更新:::" + message);
+                            //					LOGGER.info("房间分区已更新:::" + message);
                             break;
 
                         // 本房间分区排行榜更新 更新页面的排行显示信息
@@ -700,17 +700,17 @@ public class ParseMessageThread extends Thread {
                             //
                             //					System.out.println(stringBuilder.toString());
                             //					stringBuilder.delete(0, stringBuilder.length());
-                            //					LOGGER.debug("小时榜信息更新推送:::" + message);
+                            //					LOGGER.info("小时榜信息更新推送:::" + message);
                             break;
 
                         // 推测为获取本小时榜榜单第一名主播的信息 推测激活条件为本直播间获得第一
                         case "new_anchor_reward":
-                            //					LOGGER.debug("获取本小时榜榜单第一名主播的信息:::" + message);
+                            //					LOGGER.info("获取本小时榜榜单第一名主播的信息:::" + message);
                             break;
 
                         // 小时榜榜单信息推送 推测激活条件为本直播间获得第一
                         case "HOUR_RANK_AWARDS":
-                            //					LOGGER.debug("恭喜xxxx直播间获得:::" + message);
+                            //					LOGGER.info("恭喜xxxx直播间获得:::" + message);
                             break;
 
                         // 直播间粉丝数更新 经常
@@ -721,28 +721,28 @@ public class ParseMessageThread extends Thread {
                             PublicDataConf.FANSNUM = JSONObject.parseObject(jsonObject.getString("data")).getLong("fans");
                             //					System.out.println(stringBuilder.toString());
                             //					stringBuilder.delete(0, stringBuilder.length());
-                            //					LOGGER.debug("直播间粉丝数更新消息推送:::" + message);
+                            //					LOGGER.info("直播间粉丝数更新消息推送:::" + message);
                             break;
 
                         // 直播间许愿瓶消息推送更新
                         case "WISH_BOTTLE":
-                            //					LOGGER.debug("直播间许愿瓶消息推送更新:::" + message);
+                            //					LOGGER.info("直播间许愿瓶消息推送更新:::" + message);
                             break;
 
                         // 广播小电视类抽奖信息推送,包括本房间的舰长礼物包括,本直播间所在小时榜榜单主播信息的推送 需要unicode转义 免费辣条再见！！！！
                         case "NOTICE_MSG":
                             //					message = ByteUtils.unicodeToString(message);
-                            //					LOGGER.debug("小电视类抽奖信息推送:::" + message);
+                            //					LOGGER.info("小电视类抽奖信息推送:::" + message);
                             break;
 
                         // 本房间开启活动抽奖(33图,小电视图,任意门等) 也指本房间内赠送的小电视 摩天大楼类抽奖
                         case "RAFFLE_START":
-                            //					LOGGER.debug("本房间开启了活动抽奖:::" + message);
+                            //					LOGGER.info("本房间开启了活动抽奖:::" + message);
                             break;
 
                         // 本房间活动中奖用户信息推送 也指抽奖结束
                         case "RAFFLE_END":
-                            //					LOGGER.debug("看看谁是幸运儿:::" + message);
+                            //					LOGGER.info("看看谁是幸运儿:::" + message);
                             break;
 
                         // 本房间主播开启了天选时刻
@@ -815,221 +815,221 @@ public class ParseMessageThread extends Thread {
                                     e.printStackTrace();
                                 }
                             }
-                            //					LOGGER.debug("本房间主播开启了天选时刻:::" + message);
+                            //					LOGGER.info("本房间主播开启了天选时刻:::" + message);
                             break;
 
                         // 本房间天选时刻结束
                         case "ANCHOR_LOT_END":
-                            //					LOGGER.debug("本房间天选时刻结束:::" + message);
+                            //					LOGGER.info("本房间天选时刻结束:::" + message);
                             break;
 
                         // 本房间天选时刻获奖信息推送
                         case "ANCHOR_LOT_AWARD":
-                            //					LOGGER.debug("本房间天选时刻中奖用户是:::" + message);
+                            //					LOGGER.info("本房间天选时刻中奖用户是:::" + message);
                             break;
 
                         // 获得推荐位推荐消息
                         case "ANCHOR_NORMAL_NOTIFY":
-                            //					LOGGER.debug("本房间获得推荐位:::" + message);
+                            //					LOGGER.info("本房间获得推荐位:::" + message);
                             break;
                         // 周星消息推送
                         case "WEEK_STAR_CLOCK":
-                            //			        LOGGER.debug("周星消息推送:::" + message);
+                            //			        LOGGER.info("周星消息推送:::" + message);
                             break;
 
                         // 推测本主播周星信息更新
                         case "ROOM_BOX_MASTER":
-                            //					LOGGER.debug("周星信息更新:::" + message);
+                            //					LOGGER.info("周星信息更新:::" + message);
                             break;
 
                         // 周星消息推送关闭
                         case "ROOM_SKIN_MSG":
-                            //					LOGGER.debug("周星消息推送关闭:::" + message);
+                            //					LOGGER.info("周星消息推送关闭:::" + message);
                             break;
 
                         // 中型礼物多数量赠送消息推送 例如b克拉 亿元
                         case "SYS_GIFT":
-                            //					LOGGER.debug("中型礼物多数量赠送消息推送:::" + message);
+                            //					LOGGER.info("中型礼物多数量赠送消息推送:::" + message);
                             break;
 
                         // lol活动礼物？？？
                         case "ACTIVITY_MATCH_GIFT":
-                            //					LOGGER.debug("lol专属房间礼物赠送消息推送:::" + message);
+                            //					LOGGER.info("lol专属房间礼物赠送消息推送:::" + message);
                             break;
 
                         //----------------------------------------pk信息多为要uicode解码-------------------------------------------------
                         // 推测为房间pk信息推送
                         case "PK_BATTLE_ENTRANCE":
-                            //			        LOGGER.debug("房间pk活动信息推送:::" + message);
+                            //			        LOGGER.info("房间pk活动信息推送:::" + message);
                             break;
 
                         // 活动pk准备
                         case "PK_BATTLE_PRE":
-                            //			        LOGGER.debug("房间活动pk准备:::" + message);
+                            //			        LOGGER.info("房间活动pk准备:::" + message);
                             break;
 
                         // 活动pk开始
                         case "PK_BATTLE_START":
-                            //			        LOGGER.debug("房间活动pk开始:::" + message);
+                            //			        LOGGER.info("房间活动pk开始:::" + message);
                             break;
 
                         // 活动pk中
                         case "PK_BATTLE_PROCESS":
-                            //			        LOGGER.debug("房间活动pk中:::" + message);
+                            //			        LOGGER.info("房间活动pk中:::" + message);
                             break;
 
                         // 活动pk详细信息
                         case "PK_BATTLE_CRIT":
-                            //			        LOGGER.debug("房间活动pk详细信息推送:::" + message);
+                            //			        LOGGER.info("房间活动pk详细信息推送:::" + message);
                             break;
 
                         // 活动pk类型推送
                         case "PK_BATTLE_PRO_TYPE":
-                            //			        LOGGER.debug("房间活动pk类型推送:::" + message);
+                            //			        LOGGER.info("房间活动pk类型推送:::" + message);
                             break;
 
                         // 房间活动pk结束
                         case "PK_BATTLE_END":
-                            //			        LOGGER.debug("房间pk活动结束::" + message);
+                            //			        LOGGER.info("房间pk活动结束::" + message);
                             break;
 
                         // 活动pk结果用户 推送
                         case "PK_BATTLE_SETTLE_USER":
-                            //			        LOGGER.debug("活动pk结果用户 推送::" + message);
+                            //			        LOGGER.info("活动pk结果用户 推送::" + message);
                             break;
 
                         // 活动pk礼物开始 1辣条
                         case "PK_LOTTERY_START":
-                            //			        LOGGER.debug("活动pk礼物开始 推送::" + message);
+                            //			        LOGGER.info("活动pk礼物开始 推送::" + message);
                             break;
 
                         // 活动pk结果房间
                         case "PK_BATTLE_SETTLE":
-                            //			        LOGGER.debug("活动pk结果房间推送::" + message);
+                            //			        LOGGER.info("活动pk结果房间推送::" + message);
                             break;
 
                         // pk开始
                         case "PK_START":
-                            //					LOGGER.debug("房间pk开始:::" + message);
+                            //					LOGGER.info("房间pk开始:::" + message);
                             break;
 
                         // pk准备中
                         case "PK_PRE":
-                            //					LOGGER.debug("房间pk准备中:::" + message);
+                            //					LOGGER.info("房间pk准备中:::" + message);
                             break;
 
                         // pk载入中
                         case "PK_MATCH":
-                            //					LOGGER.debug("房间pk载入中:::" + message);
+                            //					LOGGER.info("房间pk载入中:::" + message);
                             break;
 
                         // pk再来一次触发
                         case "PK_CLICK_AGAIN":
-                            //					LOGGER.debug("房间pk再来一次:::" + message);
+                            //					LOGGER.info("房间pk再来一次:::" + message);
                             break;
                         // pk结束
                         case "PK_MIC_END":
-                            //					LOGGER.debug("房间pk结束:::" + message);
+                            //					LOGGER.info("房间pk结束:::" + message);
                             break;
 
                         // pk礼物信息推送 激活条件推测为pk胜利 可获得一个辣条
                         case "PK_PROCESS":
-                            //					LOGGER.debug("房间pk礼物推送:::" + message);
+                            //					LOGGER.info("房间pk礼物推送:::" + message);
                             break;
 
                         // pk结果信息推送
                         case "PK_SETTLE":
-                            //					LOGGER.debug("房间pk结果信息推送:::" + message);
+                            //					LOGGER.info("房间pk结果信息推送:::" + message);
                             break;
 
                         // pk结束信息推送
                         case "PK_END":
-                            //					LOGGER.debug("房间pk结束信息推送:::" + message);
+                            //					LOGGER.info("房间pk结束信息推送:::" + message);
                             break;
 
                         // 系统信息推送
                         case "SYS_MSG":
-                            //					LOGGER.debug("系统信息推送:::" + message);
+                            //					LOGGER.info("系统信息推送:::" + message);
                             break;
 
                         // 总督登场消息
                         case "GUARD_MSG":
-                            //					LOGGER.debug("总督帅气登场:::" + message);
+                            //					LOGGER.info("总督帅气登场:::" + message);
                             break;
 
                         // 热门房间？？？？广告房间？？ 不知道这是什么 推测本直播间激活 目前常见于打广告的官方直播间 例如手游 碧蓝航线 啥的。。
                         case "HOT_ROOM_NOTIFY":
-                            //					LOGGER.debug("热门房间推送消息:::" + message);
+                            //					LOGGER.info("热门房间推送消息:::" + message);
                             break;
 
                         // 小时榜面板消息推送
                         case "PANEL":
-                            //					LOGGER.debug("热小时榜面板消息推送:::" + message);
+                            //					LOGGER.info("热小时榜面板消息推送:::" + message);
                             break;
 
                         // 星之耀宝箱使用 n
                         case "ROOM_BOX_USER":
-                            //					LOGGER.debug("星之耀宝箱使用:::" + message);
+                            //					LOGGER.info("星之耀宝箱使用:::" + message);
                             break;
 
                         // 语音加入？？？？ 暂不知道
                         case "VOICE_JOIN_ROOM_COUNT_INFO":
-                            //					LOGGER.debug("语音加入:::" + message);
+                            //					LOGGER.info("语音加入:::" + message);
                             break;
 
                         // 语音加入list？？？？ 暂不知道
                         case "VOICE_JOIN_LIST":
-                            //					LOGGER.debug("语音加入list:::" + message);
+                            //					LOGGER.info("语音加入list:::" + message);
                             break;
 
                         // lol活动
                         case "LOL_ACTIVITY":
-                            //					LOGGER.debug("lol活动:::" + message);
+                            //					LOGGER.info("lol活动:::" + message);
                             break;
 
                         // 队伍礼物排名 目前只在6号lol房间抓取过
                         case "MATCH_TEAM_GIFT_RANK":
-                            //					LOGGER.debug("队伍礼物排名:::" + message);
+                            //					LOGGER.info("队伍礼物排名:::" + message);
                             break;
 
                         // 6.13端午节活动粽子新增活动更新命令 激活条件有人赠送活动礼物
                         case "ROOM_BANNER":
-                            //					LOGGER.debug("收到活动礼物赠送，更新信息:::" + message);
+                            //					LOGGER.info("收到活动礼物赠送，更新信息:::" + message);
                             break;
 
                         // 设定房管消息 新房管的诞生
                         case "room_admin_entrance":
-                            //					LOGGER.debug("有人被设为了房管:::" + message);
+                            //					LOGGER.info("有人被设为了房管:::" + message);
                             break;
 
                         // 房管列表更新消息 激活条件为新房管的诞生
                         case "ROOM_ADMINS":
-                            //					LOGGER.debug("房管列表更新推送:::" + message);
+                            //					LOGGER.info("房管列表更新推送:::" + message);
                             break;
 
                         // 房间护盾 推测推送消息为破站官方屏蔽的关键字 触发条件未知
                         case "ROOM_SHIELD":
-                            //					LOGGER.debug("房间护盾触发消息:::" + message);
+                            //					LOGGER.info("房间护盾触发消息:::" + message);
                             break;
 
                         // 主播开启房间全局禁言
                         case "ROOM_SILENT_ON":
-                            //					LOGGER.debug("主播开启房间全局禁言:::" + message);
+                            //					LOGGER.info("主播开启房间全局禁言:::" + message);
                             break;
 
                         // 主播关闭房间全局禁言
                         case "ROOM_SILENT_OFF":
-                            //					LOGGER.debug("主播关闭房间全局禁言:::" + message);
+                            //					LOGGER.info("主播关闭房间全局禁言:::" + message);
                             break;
 
                         // 主播状态检测 直译 不知道什么情况 statue 1 ，2 ，3 ，4
                         case "ANCHOR_LOT_CHECKSTATUS":
-                            //					LOGGER.debug("主播房间状态检测:::" + message);
+                            //					LOGGER.info("主播房间状态检测:::" + message);
                             break;
 
                         // 房间警告消息 目前已知触发条件为 房间分区不正确
                         case "WARNING":
-                            //					LOGGER.debug("房间警告消息:::" + message);
+                            //					LOGGER.info("房间警告消息:::" + message);
                             break;
                         // 直播开启
                         case "LIVE":
@@ -1039,17 +1039,17 @@ public class ParseMessageThread extends Thread {
                             // 仅在直播有效 广告线程 改为配置文件
                             setService.holdSet(getCenterSetConf());
                             PublicDataConf.IS_ROOM_POPULARITY = true;
-                            //					LOGGER.debug("直播开启:::" + message);
+                            //					LOGGER.info("直播开启:::" + message);
                             break;
 
                         // 直播超管被切断
                         case "CUT_OFF":
-                            //					LOGGER.debug("很不幸，本房间直播被切断:::" + message);
+                            //					LOGGER.info("很不幸，本房间直播被切断:::" + message);
                             break;
 
                         // 本房间已被封禁
                         case "ROOM_LOCK":
-                            //					LOGGER.debug("很不幸，本房间已被封禁:::" + message);
+                            //					LOGGER.info("很不幸，本房间已被封禁:::" + message);
                             break;
 
                         // 直播准备中(或者是关闭直播)
@@ -1057,16 +1057,16 @@ public class ParseMessageThread extends Thread {
                             PublicDataConf.lIVE_STATUS = 0;
                             setService.holdSet(getCenterSetConf());
                             PublicDataConf.IS_ROOM_POPULARITY = false;
-                            //					LOGGER.debug("直播准备中(或者是关闭直播):::" + message);
+                            //					LOGGER.info("直播准备中(或者是关闭直播):::" + message);
                             break;
 
                         // 勋章亲密度达到上每日上限通知
                         case "LITTLE_TIPS":
-                            //					LOGGER.debug("勋章亲密度达到上每日上限:::" + message);
+                            //					LOGGER.info("勋章亲密度达到上每日上限:::" + message);
                             break;
 
                         // msg_type 1 为进入直播间 2 为关注 3为分享直播间
-                        case "INTERACT_WORD": ;
+                        case "INTERACT_WORD":
                             // 关注
                             if (getCenterSetConf().is_follow_dm()) {
                                 msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
@@ -1155,59 +1155,59 @@ public class ParseMessageThread extends Thread {
                             //打印测试用
 //                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
 //                            if (msg_type != 3 && msg_type != 2) {
-//                                LOGGER.debug("直播间信息:::" + message);
+//                                LOGGER.info("直播间信息:::" + message);
 //                            }
                             break;
                         // 礼物bag bot
                         case "GIFT_BAG_DOT":
-                            //					LOGGER.debug("礼物bag" + message);
+                            //					LOGGER.info("礼物bag" + message);
                             break;
                         case "ONLINERANK":
-                            //					LOGGER.debug("新在线排名更新信息推送:::" + message);
+                            //					LOGGER.info("新在线排名更新信息推送:::" + message);
                             break;
                         case "ONLINE_RANK_COUNT":
-                            //					LOGGER.debug("在线排名人数更新信息推送:::" + message);
+                            //					LOGGER.info("在线排名人数更新信息推送:::" + message);
                             break;
                         case "ONLINE_RANK_V2":
-                            //					LOGGER.debug("在线排名v2版本信息推送(即高能榜:::" + message);
+                            //					LOGGER.info("在线排名v2版本信息推送(即高能榜:::" + message);
                             break;
                         case "ONLINE_RANK_TOP3":
-                            //					LOGGER.debug("在线排名前三信息推送(即高能榜:::" + message);
+                            //					LOGGER.info("在线排名前三信息推送(即高能榜:::" + message);
                             break;
                         case "HOT_RANK_CHANGED":
-                            //					LOGGER.debug("热门榜推送:::" + message);
+                            //					LOGGER.info("热门榜推送:::" + message);
                             break;
                         case "HOT_RANK_CHANGED_V2":
-                            //					LOGGER.debug("热门榜v2版本changed推送:::" + message);
+                            //					LOGGER.info("热门榜v2版本changed推送:::" + message);
                             break;
                         case "HOT_RANK_SETTLEMENT_V2":
-                            //					LOGGER.debug("热门榜v2版本set推送:::" + message);
+                            //					LOGGER.info("热门榜v2版本set推送:::" + message);
                             break;
                         case "WIDGET_BANNER":
-                            //					LOGGER.debug("直播横幅广告推送:::" + message);
+                            //					LOGGER.info("直播横幅广告推送:::" + message);
                             break;
                         case "MESSAGEBOX_USER_MEDAL_CHANGE":
-                            //					LOGGER.debug("本人勋章升级推送:::" + message);
+                            //					LOGGER.info("本人勋章升级推送:::" + message);
                             break;
                         case "LIVE_INTERACTIVE_GAME":
-                            //					LOGGER.debug("互动游戏？？？推送:::" + message);
+                            //					LOGGER.info("互动游戏？？？推送:::" + message);
                             break;
                         case "WATCHED_CHANGE":
                             //{"cmd":"WATCHED_CHANGE","data":{"num":184547,"text_small":"18.4万","text_large":"18.4万人看过"}}
                             PublicDataConf.ROOM_WATCHER = JSONObject.parseObject(jsonObject.getString("data")).getLong("num");
-//                            LOGGER.debug("多少人观看过:::" + message);
+//                            LOGGER.info("多少人观看过:::" + message);
                             break;
                         case "STOP_LIVE_ROOM_LIST":
-                            //					LOGGER.debug("直播间关闭集合推送:::" + message);
+                            //					LOGGER.info("直播间关闭集合推送:::" + message);
                             break;
                         case "DANMU_AGGREGATION":
-                            //					LOGGER.debug("天选时刻条件是表情推送:::" + message);
+                            //					LOGGER.info("天选时刻条件是表情推送:::" + message);
                             break;
                         case "COMMON_NOTICE_DANMAKU":
-                            //					LOGGER.debug("警告信息推送（例如任务快完成之类的）:::" + message);
+                            //					LOGGER.info("警告信息推送（例如任务快完成之类的）:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_NEW":
-//                            LOGGER.debug("红包抽奖推送:::" + message);
+//                            LOGGER.info("红包抽奖推送:::" + message);
                             //{"cmd":"POPULARITY_RED_POCKET_NEW",
                             // "data":{"lot_id":8677977,"start_time":1674572461,"current_time":1674572461,
                             // "wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出",
@@ -1240,6 +1240,7 @@ public class ParseMessageThread extends Thread {
                                 gift.setCoin_type((short) 1);
                                 gift.setUname(redPackage.getUname());
                                 gift.setUid(redPackage.getUid());
+                                gift.setMedal_info(redPackage.getMedal_info());
                                 try {
                                     danmuWebsocket.sendMessage(WsPackage.toJson("gift", (short) 0, gift));
                                 } catch (Exception e) {
@@ -1267,7 +1268,12 @@ public class ParseMessageThread extends Thread {
                                     gift.setCoin_type((short) 1);
                                     gift.setUname(redPackage.getUname());
                                     gift.setUid(redPackage.getUid());
+                                    gift.setMedal_info(redPackage.getMedal_info());
                                     gift = ShieldGiftTools.shieldGift(gift,
+                                            ParseSetStatusTools.getListGiftShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                                            ParseSetStatusTools.getListPeopleShieldStatus(
+                                                    getCenterSetConf().getThank_gift().getList_people_shield_status()),
                                             ParseSetStatusTools.getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
                                             getCenterSetConf().getThank_gift().getGiftStrings(), null);
                                     if (gift != null) {
@@ -1280,68 +1286,69 @@ public class ParseMessageThread extends Thread {
                                     }
                                 }
                             }
+                            //					LOGGER.info("红包赠送:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_WINNER_LIST":
-                            //					LOGGER.debug("红包抽奖结果推送:::" + message);
+                            //					LOGGER.info("红包抽奖结果推送:::" + message);
                             break;
                         case "LIKE_INFO_V3_UPDATE":
-//                            					LOGGER.debug("点赞信息v3推送:::" + message);
+//                            					LOGGER.info("点赞信息v3推送:::" + message);
                             //{"cmd":"LIKE_INFO_V3_UPDATE","data":{"click_count":371578}}
                             PublicDataConf.ROOM_LIKE = JSONObject.parseObject(jsonObject.getString("data")).getLong("click_count");
                             break;
                         case "LIKE_INFO_V3_CLICK":
-                            //					LOGGER.debug("点赞信息v3推送:::" + message);
+                            //					LOGGER.info("点赞信息v3推送:::" + message);
                             break;
                         case "CORE_USER_ATTENTION":
-                            //					LOGGER.debug("中心用户推送:::" + message);
+                            //					LOGGER.info("中心用户推送:::" + message);
                             break;
                         case "HOT_RANK_SETTLEMENT":
-                            //					LOGGER.debug("热榜排名推送:::" + message);
+                            //					LOGGER.info("热榜排名推送:::" + message);
                             break;
                         case "MESSAGEBOX_USER_GAIN_MEDAL":
-                            //					LOGGER.debug("粉丝勋章消息盒子推送:::" + message);
+                            //					LOGGER.info("粉丝勋章消息盒子推送:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_START":
-                            //					LOGGER.debug("礼物推送:::" + message);
+                            //					LOGGER.info("礼物推送:::" + message);
                             break;
                         case "LITTLE_MESSAGE_BOX":
-                            //					LOGGER.debug("小消息box推送:::" + message);
+                            //					LOGGER.info("小消息box推送:::" + message);
                             break;
                         case "ANCHOR_HELPER_DANMU":
-                            //					LOGGER.debug("直播小助手信息推送:::" + message);
+                            //					LOGGER.info("直播小助手信息推送:::" + message);
                             break;
                         case "ENTRY_EFFECT_MUST_RECEIVE":
-                            //					LOGGER.debug("直播小助手信息推送:::" + message);
+                            //					LOGGER.info("直播小助手信息推送:::" + message);
                             break;
                         case "GIFT_STAR_PROCESS":
-                            //					LOGGER.debug("礼物开始进度条信息推送:::" + message);
+                            //					LOGGER.info("礼物开始进度条信息推送:::" + message);
                             break;
                         case "GUARD_HONOR_THOUSAND":
-                            //					LOGGER.debug("千舰推送:::" + message);
+                            //					LOGGER.info("千舰推送:::" + message);
                             break;
                         case "FULL_SCREEN_SPECIAL_EFFECT":
-                            //					LOGGER.debug("FULL_SCREEN_SPECIAL_EFFECT:::" + message);
+                            //					LOGGER.info("FULL_SCREEN_SPECIAL_EFFECT:::" + message);
                             break;
                         case "CARD_MSG":
-                            //					LOGGER.debug("CARD_MSG:::" + message);
+                            //					LOGGER.info("CARD_MSG:::" + message);
                             break;
                         case "USER_PANEL_RED_ALARM":
-                            //					LOGGER.debug("USER_PANEL_RED_ALARM:::" + message);
+                            //					LOGGER.info("USER_PANEL_RED_ALARM:::" + message);
                             break;
                         case "TRADING_SCORE":
-                            //					LOGGER.debug("TRADING_SCORE:::" + message);
+                            //					LOGGER.info("TRADING_SCORE:::" + message);
                             break;
                         case "USER_TASK_PROGRESS":
-                            //					LOGGER.debug("USER_TASK_PROGRESS:::" + message);
+                            //					LOGGER.info("USER_TASK_PROGRESS:::" + message);
                             break;
                         case "POPULAR_RANK_CHANGED":
-                            //					LOGGER.debug("POPULAR_RANK_CHANGED:::" + message);
+                            //					LOGGER.info("POPULAR_RANK_CHANGED:::" + message);
                             break;
                         case "AREA_RANK_CHANGED":
-                            //					LOGGER.debug("AREA_RANK_CHANGED:::" + message);
+                            //					LOGGER.info("AREA_RANK_CHANGED:::" + message);
                             break;
                         default:
-//                            LOGGER.debug("其他未处理消息:" + message);
+//                            LOGGER.info("其他未处理消息:" + message);
                             break;
                     }
                     PublicDataConf.resultStrs.remove(0);
@@ -1351,7 +1358,7 @@ public class ParseMessageThread extends Thread {
                             PublicDataConf.parseMessageThread.wait();
                         } catch (InterruptedException e) {
                             // TODO 自动生成的 catch 块
-                            //						LOGGER.debug("处理弹幕包信息线程关闭:" + e);
+                            //						LOGGER.info("处理弹幕包信息线程关闭:" + e);
                             //						e.printStackTrace();
                         }
                     }
@@ -1365,13 +1372,43 @@ public class ParseMessageThread extends Thread {
     }
 
     //获取发送礼物code
-    public String sendCode() {
-        String code = "";
-        synchronized (getCenterSetConf()) {
-            code = CurrencyTools.sendGiftCode();
-            setService.changeSet(getCenterSetConf(), true);
-        }
+    public String sendCode(short guardLevel) {
+        String code = CurrencyTools.sendGiftCode(guardLevel);
+        CenterSetConf centerSetConf= CurrencyTools.codeRemove(code);
+        setService.changeSet(centerSetConf, true);
         return code;
+    }
+
+    public boolean parseAutoReplySetting(Barrage barrage) {
+        ListPeopleShieldStatus listPeopleShieldStatus = ParseSetStatusTools.getListPeopleShieldStatus(getCenterSetConf().getReply().getList_people_shield_status());
+        //先人员
+        switch (listPeopleShieldStatus) {
+//			case ALL:
+//				break;
+            case MEDAL:
+                if (PublicDataConf.MEDALINFOANCHOR != null) {
+                    if (StringUtils.isBlank(PublicDataConf.MEDALINFOANCHOR.getMedal_name())) {
+                        break;
+                    }
+                    //舰长的这里是空的
+                    if (barrage.getMedal_name() == null) {
+                        break;
+                    }
+                    if (!PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(barrage.getMedal_name())) {
+                    //    LOGGER.info("自动回复姬人员屏蔽[勋章模式]:{}", barrage.getMedal_name());
+                        return false;
+                    }
+                }
+                break;
+            case GUARD:
+                if (barrage.getUguard() <= 0) {
+               //     LOGGER.info("自动回复姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(barrage.getUguard()));
+                    return false;
+                }
+            default:
+                break;
+        }
+        return true;
     }
 
 
@@ -1485,7 +1522,7 @@ public class ParseMessageThread extends Thread {
     public void DelayWelcomeTimeSetting() {
         synchronized (PublicDataConf.parseThankWelcomeThread) {
             if (PublicDataConf.parseThankWelcomeThread != null) {
-                threadComponent.startParseThankWelcomThread(getCenterSetConf().getWelcome());
+                threadComponent.startParseThankWelcomeThread(getCenterSetConf().getWelcome());
 //				if (PublicDataConf.parsethankFollowThread.getState().toString().equals("TERMINATED")
 //						|| PublicDataConf.parsethankFollowThread.getState().toString().equals("NEW")) {
 //					PublicDataConf.parsethankFollowThread = new ParseThankFollowThread();
@@ -1506,6 +1543,35 @@ public class ParseMessageThread extends Thread {
 
     public synchronized void parseWelcomeSetting(Interact interact) throws Exception {
         if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            //屏蔽设定
+            ListPeopleShieldStatus listPeopleShieldStatus = ParseSetStatusTools.getListPeopleShieldStatus(getCenterSetConf().getWelcome().getList_people_shield_status());
+            //先人员
+            switch (listPeopleShieldStatus) {
+//			case ALL:
+//				break;
+                case MEDAL:
+                    if (PublicDataConf.MEDALINFOANCHOR != null) {
+                        if (StringUtils.isBlank(PublicDataConf.MEDALINFOANCHOR.getMedal_name())) {
+                            break;
+                        }
+                        //舰长的这里是空的
+                        if (interact.getFans_medal() == null) {
+                            break;
+                        }
+                        if (!PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(interact.getFans_medal().getMedal_name())) {
+//                           LOGGER.info("欢迎姬人员屏蔽[勋章模式]:{}", interact.getFans_medal().getMedal_name());
+                            return;
+                        }
+                    }
+                    break;
+                case GUARD:
+                    if (interact.getFans_medal().getGuard_level() <= 0) {
+//                        LOGGER.info("欢迎姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(interact.getFans_medal().getGuard_level()));
+                        return;
+                    }
+                default:
+                    break;
+            }
             if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parseThankWelcomeThread != null) {
                 if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parseThankWelcomeThread.FLAG) {
                     PublicDataConf.interactWelcome.add(interact);

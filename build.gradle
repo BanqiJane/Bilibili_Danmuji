@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.6.1beta'
+version = '2.6.2beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -26,28 +26,25 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-    compile group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3'
+	implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3'
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.8'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.6.8'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.83'
+	implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.83'
     // https://mvnrepository.com/artifact/joda-time/joda-time
-    compile group: 'joda-time', name: 'joda-time', version: '2.10.5'
+	implementation group: 'joda-time', name: 'joda-time', version: '2.10.5'
     // https://mvnrepository.com/artifact/com.google.zxing/core
-    compile group: 'com.google.zxing', name: 'core', version: '3.4.0'
+	implementation group: 'com.google.zxing', name: 'core', version: '3.4.0'
     // https://mvnrepository.com/artifact/net.glxn/qrgen
-    compile group: 'net.glxn', name: 'qrgen', version: '1.4'
+	implementation group: 'net.glxn', name: 'qrgen', version: '1.4'
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
-	// https://mvnrepository.com/artifact/org.jsoup/jsoup
-	implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
+	implementation group: 'commons-codec', name: 'commons-codec', version: '1.14'
 
-
-	compile fileTree(dir: 'lib', includes: ['*.jar'])
+	implementation fileTree(dir: 'lib', includes: ['*.jar'])
 }
 configurations {
 	//remove default logger

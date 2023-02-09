@@ -102,7 +102,7 @@ public class SetServiceImpl implements SetService {
             }
             hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
             ProFileTools.write(hashtable, "DanmujiProfile");
-            LOGGER.debug("保存配置文件成功");
+            LOGGER.info("保存配置文件成功");
             base64Encoder = null;
             hashtable.clear();
         }
@@ -112,7 +112,7 @@ public class SetServiceImpl implements SetService {
     public void changeSet(CenterSetConf centerSetConf,boolean check) {
         synchronized (centerSetConf) {
             if (centerSetConf.toJson().equals(PublicDataConf.centerSetConf.toJson())&&check) {
-                LOGGER.debug("保存配置文件成功");
+                LOGGER.info("保存配置文件成功");
                 return;
             }
             if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0) {
@@ -130,7 +130,7 @@ public class SetServiceImpl implements SetService {
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
                         CenterSetConf.class);
                 holdSet(centerSetConf);
-                LOGGER.debug("保存配置文件成功");
+                LOGGER.info("保存配置文件成功");
             } catch (Exception e) {
                 // TODO: handle exception
                 LOGGER.error("保存配置文件失败:" + e);
@@ -157,7 +157,7 @@ public class SetServiceImpl implements SetService {
                 if (PublicDataConf.ROOMID != null) {
                     holdSet(centerSetConf);
                 }
-                LOGGER.debug("读取配置文件历史房间成功");
+                LOGGER.info("读取配置文件历史房间成功");
             } catch (Exception e) {
                 // TODO: handle exception
                 LOGGER.error("读取配置文件历史房间失败:" + e);
@@ -342,7 +342,7 @@ public class SetServiceImpl implements SetService {
         }
         PublicDataConf.init_send();
         holdSet(PublicDataConf.centerSetConf);
-        LOGGER.debug("用户退出成功");
+        LOGGER.info("用户退出成功");
     }
 
     @Autowired

@@ -9,6 +9,8 @@
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT" follow="true">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT"
+                             onMismatch="DENY" />
             <PatternLayout>
                 <pattern>${pattern}</pattern>
             </PatternLayout>

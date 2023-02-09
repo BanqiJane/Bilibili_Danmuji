@@ -5,10 +5,14 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.conf.base.OpenSetConf;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName AutoReplySet
@@ -43,5 +47,19 @@ public class AutoReplySet extends OpenSetConf implements Serializable{
 	* 发送弹幕体
 	*/
 	private String reply;
-	
+
+
+	public HashSet<String> getKeywords() {
+		if(keywords!=null) {
+			return keywords.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return keywords;
+	}
+
+	public HashSet<String> getShields() {
+		if(shields!=null) {
+			return shields.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return shields;
+	}
 }

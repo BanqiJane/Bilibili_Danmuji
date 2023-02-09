@@ -1,6 +1,7 @@
 package xyz.acproject.danmuji.entity.danmu_data;
 
 import lombok.Data;
+import xyz.acproject.danmuji.entity.superchat.MedalInfo;
 
 import java.io.Serializable;
 
@@ -63,6 +64,8 @@ public class Gift implements Serializable,Cloneable{
 	// 总价格
 	private Long total_coin;
 
+	private MedalInfo medal_info;
+
 	public Gift() {
 		super();
 		// TODO 自动生成的构造函数存根
@@ -80,7 +83,7 @@ public class Gift implements Serializable,Cloneable{
 
 	public static Gift getGift(Integer giftId, Short giftType, String giftName, Integer num, String uname, String face,
 			Short guard_level, Long uid, Long timestamp, String action, Integer price, Short coin_type,
-			Long total_coin) {
+			Long total_coin,MedalInfo medal_info) {
 		try {
 			Gift g = (Gift) gift.clone();
 			g.giftId = giftId;
@@ -96,6 +99,7 @@ public class Gift implements Serializable,Cloneable{
 			g.price = price;
 			g.coin_type = coin_type;
 			g.total_coin = total_coin;
+			g.medal_info = medal_info;
 			return g;
 		} catch (CloneNotSupportedException e) {
 			// TODO 自动生成的 catch 块

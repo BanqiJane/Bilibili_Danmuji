@@ -25,6 +25,10 @@ public class ThankWelcomeSetConf extends ThankLiveSetConf implements Serializabl
 
     private static final long serialVersionUID = 3606170913548896208L;
 
+    //人员感谢过滤 0全部 1仅勋章 2仅舰长
+    @JSONField(name = "list_people_shield_status")
+    private short list_people_shield_status = 0;
+
     private String welcomes="欢迎%uNames%的进入直播间~";
 
 

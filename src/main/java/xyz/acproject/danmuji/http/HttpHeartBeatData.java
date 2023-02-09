@@ -60,7 +60,7 @@ public class HttpHeartBeatData {
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
 			if (jsonObject.getString("msg").equals("success")) {
-//				LOGGER.debug("在线心跳包get发送成功"+jsonObject.getString("data"));
+//				LOGGER.info("在线心跳包get发送成功"+jsonObject.getString("data"));
 			} else {
 				LOGGER.error("在线心跳包get发送失败" + jsonObject.toString());
 			}
@@ -102,7 +102,7 @@ public class HttpHeartBeatData {
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
 			if (jsonObject.getString("message").equals("0")) {
-//				LOGGER.debug("心跳包post发送成功" + jsonObject.getString("data"));
+//				LOGGER.info("心跳包post发送成功" + jsonObject.getString("data"));
 			} else {
 				LOGGER.error("心跳包post发送失败,未知错误,原因未知v" + jsonObject.toString());
 			}
@@ -163,7 +163,7 @@ public class HttpHeartBeatData {
 		short code = jsonObject.getShort("code");
 		if (code == 0) {
 			if (jsonObject.getString("message").equals("0")) {
-//				LOGGER.debug("心跳包post发送成功" + jsonObject.getString("data"));
+//				LOGGER.info("心跳包post发送成功" + jsonObject.getString("data"));
 				smallHeart  = jsonObject.getObject("data", SmallHeart.class);
 				xData = new XData(ids,devices, smallHeart.getTimestamp(), smallHeart.getSecret_key(), smallHeart.getHeartbeat_interval(), ts,smallHeart.getSecret_rule(),false);
 			} else{
@@ -259,7 +259,7 @@ public class HttpHeartBeatData {
 				xData.setSecret_rule(smallHeart.getSecret_rule());
 				xData.setTime(smallHeart.getHeartbeat_interval());
 				xData.setError(false);
-				//LOGGER.debug("心跳包post发送成功,消息体:{},返回组合体:{}",jsonObject.getString("data"),xData);
+				//LOGGER.info("心跳包post发送成功,消息体:{},返回组合体:{}",jsonObject.getString("data"),xData);
 			} else {
 				LOGGER.error("心跳包Xpost发送失败,未知错误,原因未知v:{},错误体:{}",jsonObject.toString(),xData);
 				xData.setError(true);

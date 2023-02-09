@@ -41,7 +41,7 @@ public class HandleWebsocketPackage {
 			int data_ver = barrageHeadHandle.getPackageVersion();
 			int data_type = barrageHeadHandle.getPackageType();
 			int data_other = barrageHeadHandle.getPackageOther();
-//			LOGGER.debug("数据包:" + "(" + data_len + "," + head_len + "," + data_ver + "," + data_type + ","
+//			LOGGER.info("数据包:" + "(" + data_len + "," + head_len + "," + data_ver + "," + data_type + ","
 //					+ data_other + ")");
 			bs = ByteUtils.subBytes(bytes, head_len, data_len - head_len);
 //			resultStr =HexUtils.toHexString(bs);
@@ -51,7 +51,7 @@ public class HandleWebsocketPackage {
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
-//					LOGGER.debug("！！！！！！！！！！未知数据(1)v:" + data_ver + "t:" + data_type + ":" + resultStr);
+//					LOGGER.info("！！！！！！！！！！未知数据(1)v:" + data_ver + "t:" + data_type + ":" + resultStr);
 //				}
 			} else if (data_ver == 1) {
 				if (data_type == 3) {
@@ -70,11 +70,11 @@ public class HandleWebsocketPackage {
 //						// TODO 自动生成的 catch 块
 //						e.printStackTrace();
 //					}
-//					LOGGER.debug("服务器验证信息返回:"+resultStr);
+//					LOGGER.info("服务器验证信息返回:"+resultStr);
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
-//					LOGGER.debug("！！！！！！！！！！未知数据(1)v:" + data_ver + "t:" + data_type + ":" + resultStr);
+//					LOGGER.info("！！！！！！！！！！未知数据(1)v:" + data_ver + "t:" + data_type + ":" + resultStr);
 //				}
 			} else if (data_ver == 0) {
 				try {
@@ -93,10 +93,10 @@ public class HandleWebsocketPackage {
 			}
 //			else {
 //				resultStr = HexUtils.toHexString(bs);
-//				LOGGER.debug("！！！！！！！！！！未知数据(1):" + resultStr);
+//				LOGGER.info("！！！！！！！！！！未知数据(1):" + resultStr);
 //			}
 //			if (resultStr == null) {
-//				LOGGER.debug("空数据(1):"+resultStr);
+//				LOGGER.info("空数据(1):"+resultStr);
 //			}
 		}
 		bytes = null;
@@ -122,7 +122,7 @@ public class HandleWebsocketPackage {
 		int data_other = 0;
 		byte[] bs = null;
 //		int index = 1;
-//		LOGGER.debug(maxLen+"长的母数据包打印开始--------------------------------------------------------------------------------");
+//		LOGGER.info(maxLen+"长的母数据包打印开始--------------------------------------------------------------------------------");
 		while (offect < maxLen) {
 			byte_c = ByteUtils.subBytes(bytes, offect, maxLen - offect);
 			barrageHeadHandle = unBEhandle(byte_c);
@@ -131,18 +131,18 @@ public class HandleWebsocketPackage {
 			data_ver = barrageHeadHandle.getPackageVersion();
 			data_type = barrageHeadHandle.getPackageType();
 			data_other = barrageHeadHandle.getPackageOther();
-//			LOGGER.debug("子包<"+index+">:"+"("+data_len+","+head_len+","+data_ver+","+data_type+","+data_other+")");
+//			LOGGER.info("子包<"+index+">:"+"("+data_len+","+head_len+","+data_ver+","+data_type+","+data_other+")");
 			bs = ByteUtils.subBytes(byte_c, head_len, data_len - head_len);
 //			resultStr=HexUtils.toHexString(bs);
 			if (data_ver == 2) {
 				if (data_type == 5) {
 //					resultStr = ByteUtils.BytesTozlibInflateString(bs);
 ////					resultStr = ByteUtils.unicodeToString(resultStr);
-//					LOGGER.debug("其他未处理消息(2):" + resultStr);
+//					LOGGER.info("其他未处理消息(2):" + resultStr);
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
-//					LOGGER.debug("！！！！！！！！！！未知数据(2)v:" + data_ver + "t:" + data_type + ":" + resultStr);
+//					LOGGER.info("！！！！！！！！！！未知数据(2)v:" + data_ver + "t:" + data_type + ":" + resultStr);
 //				}
 			} else if (data_ver == 1) {
 				if (data_type == 3) {
@@ -152,11 +152,11 @@ public class HandleWebsocketPackage {
 						// TODO 自动生成的 catch 块
 						e.printStackTrace();
 					}
-//					LOGGER.debug(resultStr);
+//					LOGGER.info(resultStr);
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
-//					LOGGER.debug("！！！！！！！！！！未知数据(2)v:" + data_ver + "t:" + data_type + ":" + resultStr);
+//					LOGGER.info("！！！！！！！！！！未知数据(2)v:" + data_ver + "t:" + data_type + ":" + resultStr);
 //				}
 			} else if (data_ver == 0) {
 				try {
@@ -176,17 +176,17 @@ public class HandleWebsocketPackage {
 			}
 //			else {
 //				resultStr = HexUtils.toHexString(bs);
-//				LOGGER.debug("！！！！！！！！！！未知数据(2):" + resultStr);
+//				LOGGER.info("！！！！！！！！！！未知数据(2):" + resultStr);
 //			}
 //			if (resultStr == null) {
 //				resultStr=HexUtils.toHexString(bs);
-//				LOGGER.debug("空数据(2):"+resultStr);
+//				LOGGER.info("空数据(2):"+resultStr);
 //			}
 //			index+=1;
 			bs = null;
 			offect += data_len;
 		}
-//		LOGGER.debug(maxLen+"长的母数据包打印结束--------------------------------------------------------------------------------");
+//		LOGGER.info(maxLen+"长的母数据包打印结束--------------------------------------------------------------------------------");
 		resultStr = null;
 	}
 

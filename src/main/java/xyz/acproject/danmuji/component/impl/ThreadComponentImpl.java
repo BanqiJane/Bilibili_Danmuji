@@ -396,7 +396,11 @@ public class ThreadComponentImpl implements ThreadComponent {
 					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
-			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.is_num());
+			PublicDataConf.parsethankGiftThread.set_num(thankGiftSetConf.is_num());
+			PublicDataConf.parsethankGiftThread.setListGiftShieldStatus(
+					ParseSetStatusTools.getListGiftShieldStatus(thankGiftSetConf.getList_gift_shield_status()));
+			PublicDataConf.parsethankGiftThread.setListPeopleShieldStatus(
+					ParseSetStatusTools.getListPeopleShieldStatus(thankGiftSetConf.getList_people_shield_status()));
 		} else {
 			PublicDataConf.parsethankGiftThread.setTimestamp(System.currentTimeMillis());
 			PublicDataConf.parsethankGiftThread.setThankGiftString(thankGiftSetConf.getThank());
@@ -404,7 +408,11 @@ public class ThreadComponentImpl implements ThreadComponent {
 					.setThankGiftStatus(ParseSetStatusTools.getThankGiftStatus(thankGiftSetConf.getThank_status()));
 			PublicDataConf.parsethankGiftThread.setThankGiftRuleSets(thankGiftRuleSets);
 			PublicDataConf.parsethankGiftThread.setNum(thankGiftSetConf.getNum());
-			PublicDataConf.parsethankGiftThread.setIs_num(thankGiftSetConf.is_num());
+			PublicDataConf.parsethankGiftThread.set_num(thankGiftSetConf.is_num());
+			PublicDataConf.parsethankGiftThread.setListGiftShieldStatus(
+					ParseSetStatusTools.getListGiftShieldStatus(thankGiftSetConf.getList_gift_shield_status()));
+			PublicDataConf.parsethankGiftThread.setListPeopleShieldStatus(
+					ParseSetStatusTools.getListPeopleShieldStatus(thankGiftSetConf.getList_people_shield_status()));
 		}
 	}
 
@@ -427,7 +435,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 	}
 
 	@Override
-	public void startParseThankWelcomThread(ThankWelcomeSetConf thankWelcomeSetConf) {
+	public void startParseThankWelcomeThread(ThankWelcomeSetConf thankWelcomeSetConf) {
 		if (PublicDataConf.parseThankWelcomeThread.getState().toString().equals("TERMINATED")
 				|| PublicDataConf.parseThankWelcomeThread.getState().toString().equals("NEW")) {
 			PublicDataConf.parseThankWelcomeThread = new ParseThankWelcomeThread();

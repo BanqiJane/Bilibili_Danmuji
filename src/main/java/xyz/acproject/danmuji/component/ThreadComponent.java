@@ -63,7 +63,7 @@ public interface ThreadComponent {
 	// 开启public的关注感谢线程
 	void startParseThankFollowThread(ThankFollowSetConf thankFollowSetConf);
 
-	void startParseThankWelcomThread(ThankWelcomeSetConf thankWelcomeSetConf);
+	void startParseThankWelcomeThread(ThankWelcomeSetConf thankWelcomeSetConf);
 
 	// 设置处理弹幕包线程
 	void setParseMessageThread(

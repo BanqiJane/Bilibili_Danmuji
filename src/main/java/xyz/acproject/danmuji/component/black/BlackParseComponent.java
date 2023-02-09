@@ -22,7 +22,7 @@ public class BlackParseComponent {
 
     public boolean autoReplay_parse(AutoReply autoReply) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().is_open()) {
+        if (PublicDataConf.centerSetConf.getBlack().isAuto_reply()) {
             return this.parse(autoReply);
         }
         return true;
@@ -37,7 +37,7 @@ public class BlackParseComponent {
         } else if (interact.getMsg_type() == 2) {
 
         }
-        if (PublicDataConf.centerSetConf.getBlack().is_open()) {
+        if (PublicDataConf.centerSetConf.getBlack().isThank_follow()||PublicDataConf.centerSetConf.getBlack().isThank_welcome()) {
             return this.parse(interact);
         }
         return true;
@@ -45,7 +45,7 @@ public class BlackParseComponent {
 
     public boolean gift_parse(Gift gift) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().is_open()) {
+        if (PublicDataConf.centerSetConf.getBlack().isThank_gift()) {
             return this.parse(gift);
         }
         return true;
@@ -54,7 +54,7 @@ public class BlackParseComponent {
 
     public <T> boolean global_parse(T t) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().is_open()) {
+        if (PublicDataConf.centerSetConf.getBlack().isAll()) {
             return this.parse(t);
         }
         return true;

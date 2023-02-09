@@ -1,9 +1,12 @@
 package xyz.acproject.danmuji.conf;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
+import xyz.acproject.danmuji.entity.room_data.MedalInfoAnchor;
 import xyz.acproject.danmuji.entity.user_data.AutoSendGift;
 import xyz.acproject.danmuji.entity.user_data.User;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
@@ -43,6 +46,8 @@ public class PublicDataConf {
 	public static Long FANSNUM =null;
 	//主播名称
 	public static String ANCHOR_NAME = null;
+	//主播勋章信息
+	public static MedalInfoAnchor MEDALINFOANCHOR = null;
 	//房间人气
 	public static Long ROOM_POPULARITY =1L;
 	//房间观看人数（历史）
@@ -69,6 +74,7 @@ public class PublicDataConf {
 	public static Boolean ISSHIELDWELCOME = false;
 	//设置
 	public static CenterSetConf centerSetConf;
+
 	
 	
 	//心跳包 16进制
@@ -145,8 +151,10 @@ public class PublicDataConf {
 	public static Long ROOMID_SAFE = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
-	public static String EDITION ="2.6.1";
-	public static String NEW_EDITION ="2.6.1";
+
+	public static String EDITION ="2.6.2";
+
+	public static String NEW_EDITION ="2.6.2";
 	public static String ANNOUNCE = null;
 	public static boolean INIT_CHECK_EDITION = false;
 	public static boolean INIT_CHECK_ANNOUNCE = false;
@@ -158,6 +166,11 @@ public class PublicDataConf {
 //
 	//可以赠送礼物集合 要初始化
 	public static Map<Integer,AutoSendGift> autoSendGiftMap = null;
+
+
+
+	//测试模式
+	public static boolean TEST_MODE = false;
 
 
 

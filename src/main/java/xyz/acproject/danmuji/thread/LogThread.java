@@ -39,7 +39,7 @@ public class LogThread extends Thread{
 						PublicDataConf.logThread.wait();
 					} catch (InterruptedException e) {
 						// TODO 自动生成的 catch 块
-//						LOGGER.debug("日志线程关闭:" + e);
+//						LOGGER.info("日志线程关闭:" + e);
 					}
 				}
 			}

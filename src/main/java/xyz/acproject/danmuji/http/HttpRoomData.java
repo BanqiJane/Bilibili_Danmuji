@@ -101,7 +101,7 @@ public class HttpRoomData {
 		}
 		if (data == null)
 			return room;
-//		LOGGER.debug("获取到的room:" + data);
+//		LOGGER.info("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -140,7 +140,7 @@ public class HttpRoomData {
 		}
 		if (data == null)
 			return roomInit;
-//		LOGGER.debug("获取到的room:" + data);
+//		LOGGER.info("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
@@ -157,9 +157,11 @@ public class HttpRoomData {
 	 * 
 	 * @return
 	 */
-	public static RoomInfo httpGetRoomInfo() {
+	public static RoomInfoAnchor httpGetRoomInfo() {
 		String data = null;
 		JSONObject jsonObject = null;
+		RoomInfoAnchor roomInfoAnchor = new RoomInfoAnchor();
+		MedalInfoAnchor medalInfoAnchor=null;
 		RoomInfo roomInfo = null;
 		short code = -1;
 		Map<String, String> headers = null;
@@ -181,17 +183,21 @@ public class HttpRoomData {
 			data = null;
 		}
 		if (data == null)
-			return roomInfo;
-//		LOGGER.debug("获取到的room:" + data);
+			return roomInfoAnchor;
+//		LOGGER.info("获取到的room:" + data);
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
 			roomInfo = JSON.parseObject(((JSONObject) jsonObject.get("data")).getString("room_info"),
 					RoomInfo.class);
+			medalInfoAnchor = JSON.parseObject(jsonObject.getJSONObject("data").getJSONObject("anchor_info").getString("medal_info"),
+					MedalInfoAnchor.class);
 		} else {
 			LOGGER.error("获取房间详细信息失败，请稍后尝试:" + jsonObject.getString("message"));
 		}
-		return roomInfo;
+		roomInfoAnchor.setRoomInfo(roomInfo);
+		roomInfoAnchor.setMedalInfoAnchor(medalInfoAnchor);
+		return roomInfoAnchor;
 	}
 
 	/**

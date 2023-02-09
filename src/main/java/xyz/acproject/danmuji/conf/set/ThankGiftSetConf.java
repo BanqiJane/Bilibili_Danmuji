@@ -10,7 +10,10 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.base.ThankLiveSetConf;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ThankGiftSetConf
@@ -31,7 +34,14 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 	private static final long serialVersionUID = -418947096472064467L;
 	//礼物屏蔽模式 0 自定义 1 免费 2 低价 3 规则
 	private short shield_status =0;
-	//自定义礼物屏蔽  0 
+
+	//礼物名单限制模式 0黑名单 1白名单  默认黑
+	@JSONField(name = "list_gift_shield_status")
+	private short list_gift_shield_status = 0;
+	//人员感谢过滤 0全部 1仅勋章 2仅舰长
+	@JSONField(name = "list_people_shield_status")
+	private short list_people_shield_status = 0;
+	//自定义礼物屏蔽  0
 	private HashSet<String> giftStrings;
 	//自定义感谢屏蔽规则 3
 	private HashSet<ThankGiftRuleSet> thankGiftRuleSets;
@@ -110,5 +120,20 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 				return false;
 			}
 		}
+	}
+
+
+	public HashSet<ThankGiftRuleSet> getThankGiftRuleSets() {
+		if(thankGiftRuleSets!=null) {
+			return thankGiftRuleSets.stream().sorted(Comparator.comparing(ThankGiftRuleSet::getGift_name)).collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return thankGiftRuleSets;
+	}
+
+	public HashSet<String> getCodeStrings() {
+		if(codeStrings!=null) {
+			return codeStrings.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return codeStrings;
 	}
 }

@@ -21,10 +21,10 @@ public class WebSocketProxy extends Websocket {
 
 	public WebSocketProxy(String url, Room room) throws URISyntaxException, InterruptedException {
 		super(url, room);
-		LOGGER.debug("Connectin(连接中)...........................................");
+		LOGGER.info("Connectin(连接中)...........................................");
 		// TODO 自动生成的构造函数存根
 		super.connectBlocking();
-		LOGGER.debug("Connecting Success(连接成功)");
+		LOGGER.info("Connecting Success(连接成功)");
 	}
 
 	@Override

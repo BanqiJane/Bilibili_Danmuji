@@ -78,14 +78,37 @@ $(function () {
             if (Number($(".thankgift_shield_status").children(
                 "option:selected").val()) !== 1) {
                 $(".thankgift_shield").hide();
+                $(".thankgift_list_gift_shield_status").hide();
             } else {
                 $(".thankgift_shield").show();
+                $(".thankgift_list_gift_shield_status").show();
             }
             if (Number($(".thankgift_shield_status").children(
                 "option:selected").val()) !== 4) {
                 $("#gift-shield-btn").hide();
             } else {
                 $("#gift-shield-btn").show();
+            }
+        });
+    $('.thankgift_list_gift_shield_status').change(
+        function () {
+            if (Number($(".thankgift_list_gift_shield_status").children(
+                "option:selected").val()) !== 1) {
+               //白名单
+                $(".thankgift_shield").attr('placeholder',
+                    "白名单模式：自定义通过礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
+                $(".thankgift_shield")
+                    .attr('title',
+                        '白名单模式：这里填写自定义通过礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class=\'red-font\'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>');
+
+            } else {
+               //黑名单
+                $(".thankgift_shield").attr('placeholder',
+                    "黑名单模式：自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
+                $(".thankgift_shield")
+                    .attr('title',
+                        '黑名单模式：这里填写自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class=\'red-font\'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>');
+
             }
         });
     $(document).on('click', '.btn-connect-d', function () {
@@ -267,7 +290,7 @@ $(document)
 									<option value='2'>电池</option></select>
 									</td>
 									<td>
-									<input type='number' min='0' class='small-input shieldgifts_num live-save' placeholder='num' value='0' data-bs-toggle='tooltip' data-bs-placement='top' title='数量(电池)小于多少触发屏蔽' data-bs-html='true' data-original-title='大于多少(不得小于)'>
+									<input type='number' min='0' class='small-input shieldgifts_num live-save' placeholder='num' value='0' data-bs-toggle='tooltip' data-bs-placement='top' title='数量(电池)小于多少触发屏蔽(不能小于多少)' data-bs-html='true' data-original-title='大于多少(不得小于)'>
 									</td>
 									<td><button type='button' class='btn btn-danger btn-sm shieldgift_delete live-save'>删除</button></td>
 									</tr>`);
@@ -689,6 +712,10 @@ const method = {
         set.thank_gift.is_num = $(".thankgift_is_num").is(':checked');
         set.thank_gift.shield_status = Number($(".thankgift_shield_status")
             .find("option:selected").val()) - 1;
+        set.thank_gift.list_gift_shield_status = Number($(".thankgift_list_gift_shield_status")
+            .find("option:selected").val()) - 1;
+        set.thank_gift.list_people_shield_status = Number($(".thankgift_list_people_shield_status")
+            .find("option:selected").val()) - 1;
         set.thank_gift.giftStrings = method.giftStrings_handle(set.thank_gift.giftStrings, $(".thankgift_shield").val());
         if ($(".shieldgifts-tbody tr").length > 0) {
             let thankGiftRuleSet = {};
@@ -754,9 +781,13 @@ const method = {
         set.welcome.num = Number($(".welcome_num").val());
         set.welcome.welcomes = $(".welcome_welcomes").val();
         set.welcome.delaytime = Number($(".thankwelcome_delaytime").val());
+        set.welcome.list_people_shield_status = Number($(".welcome_list_people_shield_status")
+            .find("option:selected").val()) - 1;
         set.reply.is_open = $(".replys_is_open").is(':checked');
         set.reply.is_live_open = $(".replys_is_live_open").is(':checked');
         set.reply.time = Number($(".replys_time").val());
+        set.reply.list_people_shield_status = Number($(".replys_list_people_shield_status")
+            .find("option:selected").val()) - 1;
         set.clock_in.is_open = $(".is_clockin").is(':checked');
         set.clock_in.time = method.time_parse($(".clockin_time").val());
         set.clock_in.barrage = $(".clockin_barrage").val();
@@ -969,6 +1000,10 @@ const method = {
                 set.thank_gift.is_num);
             $(".thankgift_shield_status").find("option").eq(
                 set.thank_gift.shield_status).prop('selected', true);
+            $(".thankgift_list_gift_shield_status").find("option").eq(
+                set.thank_gift.list_gift_shield_status).prop('selected', true);
+            $(".thankgift_list_people_shield_status").find("option").eq(
+                set.thank_gift.list_people_shield_status).prop('selected', true);
             $(".thankgift_shield").val(method.giftStrings_metod(set.thank_gift.giftStrings));
             $(".thankgift_codeStrings").val(method.codeStrings_metod(set.thank_gift.codeStrings));
             method.shieldgifts_each(set.thank_gift.thankGiftRuleSets);
@@ -1006,11 +1041,15 @@ const method = {
             $(".welcome_num").val(set.welcome.num);
             $(".welcome_welcomes").val(set.welcome.welcomes);
             $(".thankwelcome_delaytime").val(set.welcome.delaytime);
+            $(".welcome_list_people_shield_status").find("option").eq(
+                set.welcome.list_people_shield_status).prop('selected', true);
             $(".replys_is_open").prop('checked',
                 set.reply.is_open);
             $(".replys_is_live_open").prop('checked',
                 set.reply.is_live_open);
             $(".replys_time").val(set.reply.time);
+            $(".replys_list_people_shield_status").find("option").eq(
+                set.reply.list_people_shield_status).prop('selected', true);
             $(".is_clockin").prop('checked', set.clock_in.is_open);
             $(".clockin_time").val(set.clock_in.time);
             $(".clockin_barrage").val(set.clock_in.barrage);
@@ -1024,14 +1063,34 @@ const method = {
             if (Number($(".thankgift_shield_status")
                 .children("option:selected").val()) !== 1) {
                 $(".thankgift_shield").hide();
+                $(".thankgift_list_gift_shield_status").hide();
             } else {
                 $(".thankgift_shield").show();
+                $(".thankgift_list_gift_shield_status").show();
             }
             if (Number($(".thankgift_shield_status")
                 .children("option:selected").val()) !== 4) {
                 $("#gift-shield-btn").hide();
             } else {
                 $("#gift-shield-btn").show();
+            }
+            if (Number($(".thankgift_list_gift_shield_status").children(
+                "option:selected").val()) !== 1) {
+                //白名单
+                $(".thankgift_shield").attr('placeholder',
+                    "白名单模式：自定义通过礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
+                $(".thankgift_shield")
+                    .attr('title',
+                        '白名单模式：这里填写自定义通过礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class=\'red-font\'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>');
+
+            } else {
+                //黑名单
+                $(".thankgift_shield").attr('placeholder',
+                    "黑名单模式：自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
+                $(".thankgift_shield")
+                    .attr('title',
+                        '黑名单模式：这里填写自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class=\'red-font\'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>');
+
             }
             switch (Number($(".thankgift_thank_status").children(
                 "option:selected").val())) {
@@ -1110,6 +1169,8 @@ const method = {
                 $(".thankgift_is_live_open").attr("disabled", true);
                 $(".thankgift_is_tx_shield").attr("disabled", true);
                 $(".thankgift_shield_status").attr("disabled", true);
+                $(".thankgift_list_gift_shield_status").attr("disabled", true);
+                $(".thankgift_list_people_shield_status").attr("disabled", true);
                 $(".thankgift_shield").attr("disabled", true);
                 $(".thankgift_thankGiftRuleSets").attr("disabled", true);// test
                 $(".thankgift_thank_status").attr("disabled", true);
@@ -1139,12 +1200,14 @@ const method = {
                 $(".welcome_welcomes").attr("disabled", true);
                 $(".welcome_tx_shield").attr("disabled", true);
                 $(".thankwelcome_delaytime").attr("disabled", true);
+                $(".welcome_list_people_shield_status").attr("disabled", true);
                 $(".shieldgift_delete").attr("disabled", true);
                 $(".thankgift_barrageReport").attr("disabled", true);
                 $(".thankgift_is_num").attr("disabled", true);
                 $(".replys_is_open").attr("disabled", true);
                 $(".replys_is_live_open").attr("disabled", true);
                 $(".replys_time").attr("disabled", true);
+                $(".replys_list_people_shield_status").attr("disabled", true);
                 $("#replys-btn").attr("disabled", true);
                 $(".is_clockin").attr("disabled", true);
                 $(".clockin_time").attr("disabled", true);

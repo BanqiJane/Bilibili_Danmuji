@@ -12,7 +12,10 @@ import xyz.acproject.danmuji.conf.base.StartThreadInterface;
 import xyz.acproject.danmuji.conf.base.TimingLiveSetConf;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName AutoReplySetConf
@@ -30,8 +33,14 @@ public class AutoReplySetConf extends TimingLiveSetConf implements Serializable,
 	 * 
 	 */
 	private static final long serialVersionUID = 6387301110915854706L;
+
+	//人员感谢过滤 0全部 1仅勋章 2仅舰长
+	@JSONField(name = "list_people_shield_status")
+	private short list_people_shield_status = 0;
 	//自动回复子对象集合
 	private HashSet<AutoReplySet> autoReplySets;
+
+
 
 
 	//方法区
@@ -59,5 +68,12 @@ public class AutoReplySetConf extends TimingLiveSetConf implements Serializable,
 				threadComponent.closeAutoReplyThread();
 			}
 		}
+	}
+
+	public HashSet<AutoReplySet> getAutoReplySets() {
+		if(autoReplySets!=null) {
+			return autoReplySets.stream().sorted(Comparator.comparing(AutoReplySet::getReply)).collect(Collectors.toCollection(LinkedHashSet::new));
+		}
+		return autoReplySets;
 	}
 }

@@ -44,7 +44,7 @@ public class SmallHeartThread extends Thread {
 			}
 			startETime = System.currentTimeMillis();
 			if(num==0) {
-				roomInfo = HttpRoomData.httpGetRoomInfo();
+				roomInfo = HttpRoomData.httpGetRoomInfo().getRoomInfo();
 				try {
 					setxData(HttpHeartBeatData.httpPostE(roomInfo));	
 				} catch (Exception e) {

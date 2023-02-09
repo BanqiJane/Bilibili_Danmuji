@@ -11,6 +11,7 @@ import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.entity.FristSecurityData;
 import xyz.acproject.danmuji.entity.room_data.CheckTx;
 import xyz.acproject.danmuji.entity.room_data.Room;
+import xyz.acproject.danmuji.entity.room_data.RoomInfoAnchor;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
 import xyz.acproject.danmuji.file.GuardFileTools;
@@ -59,6 +60,10 @@ public class ClientServiceImpl implements ClientService {
         if (conf == null) {
             return;
         }
+        //房间详细信息获取 目前仅处理勋章
+        RoomInfoAnchor roomInfoAnchor = HttpRoomData.httpGetRoomInfo();
+        PublicDataConf.MEDALINFOANCHOR = roomInfoAnchor.getMedalInfoAnchor();
+        //公共信息处理
         PublicDataConf.AUID = roomInit.getUid();
         PublicDataConf.FANSNUM = HttpRoomData.httpGetFollowersNum();
 
