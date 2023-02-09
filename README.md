@@ -55,11 +55,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.1
+# 版本2.6.2
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.0 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.2 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.0 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.2 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -94,7 +94,7 @@ java version "1.8.0_121"
 1. **延迟感谢(可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时)！**
    **注意：现在破站能发重复弹幕的时间貌似为3秒 为了避免大多数感谢弹幕消失，通常建议这个设置为3秒以上 还有延迟设置过高礼物持续赠送可能会造成刷屏**
 2. 是否仅在直播中开启
-3. **4种感谢屏蔽模式(1自定义礼物名称，2屏蔽所有免费礼物，3低价值礼物，4自定义规则)**
+3. **4种感谢屏蔽模式(1自定义礼物名称，2屏蔽所有免费礼物，3低价值礼物，4自定义规则)** 自定义礼物名称可白名单或黑名单
 4. 可屏蔽天选时刻下的礼物
 5. **3种礼物感谢模式(单人单种，单人多种，~~多人多种~~)**
 6. 可调节每次感谢人数，礼物数
@@ -102,6 +102,7 @@ java version "1.8.0_121"
 8. 感谢舰队和留言和红包
 9. 可选择是否输出礼物数量
 10. 可设置多条感谢弹幕模板
+11. 人员过滤屏蔽（本房间勋章，不限本房间的全部舰长）
 
 - **关注实时感谢(1.0.6+变为真正的实时感谢)**
 
@@ -118,6 +119,7 @@ java version "1.8.0_121"
 3. 可屏蔽天选时刻下的感谢
 4. **延迟感谢(可统计延时内关注,一旦延时内有新进入直播间观众就会重新刷新延时)！**
 5. 可设置多条感谢弹幕模板
+6. 人员过滤屏蔽（本房间勋章，不限本房间的全部舰长）
 
 - **定时发送弹幕(用于发送广告)**
 
@@ -131,14 +133,20 @@ java version "1.8.0_121"
 2. 并可以设置发送私信成功后直播间发送提醒弹幕
 3. 选择可不可以重复发送，即舰长信息保存本地，打开此设置需要重启弹幕姬，读取现有舰长数量，读取过程可能引起弹幕姬连接房间较慢<br/>
    (注意该功能仅统计弹幕姬开启时候的舰长，本地文件夹为guardFile，文件格式为guards（房间号）；格式为 uid,uname 亦可以按按照格式自己手动修改文件添加，注意不要为空)<br/>
-   4.礼品码模式 可以发送礼品码（规则：回车换行为分割不同礼品码 礼品码发送出去会自动删除 请用户刷新页面查看最新礼品码列表 礼品码参数为%giftCode%）
+4. 礼品码模式 可以发送礼品码（规则：回车换行为分割不同礼品码 礼品码发送出去会自动删除 请用户刷新页面查看最新礼品码列表 礼品码参数为%giftCode%）
+5. 礼品码要细致区分为 舰长 提督 总督 就必须设置指定开头 例如礼品码为456 要赠送给提督 那就`提督-456` 以此类推） 什么开头都没有表示可以赠送全部舰长等级
+6. 私信姬合计参数:
+   - 用户名称：`%uName%`
+   - 舰长等级名称：`%guardLevel%`
+   - 礼品码：`%giftCode%`
 
 - **自动回复姬**
 
 1. 是否仅在直播中开启
 2. 可调节多少秒间隔才能识别弹幕并自动回复
 3. 可设置多个关键字与屏蔽词
-4. 基础回复替换参数：
+4. 人员过滤屏蔽（本房间勋章，本房间舰长）
+5. 基础回复替换参数：
    - 提问人的用户名称（触发回复姬的人）：`%NAME%`
    - 实时获取关注数：`%FANS%`
    - 实时获取多少人观看过：`%WATHER%`
@@ -147,10 +155,10 @@ java version "1.8.0_121"
    - 当前人气值：`%HOT%`
    - 北京时间：`%TIME%`
    - 推荐天气：`%WEATHER%`
-5. 含关键字封禁功能 提供 `%BLOCK%` 参数表示当前是一个封禁功能和 `{{time}}` 参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送 例如 `%BLOCK%{{1}}` 表示禁言一小时;
-6. 可设置精确匹配
-7. 关键字可有满足条件A或条件B 发送内容C的功能(该功能多关键字也能用)
-8. 天气接口：
+6. 含关键字封禁功能 提供 `%BLOCK%` 参数表示当前是一个封禁功能和 `{{time}}` 参数表示封禁的时长单位小时 如果超过720或低于1 则默认为1小时 不设置也默认为1小时 如果有弹幕在里面 禁言成功则发送弹幕,失败则不发送 例如 `%BLOCK%{{1}}` 表示禁言一小时;
+7. 可设置精确匹配
+8. 关键字可有满足条件A或条件B 发送内容C的功能(该功能多关键字也能用)
+9. 天气接口：
    + **↓教程↓**
    + 固定参数：提问弹幕里面必须为`@或#号开头`+`时间`+`中文的"天气"`两字(实际种没有双引号)结尾 
    + 中间的时间取数为：`昨天，明天，后天，后两天(大后天)，后三天，后四天，后五天，后六天`
@@ -183,33 +191,33 @@ java version "1.8.0_121"
    + 小提示-化妆：`%W_TIP_HUAZHUANG%` (仅当天有效)
    + 小提示-穿衣：`%W_TIP_CHUANYI%` (仅当天有效)
    + 小提示-感冒：`%W_TIP_GANMAO%` (仅当天有效)
-9. apex英雄数据接口:
-   - 轮换（即复制器）（天）：`%MAKER_DAY1% `
-   - 轮换（天）：`%MAKER_DAY2%`
-   - 轮换（周）：`%MAKER_WEEK1%`
-   - 轮换（周）：`%MAKER_WEEK2%`  推荐4个轮换一起用
-   - 赛季通行证结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PASS_END% `
-   - 商店刷新时间（yyyy年MM月dd日HH时mm分ss秒）：`%SHOP_REFRESH%`
-   - PC排位大逃杀当前轮换地图：`%PW_RP_NOWMAP%`
-   - PC排位大逃杀下一轮或者上一轮地图（根据赛季返回，需自行判断赛季）：`%PW_RP_OTHERMAP%`
-   - PC排位大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PW_RP_ENDTIME%`
-   - PC排位竞技场当前轮换地图：`%PW_AP_NOWMAP%`
-   - PC排位竞技场下一轮地图：`%PW_AP_NEXMAP%`
-   - PC排位竞技场结束时间：`%PW_AP_ENDTIME%`
-   - PC匹配大逃杀当前地图：`%PP_RP_NOWMAP%`
-   - PC匹配大逃杀下一轮地图：`%PP_RP_NEXMAP%`
-   - PC匹配大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_RP_ENDTIME%`
-   - PC匹配竞技场当前地图：`%PP_AP_NOWMAP%`
-   - PC匹配竞技场下一轮地图：`%PP_AP_NEXMAP%`
-   - PC匹配竞技场结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_AP_ENDTIME%`
-   - PC大逃杀猎杀底分：`%PC_RP_DFEN%`
-   - PC大逃杀大师总数：`%PC_RP_MTOTAL%`
-   - PC竞技场猎杀底分：`%PC_AP_DFEN%`
-   - PC竞技场大师总数：`%PC_AP_MTOTAL%`
-   - PS4大逃杀猎杀底分：`%PS4_RP_DFEN%`
-   - PS4大逃杀大师总数：`%PS4_RP_MTOTAL%`
-   - PS4竞技场猎杀底分：`%PS4_AP_DFEN%`
-   - PS4竞技场大师总数：`%PS4_AP_MTOTAL%`
+10. apex英雄数据接口:
+    - 轮换（即复制器）（天）：`%MAKER_DAY1% `
+    - 轮换（天）：`%MAKER_DAY2%`
+    - 轮换（周）：`%MAKER_WEEK1%`
+    - 轮换（周）：`%MAKER_WEEK2%`  推荐4个轮换一起用
+    - 赛季通行证结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PASS_END% `
+    - 商店刷新时间（yyyy年MM月dd日HH时mm分ss秒）：`%SHOP_REFRESH%`
+    - PC排位大逃杀当前轮换地图：`%PW_RP_NOWMAP%`
+    - PC排位大逃杀下一轮或者上一轮地图（根据赛季返回，需自行判断赛季）：`%PW_RP_OTHERMAP%`
+    - PC排位大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PW_RP_ENDTIME%`
+    - PC排位竞技场当前轮换地图：`%PW_AP_NOWMAP%`
+    - PC排位竞技场下一轮地图：`%PW_AP_NEXMAP%`
+    - PC排位竞技场结束时间：`%PW_AP_ENDTIME%`
+    - PC匹配大逃杀当前地图：`%PP_RP_NOWMAP%`
+    - PC匹配大逃杀下一轮地图：`%PP_RP_NEXMAP%`
+    - PC匹配大逃杀结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_RP_ENDTIME%`
+    - PC匹配竞技场当前地图：`%PP_AP_NOWMAP%`
+    - PC匹配竞技场下一轮地图：`%PP_AP_NEXMAP%`
+    - PC匹配竞技场结束时间（yyyy年MM月dd日HH时mm分ss秒）：`%PP_AP_ENDTIME%`
+    - PC大逃杀猎杀底分：`%PC_RP_DFEN%`
+    - PC大逃杀大师总数：`%PC_RP_MTOTAL%`
+    - PC竞技场猎杀底分：`%PC_AP_DFEN%`
+    - PC竞技场大师总数：`%PC_AP_MTOTAL%`
+    - PS4大逃杀猎杀底分：`%PS4_RP_DFEN%`
+    - PS4大逃杀大师总数：`%PS4_RP_MTOTAL%`
+    - PS4竞技场猎杀底分：`%PS4_AP_DFEN%`
+    - PS4竞技场大师总数：`%PS4_AP_MTOTAL%`
 
 - **礼物自动赠送姬**
 
@@ -335,6 +343,13 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+  <blockquote>
+<h2>Beta2.6.2</h2>
+ <p>礼物感谢姬新增自定义白名单黑名单切换 新增人员过滤</p>
+ <p>回复姬 欢迎姬 增加人员过滤</p>
+<p>新增私信姬参数 区分每个舰长等级不同礼品码</p>
+<p>修复部分已知bug</p>
+</blockquote>
   <blockquote>
 <h2>Beta2.6.1</h2>
  <p>回复姬天气接口回归</p>
