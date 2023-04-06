@@ -3,6 +3,10 @@
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-%E6%94%AF%E6%8C%81-blue.svg)](https://www.jetbrains.com/?from=Bilibili_Danmuji)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
 
+
+
+# 说明 认准官方唯一github  本软件永久开源（开源即永久免费） 不存在任何收费 请各位谨慎识别
+
 # 运行环境
 
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
