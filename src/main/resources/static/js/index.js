@@ -94,7 +94,7 @@ $(function () {
         function () {
             if (Number($(".thankgift_list_gift_shield_status").children(
                 "option:selected").val()) !== 1) {
-               //白名单
+                //白名单
                 $(".thankgift_shield").attr('placeholder',
                     "白名单模式：自定义通过礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
                 $(".thankgift_shield")
@@ -102,7 +102,7 @@ $(function () {
                         '白名单模式：这里填写自定义通过礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class=\'red-font\'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>');
 
             } else {
-               //黑名单
+                //黑名单
                 $(".thankgift_shield").attr('placeholder',
                     "黑名单模式：自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：\n辣条，亿圆，友谊的小船\n注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用\n默认黑名单，相反白名单（仅感谢填写的）");
                 $(".thankgift_shield")
@@ -135,24 +135,24 @@ $(function () {
             }
         }
     });
-    $('.auto_save_set').on('input propertychange', function() {
+    $('.auto_save_set').on('input propertychange', function () {
         publicData.set.auto_save_set = $(".auto_save_set").is(':checked');
     });
 });
 //实时保存
-$(document).on('input propertychange', '.live-save', function() {
-    if($(".auto_save_set").is(':checked')){
+$(document).on('input propertychange', '.live-save', function () {
+    if ($(".auto_save_set").is(':checked')) {
         method.saveSet();
-    }else{
+    } else {
     }
 });
 //按钮保存
 $(document).on(
     'click',
-    '.set-hold',function (){
+    '.set-hold', function () {
         method.saveSet();
     }
-    );
+);
 $(document).on('click', '.is_guard_report_click', function () {
     if ($(".thankgift_is_guard_report").is(':checked')) {
         $(".thankgift_report").show();
@@ -188,17 +188,17 @@ $(document).on('click', '.export-set-web', function () {
 $(document).on('click', '.is_clockin', function () {
     if ($(".is_clockin").is(':checked')) {
         $(".clockin_barrage").show();
-        $(".clockin_time").attr("disabled",false);
+        $(".clockin_time").attr("disabled", false);
     } else {
         $(".clockin_barrage").hide();
-        $(".clockin_time").attr("disabled",true);
+        $(".clockin_time").attr("disabled", true);
     }
 });
 $(document).on('click', '.is_dosign', function () {
     if ($(".is_dosign").is(':checked')) {
-        $(".sign_time").attr("disabled",false);
+        $(".sign_time").attr("disabled", false);
     } else {
-        $(".sign_time").attr("disabled",true);
+        $(".sign_time").attr("disabled", true);
     }
 });
 $(document).on('click', '.is_online', function () {
@@ -241,18 +241,18 @@ $(document).on('click', '.btn-close-wel', function () {
 });
 $(document).on('click', '.btn-closer', function () {
     let is_hide = true;
-/*    if ($(".replys-mask").is(":visible")) {*/
-      /*  $(".replys-ul").children("li").each(function (i, v) {
-            if ($(".reply_keywords").eq(i).val() === "" || $(".reply_rs").eq(i).val() === "") {
-                alert("关键字和回复语句都不能为空！！！");
-                is_hide = false;
-            }
-            if (!is_hide) return false;
-        });*/
-        if (!is_hide) return;
+    /*    if ($(".replys-mask").is(":visible")) {*/
+    /*  $(".replys-ul").children("li").each(function (i, v) {
+          if ($(".reply_keywords").eq(i).val() === "" || $(".reply_rs").eq(i).val() === "") {
+              alert("关键字和回复语句都不能为空！！！");
+              is_hide = false;
+          }
+          if (!is_hide) return false;
+      });*/
+    if (!is_hide) return;
     /*    $(".replys-mask").hide();*/
     $('#reply-model').modal('hide');
-/*    }*/
+    /*    }*/
 });
 $(document).on('click', '.btn-block', function () {
     const uid = $(".block-input").attr("uid");
@@ -358,17 +358,17 @@ $(document)
         });
 $(document).on('click', '.reply_delete', function () {
     $(this).parent().parent().remove();
-    if($(".auto_save_set").is(':checked')){
+    if ($(".auto_save_set").is(':checked')) {
         method.saveSet();
-    }else{
+    } else {
 
     }
 });
 $(document).on('click', '.shieldgift_delete', function () {
     $(this).parent().parent().remove();
-    if($(".auto_save_set").is(':checked')){
+    if ($(".auto_save_set").is(':checked')) {
         method.saveSet();
-    }else{
+    } else {
     }
 });
 $(document).on('click', '.del_block_click', function () {
@@ -402,46 +402,46 @@ $(document).on('click', '.reply_edit', function () {
     let keywords = $(this).parent().parent().find(".reply_keywords").val();
     let shields = $(this).parent().parent().find(".reply_shields").val();
     let rs = $(this).parent().parent().find(".reply_rs").val();
-/*    $(".radd-mask").show();*/
+    /*    $(".radd-mask").show();*/
     $(".radd-body").find(".reply_open_i").prop('checked', is_open);
     $(".radd-body").find(".reply_open_i").attr("z-index", index);
-    $(".radd-body").find(".reply_open_i").attr("z-name", "reply_open_"+index);
+    $(".radd-body").find(".reply_open_i").attr("z-name", "reply_open_" + index);
 
     $(".radd-body").find(".reply_oc_i").prop('checked', is_oc);
-    $(".radd-body").find(".reply_oc_i").attr("z-index",index);
-    $(".radd-body").find(".reply_oc_i").attr("z-name", "reply_oc_"+index);
+    $(".radd-body").find(".reply_oc_i").attr("z-index", index);
+    $(".radd-body").find(".reply_oc_i").attr("z-name", "reply_oc_" + index);
 
     $(".radd-body").find(".reply_keywords_i").val(keywords);
     $(".radd-body").find(".reply_keywords_i").attr("z-index", index);
-    $(".radd-body").find(".reply_keywords_i").attr("z-name", "reply_keywords_"+index);
+    $(".radd-body").find(".reply_keywords_i").attr("z-name", "reply_keywords_" + index);
 
     $(".radd-body").find(".reply_shields_i").val(shields);
-    $(".radd-body").find(".reply_shields_i").attr("z-index",index);
-    $(".radd-body").find(".reply_shields_i").attr("z-name", "reply_shields_"+index);
+    $(".radd-body").find(".reply_shields_i").attr("z-index", index);
+    $(".radd-body").find(".reply_shields_i").attr("z-name", "reply_shields_" + index);
 
     $(".radd-body").find(".reply_rs_i").val(rs);
-    $(".radd-body").find(".reply_rs_i").attr("z-index",index);
-    $(".radd-body").find(".reply_rs_i").attr("z-name", "reply_rs_"+index);
+    $(".radd-body").find(".reply_rs_i").attr("z-index", index);
+    $(".radd-body").find(".reply_rs_i").attr("z-name", "reply_rs_" + index);
 
     $(".radd-body").find(".reply_delete_i").attr("z-index", index);
 });
 $(document).on('input propertychange', '.reply-sync', function (e) {
     let index = $(this).attr("z-index");
     let z_name = $(this).attr("z-name");
-    if(z_name.startsWith("reply_open_")) {
+    if (z_name.startsWith("reply_open_")) {
         $(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', $(this).is(':checked'));
-    }else if(z_name.startsWith("reply_oc_")) {
+    } else if (z_name.startsWith("reply_oc_")) {
         $(".replys-ul").children("li").eq(index).find(".reply_oc").prop('checked', $(this).is(':checked'));
-    }else if(z_name.startsWith("reply_keywords_")) {
+    } else if (z_name.startsWith("reply_keywords_")) {
         $(".replys-ul").children("li").eq(index).find(".reply_keywords").val($(this).val());
-    }else if(z_name.startsWith("reply_shields_")) {
+    } else if (z_name.startsWith("reply_shields_")) {
         $(".replys-ul").children("li").eq(index).find(".reply_shields").val($(this).val());
-    }else if(z_name.startsWith("reply_rs_")) {
+    } else if (z_name.startsWith("reply_rs_")) {
         $(".replys-ul").children("li").eq(index).find(".reply_rs").val($(this).val());
     }
-    if($(".auto_save_set").is(':checked')){
+    if ($(".auto_save_set").is(':checked')) {
         method.saveSet();
-    }else{
+    } else {
     }
 });
 $(document).on('click', '.reply_delete_i', function (e) {
@@ -452,35 +452,35 @@ $(document).on('click', '.reply_delete_i', function (e) {
     /*    $(".radd-mask").hide();*/
 });
 $(document).on('click', '.btn-closeri', function () {
-/*    alert("1")*/
-/*    if ($("#reply-model-edit").is(":visible")) {*/
-        let index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
-        let is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
-        let is_oc = $(this).parent().parent().find(".reply_oc_i").is(':checked');
-        let keywords = $(this).parent().parent().find(".reply_keywords_i").val();
-        let shields = $(this).parent().parent().find(".reply_shields_i").val();
-        let rs = $(this).parent().parent().find(".reply_rs_i").val();
-        $(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', is_open);
-        $(".replys-ul").children("li").eq(index).find(".reply_oc").prop('checked', is_oc);
-        $(".replys-ul").children("li").eq(index).find(".reply_keywords").val(keywords);
-        $(".replys-ul").children("li").eq(index).find(".reply_shields").val(shields);
-        $(".replys-ul").children("li").eq(index).find(".reply_rs").val(rs);
- /*       if (keywords === null || keywords === "" || rs === null || rs === "") {
-            alert("关键字和回复语句都不能为空！！！");
-            return;
-        }*/
-        $('#reply-model-edit').modal('hide');
-/*        $(".radd-mask").hide();*/
-/*    }*/
+    /*    alert("1")*/
+    /*    if ($("#reply-model-edit").is(":visible")) {*/
+    let index = $(this).parent().parent().find(".reply_delete_i").attr("z-index");
+    let is_open = $(this).parent().parent().find(".reply_open_i").is(':checked');
+    let is_oc = $(this).parent().parent().find(".reply_oc_i").is(':checked');
+    let keywords = $(this).parent().parent().find(".reply_keywords_i").val();
+    let shields = $(this).parent().parent().find(".reply_shields_i").val();
+    let rs = $(this).parent().parent().find(".reply_rs_i").val();
+    $(".replys-ul").children("li").eq(index).find(".reply_open").prop('checked', is_open);
+    $(".replys-ul").children("li").eq(index).find(".reply_oc").prop('checked', is_oc);
+    $(".replys-ul").children("li").eq(index).find(".reply_keywords").val(keywords);
+    $(".replys-ul").children("li").eq(index).find(".reply_shields").val(shields);
+    $(".replys-ul").children("li").eq(index).find(".reply_rs").val(rs);
+    /*       if (keywords === null || keywords === "" || rs === null || rs === "") {
+               alert("关键字和回复语句都不能为空！！！");
+               return;
+           }*/
+    $('#reply-model-edit').modal('hide');
+    /*        $(".radd-mask").hide();*/
+    /*    }*/
 });
 $(document).on('click', '#checkupdate', function () {
-    
+
     $(".tips-wrap").show();
     $(".tips-t").html("<span>少女祈祷中<img src='../img/loading-1.gif'></span>");
     $.when(method.checkUpdate()).done(function (data) {
         let num = Number(data.result.status);
         if (num === 0) {
-            $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:`+data.result.edition+`</span>)更新，请前往<a href="https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/`+data.result.edition+`">github</a>获取更新`);
+            $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:` + data.result.edition + `</span>)更新，请前往<a href="https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/` + data.result.edition + `">github</a>获取更新`);
         } else if (num === 1) {
             $("#edition_content").html("当前为最新版本，无需更新");
         } else {
@@ -524,25 +524,49 @@ $(document).on('click', '.danmu-tips-li', function (e) {
 
     }
 });
+$(document).on('click', '.black_flag_parent', function () {
+    if ($(this).is(':checked')) {
+        $(".black_flag_child").prop('checked', false);
+    } else {
+        $(".black_flag_child").prop('checked', true);
+    }
+});
 const danmuku = {
     // 0弹幕 1礼物 2消息
     type: function (t) {
         if (t === 0) {
             return `<span class="danmu-type">弹幕</span>`;
         } else if (t === 1) {
-            return `<span class="danmu-type">礼物</span>`;
+            return `<span class="danmu-type danmu-type-gift">礼物</span>`;
         } else if (t === 2) {
-            return `<span class="danmu-type">留言</span>`;
+            return `<span class="danmu-type danmu-type-superchat">留言</span>`;
         } else {
-            return `<span class="danmu-type">消息</span>`;
+            return `<span class="danmu-type danmu-type-msg">消息</span>`;
         }
     },
-    time: function (d) {
-        if(String(d.timestamp).length==10)d.timestamp=d.timestamp*1000;
-        return `<span class="danmu-time">` + format(d.timestamp, false) + `</span>`;
+    time: function (d,t) {
+        if (String(d.timestamp).length == 10) d.timestamp = d.timestamp * 1000;
+        if(t===0) {
+            return `<span class="danmu-time">` + format(d.timestamp, false) + `</span>`;
+        }else if(t===1){
+            return `<span class="danmu-time danmu-time-gift">` + format(d.timestamp, false) + `</span>`;
+        }else if(t===2){
+            return `<span class="danmu-time danmu-time-superchat">` + format(d.timestamp, false) + `</span>`;
+        }else{
+            return `<span class="danmu-time danmu-time-msg">` + format(d.timestamp, false) + `</span>`;
+        }
     },
-    only_time: function (d) {
-        return `<span class="danmu-time">` + format(d, false) + `</span>`;
+    only_time: function (d,t) {
+        if (String(d.timestamp).length == 10) d.timestamp = d.timestamp * 1000;
+        if(t===0) {
+            return `<span class="danmu-time">` + format(d, false) + `</span>`;
+        }else if(t===1){
+            return `<span class="danmu-time danmu-time-gift">` + format(d, false) + `</span>`;
+        }else if(t===2){
+            return `<span class="danmu-time danmu-time-superchat">` + format(d, false) + `</span>`;
+        }else{
+            return `<span class="danmu-time danmu-time-msg">` + format(d, false) + `</span>`;
+        }
     },
     medal: function (d) {
         if (d.medal_name !== null && d.medal_name !== '') {
@@ -603,10 +627,10 @@ const danmuku = {
         }
     },
     gmessage: function (d) {
-        return `<span class="danmu-text">` + d.action + `了 ` + d.giftName + ` x ` + d.num + `</span>`;
+        return `<span class="danmu-text">` + d.action + `了 ` + `<span class="danmu-text-gift">`+d.giftName+`</span>` + ` x ` + d.num + `</span>`;
     },
     stext: function (d) {
-        return `<span class="danmu-text">留言了` + d.time + `秒说:` + d.message + `</span>`;
+        return `<span class="danmu-text">留言了` + d.time + `秒说:` + `<span class="danmu-text-superchat">`+d.message+`</span>` + `</span>`;
     },
     block_type: function (d) {
         if (d.operator === 1) {
@@ -619,27 +643,34 @@ const danmuku = {
         return `<div class="danmu-tips" uid="` + d.uid + `"><ul class="danmu-tips-ul"><li class="danmu-tips-li">禁言</li><li class="danmu-tips-li">查看</li><li class="danmu-tips-li">关闭</li></ul></div>`;
     },
     danmu: function (type, d) {
+        var type_index = 0;
         switch (type) {
             case "danmu":
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(0) + danmuku.time(d) + danmuku.medal(d) + danmuku.guard(d) + danmuku.vip(d) + danmuku.manager(d) + danmuku.ul(d) + danmuku.dname(d) + danmuku.dmessage(d) + danmuku.tips(d) + `</div>`;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + danmuku.medal(d) + danmuku.guard(d) + danmuku.vip(d) + danmuku.manager(d) + danmuku.ul(d) + danmuku.dname(d) + danmuku.dmessage(d) + danmuku.tips(d) + `</div>`;
             case "gift":
+                type_index=1;
                 d.timestamp = d.timestamp * 1000;
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(1) + danmuku.time(d) + danmuku.gguard(d) + danmuku.gname(d) + danmuku.gmessage(d) + danmuku.tips(d) + `</div>`;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + danmuku.gguard(d) + danmuku.gname(d) + danmuku.gmessage(d) + danmuku.tips(d) + `</div>`;
             case "superchat":
+                type_index=2;
                 d.start_time = d.start_time * 1000;
                 d.timestamp = d.start_time;
                 d.uguard = d.user_info.guard_level;
                 d.manager = d.user_info.manager;
                 d.uname = d.user_info.uname;
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(2) + danmuku.time(d) + danmuku.dname(d) + danmuku.stext(d) + danmuku.tips(d) + `</div>`;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + danmuku.dname(d) + danmuku.stext(d) + danmuku.tips(d) + `</div>`;
             case "welcomeVip":
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(4) + danmuku.only_time(getTimestamp()) + `<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">老爷进入直播间</span>` + danmuku.tips(d) + `</div>`;
+                type_index=4;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.only_time(getTimestamp(),type_index) + `<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">老爷进入直播间</span>` + danmuku.tips(d) + `</div>`;
             case "welcomeGuard":
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(4) + danmuku.only_time(getTimestamp()) + `<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">` + d.username + `</span></a><span class="danmu-text">舰长进入直播间</span>` + danmuku.tips(d) + `</div>`;
+                type_index=4;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.only_time(getTimestamp(),type_index) + `<span class="danmu-text">欢迎</span><a href="javascript:;"><span class="danmu-name">` + d.username + `</span></a><span class="danmu-text">舰长进入直播间</span>` + danmuku.tips(d) + `</div>`;
             case "block":
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(4) + danmuku.only_time(getTimestamp()) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">已被` + danmuku.block_type(d) + `禁言</span>` + danmuku.tips(d) + `</div>`;
+                type_index=4;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.only_time(getTimestamp(),type_index) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">已被` + danmuku.block_type(d) + `禁言</span>` + danmuku.tips(d) + `</div>`;
             case "follow":
-                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(4) + danmuku.time(d) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">关注了直播间</span>` + danmuku.tips(d) + `</div>`;
+                type_index=4;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">关注了直播间</span>` + danmuku.tips(d) + `</div>`;
             default:
                 return "";
         }
@@ -649,7 +680,7 @@ const publicData = {
     set: {},
 }
 const method = {
-    saveSet:function () {
+    saveSet: function () {
         let c1 = false;
         let c2 = false;
         let c3 = false;
@@ -672,13 +703,19 @@ const method = {
             "reply": {"autoReplySets": []},
             "clock_in": {},
             "welcome": {},
-            "auto_gift":{},
-            "privacy":{},
+            "auto_gift": {},
+            "privacy": {},
+            "black": {
+                "names": [],
+                "uids": []
+            }
         };
         set.is_auto = $(".is_autoStart").is(
             ':checked');
         set.win_auto_openSet = $(".win_auto_openSet").is(':checked');
         set.auto_save_set = $(".auto_save_set").is(':checked');
+        set.is_barrage = $(".is_barrage").is(
+            ':checked');
         set.is_barrage_guard = $(".is_barrage_guard").is(
             ':checked');
         set.is_barrage_vip = $(".is_barrage_vip").is(
@@ -690,6 +727,7 @@ const method = {
         set.is_block = $(".is_block").is(':checked');
         set.is_cmd = $(".is_cmd").is(':checked');
         set.is_gift = $(".is_gift").is(':checked');
+        set.is_gift_free = $(".is_gift_free").is(':checked');
         set.is_welcome_ye = $(".is_welcome").is(':checked');
         set.is_welcome_all = $(".is_welcome_all").is(':checked');
         set.is_follow_dm = $(".is_follow").is(':checked');
@@ -738,8 +776,9 @@ const method = {
                 var keyword = $(".reply_keywords").eq(i).val();
                 var shield = $(".reply_shields").eq(i).val();
                 var reply = $(".reply_rs").eq(i).val();
-                if (keyword === null || keyword === "") {;
-                }else {
+                if (keyword === null || keyword === "") {
+                    ;
+                } else {
                     autoReplySet.keywords = method.giftStrings_handle(keywords, keyword);
                     autoReplySet.shields = method.giftStrings_handle(shields, shield);
                     autoReplySet.reply = reply;
@@ -796,6 +835,13 @@ const method = {
         set.auto_gift.room_id = $(".autoGift_roomids").val();
         set.privacy.is_open = $(".is_privacy_open").is(':checked');
         set.privacy.small_heart_url = $(".privacy_heart_url").val();
+        set.black.all = $(".is_black_all").is(':checked');
+        set.black.thank_gift = $(".is_black_gift").is(':checked');
+        set.black.thank_welcome = $(".is_black_welcome").is(':checked');
+        set.black.thank_follow = $(".is_black_follow").is(':checked');
+        set.black.auto_reply = $(".is_black_reply").is(':checked');
+        set.black.names = method.giftStrings_handle(set.black.names, $(".black_names").val());
+        set.black.uids = method.giftStrings_handle(set.black.uids, $(".black_uids").val());
         /*处理验证?*/
         if (set.clock_in.is_open) {
             set.clock_in.sign_day = (new Date()).getTime();
@@ -886,29 +932,29 @@ const method = {
             }
         });
         if ($(".is_autoGift_open").is(':checked')) {
-            if($(".autoGift_roomids").val()==null||$(".autoGift_roomids").val().trim()===""){
-                c11=true;
+            if ($(".autoGift_roomids").val() == null || $(".autoGift_roomids").val().trim() === "") {
+                c11 = true;
                 method.delay_method(".notice-message", "礼物自动赠送姬房间号不能为空！！！");
                 alert("礼物自动赠送姬房间号不能为空！！！");
             }
         }
         if ($(".card-body").find(".logined").length > 0) {
-            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10&& !c11) {
+            if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10 && !c11) {
                 publicData.set = method.initSet(set);
                 if (method.sendSet(set)) {
                     method.delay_method(".success-message", "保存配置成功");
-                    if(!publicData.set.auto_save_set) {
+                    if (!publicData.set.auto_save_set) {
                         alert("修改配置成功");
                     }
                 } else {
                     method.delay_method(".notice-message", "修改配置失败");
-                    if(!publicData.set.auto_save_set) {
+                    if (!publicData.set.auto_save_set) {
                         alert("修改配置失败");
                     }
                 }
             } else {
                 method.delay_method(".notice-message", "修改配置失败");
-                if(!publicData.set.auto_save_set) {
+                if (!publicData.set.auto_save_set) {
                     alert("修改配置失败")
                 }
             }
@@ -967,7 +1013,9 @@ const method = {
                 set.is_auto);
             $(".auto_save_set").prop('checked',
                 set.auto_save_set);
-            $(".win_auto_openSet").prop('checked',set.win_auto_openSet);
+            $(".win_auto_openSet").prop('checked', set.win_auto_openSet);
+            $(".is_barrage").prop('checked',
+                set.is_barrage);
             $(".is_barrage_guard").prop('checked',
                 set.is_barrage_guard);
             $(".is_barrage_vip").prop('checked',
@@ -979,6 +1027,7 @@ const method = {
             $(".is_barrage_anchor_shield").prop('checked', set.is_barrage_anchor_shield);
             $(".is_block").prop('checked', set.is_block);
             $(".is_gift").prop('checked', set.is_gift);
+            $(".is_gift_free").prop('checked', set.is_gift_free);
             $(".is_welcome").prop('checked', set.is_welcome_ye);
             $(".is_welcome_all").prop('checked', set.is_welcome_all);
             $(".is_follow").prop('checked', set.is_follow_dm);
@@ -1053,11 +1102,19 @@ const method = {
             $(".is_clockin").prop('checked', set.clock_in.is_open);
             $(".clockin_time").val(set.clock_in.time);
             $(".clockin_barrage").val(set.clock_in.barrage);
-            $(".is_autoGift_open").prop('checked',set.auto_gift.is_open);
+            $(".is_autoGift_open").prop('checked', set.auto_gift.is_open);
             $(".autoGift_time").val(set.auto_gift.time);
             $(".autoGift_roomids").val(set.auto_gift.room_id);
-            $(".is_privacy_open").prop('checked',set.privacy.is_open);
+            $(".is_privacy_open").prop('checked', set.privacy.is_open);
             $(".privacy_heart_url").val(set.privacy.small_heart_url);
+            $(".is_black_all").prop('checked', set.black.all);
+            $(".is_black_gift").prop('checked', set.black.thank_gift);
+            $(".is_black_follow").prop('checked', set.black.thank_follow);
+            $(".is_black_welcome").prop('checked', set.black.thank_welcome);
+            $(".is_black_reply").prop('checked', set.black.auto_reply);
+            $(".black_names").val(method.giftStrings_metod(set.black.names));
+            $(".black_uids").val(method.giftStrings_metod(set.black.uids));
+
 
             /* 处理？ */
             if (Number($(".thankgift_shield_status")
@@ -1157,7 +1214,7 @@ const method = {
             }
             if ($(".is_dosign").is(':checked')) {
                 $(".sign_time").attr("disabled", false);
-            }else{
+            } else {
                 $(".sign_time").attr("disabled", true);
             }
             if (!$(".card-body").find(".logined").length > 0) {
@@ -1215,17 +1272,24 @@ const method = {
                 $(".is_autoGift_open").attr("disabled", true);
                 $(".autoGift_time").attr("disabled", true);
                 $(".autoGift_roomids").attr("disabled", true);
+                $(".is_black_all").attr("disabled", true);
+                $(".is_black_gift").attr("disabled", true);
+                $(".is_black_welcome").attr("disabled", true);
+                $(".is_black_follow").attr("disabled", true);
+                $(".is_black_reply").attr("disabled", true);
+                $(".black_names").attr("disabled", true);
+                $(".black_uids").attr("disabled", true);
             }
         }
         return set;
     },
-    time_parse:function (t){
-      if(t==null||t.trim()=="")return "00:30:00";
-      let ts = t.split(":");
-      if(ts.length==2){
-          t = t + ":00";
-      }
-      return t;
+    time_parse: function (t) {
+        if (t == null || t.trim() == "") return "00:30:00";
+        let ts = t.split(":");
+        if (ts.length == 2) {
+            t = t + ":00";
+        }
+        return t;
     },
     wrap_replace: function (d) {
         "use strict";
@@ -1290,7 +1354,8 @@ const method = {
             } else {
                 lists.push(s);
             }
-        };
+        }
+        ;
         return lists;
     },
     shieldgifts_each: function (lists) {
@@ -1443,8 +1508,8 @@ const method = {
             }
         });
     },
-    setExprotWeb:function (){
-        window.open(window.location.origin+"/setExportWeb");
+    setExprotWeb: function () {
+        window.open(window.location.origin + "/setExportWeb");
     },
 //导入附件
     importDfFile: function () {
@@ -1506,7 +1571,7 @@ const method = {
         return deferred.promise();
     },
     checkWebInit: function () {
-        let content = {init_edition:false,init_announce:false};
+        let content = {init_edition: false, init_announce: false};
         $.ajax({
             url: '../checkWebInit',
             async: false,
@@ -1560,6 +1625,10 @@ const method = {
     },
 };
 
+function scrollEnd() {
+
+}
+
 function openSocket(socket, ip, sliceh) {
     if (typeof (WebSocket) == "undefined") {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
@@ -1582,46 +1651,29 @@ function openSocket(socket, ip, sliceh) {
         };
         // 获得消息事件
         socket.onmessage = function (msg) {
+            // console.log($("#danmu").scrollTop()+":"+$("div[class='danmu-child']:last").offset().top +":"+$("#danmu").height()+":"+$("#danmu")[0].scrollHeight);
             // 发现消息进入 开始处理前端触发逻辑
             let data = JSON.parse(msg.data);
             if (data.cmd === "cmdp") {
-                if ($("#danmu").children().length > 99) {
-                    $("#danmu").children().first().remove();
-                    $("#danmu").children("div:last-child").after(
-                        "<div class='danmu-child'>" + data.result + "</div>");
-                } else {
-                    $("#danmu").append("<div class='danmu-child'>" + data.result + "</div>");
-                }
-                let lastNodeH = $(".danmu-child").eq(-1).height();
-                let lasttNodeH = $(".danmu-child").eq(-2).height();
-                if (Math.abs(lastNodeH - lasttNodeH) > sliceh) {
-                    sliceh = Math.abs(lastNodeH - lasttNodeH);
-                }
-                if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= (804 + sliceh)) {
-                    let h = $("div[class='danmu-child']:last").height();
-                    let top = $("div[class='danmu-child']:last").offset().top + h + 6;
-                    $("#danmu").scrollTop($("#danmu").scrollTop() + top);
-// $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
-                }
+                $("#danmu").append("<div class='danmu-child'>" + data.result + "</div>");
             } else {
-                if ($("#danmu").children().length > 99) {
-                    $("#danmu").children().first().remove();
-                    $("#danmu").children("div:last-child").after(
-                        danmuku.danmu(data.cmd, data.result));
-                } else {
-                    $("#danmu").append(danmuku.danmu(data.cmd, data.result));
-                }
-                let lastNodeH = $(".danmu-child").eq(-1).height();
-                let lasttNodeH = $(".danmu-child").eq(-2).height();
-                if (Math.abs(lastNodeH - lasttNodeH) > sliceh) {
-                    sliceh = Math.abs(lastNodeH - lasttNodeH);
-                }
-                if ($('#danmu')[0].scrollHeight - $("#danmu").scrollTop() <= (804 + sliceh)) {
-                    let h = $("div[class='danmu-child']:last").height();
-                    let top = $("div[class='danmu-child']:last").offset().top + h + 6;
-                    $("#danmu").scrollTop($("#danmu").scrollTop() + top);
-                    // $('#danmu').scrollTop($('#danmu')[0].scrollHeight);
-                }
+                $("#danmu").append(danmuku.danmu(data.cmd, data.result));
+
+            }
+            var h = $("div[class='danmu-child']:last").height();
+            var top = $("div[class='danmu-child']:last").offset().top + h + 6;
+            var lh = $("#danmu").scrollTop()+h;
+            var chs = 0;
+            $("div[class='danmu-child']").each(function() {
+                //求padding的值
+                chs += $(this).height();
+            })
+            // console.log(lh+":"+chs)
+            if(lh>=chs) {
+                $("#danmu").scrollTop($("#danmu").scrollTop() + top);
+            }
+            if ($("#danmu").children().length > 99) {
+                $("#danmu").children().first().remove();
             }
         };
         // 关闭事件

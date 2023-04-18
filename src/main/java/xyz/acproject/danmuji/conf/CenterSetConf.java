@@ -25,6 +25,9 @@ public class CenterSetConf implements Serializable {
      *
      */
     private static final long serialVersionUID = 1162255349476806991L;
+    //是否开启弹幕
+    @JSONField(name = "is_barrage")
+    private boolean is_barrage = true;
     //弹幕显示舰长和老爷图标
     @JSONField(name = "is_barrage_guard")
     private boolean is_barrage_guard = true;
@@ -49,6 +52,9 @@ public class CenterSetConf implements Serializable {
     //信息是否显示礼物消息
     @JSONField(name = "is_gift")
     private boolean is_gift = true;
+    //信息是否显示免费礼物消息
+    @JSONField(name = "is_gift_free")
+    private boolean is_gift_free = true;
     //信息是否显示欢迎老爷舰长进入直播间消息
     @JSONField(name = "is_welcome_ye")
     private boolean is_welcome_ye = true;

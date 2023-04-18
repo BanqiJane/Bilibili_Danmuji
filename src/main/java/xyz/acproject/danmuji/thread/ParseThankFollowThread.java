@@ -2,6 +2,8 @@ package xyz.acproject.danmuji.thread;
 
 import java.util.Vector;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
@@ -15,6 +17,8 @@ import xyz.acproject.danmuji.entity.danmu_data.Interact;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Getter
+@Setter
 public class ParseThankFollowThread extends Thread {
 //	private Logger LOGGER = LogManager.getLogger(ParseThankFollowThread.class);
 	public volatile boolean FLAG = false;
@@ -87,37 +91,6 @@ public class ParseThankFollowThread extends Thread {
 		return thankStr;
 	}
 
-	public String getThankFollowString() {
-		return thankFollowString;
-	}
-
-	public void setThankFollowString(String thankFollowString) {
-		this.thankFollowString = thankFollowString;
-	}
-
-	public Short getNum() {
-		return num;
-	}
-
-	public void setNum(Short num) {
-		this.num = num;
-	}
-
-	public Long getDelaytime() {
-		return delaytime;
-	}
-
-	public void setDelaytime(Long delaytime) {
-		this.delaytime = delaytime;
-	}
-
-	public Long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
-	}
 
 
 }

@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.thread;
 
+import lombok.Getter;
+import lombok.Setter;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
 /**
@@ -9,6 +11,8 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
  * @date 2021/4/15 0:11
  * @Copyright:2021
  */
+@Getter
+@Setter
 public class WelcomeShieldThread extends Thread{
     public volatile boolean FLAG = false;
     private int time = 300;
@@ -31,13 +35,5 @@ public class WelcomeShieldThread extends Thread{
 //			e.printStackTrace();
         }
         PublicDataConf.ISSHIELDWELCOME = false;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
     }
 }

@@ -3,10 +3,7 @@ package xyz.acproject.danmuji.file;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URLDecoder;
 
 /**
@@ -35,7 +32,9 @@ public class LogFileTools {
 	}
 
 	public void logFile(String msg) {
-		FileWriter fw = null;
+//		FileWriter fw = null;
+		OutputStreamWriter os= null;
+		BufferedWriter bw = null;
 		PrintWriter pw = null;
 		String path = System.getProperty("user.dir");
 		FileTools fileTools = new FileTools();
@@ -50,7 +49,7 @@ public class LogFileTools {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
 			path = path + "/Danmuji_log/";
 			File file = new File(path);
-			file.setWritable(true, false);
+//			file.setWritable(true, false);
 			if (file.exists() == false)
 				file.mkdirs();
 			stringBuilder.append(JodaTimeUtils.getCurrentDateString());
@@ -58,7 +57,7 @@ public class LogFileTools {
 			stringBuilder.append(PublicDataConf.ROOMID);
 			stringBuilder.append(")");
 			file = new File(path + stringBuilder.toString() + ".txt");
-			file.setWritable(true, false);
+//			file.setWritable(true, false);
 			stringBuilder.delete(0, stringBuilder.length());
 			if (file.exists() == false)
 				try {
@@ -67,27 +66,44 @@ public class LogFileTools {
 					// TODO 自动生成的 catch 块
 					e.printStackTrace();
 				}
-			fw = new FileWriter(file, true);
-			pw = new PrintWriter(fw);
+			os = new OutputStreamWriter(new FileOutputStream(file,true),"utf-8");
+			bw = new BufferedWriter(os);
+//			fw = new FileWriter(file, true);
+			pw = new PrintWriter(bw);
 			pw.println(msg);
+			os.flush();
+			bw.flush();
 			pw.flush();
-			fw.flush();
-			pw.close();
-			fw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if (pw != null) {
-				pw.close();
-			}
-			if (fw != null) {
+			if (os != null) {
 				try {
-					fw.close();
+					os.close();
 				} catch (IOException e) {
 					// TODO 自动生成的 catch 块
 					e.printStackTrace();
 				}
 			}
+			if (bw != null) {
+				try {
+					bw.close();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			}
+			if (pw != null) {
+				pw.close();
+			}
+//			if (fw != null) {
+//				try {
+//					fw.close();
+//				} catch (IOException e) {
+//					// TODO 自动生成的 catch 块
+//					e.printStackTrace();
+//				}
+//			}
 		}
 	}
 }

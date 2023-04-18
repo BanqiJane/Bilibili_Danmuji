@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.thread;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.conf.AutoParamSetConf;
@@ -28,12 +30,17 @@ import java.util.TimeZone;
  * @date 2020年8月10日 下午12:16:13
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Getter
+@Setter
 public class AutoReplyThread extends Thread {
+
+
     public volatile boolean FLAG = false;
+
+    private ApiService apiService = SpringUtils.getBean(ApiService.class);
     private double time = 3;
     private HashSet<AutoReplySet> autoReplySets;
 
-    private ApiService apiService = SpringUtils.getBean(ApiService.class);
 
     @Override
     public void run() {
@@ -812,20 +819,5 @@ public class AutoReplyThread extends Thread {
         return is_send;
     }
 
-    public double getTime() {
-        return time;
-    }
-
-    public void setTime(double time) {
-        this.time = time;
-    }
-
-    public HashSet<AutoReplySet> getAutoReplySets() {
-        return autoReplySets;
-    }
-
-    public void setAutoReplySets(HashSet<AutoReplySet> autoReplySets) {
-        this.autoReplySets = autoReplySets;
-    }
 
 }

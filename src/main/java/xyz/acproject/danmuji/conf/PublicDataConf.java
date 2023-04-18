@@ -152,9 +152,9 @@ public class PublicDataConf {
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
 
-	public static String EDITION ="2.6.2";
+	public static String EDITION ="2.6.3";
 
-	public static String NEW_EDITION ="2.6.2";
+	public static String NEW_EDITION ="2.6.3";
 	public static String ANNOUNCE = null;
 	public static boolean INIT_CHECK_EDITION = false;
 	public static boolean INIT_CHECK_ANNOUNCE = false;

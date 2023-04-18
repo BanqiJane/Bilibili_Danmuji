@@ -1,11 +1,14 @@
 package xyz.acproject.danmuji.component.black;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
+import xyz.acproject.danmuji.http.HttpOtherData;
 
 import java.util.stream.Collectors;
 
@@ -19,10 +22,10 @@ import java.util.stream.Collectors;
 @Component
 public class BlackParseComponent {
 
-
+    private static Logger LOGGER = LogManager.getLogger(BlackParseComponent.class);
     public boolean autoReplay_parse(AutoReply autoReply) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().isAuto_reply()) {
+        if (PublicDataConf.centerSetConf.getBlack().isAuto_reply()||PublicDataConf.centerSetConf.getBlack().isAll()) {
             return this.parse(autoReply);
         }
         return true;
@@ -32,12 +35,12 @@ public class BlackParseComponent {
     public boolean interact_parse(Interact interact) {
         //全局开启
         //1欢迎 2关注
-        if (interact.getMsg_type() == 1) {
-
-        } else if (interact.getMsg_type() == 2) {
-
-        }
-        if (PublicDataConf.centerSetConf.getBlack().isThank_follow()||PublicDataConf.centerSetConf.getBlack().isThank_welcome()) {
+//        if (interact.getMsg_type() == 1) {
+//
+//        } else if (interact.getMsg_type() == 2) {
+//
+//        }
+        if (PublicDataConf.centerSetConf.getBlack().isThank_follow()||PublicDataConf.centerSetConf.getBlack().isThank_welcome()||PublicDataConf.centerSetConf.getBlack().isAll()) {
             return this.parse(interact);
         }
         return true;
@@ -45,7 +48,7 @@ public class BlackParseComponent {
 
     public boolean gift_parse(Gift gift) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().isThank_gift()) {
+        if (PublicDataConf.centerSetConf.getBlack().isThank_gift()||PublicDataConf.centerSetConf.getBlack().isAll()) {
             return this.parse(gift);
         }
         return true;
@@ -65,8 +68,8 @@ public class BlackParseComponent {
         boolean nameFlag = true;
         boolean uidFlag = true;
         //名称规则
+        String name = "";
         for (String s : PublicDataConf.centerSetConf.getBlack().getNames()) {
-            String name = "";
             if (t instanceof AutoReply) {   //自动回复
                 AutoReply autoReply = (AutoReply) t;
                 name = autoReply.getName();
@@ -102,9 +105,9 @@ public class BlackParseComponent {
             }
 
         }
+        String uid = "";
         //uid规则
         for (String s : PublicDataConf.centerSetConf.getBlack().getUids()) {
-            String uid = "";
             if (t instanceof AutoReply) {   //自动回复
                 AutoReply autoReply = (AutoReply) t;
                 uid = autoReply.getUid() + "";
@@ -121,6 +124,10 @@ public class BlackParseComponent {
                 break;
             }
         }
-        return nameFlag && uidFlag;
+        boolean totalFlag = nameFlag && uidFlag;
+        if(!totalFlag){
+            LOGGER.info("黑名单过滤姬拦截到了一条数据：{} - {}",t.getClass().getName(),t);
+        }
+        return totalFlag;
     }
 }

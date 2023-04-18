@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.thread;
 
+import lombok.Getter;
+import lombok.Setter;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
 /**
@@ -10,6 +12,8 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Getter
+@Setter
 public class GiftShieldThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(GiftShieldThread.class);
@@ -37,20 +41,5 @@ public class GiftShieldThread extends Thread {
 		PublicDataConf.SHIELDGIFTNAME = null;
 	}
 
-	public int getTime() {
-		return time;
-	}
-
-	public void setTime(int time) {
-		this.time = time;
-	}
-
-	public String getGiftName() {
-		return giftName;
-	}
-
-	public void setGiftName(String giftName) {
-		this.giftName = giftName;
-	}
 
 }

@@ -34,7 +34,7 @@ public class ServerAddressComponent implements ApplicationListener<WebServerInit
 	 * @return
 	 */
 	public String getRemoteAddress() {
-		String ip = HttpOtherData.httpGetIp();
+		String ip = HttpOtherData.httpGetIpV2();
 		if(PublicDataConf.centerSetConf.getPrivacy().is_open()){
 			ip = "隐私模式禁止获取对公ip";
 		}

@@ -82,7 +82,7 @@ public class ParseSetStatusTools {
 	}
 
 	/**
-	* 等待移除
+	* 等待移除 2.4.9
 	*/
 	@Deprecated
 	public static ConcurrentHashMap<ShieldMessage, Boolean> getMessageConcurrentHashMap(CenterSetConf centerSetConf,

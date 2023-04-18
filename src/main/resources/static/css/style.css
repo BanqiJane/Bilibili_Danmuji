@@ -33,11 +33,11 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 	margin: 0;
 }
 
-table tbody {
-	display: block;
-	height: 400px;
-	overflow-y: scroll;
-}
+/*table tbody {*/
+/*	display: block;*/
+/*	height: 400px;*/
+/*	overflow-y: scroll;*/
+/*}*/
 
 table thead, tbody tr, tfoot tr {
 	display: table;
@@ -141,6 +141,7 @@ div#danmu {
 	z-index: 9;
 	border: 1px solid pink;
 	overflow-y: auto;
+	overflow-anchor: auto;
 }
 
 #danmu::-webkit-scrollbar {
@@ -185,6 +186,8 @@ div#danmu .danmu-child {
 	transform: translateZ(0);
 	font-size: 16px;
 	cursor: pointer;
+	overflow-anchor: auto;
+	min-height: 1px;
 }
 
 div#danmu .danmu-child:hover {
@@ -202,6 +205,12 @@ div#danmu .danmu-child:hover .danmu-type {
 div#danmu .danmu-child:hover .danmu-text {
 	color: #fff;
 }
+div#danmu .danmu-child .danmu-text .danmu-text-gift {
+	color: #f6c336;
+}
+div#danmu .danmu-child .danmu-text .danmu-text-superchat {
+	color:#ff0e0e;
+}
 
 div#danmu .danmu-child .danmu-time {
 	background: #3399CC;
@@ -212,12 +221,34 @@ div#danmu .danmu-child .danmu-time {
 	padding: 0 1px;
 }
 
+div#danmu .danmu-child .danmu-time.danmu-time-gift {
+	background: #f6c336;
+}
+
+div#danmu .danmu-child .danmu-time.danmu-time-superchat {
+	background: #fa3434;
+}
+
+div#danmu .danmu-child .danmu-time.danmu-time-msg {
+	background: #38b1f6;
+}
+
 div#danmu .danmu-child .danmu-type {
 	background: #267397;
 	color: white;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
 	padding: 0 1px;
+}
+
+div#danmu .danmu-child .danmu-type.danmu-type-gift {
+	background: #ffb800;
+}
+div#danmu .danmu-child .danmu-type.danmu-type-superchat {
+	background: #ff0e0e;
+}
+div#danmu .danmu-child .danmu-type.danmu-type-msg {
+	background: #00abfd;
 }
 
 div#danmu .danmu-child a {
@@ -566,7 +597,7 @@ div#danmu .danmu-child a {
 	display: block;
 	position: relative;
 	width: 100%;
-	height: 400px;
+	/*height: 400px;*/
 	overflow-y: scroll;
 }
 
@@ -946,9 +977,9 @@ th.list-head-text{
 }
 tbody {
 	max-height: 168px;
-	display: block;
-	overflow-y: auto;
-	position: relative;
+	/*display: block;*/
+	/*overflow-y: auto;*/
+	/*position: relative;*/
 }
 .list-row:nth-child(odd) {
 	background-color: #fafbfc;

@@ -39,7 +39,7 @@ public class JsonFileTools {
             path = path+"/set/";
             // 保证创建一个新文件
             File file = new File(path+"set"+".json");
-            file.setWritable(true, false);
+//            file.setWritable(true, false);
             if (file.exists() == false)
                 file.mkdirs();
             if (file.exists()) { // 如果已存在,删除旧文件
@@ -72,7 +72,7 @@ public class JsonFileTools {
         File file = null;
         String path = System.getProperty("user.dir");
         FileTools fileTools = new FileTools();
-        StringBuilder stringBuilder = new StringBuilder();
+//        StringBuilder stringBuilder = new StringBuilder();
         try {
             path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
         } catch (Exception e1) {
@@ -85,7 +85,7 @@ public class JsonFileTools {
             path = path+"/set/";
             // 保证创建一个新文件
             file = new File(path+"set"+".json");
-            file.setWritable(true, false);
+//            file.setWritable(true, false);
             if (file.exists() == false)
                 file.mkdirs();
             if (file.exists()) { // 如果已存在,删除旧文件

@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.thread;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
@@ -13,6 +15,8 @@ import java.util.Vector;
  * @date 2021/4/12 23:32
  * @Copyright:2021
  */
+@Getter
+@Setter
 public class ParseThankWelcomeThread extends Thread{
     public volatile boolean FLAG = false;
     private String thankWelcomeString = "欢迎%uNames%进入直播间~";
@@ -82,37 +86,5 @@ public class ParseThankWelcomeThread extends Thread{
             return thankWelcomeStrs[(int) Math.ceil(Math.random() * thankWelcomeStrs.length)-1];
         }
         return thankStr;
-    }
-
-    public String getThankWelcomeString() {
-        return thankWelcomeString;
-    }
-
-    public void setThankWelcomeString(String thankWelcomeString) {
-        this.thankWelcomeString = thankWelcomeString;
-    }
-
-    public Short getNum() {
-        return num;
-    }
-
-    public void setNum(Short num) {
-        this.num = num;
-    }
-
-    public Long getDelaytime() {
-        return delaytime;
-    }
-
-    public void setDelaytime(Long delaytime) {
-        this.delaytime = delaytime;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
     }
 }

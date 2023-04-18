@@ -1,11 +1,6 @@
 package xyz.acproject.danmuji.file;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.Hashtable;
 
@@ -28,11 +23,11 @@ public class ProFileTools {
 			e1.printStackTrace();
 		}
 		File file = new File(path);
-		file.setWritable(true, false);
+//		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
 		file = new File(path + "/" + filename);
-		file.setWritable(true, false);
+//		file.setWritable(true, false);
 		if (file.exists() == false)
 			try {
 				file.createNewFile();
@@ -83,11 +78,11 @@ public class ProFileTools {
 			e1.printStackTrace();
 		}
 		File file = new File(path);
-		file.setWritable(true, false);
+//		file.setWritable(true, false);
 		if (file.exists() == false)
 			file.mkdirs();
 		file = new File(path + "/" + filename);
-		file.setWritable(true, false);
+//		file.setWritable(true, false);
 		final StringBuffer stringBuffer = new StringBuffer();
 		try {
 			file.createNewFile();
@@ -95,9 +90,11 @@ public class ProFileTools {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
+		OutputStreamWriter os= null;
 		BufferedWriter bufferedWriter = null;
 		try {
-			bufferedWriter = new BufferedWriter(new FileWriter(file));
+			os = new OutputStreamWriter(new FileOutputStream(file),"utf-8");
+			bufferedWriter = new BufferedWriter(os);
 			hashtables.forEach((k, v) -> {
 
 				stringBuffer.append(k);
@@ -106,11 +103,20 @@ public class ProFileTools {
 				stringBuffer.append("\r\n");
 			});
 			bufferedWriter.write(stringBuffer.toString());
+			os.flush();
 			bufferedWriter.flush();
 		} catch (IOException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}
+			}
 			if (bufferedWriter != null) {
 				try {
 					bufferedWriter.close();

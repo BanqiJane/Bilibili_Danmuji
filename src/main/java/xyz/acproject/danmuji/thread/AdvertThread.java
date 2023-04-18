@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.thread;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
@@ -15,6 +17,8 @@ import java.math.BigDecimal;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Getter
+@Setter
 public class AdvertThread extends Thread {
 //	@SuppressWarnings("unused")
 //	private Logger LOGGER = LogManager.getLogger(AdvertThread.class);
@@ -108,28 +112,5 @@ public class AdvertThread extends Thread {
 		}
 	}
 
-	public double getTime() {
-		return time;
-	}
-
-	public void setTime(double time) {
-		this.time = time;
-	}
-
-	public String getAdvertBarrage() {
-		return advertBarrage;
-	}
-
-	public void setAdvertBarrage(String advertBarrage) {
-		this.advertBarrage = advertBarrage;
-	}
-
-	public AdvertStatus getAdvertStatus() {
-		return advertStatus;
-	}
-
-	public void setAdvertStatus(AdvertStatus advertStatus) {
-		this.advertStatus = advertStatus;
-	}
 
 }

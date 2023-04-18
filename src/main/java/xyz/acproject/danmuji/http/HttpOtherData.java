@@ -181,6 +181,7 @@ public class HttpOtherData {
     }
 
 
+    @Deprecated
     public static String httpGetIp() {
         String data = null;
         JSONObject jsonObject = null;
@@ -219,6 +220,38 @@ public class HttpOtherData {
         }
         return ip;
     }
+
+    public static String httpGetIpV2() {
+        String data = "";
+        JSONObject jsonObject = null;
+        String code = "-1";
+        PredatorResult predatorResult = null;
+        Map<String, String> headers = null;
+        headers = new HashMap<>(2);
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        try {
+            data = OkHttp3Utils.getHttp3Utils()
+                    .httpGet("http://bilibili.acproject.xyz/ip", headers, null)
+                    .body().string();
+            if (data == null)
+                return "";
+            jsonObject = JSONObject.parseObject(data);
+            code = jsonObject.getString("code");
+            if (code.equals("200")) {
+                data = jsonObject.getString("result");
+            } else {
+                LOGGER.error("ip获取： 未知错误,原因:" + jsonObject.getString("msg"));
+            }
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            LOGGER.error("请求服务器超时，获取ip失败");
+            data = "";
+        }
+        return data;
+    }
+
 
     public static String httpPostEncsUrl() {
         String data = null;
