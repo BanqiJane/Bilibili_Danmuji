@@ -7,6 +7,7 @@
         <Property name="pattern">%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n</Property>
         <Property name="displayName">DanMuJiInfo</Property>
     </Properties>
+
     <Appenders>
         <Console name="console" target="SYSTEM_OUT" follow="true">
             <ThresholdFilter level="INFO" onMatch="ACCEPT"
@@ -15,37 +16,57 @@
                 <pattern>${pattern}</pattern>
             </PatternLayout>
         </Console>
-        <!-- 文件 每次运行程序会自动清空，由append属性决定-->
-        <File name="error" fileName="log/${displayName}_error.log" append="false">
-            <!-- 指定error 级别的日志 -->
-            <ThresholdFilter level="ERROR" onMatch="ACCEPT"
-                onMismatch="DENY" />
-            <PatternLayout>
-                <pattern>${pattern}</pattern>
-            </PatternLayout>
-        </File>
-        <!-- 滚动文件 -->
-        <RollingFile name="rollingFile" fileName="log/${displayName}.log"
-            filePattern="${displayName}_%d{yyyy-MM-dd}.log">
-            <PatternLayout>
-                <pattern>${pattern}</pattern>
-            </PatternLayout>
-            <!-- 按大小划分 -->
-            <SizeBasedTriggeringPolicy size="500 MB" />
+
+        <RollingFile name="RollingFileInfo" fileName="log/${displayName}_info.log"
+
+                     filePattern="log/${displayName}.log.%d{yyyy-MM-dd}">
+
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+
+            <PatternLayout pattern="${pattern}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+
+                <SizeBasedTriggeringPolicy size="1000 MB"/>
+            </Policies>
+
         </RollingFile>
+
+
+        <RollingFile name="ErrorRollingFileInfo" fileName="log/${displayName}_error.log"
+
+                     filePattern="log/${displayName}_error.log.%d{yyyy-MM-dd}">
+
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+
+            <PatternLayout pattern="${pattern}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+
+                <SizeBasedTriggeringPolicy size="1000 MB"/>
+            </Policies>
+
+        </RollingFile>
+
     </Appenders>
     <Loggers>
         <!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR" 
             /> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN" 
             /> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN" 
             /> -->
-        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.springframework" level="INFO"/>
         <logger name="xyz.acproject" level="DEBUG"/>
         <Logger name="org.thymeleaf" level="INFO"/>
         <Root level="DEBUG">
-            <AppenderRef ref="console"></AppenderRef>
-            <AppenderRef ref="error"></AppenderRef>
-            <AppenderRef ref="rollingFile"></AppenderRef>
+            <appender-ref  ref="console"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="ErrorRollingFileInfo"/>
         </Root>
     </Loggers>
 </configuration>

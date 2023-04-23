@@ -127,13 +127,13 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 		if(thankGiftRuleSets!=null) {
 			return thankGiftRuleSets.stream().sorted(Comparator.comparing(ThankGiftRuleSet::getGift_name)).collect(Collectors.toCollection(LinkedHashSet::new));
 		}
-		return thankGiftRuleSets;
+		return new HashSet<>();
 	}
 
 	public HashSet<String> getCodeStrings() {
 		if(codeStrings!=null) {
 			return codeStrings.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
 		}
-		return codeStrings;
+		return  new HashSet<>();
 	}
 }

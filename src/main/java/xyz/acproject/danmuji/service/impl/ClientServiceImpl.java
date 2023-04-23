@@ -1,7 +1,6 @@
 package xyz.acproject.danmuji.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.buf.HexUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.acproject.danmuji.client.WebSocketProxy;
@@ -22,7 +21,9 @@ import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
 import xyz.acproject.danmuji.utils.ByteUtils;
+import xyz.acproject.danmuji.utils.HexUtils;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -142,7 +143,7 @@ public class ClientServiceImpl implements ClientService {
                     && PublicDataConf.centerSetConf.getThank_gift().is_guard_local()) {
                 if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
                 } else {
-                    ConcurrentHashMap<Long, String> guards = HttpRoomData.httpGetGuardList();
+                    Map<Long, String> guards = HttpRoomData.httpGetGuardList();
                     if (guards != null && guards.size() > 0) {
                         for (Entry<Long, String> entry : guards.entrySet()) {
                             GuardFileTools.write(entry.getKey() + "," + entry.getValue());

@@ -3,12 +3,14 @@ package xyz.acproject.danmuji.file;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URLDecoder;
+import java.util.Date;
 
 /**
  * @author Jane
@@ -26,7 +28,6 @@ public class JsonFileTools {
         boolean flag = true;
         String path = System.getProperty("user.dir");
         FileTools fileTools = new FileTools();
-        StringBuilder stringBuilder = new StringBuilder();
         try {
             path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
         } catch (Exception e1) {
@@ -38,7 +39,7 @@ public class JsonFileTools {
         try {
             path = path+"/set/";
             // 保证创建一个新文件
-            File file = new File(path+"set"+".json");
+            File file = new File(path+"set-"+JodaTimeUtils.format(new Date(),"yyyyMMddHHmmss")+".json");
 //            file.setWritable(true, false);
             if (file.exists() == false)
                 file.mkdirs();
@@ -72,7 +73,6 @@ public class JsonFileTools {
         File file = null;
         String path = System.getProperty("user.dir");
         FileTools fileTools = new FileTools();
-//        StringBuilder stringBuilder = new StringBuilder();
         try {
             path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
         } catch (Exception e1) {
@@ -84,7 +84,7 @@ public class JsonFileTools {
         try {
             path = path+"/set/";
             // 保证创建一个新文件
-            file = new File(path+"set"+".json");
+            file = new File(path+"set-"+ JodaTimeUtils.format(new Date(),"yyyyMMddHHmmss") +".json");
 //            file.setWritable(true, false);
             if (file.exists() == false)
                 file.mkdirs();
@@ -105,7 +105,6 @@ public class JsonFileTools {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // 返回是否成功的标记
         return file;
     }

@@ -1,6 +1,5 @@
 package xyz.acproject.danmuji.utils;
 
-import org.apache.tomcat.util.buf.HexUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

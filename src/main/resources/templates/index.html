@@ -55,7 +55,7 @@
                             th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
                             th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
                             th:text="${POPU}" class="popu"></span><span th:if="${MANAGER}" class="room-manager">，<a
-                            href="javascript:void(0)">房间管理</a></span></span>
+                            href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wel-model">房间管理</a></span></span>
                         <span class="room-data"
                               th:if="${ROOMID}==null">未连接到任何房间</span>
                     </div>
@@ -164,7 +164,7 @@
                                     <span
                                             class="_description" data-bs-toggle="tooltip"
                                             data-bs-placement="top" data-bs-html="true"
-                                            title="window系统下是否开启自动打开配置页面，<span class='red-font'>开启该设置下次启动弹幕姬将会自动使用系统默认浏览器打开配置页面</span>">页面</span>
+                                            title="window系统下是否开启自动打开配置页面，<span class='red-font'>开启该设置下次启动弹幕姬将会自动使用系统默认浏览器打开配置页面</span>">设置页面</span>
                                 </label>
                             </div>
                             <div class="col-auto">
@@ -795,6 +795,16 @@
                         <div class="input-group mb-3 black-set collapse" id="black-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
+                                    <!-- 模糊模式 -->
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox"
+                                                class="form-check-input is_fuzzy_query live-save">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top" data-bs-html="true"
+                                                  title="是否全局模糊匹配用户名(意思是用户名只要包含就屏蔽)">模糊</span>
+                                        </label>
+                                    </div>
                                     <!-- 全局 -->
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
@@ -805,6 +815,7 @@
                                                   title="是否全局生效黑名单模式">全局</span>
                                         </label>
                                     </div>
+                                    <!-- 子选项 -->
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
                                                 type="checkbox"
@@ -845,9 +856,9 @@
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b black_names live-save"
-                                              placeholder="自定义屏蔽用户名字，以 中文逗号(，)为分割；%表示模糊匹配，例如：%你好，表示你好结尾的人"
+                                              placeholder="这里填写自定义屏蔽用户名字，多个请以 中文逗号(，)为分割；&#10;%表示模糊匹配，例如：%你好，表示你好结尾的人；%你好%，表示包含你好的。&#10;模糊匹配模式表示全为包含并不需要％号"
                                               data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
-                                              title="这里填写自定义屏蔽用户名字，以 中文逗号(，)为分割；%表示模糊匹配，例如：%你好，表示你好结尾的人</span>"
+                                              title="这里填写自定义屏蔽用户名字，多个请以 中文逗号(，)为分割；<br/>%表示模糊匹配，例如：%你好，表示你好结尾的人；%你好%，表示包含你好的。<br/>模糊匹配模式表示全为包含并不需要％号"
                                     ></textarea>
                                 <textarea class="form-control input-margin-b black_uids live-save"
                                           placeholder="自定义屏蔽用户uid，以 中文逗号(，)为分割"
@@ -996,9 +1007,14 @@
                         <div class="input-group mb-3 set-control">
                             <div class="col-auto">
                                 <input type="file" value="上传文件" id="file" style="display: none;"/>
-                                <button type="button" class="btn btn-warning export-set">导出设置</button>
-                                <button type="button" class="btn btn-success export-set-web">下载设置</button>
-                                <button type="button" class="btn btn-info import-set">导入设置</button>
+                                <button type="button" class="btn btn-warning export-set"
+                                        title="导出设置到本地，弹幕姬配置文件夹set底下">导出设置
+                                </button>
+                                <button type="button" class="btn btn-success export-set-web" title="网页实时下载配置">
+                                    下载设置
+                                </button>
+                                <button type="button" class="btn btn-info import-set" title="导入配置文件">导入设置
+                                </button>
                             </div>
                         </div>
                         <!-- 底部按钮结束 -->
@@ -1020,7 +1036,7 @@
                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                         title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
                             href="javascript:;" data-bs-toggle="tooltip" id="checkupdate"
-                            data-bs-placement="top"
+                            data-bs-placement="top" th:data-version = "${EDITION}"
                             th:title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a><!-- -->
                     </div>
                 </div>
@@ -1174,53 +1190,59 @@
     </div>
 </div>
 <!-- 通用-禁言窗体 -->
-<div class="block-mask" style="display: none;">
-    <div class="block-wrap">
-        <div class="t">
-            禁言窗口 <i class="btn-close-block"></i>
-        </div>
-        <div class="con">
-            <div class="input-group mb-3">
-                <div class="form-group block-set">
-                    <input class="form-control form-control-sm block-input" type="number" min="1" max="720"
-                           placeholder="禁言时间1-720小时" data-bs-toggle="tooltip" data-bs-placement="top"
-                           data-bs-html="true" value="">
-                </div>
-                <div class="form-group block-button">
-                    <button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
-                </div>
+<div class="modal" id="block-model">
+    <div class="modal-dialog">
+        <div class="modal-content block-wrap" style="overflow: auto;resize: both;">
+            <div class="t">
+                禁言窗口 <i class="btn-close-block"></i>
+            </div>
+            <div class="con">
+                <div class="input-group mb-3">
+                    <div class="form-group block-set">
+                        <input class="form-control form-control-sm block-input" type="number" min="1" max="720"
+                               placeholder="禁言时间1-720小时" data-bs-toggle="tooltip" data-bs-placement="top"
+                               data-bs-html="true" value="">
+                    </div>
+                    <div class="form-group block-button">
+                        <button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="wel-mask" style="display: none;">
-    <div class="wel-wrap">
-        <div class="t">
-            禁言列表窗口 <i class="btn-close-wel"> </i>
-        </div>
-        <div class="con">
-            <div class="input-group mb-3">
-                <table class="user-list">
-                    <thead>
-                    <tr class="list-head">
-                        <th width="35%" class="list-head-text list-unit">用户名称</th>
-                        <th width="44%" class="list-head-text list-unit">解禁时间</th>
-                        <th width="21%" class="list-head-text list-unit">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody class="list-body ps ps--theme_default">
-                    <!--                    <tr class="list-row">-->
-                    <!--                        <td width="35%" class="list-unit"><p class="user-name-col">火鸡味-大锅巴</p></td>-->
-                    <!--                        <td width="44%" class="list-unit">2021-05-17 22:43:39</td>-->
-                    <!--                        <td width="21%" class="list-unit pointer no-select"><span>撤销</span>-->
-                    <!--                        </td>-->
-                    <!--                    </tr>-->
-                    </tbody>
-                </table>
-                <div class="block-btn">
-                    <div class="block-btn-body"><a href="javascript:void(0)" class="block-pre-page">上一页</a><span
-                            class="block-page">1</span><a href="javascript:void(0)" class="block-next-page">下一页</a>
+<!-- 禁言列表 -->
+<div class="modal" id="wel-model">
+    <div class="modal-dialog">
+        <div class="modal-content wel-wrap" style="overflow: auto;resize: both;">
+            <div class="t">
+                禁言列表窗口 <i class="btn-close-wel"> </i>
+            </div>
+            <div class="con">
+                <div class="input-group mb-3">
+                    <table class="user-list">
+                        <thead>
+                        <tr class="list-head">
+                            <th width="35%" class="list-head-text list-unit">用户名称</th>
+                            <th width="44%" class="list-head-text list-unit">解禁时间</th>
+                            <th width="17%" class="list-head-text list-unit">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="list-body ps ps--theme_default">
+                        <!--                    <tr class="list-row">-->
+                        <!--                        <td width="35%" class="list-unit"><p class="user-name-col">火鸡味-大锅巴</p></td>-->
+                        <!--                        <td width="44%" class="list-unit">2021-05-17 22:43:39</td>-->
+                        <!--                        <td width="21%" class="list-unit pointer no-select"><span>撤销</span>-->
+                        <!--                        </td>-->
+                        <!--                    </tr>-->
+                        </tbody>
+                    </table>
+                    <div class="block-btn">
+                        <div class="block-btn-body"><a href="javascript:void(0)" class="block-pre-page">上一页</a><span
+                                class="block-page">1</span><a href="javascript:void(0)"
+                                                              class="block-next-page">下一页</a>
+                        </div>
                     </div>
                 </div>
             </div>

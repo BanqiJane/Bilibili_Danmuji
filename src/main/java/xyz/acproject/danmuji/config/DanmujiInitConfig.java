@@ -15,7 +15,8 @@ import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
 
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Jane
@@ -31,18 +32,18 @@ public class DanmujiInitConfig {
     private SetServiceImpl checkService;
 
     public void init(){
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Map<String, String> profileMap = new ConcurrentHashMap<>();
         String cookieString = null;
         BASE64Encoder base64Encoder = new BASE64Encoder();
         try {
-            hashtable.putAll(ProFileTools.read("DanmujiProfile"));
+            profileMap.putAll(ProFileTools.read("DanmujiProfile"));
         } catch (Exception e) {
             // TODO: handle exception
         }
         // 读取本地cookie
         try {
-            cookieString = !StringUtils.isEmpty(hashtable.get(cookies))
-                    ? new String(base64Encoder.decode(hashtable.get(cookies)))
+            cookieString = !StringUtils.isEmpty(profileMap.get(cookies))
+                    ? new String(base64Encoder.decode(profileMap.get(cookies)))
                     : null;
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
@@ -59,13 +60,13 @@ public class DanmujiInitConfig {
             PublicDataConf.USERCOOKIE = null;
         } else {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
         }
         // 读取本地set
         try {
-            PublicDataConf.centerSetConf = !StringUtils.isEmpty(hashtable.get("set")) ? JSONObject
-                    .parseObject(new String(base64Encoder.decode(hashtable.get("set"))), CenterSetConf.class) : null;
+            PublicDataConf.centerSetConf = !StringUtils.isEmpty(profileMap.get("set")) ? JSONObject
+                    .parseObject(new String(base64Encoder.decode(profileMap.get("set"))), CenterSetConf.class) : null;
         } catch (Exception e) {
             // TODO: handle exception
             LOGGER.error("读取配置文件失败,尝试重新读取" + e);
@@ -109,11 +110,11 @@ public class DanmujiInitConfig {
             PublicDataConf.centerSetConf.setBlack(new BlackListSetConf());
         }
         //初始化配置文件结束
-        hashtable.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
-        ProFileTools.write(hashtable, "DanmujiProfile");
+        profileMap.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
+        ProFileTools.write(profileMap, "DanmujiProfile");
         try {
             PublicDataConf.centerSetConf = JSONObject
-                    .parseObject(new String(base64Encoder.decode(hashtable.get("set"))), CenterSetConf.class);
+                    .parseObject(new String(base64Encoder.decode(profileMap.get("set"))), CenterSetConf.class);
             LOGGER.info("读取配置文件成功");
         } catch (Exception e) {
             // TODO: handle exception
@@ -163,7 +164,7 @@ public class DanmujiInitConfig {
             checkService.holdSet(PublicDataConf.centerSetConf);
         }
         base64Encoder = null;
-        hashtable.clear();
+        profileMap.clear();
     }
 
     @Autowired

@@ -2,7 +2,8 @@ package xyz.acproject.danmuji.file;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName ProFileTools
@@ -13,7 +14,7 @@ import java.util.Hashtable;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class ProFileTools {
-	public static Hashtable<String, String> read(String filename) {
+	public static Map<String, String> read(String filename) {
 		String path = System.getProperty("user.dir");
 		FileTools fileTools = new FileTools();
 		try {
@@ -35,7 +36,7 @@ public class ProFileTools {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
 			}
-		Hashtable<String, String> hashtables = new Hashtable<String, String>();
+		Map<String, String> profileMap = new ConcurrentHashMap<>();
 		BufferedReader bufferedReader = null;
 		String dataString = null;
 		String[] strings = null;
@@ -45,7 +46,7 @@ public class ProFileTools {
 				strings = dataString.split(":@:");
 				if (strings != null) {
 					if (strings.length == 2) {
-						hashtables.put(strings[0], strings[1]);
+						profileMap.put(strings[0], strings[1]);
 					} else {
 						return null;
 					}
@@ -64,11 +65,11 @@ public class ProFileTools {
 				}
 			}
 		}
-		return hashtables;
+		return profileMap;
 
 	}
 
-	public static void write(Hashtable<String, String> hashtables, String filename) {
+	public static void write(Map<String, String> profileMap, String filename) {
 		String path = System.getProperty("user.dir");
 		FileTools fileTools = new FileTools();
 		try {
@@ -95,7 +96,7 @@ public class ProFileTools {
 		try {
 			os = new OutputStreamWriter(new FileOutputStream(file),"utf-8");
 			bufferedWriter = new BufferedWriter(os);
-			hashtables.forEach((k, v) -> {
+			profileMap.forEach((k, v) -> {
 
 				stringBuffer.append(k);
 				stringBuffer.append(":@:");

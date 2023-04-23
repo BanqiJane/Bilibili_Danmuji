@@ -806,11 +806,11 @@ div#danmu .danmu-child a {
     display: none;
 }
 .block-wrap{
-	position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-left: -300px;
-    margin-top: -300px;
+	/*position: fixed;*/
+    /*top: 50%;*/
+    /*left: 50%;*/
+    /*margin-left: -300px;*/
+    /*margin-top: -300px;*/
     background: #fff;
     border-radius: 4px;
 }
@@ -824,8 +824,7 @@ div#danmu .danmu-child a {
 }
 .block-wrap .con {
     background: white;
-    padding: 20px;
-    width:600px;
+    padding: 5px;
 }
 .block-wrap .t .btn-close-block {
     position: absolute;
@@ -863,8 +862,8 @@ div#danmu .danmu-child a {
 }
 .block-set{
 	width:60%;
-	margin-left: 85px;
-	margin-right: 5px;
+	margin-left: 10%;
+	margin-right: 3%;
 }
 .block-button{
 	
@@ -887,11 +886,11 @@ div#danmu .danmu-child a {
 	display: none;
 }
 .wel-wrap{
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-left: -300px;
-	margin-top: -300px;
+	/*position: fixed;*/
+	/*top: 50%;*/
+	/*left: 50%;*/
+	/*margin-left: -300px;*/
+	/*margin-top: -300px;*/
 	background: #fff;
 	border-radius: 4px;
 }
@@ -905,8 +904,8 @@ div#danmu .danmu-child a {
 }
 .wel-wrap .con {
 	background: white;
-	padding: 20px;
-	width:600px;
+	padding: 5px;
+	/*width:600px;*/
 }
 .wel-wrap .t .btn-close-wel {
 	position: absolute;
@@ -967,7 +966,7 @@ th.list-head-text{
 }
 .list-unit {
 	text-align: left;
-	text-indent: 49px;
+	text-indent: 29px;
 	font-size: 12px;
 	line-height: 16px;
 	color: #666;
@@ -1002,10 +1001,11 @@ div .link-popup-panel .popup-content-ctnr p {
 .block-btn{
 	text-align: center;
 	position: relative;
+	width: 100%;
 }
 .block-btn .block-btn-body{
 	position: relative;
-	left: 210px;
+	text-align: center;
 }
 .block-btn .block-btn-body .block-pre-page{
 	margin-right: 10px;

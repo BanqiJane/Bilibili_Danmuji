@@ -1,20 +1,30 @@
-package  xyz.acproject.danmuji.utils;
+package xyz.acproject.danmuji.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ *
+ * @Description spring通用工具类
+ * @author Jane
+ * @ClassName SpringUtils
+ * @date 2021/1/23 21:51
+ * @Copyright:2021
+ */
 @Component
 public class SpringUtils implements ApplicationContextAware {
 
 	private static ApplicationContext applicationContext;
-	 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if(SpringUtils.applicationContext == null) {
-            SpringUtils.applicationContext = applicationContext;
-        }
-    }
+    private static Map<String,String> propertiesMap;
+
+    private static Environment environment;
  
     //获取applicationContext
     public static ApplicationContext getApplicationContext() {
@@ -36,4 +46,31 @@ public class SpringUtils implements ApplicationContextAware {
         return getApplicationContext().getBean(name, clazz);
     }
 
+    /**
+     *
+     * @Description 获取springboot默认yml中的配置值
+     * @author Jane
+     * @date 2021/1/24 0:47
+     * @params [key]
+     * @return java.lang.String
+     *
+     * @Copyright
+     */
+    public static String getConfigByKey(String key) {
+        if(environment!=null) {
+          return environment.getProperty(key);
+        }
+        return null;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        if(SpringUtils.applicationContext == null) {
+            SpringUtils.applicationContext = applicationContext;
+        }
+    }
+
+    @Autowired
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 }

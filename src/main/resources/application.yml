@@ -25,9 +25,6 @@ server:
       force: true
       charset: UTF-8
       enabled: true
-    tomcat:
-      uri-encoding: UTF-8
-
 
 danmuji:
-  version: 2.6.3
+  version: 2.6.4

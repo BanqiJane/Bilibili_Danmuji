@@ -11,18 +11,19 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class QrcodeUtils {
 	
 	
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void creatRrCode(String contents, int width, int height,HttpServletResponse response) {
-		Hashtable hints = new Hashtable();
+		Map hints = new ConcurrentHashMap<>();
 
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); //容错级别最高
-        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");  //设置字符编码
-        hints.put(EncodeHintType.MARGIN, 0);                //二维码空白区域,最小为0也有白边,只是很小,最小是6像素左右
+         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H); //容错级别最高
+         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");  //设置字符编码
+         hints.put(EncodeHintType.MARGIN, 0);                //二维码空白区域,最小为0也有白边,只是很小,最小是6像素左右
         try {
             BitMatrix bitMatrix = new MultiFormatWriter().encode(contents, BarcodeFormat.QR_CODE, width, height, hints); // 1、读取文件转换为字节数组
 //            ByteArrayOutputStream out = new ByteArrayOutputStream();

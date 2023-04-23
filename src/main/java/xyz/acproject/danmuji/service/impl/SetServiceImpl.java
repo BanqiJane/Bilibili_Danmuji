@@ -21,7 +21,8 @@ import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.utils.SchedulingRunnableUtil;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author BanqiJane
@@ -95,16 +96,16 @@ public class SetServiceImpl implements SetService {
 
     public void changeSet(CenterSetConf centerSetConf) {
         synchronized (centerSetConf) {
-            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (PublicDataConf.USER != null) {
-                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
-            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            ProFileTools.write(hashtable, "DanmujiProfile");
+            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(profileMap, "DanmujiProfile");
             LOGGER.info("保存配置文件成功");
             base64Encoder = null;
-            hashtable.clear();
+            profileMap.clear();
         }
     }
 
@@ -118,13 +119,13 @@ public class SetServiceImpl implements SetService {
             if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0) {
                 centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
             }
-            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (PublicDataConf.USER != null) {
-                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
-            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            ProFileTools.write(hashtable, "DanmujiProfile");
+            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(profileMap, "DanmujiProfile");
             try {
                 PublicDataConf.centerSetConf = JSONObject.parseObject(
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
@@ -136,19 +137,19 @@ public class SetServiceImpl implements SetService {
                 LOGGER.error("保存配置文件失败:" + e);
             }
             base64Encoder = null;
-            hashtable.clear();
+            profileMap.clear();
         }
     }
 
     public void connectSet(CenterSetConf centerSetConf) {
         synchronized (centerSetConf) {
-            Hashtable<String, String> hashtable = new Hashtable<String, String>();
+            Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
             if (PublicDataConf.USER != null) {
-                hashtable.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
-            hashtable.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
-            ProFileTools.write(hashtable, "DanmujiProfile");
+            profileMap.put("set", base64Encoder.encode(centerSetConf.toJson().getBytes()));
+            ProFileTools.write(profileMap, "DanmujiProfile");
             try {
                 PublicDataConf.centerSetConf = JSONObject.parseObject(
                         new String(base64Encoder.decode(ProFileTools.read("DanmujiProfile").get("set"))),
@@ -163,7 +164,7 @@ public class SetServiceImpl implements SetService {
                 LOGGER.error("读取配置文件历史房间失败:" + e);
             }
             base64Encoder = null;
-            hashtable.clear();
+            profileMap.clear();
         }
     }
 

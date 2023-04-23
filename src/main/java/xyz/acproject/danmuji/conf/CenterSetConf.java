@@ -131,6 +131,10 @@ public class CenterSetConf implements Serializable {
     private BlackListSetConf black;
 
 
+    @JSONField(name = "edition",serialize = false)
+    private String edition = "";
+
+
 
     public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,
                          ThankFollowSetConf follow, AutoReplySetConf reply, ClockInSetConf clock_in, ThankWelcomeSetConf welcome, AutoSendGiftConf auto_gift, PrivacySetConf privacy,BlackListSetConf black) {

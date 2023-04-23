@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.config.DanmujiInitConfig;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
@@ -231,6 +232,8 @@ public class WebController {
     public Response<?> send(HttpServletRequest req, @RequestParam("set") String set) {
         try {
             CenterSetConf centerSetConf = JSONObject.parseObject(set, CenterSetConf.class);
+            //配置不一样 刷新页面
+            if(!StringUtils.equals(centerSetConf.getEdition(),PublicDataConf.EDITION))return Response.success(2,req);
             //登录设置
             if (centerSetConf.is_manager_login() && StringUtils.isNotBlank(centerSetConf.getManager_key())) {
                 centerSetConf.setManager_key(DigestUtils.md5DigestAsHex(centerSetConf.getManager_key().getBytes()));
@@ -255,13 +258,77 @@ public class WebController {
                 taskRegisterComponent.removeTask(autoSendGiftTask);
                 taskRegisterComponent.addTask(autoSendGiftTask, CurrencyTools.dateStringToCron(centerSetConf.getAuto_gift().getTime()));
             }
+            //更改
+            //公告
+            if(centerSetConf.getAdvert()==null&&PublicDataConf.centerSetConf.getAdvert()!=null){
+                centerSetConf.setAdvert(PublicDataConf.centerSetConf.getAdvert());
+            }
+            if (centerSetConf.getAdvert() == null&&PublicDataConf.centerSetConf.getAdvert()==null) {
+                centerSetConf.setAdvert(new AdvertSetConf());
+            }
+            //关注
+            if(centerSetConf.getFollow()==null&&PublicDataConf.centerSetConf.getFollow()!=null){
+                centerSetConf.setFollow(PublicDataConf.centerSetConf.getFollow());
+            }
+            if (centerSetConf.getFollow() == null&&PublicDataConf.centerSetConf.getFollow()==null) {
+                centerSetConf.setFollow(new ThankFollowSetConf());
+            }
+            //谢礼物
+            if(centerSetConf.getThank_gift()==null&&PublicDataConf.centerSetConf.getThank_gift()!=null){
+                centerSetConf.setThank_gift(PublicDataConf.centerSetConf.getThank_gift());
+            }
+            if(centerSetConf.getThank_gift()==null&&PublicDataConf.centerSetConf.getThank_gift()==null){
+                centerSetConf.setThank_gift(new ThankGiftSetConf());
+            }
+            //自动回复
+            if(centerSetConf.getReply()==null&&PublicDataConf.centerSetConf.getReply()!=null){
+                centerSetConf.setReply(PublicDataConf.centerSetConf.getReply());
+            }
+            if(centerSetConf.getReply()==null&&PublicDataConf.centerSetConf.getReply()==null){
+                centerSetConf.setReply(new AutoReplySetConf());
+            }
+            //自动打卡
+            if(centerSetConf.getClock_in()==null&&PublicDataConf.centerSetConf.getClock_in()!=null){
+                centerSetConf.setClock_in(PublicDataConf.centerSetConf.getClock_in());
+            }
+            if(centerSetConf.getClock_in()==null&&PublicDataConf.centerSetConf.getClock_in()==null){
+                centerSetConf.setClock_in(new ClockInSetConf(false,"签到"));
+            }
+            //欢迎
+            if(centerSetConf.getWelcome()==null&&PublicDataConf.centerSetConf.getWelcome()!=null){
+                centerSetConf.setWelcome(PublicDataConf.centerSetConf.getWelcome());
+            }
+            if(centerSetConf.getWelcome()==null&&PublicDataConf.centerSetConf.getWelcome()==null){
+                centerSetConf.setWelcome(new ThankWelcomeSetConf());
+            }
+            //自动送礼
+            if(centerSetConf.getAuto_gift()==null&&PublicDataConf.centerSetConf.getAuto_gift()!=null){
+                centerSetConf.setAuto_gift(PublicDataConf.centerSetConf.getAuto_gift());
+            }
+            if(centerSetConf.getAuto_gift()==null&&PublicDataConf.centerSetConf.getAuto_gift()==null){
+                centerSetConf.setAuto_gift(new AutoSendGiftConf());
+            }
+            //隐私模式
+            if(centerSetConf.getPrivacy()==null&&PublicDataConf.centerSetConf.getPrivacy()!=null){
+                centerSetConf.setPrivacy(PublicDataConf.centerSetConf.getPrivacy());
+            }
+            if(centerSetConf.getPrivacy()==null&&PublicDataConf.centerSetConf.getPrivacy()==null){
+                centerSetConf.setPrivacy(new PrivacySetConf());
+            }
+            //黑名单
+            if(centerSetConf.getBlack()==null&&PublicDataConf.centerSetConf.getBlack()!=null){
+                centerSetConf.setBlack(PublicDataConf.centerSetConf.getBlack());
+            }
+            if(centerSetConf.getBlack()==null&&PublicDataConf.centerSetConf.getBlack()==null){
+                centerSetConf.setBlack(new BlackListSetConf());
+            }
             checkService.changeSet(centerSetConf,true);
         } catch (Exception e) {
             e.printStackTrace();
             // TODO: handle exception
-            return Response.success(false, req);
+            return Response.success(0, req);
         }
-        return Response.success(true, req);
+        return Response.success(1, req);
     }
 
 
@@ -394,7 +461,7 @@ public class WebController {
 
     @ResponseBody
     @GetMapping(value = "/setExportWeb")
-    public void setExportWeb(HttpServletRequest req,HttpServletResponse response) throws Exception {
+    public void setExportWeb(HttpServletResponse response) throws Exception {
         File file = JsonFileTools.createJsonFileReturnFile(PublicDataConf.centerSetConf.toJson());
         FileInputStream fileInputStream = new FileInputStream(file);
         InputStream fis = new BufferedInputStream(fileInputStream);
@@ -403,7 +470,7 @@ public class WebController {
         fis.close();
         response.reset();
         response.setCharacterEncoding("UTF-8");
-        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("set.json", "UTF-8"));
+        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
         response.addHeader("Content-Length", "" + file.length());
         OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/octet-stream");

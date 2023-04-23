@@ -1,8 +1,8 @@
 package xyz.acproject.danmuji.thread.core;
 
-import org.apache.tomcat.util.buf.HexUtils;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
+import xyz.acproject.danmuji.utils.HexUtils;
 
 /**
  * @ClassName HeartByteThread

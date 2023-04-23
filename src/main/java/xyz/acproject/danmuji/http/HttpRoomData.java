@@ -320,9 +320,9 @@ public class HttpRoomData {
 		return followersNum;
 	}
 
-	public static ConcurrentHashMap<Long, String> httpGetGuardList() {
+	public static Map<Long, String> httpGetGuardList() {
 		String data = null;
-		ConcurrentHashMap<Long, String> hashtable = new ConcurrentHashMap<Long, String>();
+		Map<Long, String> guardMap = new ConcurrentHashMap<>();
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
 		Map<String, String> headers = null;
@@ -372,12 +372,12 @@ public class HttpRoomData {
 						// TODO 自动生成的 catch 块
 						e.printStackTrace();
 					}
-					hashtable.put(((JSONObject) object).getLong("uid"), ((JSONObject) object).getString("username"));
+					guardMap.put(((JSONObject) object).getLong("uid"), ((JSONObject) object).getString("username"));
 				}
 				if (i == 1) {
 					jsonArray = ((JSONObject) jsonObject.get("data")).getJSONArray("top3");
 					for (Object object : jsonArray) {
-						hashtable.put(((JSONObject) object).getLong("uid"),
+						guardMap.put(((JSONObject) object).getLong("uid"),
 								((JSONObject) object).getString("username"));
 					}
 				}
@@ -385,7 +385,7 @@ public class HttpRoomData {
 				LOGGER.error("直播房间号不存在，或者未知错误，请尝试更换房间号,原因:" + jsonObject.getString("message"));
 			}
 		}
-		return hashtable;
+		return guardMap;
 	}
 
 	public static int httpGetGuardListTotalSize() {

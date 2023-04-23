@@ -124,7 +124,8 @@ $(function () {
     });
     $(document).on('click', '#danmu_open', function () {
         let url_start = window.location.host;
-        $(".connect-docket").val("ws://" + url_start + "/danmu/sub");
+        let protocol = window.location.protocol;
+        $(".connect-docket").val((protocol === 'http:' ? "ws://" : "wss://") + url_start + "/danmu/sub");
     });
     $('body').click(function (e) {
         let target = $(e.target);
@@ -229,15 +230,15 @@ $(document).on('click', '.btn-close', function () {
     }
 });
 $(document).on('click', '.btn-close-block', function () {
-    if ($(".block-mask").is(":visible")) {
-        $(".block-mask").hide();
-    }
+    // if ($(".block-mask").is(":visible")) {
+        $("#block-model").modal('hide');
+    // }
 });
 $(document).on('click', '.btn-close-wel', function () {
     let is_kong = false;
-    if ($(".wel-mask").is(":visible")) {
-        $(".wel-mask").hide();
-    }
+    // if ($(".wel-mask").is(":visible")) {
+        $("#wel-model").modal('hide');
+    // }
 });
 $(document).on('click', '.btn-closer', function () {
     let is_hide = true;
@@ -264,7 +265,7 @@ $(document).on('click', '.btn-block', function () {
             const code = method.block(uid, time);
             if (code === 0) {
                 alert("禁言成功");
-                $(".block-mask").hide();
+                $("#block-model").modal('hide');
             } else {
                 alert("禁言失败");
                 console.log("禁言纠错码:" + code)
@@ -519,7 +520,7 @@ $(document).on('click', '.danmu-tips-li', function (e) {
         $(".block-input").attr("uid", uid);
         $(".block-input").val("");
         $(".block-input").attr("placeholder", "禁言(" + uname + "-" + uid + ")" + "-禁言时间为1-720小时");
-        $(".block-mask").show();
+        // $(".block-model").modal('show');
     } else {
 
     }
@@ -640,7 +641,7 @@ const danmuku = {
         }
     },
     tips: function (d) {
-        return `<div class="danmu-tips" uid="` + d.uid + `"><ul class="danmu-tips-ul"><li class="danmu-tips-li">禁言</li><li class="danmu-tips-li">查看</li><li class="danmu-tips-li">关闭</li></ul></div>`;
+        return `<div class="danmu-tips" uid="` + d.uid + `"><ul class="danmu-tips-ul"><li class="danmu-tips-li" data-bs-toggle="modal" data-bs-target="#block-model">禁言</li><li class="danmu-tips-li">查看</li><li class="danmu-tips-li">关闭</li></ul></div>`;
     },
     danmu: function (type, d) {
         var type_index = 0;
@@ -835,6 +836,7 @@ const method = {
         set.auto_gift.room_id = $(".autoGift_roomids").val();
         set.privacy.is_open = $(".is_privacy_open").is(':checked');
         set.privacy.small_heart_url = $(".privacy_heart_url").val();
+        set.black.fuzzy_query = $(".is_fuzzy_query").is(':checked');
         set.black.all = $(".is_black_all").is(':checked');
         set.black.thank_gift = $(".is_black_gift").is(':checked');
         set.black.thank_welcome = $(".is_black_welcome").is(':checked');
@@ -941,12 +943,17 @@ const method = {
         if ($(".card-body").find(".logined").length > 0) {
             if (!c1 && !c2 && !c3 && !c4 && !c5 && !c6 && !c7 && !c8 && !c9 && !c10 && !c11) {
                 publicData.set = method.initSet(set);
-                if (method.sendSet(set)) {
+                var edition = $("#checkupdate").attr("data-version");
+                set.edition = edition;
+                var result = method.sendSet(set);
+                if (result==1) {
                     method.delay_method(".success-message", "保存配置成功");
                     if (!publicData.set.auto_save_set) {
                         alert("修改配置成功");
                     }
-                } else {
+                }else if(result==2){
+                    location.reload();
+                }else {
                     method.delay_method(".notice-message", "修改配置失败");
                     if (!publicData.set.auto_save_set) {
                         alert("修改配置失败");
@@ -960,10 +967,15 @@ const method = {
             }
         } else {
             method.initSet(set);
-            if (method.sendSet(set)) {
+            var edition = $("#checkupdate").attr("data-version");
+            set.edition = edition;
+            var result = method.sendSet(set);
+            if (result == 1) {
                 method.delay_method(".success-message", "保存配置成功");
                 alert("修改配置成功");
-            } else {
+            }else if(result==2){
+                location.reload();
+            }else {
                 method.delay_method(".notice-message", "修改配置失败");
                 alert("修改配置失败");
             }
@@ -988,7 +1000,7 @@ const method = {
     },
     sendSet: function (set) {
         "use strict";
-        let flag = false;
+        let flag = 0;
         $.ajax({
             url: '../sendSet',
             data: {
@@ -1053,8 +1065,8 @@ const method = {
                 set.thank_gift.list_gift_shield_status).prop('selected', true);
             $(".thankgift_list_people_shield_status").find("option").eq(
                 set.thank_gift.list_people_shield_status).prop('selected', true);
-            $(".thankgift_shield").val(method.giftStrings_metod(set.thank_gift.giftStrings));
-            $(".thankgift_codeStrings").val(method.codeStrings_metod(set.thank_gift.codeStrings));
+            $(".thankgift_shield").val(method.giftStrings_method(set.thank_gift.giftStrings));
+            $(".thankgift_codeStrings").val(method.codeStrings_method(set.thank_gift.codeStrings));
             method.shieldgifts_each(set.thank_gift.thankGiftRuleSets);
             method.replys_each(set.reply.autoReplySets);
             // $(".thankgift_thankGiftRuleSets").val(
@@ -1107,13 +1119,14 @@ const method = {
             $(".autoGift_roomids").val(set.auto_gift.room_id);
             $(".is_privacy_open").prop('checked', set.privacy.is_open);
             $(".privacy_heart_url").val(set.privacy.small_heart_url);
+            $(".is_fuzzy_query").prop('checked', set.black.fuzzy_query);
             $(".is_black_all").prop('checked', set.black.all);
             $(".is_black_gift").prop('checked', set.black.thank_gift);
             $(".is_black_follow").prop('checked', set.black.thank_follow);
             $(".is_black_welcome").prop('checked', set.black.thank_welcome);
             $(".is_black_reply").prop('checked', set.black.auto_reply);
-            $(".black_names").val(method.giftStrings_metod(set.black.names));
-            $(".black_uids").val(method.giftStrings_metod(set.black.uids));
+            $(".black_names").val(method.giftStrings_method(set.black.names));
+            $(".black_uids").val(method.giftStrings_method(set.black.uids));
 
 
             /* 处理？ */
@@ -1272,6 +1285,7 @@ const method = {
                 $(".is_autoGift_open").attr("disabled", true);
                 $(".autoGift_time").attr("disabled", true);
                 $(".autoGift_roomids").attr("disabled", true);
+                $(".is_fuzzy_query").attr("disabled", true);
                 $(".is_black_all").attr("disabled", true);
                 $(".is_black_gift").attr("disabled", true);
                 $(".is_black_welcome").attr("disabled", true);
@@ -1313,14 +1327,14 @@ const method = {
             }, 5000);
         }
     },
-    giftStrings_metod: function (lists) {
+    giftStrings_method: function (lists) {
         let s = "";
         if (lists != null) {
             s = lists.join("，");
         }
         return s;
     },
-    codeStrings_metod: function (lists) {
+    codeStrings_method: function (lists) {
         let s = "";
         if (lists != null) {
             s = lists.join("\n");
@@ -1407,11 +1421,11 @@ const method = {
 // +"<input class='small-input reply_keywords' placeholder='关键字'
 // data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
 // data-original-title='关键字' readonly='readonly' value='"
-// +method.giftStrings_metod(lists[i].keywords)+"' disabled/>"
+// +method.giftStrings_method(lists[i].keywords)+"' disabled/>"
 // +"<input class='small-input reply_shields' placeholder='屏蔽词'
 // data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
 // data-original-title='屏蔽词' readonly='readonly' value='"
-// +method.giftStrings_metod(lists[i].shields)+"' disabled/>"
+// +method.giftStrings_method(lists[i].shields)+"' disabled/>"
 // +"<input class='big-input reply_rs' placeholder='回复语句' readonly='readonly'
 // value='"
 // +lists[i].reply+"' disabled/>"
@@ -1420,8 +1434,8 @@ const method = {
 // btn-sm reply_delete'>删除</button></span></li>");
                 $(".reply_open").eq(i).prop('checked', lists[i].is_open);
                 $(".reply_oc").eq(i).prop('checked', lists[i].is_accurate);
-                $(".reply_keywords").eq(i).val(method.giftStrings_metod(lists[i].keywords));
-                $(".reply_shields").eq(i).val(method.giftStrings_metod(lists[i].shields));
+                $(".reply_keywords").eq(i).val(method.giftStrings_method(lists[i].keywords));
+                $(".reply_shields").eq(i).val(method.giftStrings_method(lists[i].shields));
                 $(".reply_rs").eq(i).val(lists[i].reply);
             }
         }
@@ -1481,7 +1495,7 @@ const method = {
                                 ` <tr class="list-row">
                         <td width="35%" class="list-unit"><p class="user-name-col">` + i.uname + `</p></td>
                         <td width="44%" class="list-unit">` + i.block_end_time + `</td>
-                        <td width="21%" class="list-unit pointer no-select"><span class="del_block_click" data-id="` + i.id + `">撤销</span>
+                        <td width="17%" class="list-unit pointer no-select"><span class="del_block_click" data-id="` + i.id + `">撤销</span>
                         </td>
                     </tr>`
                             );

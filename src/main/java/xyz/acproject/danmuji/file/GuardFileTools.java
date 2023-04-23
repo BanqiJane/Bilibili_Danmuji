@@ -2,8 +2,8 @@ package xyz.acproject.danmuji.file;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
 
@@ -16,10 +16,10 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
 public class GuardFileTools {
-	public static Hashtable<Long, String> read() {
+	public static Map<Long, String> read() {
 		String path = System.getProperty("user.dir");
 		FileTools fileTools = new FileTools();
-		Hashtable<Long, String> hashtable = new Hashtable<Long, String>();
+		Map<Long, String> guardMap = new ConcurrentHashMap<>();
 		try {
 			path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
 		} catch (Exception e1) {
@@ -46,7 +46,7 @@ public class GuardFileTools {
 			String s = "";
 			while ((s = bufReader.readLine()) != null) {
 				String[] str = s.split(",");
-				hashtable.put(Long.valueOf(str[0]), str[1]);
+				guardMap.put(Long.valueOf(str[0]), str[1]);
 			}
 		} catch (IOException e) {
 			// TODO 自动生成的 catch 块
@@ -60,7 +60,7 @@ public class GuardFileTools {
 				e.printStackTrace();
 			}
 		}
-		return hashtable;
+		return guardMap;
 	}
 
 	public static void write(String msg) {

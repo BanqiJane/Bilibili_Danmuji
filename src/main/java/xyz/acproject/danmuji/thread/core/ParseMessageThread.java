@@ -36,8 +36,9 @@ import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author BanqiJane
@@ -146,14 +147,14 @@ public class ParseMessageThread extends Thread {
                             boolean is_xunzhang = true;
                             //是不是表情弹幕
                             boolean is_emoticon = barrage.getMsg_emoticon() != null && barrage.getMsg_emoticon() == 1;
-                            if (getCenterSetConf().is_barrage_anchor_shield()) {
+                            if (getCenterSetConf().is_barrage_anchor_shield()&& PublicDataConf.ROOMID!=null) {
                                 // 房管
                                 if (barrage.getMedal_room() != (long) PublicDataConf.ROOMID) is_xunzhang = false;
                             }
                             // 过滤礼物自动弹幕 & 可能非主播勋章弹幕
                             if (barrage.getMsg_type() == 0 && is_xunzhang) {
                                 //是否开启弹幕
-                                if(is_barrage) {
+                                if (is_barrage) {
                                     hbarrage = Hbarrage.copyHbarrage(barrage);
                                     if (barrage.getUid().equals(PublicDataConf.AUID)) {
                                         hbarrage.setManager((short) 2);
@@ -226,7 +227,7 @@ public class ParseMessageThread extends Thread {
                                             PublicDataConf.logThread.notify();
                                         }
                                     }
-                                }else{
+                                } else {
                                     //弹幕关闭
                                 }
                                 //自动回复姬处理
@@ -251,7 +252,7 @@ public class ParseMessageThread extends Thread {
                         // 送普通礼物
                         case "SEND_GIFT":
                             jsonObject = JSONObject.parseObject(jsonObject.getString("data"));
-                            short gift_type =  ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type"));
+                            short gift_type = ParseIndentityTools.parseCoin_type(jsonObject.getString("coin_type"));
                             gift = Gift.getGift(jsonObject.getInteger("giftId"), jsonObject.getShort("giftType"),
                                     jsonObject.getString("giftName"), jsonObject.getInteger("num"),
                                     jsonObject.getString("uname"), jsonObject.getString("face"),
@@ -261,7 +262,7 @@ public class ParseMessageThread extends Thread {
                                     gift_type,
                                     jsonObject.getLong("total_coin"), jsonObject.getObject("medal_info", MedalInfo.class));
                             if (getCenterSetConf().is_gift()) {
-                                if(getCenterSetConf().is_gift_free()||(!getCenterSetConf().is_gift_free()&&gift_type==1)) {
+                                if (getCenterSetConf().is_gift_free() || (!getCenterSetConf().is_gift_free() && gift_type == 1)) {
                                     stringBuilder.append(JodaTimeUtils.formatDateTime(gift.getTimestamp() * 1000));
                                     stringBuilder.append(":收到道具:");
                                     stringBuilder.append(gift.getUname());
@@ -379,12 +380,12 @@ public class ParseMessageThread extends Thread {
                             //开启舰长存放本地
                             if (getCenterSetConf().getThank_gift().is_guard_local()) {
                                 guard = JSONObject.parseObject(jsonObject.getString("data"), Guard.class);
-                                Hashtable<Long, String> guardHashtable_local = GuardFileTools.read();
-                                if (guardHashtable_local == null) {
-                                    guardHashtable_local = new Hashtable<Long, String>();
+                                Map<Long, String> guardMap_local = GuardFileTools.read();
+                                if (guardMap_local == null) {
+                                    guardMap_local = new ConcurrentHashMap<Long, String>();
                                 }
                                 //写入
-                                if (!guardHashtable_local.containsKey(guard.getUid())) {
+                                if (!guardMap_local.containsKey(guard.getUid())) {
                                     GuardFileTools.write(guard.getUid() + "," + guard.getUsername());
 
                                 }
@@ -1361,7 +1362,7 @@ public class ParseMessageThread extends Thread {
                 }
                 break;
             case GUARD:
-                if (barrage.getUguard() <= 0) {
+                if (barrage.getUguard()!=null&&barrage.getUguard() <= 0) {
                     //     LOGGER.info("自动回复姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(barrage.getUguard()));
                     return false;
                 }
@@ -1495,8 +1496,8 @@ public class ParseMessageThread extends Thread {
 
     public synchronized void parseFollowSetting(Interact interact) throws Exception {
         //黑名单处理
-        if(!blackParseComponent.interact_parse(interact)){
-            interact =null;
+        if (!blackParseComponent.interact_parse(interact)) {
+            interact = null;
         }
         if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankFollowThread != null) {
@@ -1531,8 +1532,8 @@ public class ParseMessageThread extends Thread {
     }
 
     public synchronized void parseWelcomeSetting(Interact interact) throws Exception {
-        if(!blackParseComponent.interact_parse(interact)){
-            interact =null;
+        if (!blackParseComponent.interact_parse(interact)) {
+            interact = null;
         }
         if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
             //屏蔽设定

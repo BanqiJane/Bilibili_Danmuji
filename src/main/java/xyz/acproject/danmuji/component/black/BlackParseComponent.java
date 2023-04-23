@@ -25,8 +25,12 @@ public class BlackParseComponent {
     private static Logger LOGGER = LogManager.getLogger(BlackParseComponent.class);
     public boolean autoReplay_parse(AutoReply autoReply) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().isAuto_reply()||PublicDataConf.centerSetConf.getBlack().isAll()) {
-            return this.parse(autoReply);
+        if(PublicDataConf.centerSetConf.getBlack()!=null) {
+            if (PublicDataConf.centerSetConf.getBlack().isAuto_reply() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+                return this.parse(autoReply);
+            }
+        }else{
+            LOGGER.error("黑名单配置为空");
         }
         return true;
     }
@@ -40,16 +44,24 @@ public class BlackParseComponent {
 //        } else if (interact.getMsg_type() == 2) {
 //
 //        }
-        if (PublicDataConf.centerSetConf.getBlack().isThank_follow()||PublicDataConf.centerSetConf.getBlack().isThank_welcome()||PublicDataConf.centerSetConf.getBlack().isAll()) {
-            return this.parse(interact);
+        if(PublicDataConf.centerSetConf.getBlack()!=null) {
+            if (PublicDataConf.centerSetConf.getBlack().isThank_follow() || PublicDataConf.centerSetConf.getBlack().isThank_welcome() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+                return this.parse(interact);
+            }
+        }else{
+            LOGGER.error("黑名单配置为空");
         }
         return true;
     }
 
     public boolean gift_parse(Gift gift) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().isThank_gift()||PublicDataConf.centerSetConf.getBlack().isAll()) {
-            return this.parse(gift);
+        if(PublicDataConf.centerSetConf.getBlack()!=null) {
+            if (PublicDataConf.centerSetConf.getBlack().isThank_gift() || PublicDataConf.centerSetConf.getBlack().isAll()) {
+                return this.parse(gift);
+            }
+        }else{
+            LOGGER.error("黑名单配置为空");
         }
         return true;
     }
@@ -57,14 +69,17 @@ public class BlackParseComponent {
 
     public <T> boolean global_parse(T t) {
         //全局开启
-        if (PublicDataConf.centerSetConf.getBlack().isAll()) {
-            return this.parse(t);
+        if(PublicDataConf.centerSetConf.getBlack()!=null) {
+            if (PublicDataConf.centerSetConf.getBlack().isAll()) {
+                return this.parse(t);
+            }
         }
         return true;
     }
 
 
     public <T> boolean parse(T t) {
+        if(PublicDataConf.centerSetConf.getBlack()==null)return true;
         boolean nameFlag = true;
         boolean uidFlag = true;
         //名称规则
@@ -78,32 +93,39 @@ public class BlackParseComponent {
                 name = interact.getUname();
             } else if (t instanceof Gift) {  //感谢礼物
                 Gift gift = (Gift) t;
-                name = gift.getGiftName();
+                name = gift.getUname();
             }
             //判断
             String replaced_s = s.replace("%", "");
-            if (s.startsWith("%") && s.endsWith("%")) {
-                if (StringUtils.contains(name, replaced_s)) {
-                    nameFlag = false;
-                    break;
+            //非模糊模式
+            if(!PublicDataConf.centerSetConf.getBlack().isFuzzy_query()) {
+                if (s.startsWith("%") && s.endsWith("%")) {
+                    if (StringUtils.contains(name, replaced_s)) {
+                        nameFlag = false;
+                        break;
+                    }
+                } else if (s.startsWith("%")) {
+                    if (StringUtils.endsWith(name, replaced_s)) {
+                        nameFlag = false;
+                        break;
+                    }
+                } else if (s.endsWith("%")) {
+                    if (StringUtils.startsWith(name, replaced_s)) {
+                        nameFlag = false;
+                        break;
+                    }
+                } else {
+                    if (replaced_s.equals(name)) {
+                        nameFlag = false;
+                        break;
+                    }
                 }
-            } else if (s.startsWith("%")) {
-                if (StringUtils.endsWith(name, replaced_s)) {
-                    nameFlag = false;
-                    break;
-                }
-            } else if (s.endsWith("%")) {
-                if (StringUtils.startsWith(name, replaced_s)) {
-                    nameFlag = false;
-                    break;
-                }
-            } else {
-                if (s.equals(name)) {
+            }else{
+                if(StringUtils.contains(name, replaced_s)){
                     nameFlag = false;
                     break;
                 }
             }
-
         }
         String uid = "";
         //uid规则

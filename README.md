@@ -59,11 +59,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.3
+# 版本2.6.4
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.2 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.4 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.2 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.4 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -353,6 +353,17 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+  <blockquote>
+<h2>Beta2.6.4</h2>
+<p>更改部分文字提示</p>
+<p>修复黑名单姬bug，黑名单姬添加全局包含模式</p>
+<p>添加https至wss适应</p>
+<p>增加web操作面板与弹幕姬版本检测</p>
+<p>禁言窗口和禁言列表窗口修改为自适应，进一步适配手机端</p>
+<p>导出设置json文件 添加时间戳命名</p>
+<p>日志文件添加时间分割，错误日志现在不会启动清空了</p>
+<p>修复部分已知bug</p>
+</blockquote>
   <blockquote>
 <h2>Beta2.6.3</h2>
  <p>新增黑名单姬</p>
