@@ -59,11 +59,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.4
+# 版本2.6.41
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.4 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.41 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.4 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.41 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -353,6 +353,13 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+    <blockquote>
+<h2>Beta2.6.41</h2>
+<p>临时修复未登录状态下用户名带*号的问题（破站目前灰度未登录用户隐私功能）</p>
+<p>尝试使网页端弹幕置底问题更符合使用</p>
+<p>改用协议3 brotli解压</p>    
+<p>修复部分已知bug</p>
+</blockquote>
   <blockquote>
 <h2>Beta2.6.4</h2>
 <p>更改部分文字提示</p>
