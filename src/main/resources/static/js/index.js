@@ -1639,10 +1639,6 @@ const method = {
     },
 };
 
-function scrollEnd() {
-
-}
-
 function openSocket(socket, ip, sliceh) {
     if (typeof (WebSocket) == "undefined") {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
@@ -1674,19 +1670,17 @@ function openSocket(socket, ip, sliceh) {
                 $("#danmu").append(danmuku.danmu(data.cmd, data.result));
 
             }
-            var h = $("div[class='danmu-child']:last").height();
-            var top = $("div[class='danmu-child']:last").offset().top + h + 6;
-            var lh = $("#danmu").scrollTop()+h;
-            var chs = 0;
-            $("div[class='danmu-child']").each(function() {
-                //求padding的值
-                chs += $(this).height();
-            })
-            // console.log(lh+":"+chs)
-            if(lh>=chs) {
-                $("#danmu").scrollTop($("#danmu").scrollTop() + top);
+            var find_z = $("#danmu").find(".danmu-child-z").length;
+            if (!find_z) {
+                //置底代码
+                var h = $("div[class='danmu-child']:last").height();
+                var top = $("div[class='danmu-child']:last").position().top;
+                var lh = $("#danmu").height() + h;
+                if (lh >= top) {
+                    $("#danmu").scrollTop($("#danmu").prop("scrollHeight"));
+                }
             }
-            if ($("#danmu").children().length > 99) {
+            if ($("#danmu").children().length > 300) {
                 $("#danmu").children().first().remove();
             }
         };

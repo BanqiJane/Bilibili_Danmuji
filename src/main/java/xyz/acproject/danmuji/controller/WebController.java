@@ -15,17 +15,17 @@ import xyz.acproject.danmuji.component.TaskRegisterComponent;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
-import xyz.acproject.danmuji.config.DanmujiInitConfig;
+import xyz.acproject.danmuji.service.DanmujiInitService;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
 import xyz.acproject.danmuji.entity.other.EditionResult;
 import xyz.acproject.danmuji.entity.other.InitCheckServerParam;
 import xyz.acproject.danmuji.entity.room_data.RoomBlock;
-import xyz.acproject.danmuji.file.JsonFileTools;
+import xyz.acproject.danmuji.tools.file.JsonFileTools;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
-import xyz.acproject.danmuji.returnJson.Response;
+import xyz.acproject.danmuji.entity.base.Response;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
@@ -55,7 +55,7 @@ public class WebController {
     private SetService checkService;
     private ClientService clientService;
     @Resource
-    private DanmujiInitConfig danmujiInitConfig;
+    private DanmujiInitService danmujiInitService;
     private TaskRegisterComponent taskRegisterComponent;
     private static final Logger LOGGER = LogManager.getLogger(WebController.class);
 
@@ -144,7 +144,7 @@ public class WebController {
         jsonObject = JSONObject.parseObject(jsonString);
         if (jsonObject != null) {
             if (jsonObject.getBoolean("status")) {
-                danmujiInitConfig.init();
+                danmujiInitService.init();
 //                checkService.init();
                 if (PublicDataConf.USER != null) {
                     req.getSession().setAttribute("status", "login");
@@ -158,9 +158,9 @@ public class WebController {
     @ResponseBody
     @PostMapping(value = "/customCookie")
     public Response<?> customCookie(String cookie,HttpServletRequest req){
-        boolean flag = CurrencyTools.pariseCookie(cookie);
+        boolean flag = CurrencyTools.parseCookie(cookie);
         if(flag){
-            danmujiInitConfig.init();
+            danmujiInitService.init();
             //弹幕长度刷新
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                 HttpUserData.httpGetUserBarrageMsg();

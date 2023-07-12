@@ -1,16 +1,16 @@
-package xyz.acproject.danmuji.config;
+package xyz.acproject.danmuji.service;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
-import xyz.acproject.danmuji.file.ProFileTools;
+import xyz.acproject.danmuji.tools.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2021/6/15 16:43
  * @Copyright:2021
  */
-@Configuration
-public class DanmujiInitConfig {
-    private Logger LOGGER = LogManager.getLogger(DanmujiInitConfig.class);
+@Service
+public class DanmujiInitService {
+    private Logger LOGGER = LogManager.getLogger(DanmujiInitService.class);
     private final String cookies = "ySZL4SBB";
     private SetServiceImpl checkService;
 

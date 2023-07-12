@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.returnJson.Response;
+import xyz.acproject.danmuji.entity.base.Response;
 import xyz.acproject.danmuji.utils.IpUtils;
 
 import javax.servlet.http.HttpServletRequest;

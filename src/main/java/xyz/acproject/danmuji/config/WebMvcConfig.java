@@ -11,6 +11,8 @@ import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.interceptors.LoginInterceptor;
+import xyz.acproject.danmuji.service.DanmujiInitService;
+
 /**
  * @author Jane
  * @ClassName WebMvcConfigurer
@@ -22,13 +24,14 @@ import xyz.acproject.danmuji.interceptors.LoginInterceptor;
 //@AutoConfigureAfter(DanmujiConfig.class)
 //@Import(DanmujiConfig.class)
 public class WebMvcConfig implements WebMvcConfigurer {
-    private DanmujiInitConfig danmujiInitConfig;
+    private DanmujiInitService danmujiInitService;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        danmujiInitConfig.init();
+        danmujiInitService.init();
         if (PublicDataConf.centerSetConf.is_manager_login()) {
-            registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*").excludePathPatterns("/manager/login", "/manager/logins");
+            registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/*")
+                    .excludePathPatterns("/manager/login", "/manager/logins","/test/**","/manager/test");
         }else {
         WebMvcConfigurer.super.addInterceptors(registry);
         }
@@ -57,7 +60,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 
     @Autowired
-    public void setDanmujiConfig(DanmujiInitConfig danmujiInitConfig) {
-        this.danmujiInitConfig = danmujiInitConfig;
+    public void setDanmujiConfig(DanmujiInitService danmujiInitService) {
+        this.danmujiInitService = danmujiInitService;
     }
 }

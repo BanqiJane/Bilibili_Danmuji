@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.returnJson;
+package xyz.acproject.danmuji.entity.base;
 
 /**
  * @ClassName ResponseCode

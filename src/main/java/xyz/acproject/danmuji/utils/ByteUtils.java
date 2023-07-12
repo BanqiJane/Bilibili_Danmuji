@@ -1,6 +1,8 @@
 package xyz.acproject.danmuji.utils;
 
 
+import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -164,6 +166,23 @@ public class ByteUtils {
         }  
         return s;
     }
+
+
+	//使用BrotliCompressorInputStream解压brotli
+	public static byte[] BytesToBrotliInflate(byte[] bs){
+		byte[] b = null;
+		try (BrotliCompressorInputStream brotliCompressorInputStream = new BrotliCompressorInputStream(new ByteArrayInputStream(bs))){
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			int readByte = -1;
+			while ((readByte = brotliCompressorInputStream.read()) != -1) {
+				bos.write(readByte);
+			}
+			b = bos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return b;
+	}
 	/**
 	 * byte[]的zlib解压
 	 * 

@@ -3,7 +3,7 @@ package xyz.acproject.danmuji.thread;
 import org.apache.commons.lang3.StringUtils;
 
 import xyz.acproject.danmuji.conf.PublicDataConf;
-import xyz.acproject.danmuji.file.LogFileTools;
+import xyz.acproject.danmuji.tools.file.LogFileTools;
 
 /**
  * @ClassName LogThread

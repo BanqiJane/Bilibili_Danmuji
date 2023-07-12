@@ -1,4 +1,4 @@
-package xyz.acproject.danmuji.tools;
+package xyz.acproject.danmuji.ws;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class HandleWebsocketPackage {
 	 * @param message
 	 */
 	@SuppressWarnings("unused")
-	public static void handle_Message(ByteBuffer message) throws Exception{
+	public static void handleMessage(ByteBuffer message) throws Exception{
 //		StringBuilder stringBuilder = new StringBuilder();
 		byte[] bytes = ByteUtils.decodeValue(message);
 		byte[] bs = null;
@@ -45,14 +45,20 @@ public class HandleWebsocketPackage {
 //					+ data_other + ")");
 			bs = ByteUtils.subBytes(bytes, head_len, data_len - head_len);
 //			resultStr =HexUtils.toHexString(bs);
+			//zlib
 			if (data_ver == 2) {
 				if (data_type == 5) {
-					HandleWebsocketPackage.handle_zlibMessage(ByteUtils.BytesTozlibInflate(bs));
+					HandleWebsocketPackage.handleMultiMessage(ByteUtils.BytesTozlibInflate(bs));
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
 //					LOGGER.info("！！！！！！！！！！未知数据(1)v:" + data_ver + "t:" + data_type + ":" + resultStr);
 //				}
+			//brotli解压
+			} else if(data_ver == 3){
+				if(data_type==5){
+					HandleWebsocketPackage.handleMultiMessage(ByteUtils.BytesToBrotliInflate(bs));
+				}
 			} else if (data_ver == 1) {
 				if (data_type == 3) {
 					try {
@@ -64,13 +70,13 @@ public class HandleWebsocketPackage {
 					}
 				} else if (data_type == 8) {
 					// 返回{code 0} 验证头消息成功后返回
-//					try {
-//						resultStr = new String(bs, "utf-8");
-//					} catch (Exception e) {
-//						// TODO 自动生成的 catch 块
-//						e.printStackTrace();
-//					}
-//					LOGGER.info("服务器验证信息返回:"+resultStr);
+					try {
+						resultStr = new String(bs, "utf-8");
+					} catch (Exception e) {
+						// TODO 自动生成的 catch 块
+						e.printStackTrace();
+					}
+					LOGGER.info("服务器验证信息返回:"+resultStr);
 				}
 //				else {
 //					resultStr = HexUtils.toHexString(bs);
@@ -89,7 +95,7 @@ public class HandleWebsocketPackage {
 					// TODO 自动生成的 catch 块
 					e.printStackTrace();
 				}
-//				resultStr = ByteUtils.unicodeToString(resultStr);	
+//				resultStr = ByteUtils.unicodeToString(resultStr);
 			}
 //			else {
 //				resultStr = HexUtils.toHexString(bs);
@@ -109,7 +115,7 @@ public class HandleWebsocketPackage {
 	 * @param bytes
 	 */
 	@SuppressWarnings("unused")
-	public static void handle_zlibMessage(byte[] bytes) throws Exception {
+	public static void handleMultiMessage(byte[] bytes) throws Exception {
 		int offect = 0;
 		String resultStr = null;
 		int maxLen = bytes.length;

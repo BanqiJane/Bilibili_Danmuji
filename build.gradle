@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.6.4beta'
+version = '2.6.41beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -46,6 +46,10 @@ dependencies {
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.9'
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
 	implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-compress
+	implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.23.0'
+    // https://mvnrepository.com/artifact/org.brotli/dec
+	implementation group: 'org.brotli', name: 'dec', version: '0.1.2'
 
 	implementation fileTree(dir: 'lib', includes: ['*.jar'])
 }

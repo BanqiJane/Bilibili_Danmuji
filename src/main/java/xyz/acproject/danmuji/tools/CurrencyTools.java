@@ -18,11 +18,10 @@ import xyz.acproject.danmuji.entity.user_data.UserMedal;
 import xyz.acproject.danmuji.http.HttpOtherData;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
-import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.utils.ByteUtils;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
-import xyz.acproject.danmuji.utils.SpringUtils;
+import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -373,7 +372,7 @@ public class CurrencyTools {
     }
 
     //最低限度cookie
-    public static boolean pariseCookie(String init_cookie) {
+    public static boolean parseCookie(String init_cookie) {
         String key = null;
         String value = null;
         int controlNum = 0;
@@ -419,6 +418,25 @@ public class CurrencyTools {
         }
         //写入文件
         return false;
+    }
+
+    public static String parseBuvidCookie(String cookie) {
+        String key = null;
+        String value = null;
+        cookie = cookie.trim();
+        String[] a = cookie.split(";");
+        for (String string : a) {
+            if (string.contains("=")) {
+                String[] maps = string.split("=");
+                key = maps[0];
+                value = maps.length >= 2 ? maps[1] : "";
+                LOGGER.info("key:{},value:{}", key, value);
+                if(StringUtils.equals(key,"buvid3")) {
+                    return value;
+                }
+            }
+        }
+        return "";
     }
 
 

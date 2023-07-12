@@ -13,19 +13,18 @@ import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.entity.room_data.RoomInfoAnchor;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
-import xyz.acproject.danmuji.file.GuardFileTools;
+import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
-import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
+import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
 import xyz.acproject.danmuji.utils.ByteUtils;
 import xyz.acproject.danmuji.utils.HexUtils;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author BanqiJane
@@ -82,7 +81,8 @@ public class ClientServiceImpl implements ClientService {
             fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
                     conf.getToken());
         } else {
-            fristSecurityData = new FristSecurityData(PublicDataConf.ROOMID, conf.getToken());
+            //应付用户名称带星号问题
+            fristSecurityData = new FristSecurityData(PublicDataConf.AUID,PublicDataConf.ROOMID, conf.getToken());
         }
         byte[] byte_1 = HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
                 fristSecurityData.toJson().getBytes().length + PublicDataConf.packageHeadLength,

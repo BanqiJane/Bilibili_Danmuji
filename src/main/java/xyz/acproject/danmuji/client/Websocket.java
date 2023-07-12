@@ -7,7 +7,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.thread.core.ReConnThread;
-import xyz.acproject.danmuji.tools.HandleWebsocketPackage;
+import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,7 +41,7 @@ public class Websocket extends WebSocketClient {
 		// TODO 自动生成的方法存根
 		if(PublicDataConf.parseMessageThread!=null&&!PublicDataConf.parseMessageThread.FLAG) {
 		try {
-			HandleWebsocketPackage.handle_Message(message);
+			HandleWebsocketPackage.handleMessage(message);
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
 			LOGGER.info("解析错误日志生成，请将log底下文件发给管理员,或github开issue发送错误"+e);
