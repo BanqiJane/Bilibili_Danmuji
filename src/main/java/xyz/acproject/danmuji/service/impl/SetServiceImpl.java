@@ -31,15 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020年8月10日 下午12:17:03
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
-@SuppressWarnings("all")
 @Service
 public class SetServiceImpl implements SetService {
-    private Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);
+    private final Logger LOGGER = LogManager.getLogger(SetServiceImpl.class);
     private final String cookies = "ySZL4SBB";
     private ClientService clientService;
     private ThreadComponent threadComponent;
-
-    private SetService setService;
     private ServerAddressComponent serverAddressComponent;
     private TaskRegisterComponent taskRegisterComponent;
 
@@ -364,10 +361,5 @@ public class SetServiceImpl implements SetService {
     @Autowired
     public void setTaskRegisterComponent(TaskRegisterComponent taskRegisterComponent) {
         this.taskRegisterComponent = taskRegisterComponent;
-    }
-
-    @Autowired
-    public void setSetService(SetService setService) {
-        this.setService = setService;
     }
 }

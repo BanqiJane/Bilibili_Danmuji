@@ -1,19 +1,19 @@
 package xyz.acproject.danmuji.service;
 
-import com.alibaba.fastjson.JSONObject;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.*;
 import xyz.acproject.danmuji.entity.user_data.UserCookie;
-import xyz.acproject.danmuji.tools.file.ProFileTools;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.impl.SetServiceImpl;
 import xyz.acproject.danmuji.tools.BASE64Encoder;
+import xyz.acproject.danmuji.tools.RequestHeaderTools;
+import xyz.acproject.danmuji.tools.file.ProFileTools;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +26,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Copyright:2021
  */
 @Service
+@RequiredArgsConstructor
 public class DanmujiInitService {
-    private Logger LOGGER = LogManager.getLogger(DanmujiInitService.class);
-    private final String cookies = "ySZL4SBB";
-    private SetServiceImpl checkService;
+    private static final Logger LOGGER = LogManager.getLogger(DanmujiInitService.class);// 日志记录对象应是线程安全的
+    private static final String COOKIES_ID = "ySZL4SBB";
 
-    public void init(){
+    // 借助lombok的RequiredArgsConstructor自动实现构造函数,此处由Spring利用构造函数完成自动装配
+    private final SetServiceImpl checkService;
+
+
+    /**
+     * 初始化配置.如果有配置Cookie,则会以关联用户身份根据配置执行相关操作(每日签到,自动打卡
+     */
+    public void init() {
         Map<String, String> profileMap = new ConcurrentHashMap<>();
         String cookieString = null;
         BASE64Encoder base64Encoder = new BASE64Encoder();
@@ -42,133 +49,125 @@ public class DanmujiInitService {
         }
         // 读取本地cookie
         try {
-            cookieString = !StringUtils.isEmpty(profileMap.get(cookies))
-                    ? new String(base64Encoder.decode(profileMap.get(cookies)))
+            cookieString = !StringUtils.isEmpty(profileMap.get(COOKIES_ID))
+                    ? new String(base64Encoder.decode(profileMap.get(COOKIES_ID)))
                     : null;
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
             LOGGER.error("获取本地cookie失败,请重新登录" + e);
-            cookieString = null;
         }
         if (!StringUtils.isEmpty(cookieString)) {
             if (StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
                 PublicDataConf.USERCOOKIE = cookieString;
             }
         }
+        // 方法名未体现数据装载目的,但实际做了装载动作>_<
         HttpUserData.httpGetUserInfo();
         if (PublicDataConf.USER == null) {
             PublicDataConf.USERCOOKIE = null;
         } else {
             if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                profileMap.put(cookies, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+                profileMap.put(COOKIES_ID, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
         }
-        // 读取本地set
-        try {
-            PublicDataConf.centerSetConf = !StringUtils.isEmpty(profileMap.get("set")) ? JSONObject
-                    .parseObject(new String(base64Encoder.decode(profileMap.get("set"))), CenterSetConf.class) : null;
-        } catch (Exception e) {
-            // TODO: handle exception
-            LOGGER.error("读取配置文件失败,尝试重新读取" + e);
-            PublicDataConf.centerSetConf = null;
-        }
-        //初始化配置文件开始
-        if (PublicDataConf.centerSetConf == null) {
-            PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
-                    new ThankFollowSetConf(), new AutoReplySetConf(),new ClockInSetConf(),new ThankWelcomeSetConf(),new AutoSendGiftConf(),new PrivacySetConf(),new BlackListSetConf());
-        } else {
+
+        // 装载本地配置集
+        // centerSetConf 第一次装配
+        if (StringUtils.isNotBlank(profileMap.get("set"))) {
+            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get("set"));
+
             if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
                 PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
-            if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0)
+            else if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0)
                 PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
+
+            if (PublicDataConf.centerSetConf.getAdvert() == null) {
+                PublicDataConf.centerSetConf.setAdvert(new AdvertSetConf());
+            }
+            if (PublicDataConf.centerSetConf.getFollow() == null) {
+                PublicDataConf.centerSetConf.setFollow(new ThankFollowSetConf());
+            }
+            if (PublicDataConf.centerSetConf.getThank_gift() == null) {
+                PublicDataConf.centerSetConf.setThank_gift(new ThankGiftSetConf());
+            }
+            if (PublicDataConf.centerSetConf.getReply() == null) {
+                PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
+            }
+            if (PublicDataConf.centerSetConf.getClock_in() == null) {
+                PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false, "签到"));
+            }
+            if (PublicDataConf.centerSetConf.getWelcome() == null) {
+                PublicDataConf.centerSetConf.setWelcome(new ThankWelcomeSetConf());
+            }
+            if (PublicDataConf.centerSetConf.getAuto_gift() == null) {
+                PublicDataConf.centerSetConf.setAuto_gift(new AutoSendGiftConf());
+            }
+            if (PublicDataConf.centerSetConf.getPrivacy() == null) {
+                PublicDataConf.centerSetConf.setPrivacy(new PrivacySetConf());
+            }
+            if (PublicDataConf.centerSetConf.getBlack() == null) {
+                PublicDataConf.centerSetConf.setBlack(new BlackListSetConf());
+            }
+        } else {
+            // 无效的本地配置集则初始化一份
+            // 此处无参初始化可以采用聚合根的思想
+            PublicDataConf.centerSetConf = new CenterSetConf(new ThankGiftSetConf(), new AdvertSetConf(),
+                    new ThankFollowSetConf(), new AutoReplySetConf(), new ClockInSetConf(), new ThankWelcomeSetConf(),
+                    new AutoSendGiftConf(), new PrivacySetConf(), new BlackListSetConf());
         }
-        if (PublicDataConf.centerSetConf.getAdvert() == null) {
-            PublicDataConf.centerSetConf.setAdvert(new AdvertSetConf());
-        }
-        if (PublicDataConf.centerSetConf.getFollow() == null) {
-            PublicDataConf.centerSetConf.setFollow(new ThankFollowSetConf());
-        }
-        if (PublicDataConf.centerSetConf.getThank_gift() == null) {
-            PublicDataConf.centerSetConf.setThank_gift(new ThankGiftSetConf());
-        }
-        if (PublicDataConf.centerSetConf.getReply() == null) {
-            PublicDataConf.centerSetConf.setReply(new AutoReplySetConf());
-        }
-        if(PublicDataConf.centerSetConf.getClock_in() ==null){
-            PublicDataConf.centerSetConf.setClock_in(new ClockInSetConf(false,"签到"));
-        }
-        if(PublicDataConf.centerSetConf.getWelcome()==null){
-            PublicDataConf.centerSetConf.setWelcome(new ThankWelcomeSetConf());
-        }
-        if(PublicDataConf.centerSetConf.getAuto_gift()==null){
-            PublicDataConf.centerSetConf.setAuto_gift(new AutoSendGiftConf());
-        }
-        if(PublicDataConf.centerSetConf.getPrivacy()==null){
-            PublicDataConf.centerSetConf.setPrivacy(new PrivacySetConf());
-        }
-        if(PublicDataConf.centerSetConf.getBlack()==null){
-            PublicDataConf.centerSetConf.setBlack(new BlackListSetConf());
-        }
+
         //初始化配置文件结束
         profileMap.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
         ProFileTools.write(profileMap, "DanmujiProfile");
+        // 下方解析操作逻辑冗余, 可以清除
         try {
-            PublicDataConf.centerSetConf = JSONObject
-                    .parseObject(new String(base64Encoder.decode(profileMap.get("set"))), CenterSetConf.class);
+            // centerSetConf 第二次装配, 第一次与第二次转配期间profileMap的set属性装载仅依赖PublicDataConf.centerSetConf
+            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get("set"));
             LOGGER.info("读取配置文件成功");
         } catch (Exception e) {
             // TODO: handle exception
             LOGGER.error("读取配置文件失败" + e);
         }
+
         // 分离cookie  改
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE) && PublicDataConf.COOKIE == null) {
-            String key = null;
-            String value = null;
+        if (StringUtils.isNotEmpty(PublicDataConf.USERCOOKIE) && PublicDataConf.COOKIE == null) {
             int controlNum = 0;
-            String cookie = PublicDataConf.USERCOOKIE;
+            String cookies = PublicDataConf.USERCOOKIE;
             PublicDataConf.COOKIE = new UserCookie();
-            cookie = cookie.trim();
-            String[] a = cookie.split(";");
-            for (String string : a) {
-                if (string.contains("=")) {
-                    String[] maps = string.split("=");
-                    key = maps[0];
-                    value = maps.length >= 2 ? maps[1] : "";
-                    if (key.equals("DedeUserID")) {
-                        PublicDataConf.COOKIE.setDedeUserID(value);
-                        controlNum++;
-                    } else if (key.equals("bili_jct")) {
-                        PublicDataConf.COOKIE.setBili_jct(value);
-                        controlNum++;
-                    } else if (key.equals("DedeUserID__ckMd5")) {
-                        PublicDataConf.COOKIE.setDedeUserID__ckMd5(value);
-                        controlNum++;
-                    } else if (key.equals("sid")) {
-                        PublicDataConf.COOKIE.setSid(value);
-                        controlNum++;
-                    } else if (key.equals("SESSDATA")) {
-                        PublicDataConf.COOKIE.setSESSDATA(value);
-                        controlNum++;
-                    } else {
-//						LOGGER.info("获取cookie失败，字段为" + key);
-                    }
-                }
+            // This cookie should is `cookies`, because it collects some cookies.
+            // 这里对Cookie簇的拆解属于Http基础设施, 不属于特定业务场景, 不应该在该方法中显示出现;
+            // 解析Cookie簇的基础设施放入{@link RequestHeaderTools#parseCookies}中
+            // 业务场景下只获取相应的Cookie来做些事情.
+            Map<String, String> cookieKeyValue = RequestHeaderTools.parseCookies(cookies);
+
+            if (cookieKeyValue.containsKey("DedeUserID")) {
+                PublicDataConf.COOKIE.setDedeUserID(cookieKeyValue.get("DedeUserID"));
+                controlNum++;
             }
+            if (cookieKeyValue.containsKey("bili_jct")) {
+                PublicDataConf.COOKIE.setBili_jct(cookieKeyValue.get("bili_jct"));
+                controlNum++;
+            }
+            if (cookieKeyValue.containsKey("DedeUserID__ckMd5")) {
+                PublicDataConf.COOKIE.setDedeUserID__ckMd5(cookieKeyValue.get("DedeUserID__ckMd5"));
+                controlNum++;
+            }
+            if (cookieKeyValue.containsKey("sid")) {
+                PublicDataConf.COOKIE.setSid(cookieKeyValue.get("sid"));
+                controlNum++;
+            }
+            if (cookieKeyValue.containsKey("SESSDATA")) {
+                PublicDataConf.COOKIE.setSESSDATA(cookieKeyValue.get("SESSDATA"));
+                controlNum++;
+            }
+
             if (controlNum >= 2) {
                 LOGGER.info("用户cookie装载成功");
-                controlNum = 0;
             } else {
                 LOGGER.info("用户cookie装载失败");
                 PublicDataConf.COOKIE = null;
             }
             checkService.holdSet(PublicDataConf.centerSetConf);
         }
-        base64Encoder = null;
-        profileMap.clear();
-    }
-
-    @Autowired
-    public void setCheckService(SetServiceImpl checkService) {
-        this.checkService = checkService;
     }
 }
