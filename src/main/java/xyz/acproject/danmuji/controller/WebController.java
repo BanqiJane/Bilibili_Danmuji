@@ -91,6 +91,10 @@ public class WebController {
         return "cookie_set";
     }
 
+    @RequestMapping(value = "/danmu_widget")
+    public String danmu_widget(Model model) {
+        return "danmu_widget";
+    }
 
     @RequestMapping(value = "/login")
     public String login(HttpServletRequest req) {
