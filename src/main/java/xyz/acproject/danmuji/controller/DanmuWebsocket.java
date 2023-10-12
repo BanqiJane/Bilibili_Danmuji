@@ -4,6 +4,7 @@ package xyz.acproject.danmuji.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import xyz.acproject.danmuji.http.HttpUserData;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -39,9 +40,11 @@ public class DanmuWebsocket {
 	@OnMessage
 	public void onMessage(String message) throws IOException {
 		//反向发送 23333333333 (滑稽
-		for(DanmuWebsocket danmuWebsocket:webSocketServers) {
-			danmuWebsocket.session.getBasicRemote().sendText(message);
-		}
+		// 主动向房间发送消息需要调用http请求. (https://api.live.bilibili.com/msg/send)
+		HttpUserData.httpPostSendBarrage(message);
+//		for(DanmuWebsocket danmuWebsocket:webSocketServers) {
+//			danmuWebsocket.session.getBasicRemote().sendText(message);
+//		}
 	}
 	
 	
@@ -51,6 +54,7 @@ public class DanmuWebsocket {
 	}
 
 	public void sendMessage(String message) throws IOException {
+		// 主动调用房间连接后才可接受房间内消息
 		for(DanmuWebsocket danmuWebsocket:webSocketServers) {
 			synchronized (danmuWebsocket.session) {
 				danmuWebsocket.session.getBasicRemote().sendText(message);

@@ -1,8 +1,9 @@
+let socket = null;
+let sliceh = 0;
+
 $(function () {
     "use strict";
     let time;
-    let socket = null;
-    let sliceh = 0;
     time = setInterval(heartBeat, 30000);
     function heartBeat() {
         "use strict";
@@ -117,10 +118,8 @@ $(function () {
             $(".connect-docket").val("不能为空");
             return;
         }
-        if (!$(this).attr("disabled")) {
-            openSocket(socket, a, sliceh);
-            $(this).attr("disabled", true);
-        }
+        // 在新窗口打开弹幕框, 并连接websocket.主页面不管理弹幕`socket`
+        openDanmuWindow(a)
     });
     $(document).on('click', '#danmu_open', function () {
         let url_start = window.location.host;
@@ -140,6 +139,14 @@ $(function () {
         publicData.set.auto_save_set = $(".auto_save_set").is(':checked');
     });
 });
+//为弹幕看板打开一个新窗口
+function openDanmuWindow(sub_url) {
+    let url = new URL("/danmu_widget?sub="+sub_url,window.location.href ).href
+    let windowName = "SmallWindow";
+    let windowFeatures = "width=400,height=450";
+
+    window.open(url, windowName, windowFeatures);
+}
 //实时保存
 $(document).on('input propertychange', '.live-save', function () {
     if ($(".auto_save_set").is(':checked')) {
@@ -1639,7 +1646,7 @@ const method = {
     },
 };
 
-function openSocket(socket, ip, sliceh) {
+function openSocket(ip, sliceh) {
     if (typeof (WebSocket) == "undefined") {
         alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
     } else {
@@ -1702,8 +1709,20 @@ function sendMessage() {
         console.log("您的浏览器不支持WebSocket，网页显示弹幕失败 但不影响其他功能使用");
     } else {
         console.log("您的浏览器支持WebSocket");
-        socket.send('{"toUserId":"' + $("#toUserId").val()
-            + '","contentText":"' + $("#contentText").val() + '"}');
+        // socket.send('{"toUserId":"' + $("#toUserId").val()
+        //     + '","contentText":"' + $("#contentText").val() + '"}');
+        if (socket != null){
+            let contentText = $("#contentText")
+            console.log("发送弹幕中...,内容: "+contentText.val())
+            let code = socket.send(contentText.val())
+            contentText.val('')
+
+            if(code === 0){
+                console.log("消息发送成功")
+            } else{
+                console.log("消息发送失败")
+            }
+        }
     }
 }
 

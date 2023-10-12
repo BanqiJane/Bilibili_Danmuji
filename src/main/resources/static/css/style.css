@@ -141,7 +141,7 @@ a#danmu_open {
 
 div#danmu {
     width: 100%;
-    height: 780px;
+    height: 400px;
     z-index: 9;
     border: 1px solid pink;
     overflow-y: auto;
@@ -406,11 +406,11 @@ div#danmu .danmu-child a {
 
 
 /* 当页面宽度大于300px小于600px */
-@media screen and (min-width:300px) and (max-width:600px){
-    div#danmu{
-        height: 680px;
-    }
-}
+/*@media screen and (min-width:300px) and (max-width:600px){*/
+/*    div#danmu{*/
+/*        height: 680px;*/
+/*    }*/
+/*}*/
 
 
 /* 当页面宽度小于300px*/
