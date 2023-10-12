@@ -31,7 +31,7 @@ public class SendBarrageThread extends Thread {
                 return;
             }
             if (null != PublicDataConf.barrageString && !PublicDataConf.barrageString.isEmpty()
-                    && !StringUtils.isEmpty(PublicDataConf.barrageString.get(0))) {
+                    && StringUtils.isNotBlank(PublicDataConf.barrageString.get(0))) {
                 barrageStr = PublicDataConf.barrageString.get(0);
                 int strLength = barrageStr.length();
                 int maxLength = 20;

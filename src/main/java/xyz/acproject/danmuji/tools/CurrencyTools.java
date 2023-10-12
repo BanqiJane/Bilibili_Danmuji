@@ -209,7 +209,7 @@ public class CurrencyTools {
         }
 
         //逻辑开始
-        if (StringUtils.isEmpty(PublicDataConf.centerSetConf.getClock_in().getBarrage())) return 0;
+        if (StringUtils.isBlank(PublicDataConf.centerSetConf.getClock_in().getBarrage())) return 0;
         int max = 0;
         RoomInit roomInit;
         if (!CollectionUtils.isEmpty(userMedals)) {

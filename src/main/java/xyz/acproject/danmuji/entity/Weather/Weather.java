@@ -24,7 +24,7 @@ public class Weather implements Serializable {
     private String wendu;
 
     public String getFx() {
-        if(StringUtils.isEmpty(fx)){
+        if(StringUtils.isBlank(fx)){
             return getFengxiang();
         }
         return fx;
@@ -32,7 +32,7 @@ public class Weather implements Serializable {
 
 
     public String getFl() {
-        if(StringUtils.isEmpty(fl)){
+        if(StringUtils.isBlank(fl)){
             return getFengli();
         }
         return fl;
@@ -40,14 +40,14 @@ public class Weather implements Serializable {
 
 
     public String getFengxiang() {
-        if(StringUtils.isEmpty(fengxiang)){
+        if(StringUtils.isBlank(fengxiang)){
             return getFx();
         }
         return fengxiang;
     }
 
     public String getFengli() {
-        if(StringUtils.isEmpty(fengli)){
+        if(StringUtils.isBlank(fengli)){
             return getFl();
         }
         return fengli;

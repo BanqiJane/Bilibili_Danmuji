@@ -1,4 +1,13 @@
 package xyz.acproject.danmuji.conf;
+import xyz.acproject.danmuji.conf.set.ThankWelcomeSetConf;
+import xyz.acproject.danmuji.conf.set.AutoReplySetConf;
+import xyz.acproject.danmuji.conf.set.AutoSendGiftConf;
+import xyz.acproject.danmuji.conf.set.PrivacySetConf;
+import xyz.acproject.danmuji.conf.set.ClockInSetConf;
+import xyz.acproject.danmuji.conf.set.AdvertSetConf;
+import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
+import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
+import xyz.acproject.danmuji.conf.set.BlackListSetConf;
 
 
 import com.alibaba.fastjson.JSONException;
@@ -141,6 +150,19 @@ public class CenterSetConf implements Serializable {
     @JSONField(name = "edition",serialize = false)
     private String edition = "";
 
+    public static CenterSetConf getInitCenterSetConf(){
+        CenterSetConf centerSetConf = new CenterSetConf();
+        centerSetConf.setThank_gift(new ThankGiftSetConf());
+        centerSetConf.setAdvert(new AdvertSetConf());
+        centerSetConf.setFollow(new ThankFollowSetConf());
+        centerSetConf.setReply(new AutoReplySetConf());
+        centerSetConf.setClock_in(new ClockInSetConf());
+        centerSetConf.setWelcome(new ThankWelcomeSetConf());
+        centerSetConf.setAuto_gift(new AutoSendGiftConf());
+        centerSetConf.setPrivacy(new PrivacySetConf());
+        centerSetConf.setBlack(new BlackListSetConf());
+        return centerSetConf;
+    }
 
 
     public CenterSetConf(ThankGiftSetConf thank_gift, AdvertSetConf advert,

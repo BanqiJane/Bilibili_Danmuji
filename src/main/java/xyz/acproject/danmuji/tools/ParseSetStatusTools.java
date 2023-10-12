@@ -149,7 +149,7 @@ public class ParseSetStatusTools {
 		} else {
 			messageConcurrentHashMap.put(ShieldMessage.is_welcome_all, false);
 		}
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 			//礼物码模式
 			if (centerSetConf.getThank_gift().is_gift_code()) {
 				messageConcurrentHashMap.put(ShieldMessage.is_giftCode, true);

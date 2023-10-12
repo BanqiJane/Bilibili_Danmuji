@@ -90,7 +90,7 @@ public class ParseMessageThread extends Thread {
                     return;
                 }
                 if (null != PublicDataConf.resultStrs && !PublicDataConf.resultStrs.isEmpty()
-                        && !StringUtils.isEmpty(PublicDataConf.resultStrs.get(0))) {
+                        && StringUtils.isNotBlank(PublicDataConf.resultStrs.get(0))) {
                     message = PublicDataConf.resultStrs.get(0);
                     try {
                         jsonObject = JSONObject.parseObject(message);
@@ -109,7 +109,7 @@ public class ParseMessageThread extends Thread {
                         }
                     }
                     cmd = jsonObject.getString("cmd");
-                    if (StringUtils.isEmpty(cmd)) {
+                    if (StringUtils.isBlank(cmd)) {
                         synchronized (PublicDataConf.parseMessageThread) {
                             try {
                                 PublicDataConf.parseMessageThread.wait();
@@ -189,7 +189,7 @@ public class ParseMessageThread extends Thread {
                                     }
                                     if (getCenterSetConf().is_barrage_medal()) {
                                         // 勋章+勋章等级
-                                        if (!StringUtils.isEmpty(barrage.getMedal_name())) {
+                                        if (StringUtils.isNotBlank(barrage.getMedal_name())) {
                                             stringBuilder.append("[").append(barrage.getMedal_name()).append(" ")
                                                     .append(barrage.getMedal_level()).append("]");
                                         }
@@ -417,7 +417,7 @@ public class ParseMessageThread extends Thread {
                                 }
                                 try {
                                     if (!PublicDataConf.TEST_MODE) {
-                                        if (!StringUtils.isEmpty(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
+                                        if (StringUtils.isNotBlank(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
                                             if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
                                                 PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
                                                 synchronized (PublicDataConf.sendBarrageThread) {
@@ -713,7 +713,7 @@ public class ParseMessageThread extends Thread {
 
                         // 本房间主播开启了天选时刻
                         case "ANCHOR_LOT_START":
-                            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                                 try {
                                     //屏蔽礼物
                                     if (getCenterSetConf().getThank_gift().is_tx_shield()) {
@@ -722,7 +722,7 @@ public class ParseMessageThread extends Thread {
                                                 && !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
                                             String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
                                             int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-                                            if (!StringUtils.isEmpty(giftName)) {
+                                            if (StringUtils.isNotBlank(giftName)) {
                                                 if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
                                                         || PublicDataConf.giftShieldThread.getState().toString()
                                                         .equals("NEW")) {
@@ -1409,7 +1409,7 @@ public class ParseMessageThread extends Thread {
 
     public synchronized void parseGiftSetting(Gift gift) throws Exception {
         //天选礼物屏蔽
-        if (!StringUtils.isEmpty(PublicDataConf.SHIELDGIFTNAME)) {
+        if (StringUtils.isNotBlank(PublicDataConf.SHIELDGIFTNAME)) {
             if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
                 gift = null;
             }
@@ -1433,7 +1433,7 @@ public class ParseMessageThread extends Thread {
 
         }
         Vector<Gift> gifts = null;
-        if (gift != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (gift != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankGiftThread != null) {
                 if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankGiftThread.TFLAG) {
                     if (PublicDataConf.thankGiftConcurrentHashMap.size() > 0) {
@@ -1500,7 +1500,7 @@ public class ParseMessageThread extends Thread {
         if (!blackParseComponent.interact_parse(interact)) {
             interact = null;
         }
-        if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (interact != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.sendBarrageThread != null && PublicDataConf.parsethankFollowThread != null) {
                 if (!PublicDataConf.sendBarrageThread.FLAG && !PublicDataConf.parsethankFollowThread.FLAG) {
                     PublicDataConf.interacts.add(interact);
@@ -1536,7 +1536,7 @@ public class ParseMessageThread extends Thread {
         if (!blackParseComponent.interact_parse(interact)) {
             interact = null;
         }
-        if (interact != null && !StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (interact != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             //屏蔽设定
             ListPeopleShieldStatus listPeopleShieldStatus = ParseSetStatusTools.getListPeopleShieldStatus(getCenterSetConf().getWelcome().getList_people_shield_status());
             //先人员

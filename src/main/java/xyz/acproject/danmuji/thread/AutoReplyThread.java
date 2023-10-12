@@ -46,10 +46,10 @@ public class AutoReplyThread extends Thread {
     public void run() {
         // TODO 自动生成的方法存根
         super.run();
-        int kSize = 0;
-        int kNum = 0;
+        int keywordSize = 0;
+        int noShieldNum = 0;
         String replyString = null;
-        boolean is_shield = false;
+        boolean is_shield;
         boolean is_send = false;
         String hourString = null;
         String hourReplace = null;
@@ -62,14 +62,13 @@ public class AutoReplyThread extends Thread {
             if (PublicDataConf.webSocketProxy != null && !PublicDataConf.webSocketProxy.isOpen()) {
                 return;
             }
-            if (null != PublicDataConf.replys && !PublicDataConf.replys.isEmpty()
-                    && !StringUtils.isEmpty(PublicDataConf.replys.get(0).getBarrage())) {
+            if (!CollectionUtils.isEmpty(PublicDataConf.replys)) {
                 AutoReply autoReply = PublicDataConf.replys.get(0);
                 for (AutoReplySet autoReplySet : getAutoReplySets()) {
-                    if (null != autoReplySet.getShields() && !autoReplySet.getShields().isEmpty()
-                            && autoReplySet.getShields().size() > 0) {
-                        kSize = autoReplySet.getKeywords().size();
-                        kNum = 0;
+                    //优先级屏蔽词
+                    if (!CollectionUtils.isEmpty(autoReplySet.getShields())) {
+                        keywordSize = autoReplySet.getKeywords().size();
+                        noShieldNum = 0;
                         is_shield = false;
                         for (String shield : autoReplySet.getShields()) {
                             if (autoReply.getBarrage().contains(shield)) {
@@ -83,18 +82,19 @@ public class AutoReplyThread extends Thread {
                                     keywords = StringUtils.split(keyword, "||");
                                     for (String k : keywords) {
                                         if (autoReply.getBarrage().contains(k)) {
-                                            kNum++;
+                                            noShieldNum++;
                                             break;
                                         }
                                     }
                                 } else {
                                     if (autoReply.getBarrage().contains(keyword)) {
-                                        kNum++;
+                                        noShieldNum++;
                                     }
                                 }
                             }
-                            if (kNum == kSize) {
-                                if (!StringUtils.isEmpty(autoReplySet.getReply())) {
+                            //没有屏蔽则发送
+                            if (noShieldNum == keywordSize) {
+                                if (StringUtils.isNotBlank(autoReplySet.getReply())) {
                                     is_send =   handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
                                             is_send);
                                     break;
@@ -102,9 +102,8 @@ public class AutoReplyThread extends Thread {
                             }
                         }
                     } else {
-                        kSize = autoReplySet.getKeywords().size();
-                        kNum = 0;
-                        is_shield = false;
+                        keywordSize = autoReplySet.getKeywords().size();
+                        noShieldNum = 0;
                         // 精确匹配
                         if (autoReplySet.getKeywords().size() < 2 && autoReplySet.is_accurate()) {
                             for (String keyword : autoReplySet.getKeywords()) {
@@ -132,18 +131,18 @@ public class AutoReplyThread extends Thread {
                                     keywords = StringUtils.split(keyword, "||");
                                     for (String k : keywords) {
                                         if (autoReply.getBarrage().contains(k)) {
-                                            kNum++;
+                                            noShieldNum++;
                                             break;
                                         }
                                     }
                                 } else {
                                     if (autoReply.getBarrage().contains(keyword)) {
-                                        kNum++;
+                                        noShieldNum++;
                                     }
                                 }
                             }
-                            if (kNum == kSize) {
-                                if (!StringUtils.isEmpty(autoReplySet.getReply())) {
+                            if (noShieldNum == keywordSize) {
+                                if (StringUtils.isNotBlank(autoReplySet.getReply())) {
                                     is_send = handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
                                             is_send);
                                     break;
@@ -152,10 +151,6 @@ public class AutoReplyThread extends Thread {
                         }
                     }
                 }
-                keywords = null;
-                kSize = 0;
-                kNum = 0;
-                is_shield = false;
                 replyString = null;
                 hourString = null;
                 hourReplace = null;
@@ -261,7 +256,7 @@ public class AutoReplyThread extends Thread {
                     replyString = "";
                 }
             }
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 try {
                     if (HttpUserData.httpPostAddBlock(autoReply.getUid(), hour) != 0)
                         replyString = "";
@@ -278,7 +273,7 @@ public class AutoReplyThread extends Thread {
 //                String city = autoReply.getBarrage().substring(path1 + 1, path2);
 //                StringBuilder weatherSB = new StringBuilder();
 //                Weather weather = null;
-//                if (StringUtils.isEmpty(city)) {
+//                if (StringUtils.isBlank(city)) {
 //                    city = "北京";
 //                }
 //                Short day = 0;
@@ -390,7 +385,7 @@ public class AutoReplyThread extends Thread {
                 String city = autoReply.getBarrage().substring(path1 + 1, path2);
                 StringBuilder weatherSB = new StringBuilder();
                 WeatherV2 weatherV2 = null;
-                if (StringUtils.isEmpty(city)) {
+                if (StringUtils.isBlank(city)) {
                     city = "北京";
                 }
                 Short day = 0;
@@ -807,7 +802,7 @@ public class AutoReplyThread extends Thread {
                 replyString = "";
             }
         }
-        if (!StringUtils.isEmpty(replyString)) {
+        if (StringUtils.isNotBlank(replyString)) {
             if (PublicDataConf.sendBarrageThread != null && !PublicDataConf.sendBarrageThread.FLAG) {
                 PublicDataConf.barrageString.add(replyString);
                 is_send = true;

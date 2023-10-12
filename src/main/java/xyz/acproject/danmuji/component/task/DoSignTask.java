@@ -23,7 +23,7 @@ public class DoSignTask {
     private static Logger LOGGER = LogManager.getLogger(DoSignTask.class);
 
     public void dosign() {
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             boolean flag = CurrencyTools.signNow();
             if (flag) {
                 setService.changeSet(PublicDataConf.centerSetConf,false);
@@ -34,7 +34,7 @@ public class DoSignTask {
     }
 
     public void clockin() {
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
             if (CollectionUtils.isEmpty(userMedals)) return;
             int max = CurrencyTools.clockIn(userMedals);

@@ -103,7 +103,7 @@ public class HttpUserData {
      * @return
      */
     public static String httpPostCookie(LoginData logindata) {
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             return "";
         }
         String data = null;
@@ -137,7 +137,7 @@ public class HttpUserData {
                     }
                 }
                 PublicDataConf.USERCOOKIE = stringBuilder.toString();
-                if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+                if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                     if (PublicDataConf.ROOMID != null) {
                         httpGetUserBarrageMsg();
                     }
@@ -162,7 +162,7 @@ public class HttpUserData {
         headers = new HashMap<>(3);
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -181,11 +181,11 @@ public class HttpUserData {
             PublicDataConf.USER = JSONObject.parseObject(jsonObject.getString("data"), User.class);
             LOGGER.info("已经登录，获取信息成功");
         } else if (jsonObject.getShort("code") == -500) {
-            LOGGER.info("未登录，请登录:" + jsonObject.toString());
+            LOGGER.info("未登录，请登录:{}", jsonObject.toString());
             PublicDataConf.USERCOOKIE = null;
             PublicDataConf.USER = null;
         } else {
-            LOGGER.error("未知错误,原因未知" + jsonObject.toString());
+            LOGGER.error("未知错误,原因未知:{}" , jsonObject.toString());
             PublicDataConf.USERCOOKIE = null;
             PublicDataConf.USER = null;
         }
@@ -202,7 +202,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -249,7 +249,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -295,7 +295,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + roomId);
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -345,7 +345,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(10);
@@ -373,7 +373,7 @@ public class HttpUserData {
         if (jsonObject != null) {
             code = jsonObject.getShort("code");
             if (code == 0) {
-                if (StringUtils.isEmpty(jsonObject.getString("message").trim())) {
+                if (StringUtils.isBlank(jsonObject.getString("message").trim())) {
 //				LOGGER.info("发送弹幕成功");
                 } else if (jsonObject.getString("message").equals("msg in 1s")
                         || jsonObject.getString("message").equals("msg repeat")) {
@@ -423,7 +423,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + roomId);
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(10);
@@ -451,7 +451,7 @@ public class HttpUserData {
         if (jsonObject != null) {
             code = jsonObject.getShort("code");
             if (code == 0) {
-                if (StringUtils.isEmpty(jsonObject.getString("message").trim())) {
+                if (StringUtils.isBlank(jsonObject.getString("message").trim())) {
 //				LOGGER.info("发送弹幕成功");
                 } else if (jsonObject.getString("message").equals("msg in 1s")
                         || jsonObject.getString("message").equals("msg repeat")) {
@@ -497,7 +497,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://message.bilibili.com/");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(16);
@@ -559,7 +559,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(17);
@@ -626,7 +626,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(7);
@@ -698,7 +698,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://www.bilibili.com/");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -722,7 +722,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://link.bilibili.com/p/center/index");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         try {
@@ -757,7 +757,7 @@ public class HttpUserData {
         headers = new HashMap<>(3);
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(3);
@@ -811,7 +811,7 @@ public class HttpUserData {
         headers = new HashMap<>(3);
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(3);
@@ -861,7 +861,7 @@ public class HttpUserData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
         params = new HashMap<>(7);

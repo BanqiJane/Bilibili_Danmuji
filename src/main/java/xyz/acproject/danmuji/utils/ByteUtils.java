@@ -392,4 +392,16 @@ public class ByteUtils {
         }
         //return 0;
     }
+	public static String oct2Str(String ascii) {
+		StringBuilder sb = new StringBuilder();
+		// 这里这里循环的步进为3，因为8进制的ASCII码占3位
+		for (int i = 0; i < ascii.length() - 2; i += 3) {
+			String h = ascii.substring(i, (i + 3));
+			// 第二个参数8表8进制
+			int decimal = Integer.parseInt(h, 8);
+			sb.append((char) decimal);
+		}
+		return sb.toString();
+	}
+
 }

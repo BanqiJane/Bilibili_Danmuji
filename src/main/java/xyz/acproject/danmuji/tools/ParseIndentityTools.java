@@ -86,7 +86,7 @@ public class ParseIndentityTools {
 	 * @return
 	 */
 	public static short parseCoin_type(String coin_type) {
-		if(StringUtils.isEmpty(coin_type)) {
+		if(StringUtils.isBlank(coin_type)) {
 			return -1;
 		}
 		switch(coin_type.trim()) {

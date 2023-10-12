@@ -139,7 +139,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 //	@Override
 //	public boolean startAdvertThread(CenterSetConf centerSetConf) {
 //		// TODO 自动生成的方法存根
-//		if (PublicDataConf.advertThread != null || StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//		if (PublicDataConf.advertThread != null || StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
 //			PublicDataConf.advertThread
 //					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(centerSetConf.getAdvert().getStatus()));
 //			PublicDataConf.advertThread.setTime(centerSetConf.getAdvert().getTime());
@@ -164,7 +164,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 	@Override
 	public boolean startAdvertThread(AdvertSetConf advertSetConf) {
 		// TODO 自动生成的方法存根
-		if (PublicDataConf.advertThread != null || StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (PublicDataConf.advertThread != null || StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
 			PublicDataConf.advertThread
 					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
 			PublicDataConf.advertThread.setTime(advertSetConf.getTime());
@@ -197,7 +197,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 //				autoReplySets.add(autoReplySet);
 //			}
 //		}
-//		if (PublicDataConf.autoReplyThread != null || StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+//		if (PublicDataConf.autoReplyThread != null || StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
 //			PublicDataConf.autoReplyThread.setTime(centerSetConf.getReply().getTime());
 //			PublicDataConf.autoReplyThread.setAutoReplySets(autoReplySets);
 //			return false;
@@ -226,7 +226,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 				autoReplySets.add(autoReplySet);
 			}
 		}
-		if (PublicDataConf.autoReplyThread != null || StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (PublicDataConf.autoReplyThread != null || StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
 			PublicDataConf.autoReplyThread.setTime(autoReplySetConf.getTime());
 			PublicDataConf.autoReplyThread.setAutoReplySets(autoReplySets);
 			return false;
@@ -247,7 +247,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 	@Override
 	public boolean startSendBarrageThread() {
 		// TODO 自动生成的方法存根
-		if (PublicDataConf.sendBarrageThread != null || StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (PublicDataConf.sendBarrageThread != null || StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
 			return false;
 		}
 		PublicDataConf.sendBarrageThread = new SendBarrageThread();

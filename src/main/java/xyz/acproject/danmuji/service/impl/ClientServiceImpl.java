@@ -73,11 +73,11 @@ public class ClientServiceImpl implements ClientService {
         if (PublicDataConf.lIVE_STATUS == 1) {
             PublicDataConf.IS_ROOM_POPULARITY = true;
         }
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             HttpUserData.httpGetUserBarrageMsg();
         }
         FristSecurityData fristSecurityData = null;
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
                     conf.getToken());
         } else {
@@ -99,10 +99,10 @@ public class ClientServiceImpl implements ClientService {
         CheckTx checkTx = null;
         // 登录发现天选屏蔽礼物
         if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().is_tx_shield()) {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                checkTx = HttpRoomData.httpGetCheckTX();
                 if (checkTx != null) {
-                    if (!StringUtils.isEmpty(checkTx.getGift_name())) {
+                    if (StringUtils.isNotBlank(checkTx.getGift_name())) {
                         if (checkTx.getTime() > 0) {
                             threadComponent.startGiftShieldThread(checkTx.getGift_name(), checkTx.getTime());
                         }
@@ -112,7 +112,7 @@ public class ClientServiceImpl implements ClientService {
         }
         // 登录发现天选屏蔽关注
         if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().is_tx_shield()) {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 if(checkTx==null) {
                     checkTx = HttpRoomData.httpGetCheckTX();
                 }
@@ -126,7 +126,7 @@ public class ClientServiceImpl implements ClientService {
         }
         // 登录发现天选屏蔽欢迎
         if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().is_tx_shield()) {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 if(checkTx==null) {
                    checkTx = HttpRoomData.httpGetCheckTX();
                 }
@@ -138,7 +138,7 @@ public class ClientServiceImpl implements ClientService {
                 }
             }
         }
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.centerSetConf != null
                     && PublicDataConf.centerSetConf.getThank_gift().is_guard_local()) {
                 if (GuardFileTools.read() != null && GuardFileTools.read().size() > 0) {
@@ -188,12 +188,12 @@ public class ClientServiceImpl implements ClientService {
             if (PublicDataConf.lIVE_STATUS == 1) {
                 PublicDataConf.IS_ROOM_POPULARITY = true;
             }
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 HttpUserData.httpGetUserBarrageMsg();
             }
             FristSecurityData fristSecurityData = null;
             PublicDataConf.webSocketProxy = new WebSocketProxy(PublicDataConf.URL, room);
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
                         conf.getToken());
             } else {

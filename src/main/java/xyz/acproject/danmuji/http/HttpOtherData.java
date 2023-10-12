@@ -305,7 +305,7 @@ public class HttpOtherData {
         JSONObject jsonObject = null;
         String s = null;
         String url = PublicDataConf.SMALLHEART_ADRESS;
-        if (StringUtils.isEmpty(url)) {
+        if (StringUtils.isBlank(url)) {
             return null;
         }
         Map<String, String> headers = null;
@@ -323,7 +323,7 @@ public class HttpOtherData {
         JSONObject json = new JSONObject();
         json.put("t", t);
         json.put("r", xData.getSecret_rule());
-        if (StringUtils.isEmpty(url)) {
+        if (StringUtils.isBlank(url)) {
             return null;
         }
         try {

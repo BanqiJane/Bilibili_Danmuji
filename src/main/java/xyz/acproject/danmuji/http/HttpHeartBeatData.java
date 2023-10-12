@@ -43,7 +43,7 @@ public class HttpHeartBeatData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		try {
@@ -80,7 +80,7 @@ public class HttpHeartBeatData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" +  CurrencyTools.parseRoomId());
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		params = new HashMap<>(4);
@@ -129,7 +129,7 @@ public class HttpHeartBeatData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		long[] ids = {roomInfo.getParent_area_id(),roomInfo.getArea_id(),0, PublicDataConf.ROOMID};
@@ -197,7 +197,7 @@ public class HttpHeartBeatData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-		if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 			headers.put("cookie", PublicDataConf.USERCOOKIE);
 		}
 		params = new HashMap<>(12);

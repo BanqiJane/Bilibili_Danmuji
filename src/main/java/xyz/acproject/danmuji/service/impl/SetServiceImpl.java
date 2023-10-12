@@ -55,7 +55,7 @@ public class SetServiceImpl implements SetService {
         System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
         if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
             String edition = HttpOtherData.httpGetNewEdition();
-            if (!StringUtils.isEmpty(edition)) {
+            if (StringUtils.isNotBlank(edition)) {
                 if (!edition.equals(PublicDataConf.EDITION)) {
                     System.out.println("查询最新版本：" + edition
                             + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
@@ -113,8 +113,8 @@ public class SetServiceImpl implements SetService {
                 LOGGER.info("保存配置文件成功");
                 return;
             }
-            if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0) {
-                centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
+            if (PublicDataConf.ROOMID_LONG != null && PublicDataConf.ROOMID_LONG > 0) {
+                centerSetConf.setRoomid(PublicDataConf.ROOMID_LONG);
             }
             Map<String, String> profileMap = new ConcurrentHashMap<>();
             BASE64Encoder base64Encoder = new BASE64Encoder();
@@ -250,7 +250,7 @@ public class SetServiceImpl implements SetService {
                 threadComponent.closeLogThread();
             }
             // need login
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 // advertthread
                 centerSetConf.getAdvert().start(threadComponent);
 //            if (centerSetConf.getAdvert().is_live_open()) {
@@ -293,18 +293,18 @@ public class SetServiceImpl implements SetService {
 //                    threadComponent.closeAutoReplyThread();
 //                }
 //            }
-                // useronlinethread && smallHeartThread
-                if (centerSetConf.is_online()) {
-                    threadComponent.startUserOnlineThread();
-                    if (centerSetConf.is_sh() && PublicDataConf.lIVE_STATUS == 1) {
-                        threadComponent.startSmallHeartThread();
-                    } else {
-                        threadComponent.closeSmallHeartThread();
-                    }
-                } else {
-                    threadComponent.closeSmallHeartThread();
-                    threadComponent.closeUserOnlineThread();
-                }
+                // useronlinethread && smallHeartThread 移除在线心跳 接口已经不可用
+//                if (centerSetConf.is_online()) {
+//                    threadComponent.startUserOnlineThread();
+//                    if (centerSetConf.is_sh() && PublicDataConf.lIVE_STATUS == 1) {
+//                        threadComponent.startSmallHeartThread();
+//                    } else {
+//                        threadComponent.closeSmallHeartThread();
+//                    }
+//                } else {
+//                    threadComponent.closeSmallHeartThread();
+//                    threadComponent.closeUserOnlineThread();
+//                }
                 // sendbarragethread
                 if (PublicDataConf.advertThread == null
                         && !PublicDataConf.centerSetConf.getFollow().is_followThank()

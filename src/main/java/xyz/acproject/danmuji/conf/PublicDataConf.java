@@ -1,7 +1,6 @@
 package xyz.acproject.danmuji.conf;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.apache.commons.lang3.StringUtils;
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
@@ -148,14 +147,19 @@ public class PublicDataConf {
 	//task
 //	public static SchedulingRunnableUtil dosigntask = null;
 	
-	public static Long ROOMID_SAFE = null;
+	public static Long ROOMID_LONG = null;
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
 
-	public static String EDITION ="2.6.41";
+	public final static String EDITION ="2.6.41";
 
 	public static String NEW_EDITION ="2.6.41";
 	public static String ANNOUNCE = null;
+
+	public final static String PROFILE_NAME = "DanmujiProfile";
+	public final static String PROFILE_SET_NAME = "set";
+
+	public final static String PROFILE_COOKIE_NAME = "ySZL4SBB";
 	public static boolean INIT_CHECK_EDITION = false;
 	public static boolean INIT_CHECK_ANNOUNCE = false;
 	public static int manager_login_size=0;

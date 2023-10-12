@@ -17,6 +17,7 @@ public class ApiServiceImpl implements ApiService {
 
 
     @Override
+    @Deprecated
     public Weather getWeather(String city, Short day) {
         Weather weather = null;
         Map<String, List<Weather>> weatherMaps = HttpOtherData.httpGetweather(city);

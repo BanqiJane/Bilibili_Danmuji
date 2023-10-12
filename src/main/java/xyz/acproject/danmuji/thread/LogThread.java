@@ -29,7 +29,7 @@ public class LogThread extends Thread{
 			if(PublicDataConf.webSocketProxy!=null&&!PublicDataConf.webSocketProxy.isOpen()) {
 				return;
 			}
-			if(null!=PublicDataConf.logString&&!PublicDataConf.logString.isEmpty()&&!StringUtils.isEmpty(PublicDataConf.logString.get(0))) {
+			if(null!=PublicDataConf.logString&&!PublicDataConf.logString.isEmpty()&&StringUtils.isNotBlank(PublicDataConf.logString.get(0))) {
 				logString = PublicDataConf.logString.get(0);
 				LogFileTools.getlogFileTools().logFile(logString);
 				PublicDataConf.logString.remove(0);

@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class DanmujiInitService {
     private static final Logger LOGGER = LogManager.getLogger(DanmujiInitService.class);// 日志记录对象应是线程安全的
-    private static final String COOKIES_ID = "ySZL4SBB";
 
     // 借助lombok的RequiredArgsConstructor自动实现构造函数,此处由Spring利用构造函数完成自动装配
     private final SetServiceImpl checkService;
@@ -42,44 +41,39 @@ public class DanmujiInitService {
         Map<String, String> profileMap = new ConcurrentHashMap<>();
         String cookieString = null;
         BASE64Encoder base64Encoder = new BASE64Encoder();
-        try {
-            profileMap.putAll(ProFileTools.read("DanmujiProfile"));
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
         // 读取本地cookie
         try {
-            cookieString = !StringUtils.isEmpty(profileMap.get(COOKIES_ID))
-                    ? new String(base64Encoder.decode(profileMap.get(COOKIES_ID)))
+            profileMap.putAll(ProFileTools.read(PublicDataConf.PROFILE_NAME));
+            cookieString = !StringUtils.isEmpty(profileMap.get(PublicDataConf.PROFILE_COOKIE_NAME))
+                    ? new String(base64Encoder.decode(profileMap.get(PublicDataConf.PROFILE_COOKIE_NAME)))
                     : null;
         } catch (Exception e) {
             // TODO 自动生成的 catch 块
             LOGGER.error("获取本地cookie失败,请重新登录" + e);
         }
-        if (!StringUtils.isEmpty(cookieString)) {
-            if (StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                PublicDataConf.USERCOOKIE = cookieString;
-            }
+        if (StringUtils.isNotBlank(cookieString)&&StringUtils.isBlank(PublicDataConf.USERCOOKIE)) {
+            PublicDataConf.USERCOOKIE = cookieString;
         }
         // 方法名未体现数据装载目的,但实际做了装载动作>_<
+        // 检查登录状态
         HttpUserData.httpGetUserInfo();
         if (PublicDataConf.USER == null) {
             PublicDataConf.USERCOOKIE = null;
         } else {
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
-                profileMap.put(COOKIES_ID, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+                profileMap.put(PublicDataConf.PROFILE_COOKIE_NAME, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
         }
 
         // 装载本地配置集
         // centerSetConf 第一次装配
-        if (StringUtils.isNotBlank(profileMap.get("set"))) {
-            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get("set"));
+        if (StringUtils.isNotBlank(profileMap.get(PublicDataConf.PROFILE_SET_NAME))) {
+            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get(PublicDataConf.PROFILE_SET_NAME));
 
             if (PublicDataConf.centerSetConf.getRoomid() != null && PublicDataConf.centerSetConf.getRoomid() > 0)
-                PublicDataConf.ROOMID_SAFE = PublicDataConf.centerSetConf.getRoomid();
-            else if (PublicDataConf.ROOMID_SAFE != null && PublicDataConf.ROOMID_SAFE > 0)
-                PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID_SAFE);
+                PublicDataConf.ROOMID_LONG = PublicDataConf.centerSetConf.getRoomid();
+            else if (PublicDataConf.ROOMID_LONG != null && PublicDataConf.ROOMID_LONG > 0)
+                PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID_LONG);
 
             if (PublicDataConf.centerSetConf.getAdvert() == null) {
                 PublicDataConf.centerSetConf.setAdvert(new AdvertSetConf());
@@ -117,12 +111,12 @@ public class DanmujiInitService {
         }
 
         //初始化配置文件结束
-        profileMap.put("set", base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
-        ProFileTools.write(profileMap, "DanmujiProfile");
+        profileMap.put(PublicDataConf.PROFILE_SET_NAME, base64Encoder.encode(PublicDataConf.centerSetConf.toJson().getBytes()));
+        ProFileTools.write(profileMap, PublicDataConf.PROFILE_NAME);
         // 下方解析操作逻辑冗余, 可以清除
         try {
             // centerSetConf 第二次装配, 第一次与第二次转配期间profileMap的set属性装载仅依赖PublicDataConf.centerSetConf
-            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get("set"));
+            PublicDataConf.centerSetConf = CenterSetConf.of(profileMap.get(PublicDataConf.PROFILE_SET_NAME));
             LOGGER.info("读取配置文件成功");
         } catch (Exception e) {
             // TODO: handle exception

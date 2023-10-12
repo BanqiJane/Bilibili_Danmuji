@@ -61,7 +61,7 @@ public class WebController {
 
     @RequestMapping(value = {"/", "index"})
     public String index(HttpServletRequest req, Model model) {
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             if (req.getSession().getAttribute("status") == null) {
                 req.getSession().setAttribute("status", "login");
             }
@@ -110,7 +110,7 @@ public class WebController {
     public String quit(HttpServletRequest req) {
         req.getSession().setAttribute("status", null);
         req.getSession().removeAttribute("status");
-        if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             HttpUserData.quit();
             checkService.quit();
         }
@@ -166,7 +166,7 @@ public class WebController {
         if(flag){
             danmujiInitService.init();
             //弹幕长度刷新
-            if (!StringUtils.isEmpty(PublicDataConf.USERCOOKIE)) {
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 HttpUserData.httpGetUserBarrageMsg();
             }
         }
@@ -186,7 +186,7 @@ public class WebController {
             }
             if (PublicDataConf.ROOMID != null) {
                 PublicDataConf.centerSetConf.setRoomid(PublicDataConf.ROOMID);
-                PublicDataConf.ROOMID_SAFE = PublicDataConf.ROOMID;
+                PublicDataConf.ROOMID_LONG = PublicDataConf.ROOMID;
             }
             checkService.connectSet(PublicDataConf.centerSetConf);
         }
@@ -341,7 +341,7 @@ public class WebController {
 //    @GetMapping(value = "/getIp")
 //    public Response<?> getIp(HttpServletRequest req) {
 //        String ip = HttpOtherData.httpGetIp();
-//        if (!StringUtils.isEmpty(ip)) {
+//        if (StringUtils.isNotBlank(ip)) {
 //            return Response.success(ip, req);
 //        } else {
 //            return Response.success(null, req);
@@ -376,7 +376,7 @@ public class WebController {
         String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
         EditionResult editionResult = new EditionResult();
         editionResult.setEdition(edition);
-        if (!StringUtils.isEmpty(edition)) {
+        if (StringUtils.isNotBlank(edition)) {
             if (edition.equals("获取公告失败")) {
                 editionResult.setStatus(2);
                 return Response.success(editionResult, req);
@@ -400,7 +400,7 @@ public class WebController {
     @GetMapping(value = "/getNewEdition")
     public Response<?> getNewEdition(HttpServletRequest req) {
         String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
-        if (!StringUtils.isEmpty(edition)) {
+        if (StringUtils.isNotBlank(edition)) {
             if (edition.equals("获取公告失败")) {
                 return Response.success(-1, req);
             } else {
