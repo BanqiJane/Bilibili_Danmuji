@@ -1,13 +1,19 @@
 package xyz.acproject.danmuji.conf;
 
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import xyz.acproject.danmuji.conf.set.*;
+import xyz.acproject.danmuji.tools.BASE64Encoder;
 import xyz.acproject.danmuji.utils.FastJsonUtils;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -20,6 +26,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class CenterSetConf implements Serializable {
     /**
      *
@@ -152,6 +159,27 @@ public class CenterSetConf implements Serializable {
 
     public String toJson() {
         return FastJsonUtils.toJson(this);
-       // return FastJsonUtils.toJson(new CenterSetConf(is_barrage_guard, is_barrage_vip, is_barrage_manager, is_barrage_medal, is_barrage_ul,is_barrage_anchor_shield, is_block, is_gift, is_welcome, is_welcome_all, is_follow, is_log, is_cmd, roomid, is_auto,win_auto_openSet,is_manager_login,manager_key,manager_maxSize, is_online, is_sh, is_dosign,sign_time ,thank_gift, advert, follow, reply, clock_in, welcome,auto_gift,privacy));
+    }
+
+    /**
+     * Let a base64 content to a CenterSetConf object.
+     * @param base64 将json字符串base64编码的内容
+     * @return is not null
+     */
+    public static CenterSetConf of(String base64){
+        Assert.notNull(base64, "Base64 must cannot be null");
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        try {
+            //fastjson没有完善的javadoc, 方法抛出的异常也未明确指出. 是否考虑更换较规范的库?
+            // {@link JSONObject#parseObject} 方法调用的异常捕获并未完全覆盖
+            return JSONObject.parseObject(new String(base64Encoder.decode(base64)), CenterSetConf.class);
+        } catch (IOException|JSONException e) {
+            // 因用户非法操作导致的,记录等级为warn;开发者使用方法不当导致的,记录等级为error.(不那么准确,但是warn级别确定是用户非法操作导致)
+            // 在数据模型中的方法面向开发者,故给予error级别记录. 其实此处的异常也会因为用户非法修改profile文件内容导致异常.
+            // 解析失败
+            log.error(e.getMessage(), e);
+            // 在异常时提供默认对象, 避免反复处理解析失败异常
+            return new CenterSetConf();
+        }
     }
 }

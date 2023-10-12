@@ -1,7 +1,10 @@
 package xyz.acproject.danmuji.tools.file;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,77 +16,63 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Slf4j
 public class ProFileTools {
-	public static Map<String, String> read(String filename) {
-		String path = System.getProperty("user.dir");
+	private static final String STORE_DIR;
+	static {
 		FileTools fileTools = new FileTools();
+		String tmp;
 		try {
-			path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
+			tmp = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
 		} catch (Exception e1) {
-			// TODO 自动生成的 catch 块
-			e1.printStackTrace();
+			log.warn(e1.getMessage(),e1);
+			tmp = System.getProperty("user.dir");
 		}
-		File file = new File(path);
-//		file.setWritable(true, false);
-		if (file.exists() == false)
-			file.mkdirs();
-		file = new File(path + "/" + filename);
-//		file.setWritable(true, false);
-		if (file.exists() == false)
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				// TODO 自动生成的 catch 块
-				e.printStackTrace();
-			}
+		STORE_DIR = tmp;
+	}
+
+	/**
+	 * 读取profile文件内容 转为 Map对象
+	 * @param filename 文件名称,非绝对地址
+	 * @return is not null
+	 * @throws IOException io流处理异常
+	 * @throws FileNotFoundException 文件未找到
+	 */
+	public static Map<String, String> read(String filename) throws IOException{
+		File file = new File(STORE_DIR);
+		file.mkdirs();
+		file = new File(STORE_DIR + "/" + filename);
 		Map<String, String> profileMap = new ConcurrentHashMap<>();
-		BufferedReader bufferedReader = null;
-		String dataString = null;
-		String[] strings = null;
-		try {
-			bufferedReader = new BufferedReader(new FileReader(file));
+		if (file.createNewFile()){
+			//如果成功创建了空文件则直接返回空Map
+			return profileMap;
+		}
+
+		String dataString;
+		String[] strings;
+		//try-catch-resource
+		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
 			while ((dataString = bufferedReader.readLine()) != null) {
 				strings = dataString.split(":@:");
-				if (strings != null) {
-					if (strings.length == 2) {
-						profileMap.put(strings[0], strings[1]);
-					} else {
-						return null;
-					}
+				if (strings.length == 2) {
+					profileMap.put(strings[0], strings[1]);
 				}
 			}
-		} catch (Exception e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
+		} catch (FileNotFoundException e) {
+			log.warn("文件{}不存在!",file.getAbsolutePath());
+			throw e;
+		} catch(IOException e) {
+			log.error(e.getMessage(),e);
+			throw e;
 		}
 		return profileMap;
 
 	}
 
 	public static void write(Map<String, String> profileMap, String filename) {
-		String path = System.getProperty("user.dir");
-		FileTools fileTools = new FileTools();
-		try {
-			path = URLDecoder.decode(fileTools.getBaseJarPath().toString(), "utf-8");
-		} catch (Exception e1) {
-			// TODO 自动生成的 catch 块
-			e1.printStackTrace();
-		}
-		File file = new File(path);
-//		file.setWritable(true, false);
-		if (file.exists() == false)
-			file.mkdirs();
-		file = new File(path + "/" + filename);
-//		file.setWritable(true, false);
+		File file = new File(STORE_DIR);
+		file.mkdirs();
+		file = new File(STORE_DIR + "/" + filename);
 		final StringBuffer stringBuffer = new StringBuffer();
 		try {
 			file.createNewFile();
@@ -91,10 +80,8 @@ public class ProFileTools {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		OutputStreamWriter os= null;
 		BufferedWriter bufferedWriter = null;
-		try {
-			os = new OutputStreamWriter(new FileOutputStream(file),"utf-8");
+		try (OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)){
 			bufferedWriter = new BufferedWriter(os);
 			profileMap.forEach((k, v) -> {
 
@@ -109,23 +96,6 @@ public class ProFileTools {
 		} catch (IOException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
-		} finally {
-			if (os != null) {
-				try {
-					os.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
-			if (bufferedWriter != null) {
-				try {
-					bufferedWriter.close();
-				} catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 }
