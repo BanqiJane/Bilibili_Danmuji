@@ -30,15 +30,15 @@ public class FristSecurityData implements Serializable {
 	//协议版本 目前为2 3
 	private Integer protover=3;
 	//平台 可以为web android
-	private String platform="android";
-
+	private String platform="web";
+	//规则估计为UUID+固定字符串"infoc"
 	private String buvid="";
 	//客户端版本 已知1.11.0 1.8.5 1.5.15 1.13.1 无用
 //	private String clientver="1.14.0";
 	//未知 可以是2
 	private Integer type = 2;
 	//用户标识  通过接口https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=房间号&platform=pc&player=web获取 在里面为token
-	private String key ;
+	private String key;
 
 
 	public FristSecurityData(Long roomid, String key) {

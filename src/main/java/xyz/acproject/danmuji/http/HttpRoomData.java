@@ -294,14 +294,10 @@ public class HttpRoomData {
 //			if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
 //				headers.put("cookie", PublicDataConf.USERCOOKIE);
 //			}
-		datas = new HashMap<>(6);
+		datas = new HashMap<>(2);
 		datas.put("vmid", PublicDataConf.AUID.toString());
-		datas.put("pn", String.valueOf(1));
-		datas.put("ps", "50");
-		datas.put("order", "desc");
-		datas.put("jsonp", "jsonp");
 		try {
-			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/relation/followers", headers, datas)
+			data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/relation/stat", headers, datas)
 					.body().string();
 		} catch (Exception e) {
 			// TODO 自动生成的 catch 块
@@ -313,7 +309,7 @@ public class HttpRoomData {
 		jsonObject = JSONObject.parseObject(data);
 		code = jsonObject.getShort("code");
 		if (code == 0) {
-			followersNum = ((JSONObject) jsonObject.get("data")).getLong("total");
+			followersNum = ((JSONObject) jsonObject.get("data")).getLong("follower");
 		} else {
 			LOGGER.error("获取关注数失败，请重试" + jsonObject.getString("message"));
 		}

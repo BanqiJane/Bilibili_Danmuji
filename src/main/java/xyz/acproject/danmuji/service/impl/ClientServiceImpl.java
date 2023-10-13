@@ -25,6 +25,7 @@ import xyz.acproject.danmuji.utils.HexUtils;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * @author BanqiJane
@@ -82,7 +83,8 @@ public class ClientServiceImpl implements ClientService {
                     conf.getToken());
         } else {
             //应付用户名称带星号问题
-            fristSecurityData = new FristSecurityData(PublicDataConf.AUID,PublicDataConf.ROOMID, conf.getToken());
+            fristSecurityData = new FristSecurityData(0l,PublicDataConf.ROOMID, conf.getToken());
+            fristSecurityData.setBuvid(UUID.randomUUID()+"infoc");
         }
         byte[] byte_1 = HandleWebsocketPackage.BEhandle(BarrageHeadHandle.getBarrageHeadHandle(
                 fristSecurityData.toJson().getBytes().length + PublicDataConf.packageHeadLength,

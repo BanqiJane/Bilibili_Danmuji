@@ -1309,6 +1309,9 @@ public class ParseMessageThread extends Thread {
                         case "AREA_RANK_CHANGED":
                             //					LOGGER.info("AREA_RANK_CHANGED:::" + message);
                             break;
+                        case "PLAY_TAG":
+                            //					LOGGER.info("PLAY_tAG:::" + message);
+                            break;
                         default:
 //                            LOGGER.info("其他未处理消息:" + message);
                             break;
