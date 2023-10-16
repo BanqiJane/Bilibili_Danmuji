@@ -1,0 +1,27 @@
+# 忽略git相关文件
+.git
+.gitignore
+.gitattributes
+.github
+# 忽略idea下所有文件
+.idea/
+# 忽略out下生成文件
+out/
+classes/
+# 忽略target下生成文件
+target/
+# 忽略build下生成文件
+build/
+# 忽略项目.iml
+*.iml
+# 忽略项目prof文件
+*.hprof
+# 忽略word生成的临时文件
+~*
+# 忽略lib下生成文件
+.gradle/
+bin/
+*.log
+log/
+rebel.xml
+rebel-remote.xml
