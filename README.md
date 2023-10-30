@@ -5,7 +5,7 @@
 
 
 
-# 说明：**认准官方唯一github  本软件永久开源（开源即永久免费） 不存在任何收费 请各位谨慎识别**
+# 说明：**本软件永久开源（开源即永久免费） 不存在任何收费 请各位谨慎识别**
 
 # 运行环境
 
@@ -59,11 +59,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.41
+# 版本2.6.5
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.41 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.5 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.41 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.5 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -149,7 +149,7 @@ java version "1.8.0_121"
 
 1. 是否仅在直播中开启
 2. 可调节多少秒间隔才能识别弹幕并自动回复
-3. 可设置多个关键字与屏蔽词
+3. 可设置多个关键字与屏蔽词，以及多条随机回复
 4. 人员过滤屏蔽（本房间勋章，本房间舰长）
 5. 基础回复替换参数：
    - 提问人的用户名称（触发回复姬的人）：`%NAME%`
@@ -353,6 +353,16 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+      <blockquote>
+<h2>Beta2.6.5</h2>
+<p>未登录带*号问题待解决</p>
+<p>修改网页弹幕为弹窗模式</p>
+<p>自动回复新增屏蔽自己的选项</p>  
+<p>新增红包时期的关注 欢迎屏蔽</p>  
+<p>自动回复新增多条随机回复</p>
+<p>现在网页弹幕可以查看进入直播间消息了</p>
+<p>修复部分已知bug</p>
+</blockquote>
     <blockquote>
 <h2>Beta2.6.41</h2>
 <p>临时修复未登录状态下用户名带*号的问题（破站目前灰度未登录用户隐私功能）</p>
