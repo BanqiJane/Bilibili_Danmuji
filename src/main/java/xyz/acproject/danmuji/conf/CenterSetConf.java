@@ -1,14 +1,4 @@
 package xyz.acproject.danmuji.conf;
-import xyz.acproject.danmuji.conf.set.ThankWelcomeSetConf;
-import xyz.acproject.danmuji.conf.set.AutoReplySetConf;
-import xyz.acproject.danmuji.conf.set.AutoSendGiftConf;
-import xyz.acproject.danmuji.conf.set.PrivacySetConf;
-import xyz.acproject.danmuji.conf.set.ClockInSetConf;
-import xyz.acproject.danmuji.conf.set.AdvertSetConf;
-import xyz.acproject.danmuji.conf.set.ThankFollowSetConf;
-import xyz.acproject.danmuji.conf.set.ThankGiftSetConf;
-import xyz.acproject.danmuji.conf.set.BlackListSetConf;
-
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;

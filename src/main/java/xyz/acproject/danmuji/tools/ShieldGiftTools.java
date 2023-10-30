@@ -9,7 +9,6 @@ import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.enums.ListGiftShieldStatus;
 import xyz.acproject.danmuji.enums.ListPeopleShieldStatus;
 import xyz.acproject.danmuji.enums.ShieldGift;
-import xyz.acproject.danmuji.thread.core.ParseMessageThread;
 
 import java.util.Set;
 

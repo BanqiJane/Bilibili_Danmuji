@@ -690,14 +690,14 @@ div#danmu .danmu-child a {
 .replys-wrap .con ul li .reply_open {
     vertical-align: middle;
     margin-left: 8px;
-    height: 40px !important;
+    /*height: 40px !important;*/
     cursor: pointer;
 }
 
 .replys-wrap .con ul li .reply_oc {
     vertical-align: middle;
     margin-left: 6px;
-    height: 40px !important;
+    /*height: 40px !important;*/
     cursor: pointer;
 }
 
@@ -717,6 +717,7 @@ div#danmu .danmu-child a {
 
 .replys-wrap .con ul li .reply-btns {
     margin-left: 5px;
+    display: inline-block;
 }
 
 .radd-mask {

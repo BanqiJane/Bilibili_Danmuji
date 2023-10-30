@@ -1,13 +1,12 @@
 package xyz.acproject.danmuji.thread;
 
-import java.util.Vector;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
+
+import java.util.Vector;
 
 /**
  * @ClassName ParseThankFollowThread

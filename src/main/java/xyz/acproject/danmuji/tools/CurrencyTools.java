@@ -6,9 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+import xyz.acproject.danmuji.conf.CacheConf;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.BarrageHeadHandle;
+import xyz.acproject.danmuji.entity.room_data.LotteryInfoWeb;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.HostServer;
 import xyz.acproject.danmuji.entity.user_data.AutoSendGift;
@@ -584,5 +586,43 @@ public class CurrencyTools {
 
     public static String dateStringToCron(String dateStr) {
         return JodaTimeUtils.format(JodaTimeUtils.parse(dateStr, "HH:mm:ss"), "ss mm HH * * ?");
+    }
+
+    public static void handleLotteryInfoWebByRedPackage(Long roomid,LotteryInfoWeb lotteryInfoWeb){
+        if(lotteryInfoWeb==null)return;
+        Long now_time = JodaTimeUtils.getTimestamp();
+        Long end_time = 0l;
+        Long cache_seconds = 0l;
+        if(!CollectionUtils.isEmpty(lotteryInfoWeb.getPopularity_red_pocket())){
+            for(LotteryInfoWeb.PopularityRedPocket popularityRedPocket: lotteryInfoWeb.getPopularity_red_pocket()){
+                if(end_time<popularityRedPocket.getEnd_time()){
+                    end_time = popularityRedPocket.getEnd_time();
+                }
+            }
+            if(end_time!=null){
+                cache_seconds = end_time - now_time;
+            }
+            //设置缓存
+            if(cache_seconds>0) {
+                CacheConf.setRedPackageCache(roomid, cache_seconds * 1000);
+            }
+        }
+    }
+
+    public static void handleLotteryInfoWebByTx(Long roomid,LotteryInfoWeb lotteryInfoWeb){
+        if(lotteryInfoWeb==null)return;
+        if(lotteryInfoWeb.getAnchor()!=null){
+            //设置缓存
+            if(lotteryInfoWeb.getAnchor().getTime()>0) {
+                CacheConf.setTX(roomid,StringUtils.isBlank(lotteryInfoWeb.getAnchor().getAward_name())?"":lotteryInfoWeb.getAnchor().getAward_name() ,lotteryInfoWeb.getAnchor().getTime() * 1000l);
+            }
+        }
+    }
+
+    public static void handleLotteryInfoWebByTx(Long roomid,String giftName,int time){
+            //设置缓存
+        if(time>0) {
+            CacheConf.setTX(roomid, StringUtils.isBlank(giftName)?"":giftName,time * 1000l);
+        }
     }
 }

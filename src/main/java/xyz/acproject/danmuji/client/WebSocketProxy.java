@@ -1,11 +1,10 @@
 package xyz.acproject.danmuji.client;
 
-import java.net.URISyntaxException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import xyz.acproject.danmuji.entity.room_data.Room;
+
+import java.net.URISyntaxException;
 
 /**
  * @ClassName WebSocketProxy

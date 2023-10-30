@@ -8,9 +8,6 @@ import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
 import xyz.acproject.danmuji.entity.danmu_data.Interact;
-import xyz.acproject.danmuji.http.HttpOtherData;
-
-import java.util.stream.Collectors;
 
 /**
  * @author Admin

@@ -95,7 +95,7 @@ public class AutoReplyThread extends Thread {
                             //没有屏蔽则发送
                             if (noShieldNum == keywordSize) {
                                 if (StringUtils.isNotBlank(autoReplySet.getReply())) {
-                                    is_send =   handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+                                    is_send =   handle(autoReplySet, null, autoReply, hourString, hour, hourReplace,
                                             is_send);
                                     break;
                                 }
@@ -112,7 +112,7 @@ public class AutoReplyThread extends Thread {
                                     for (String k : keywords) {
                                         if (autoReply.getBarrage().equals(k)) {
                                             // do something
-                                            is_send = handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+                                            is_send = handle(autoReplySet, null, autoReply, hourString, hour, hourReplace,
                                                     is_send);
                                             break;
                                         }
@@ -120,7 +120,7 @@ public class AutoReplyThread extends Thread {
                                 } else {
                                     if (autoReply.getBarrage().equals(keyword)) {
                                         // do something
-                                        is_send = handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+                                        is_send = handle(autoReplySet, null, autoReply, hourString, hour, hourReplace,
                                                 is_send);
                                     }
                                 }
@@ -143,7 +143,7 @@ public class AutoReplyThread extends Thread {
                             }
                             if (noShieldNum == keywordSize) {
                                 if (StringUtils.isNotBlank(autoReplySet.getReply())) {
-                                    is_send = handle(autoReplySet, replyString, autoReply, hourString, hour, hourReplace,
+                                    is_send = handle(autoReplySet, null, autoReply, hourString, hour, hourReplace,
                                             is_send);
                                     break;
                                 }
@@ -180,12 +180,14 @@ public class AutoReplyThread extends Thread {
 
     private synchronized boolean handle(AutoReplySet autoReplySet, String replyString, AutoReply autoReply,
                                      String hourString, short hour, String hourReplace, boolean is_send) {
+
         //拟议自动回复处理
         //1. 针对特定人?
         //2. 刷屏?
+        String handledAutoReplyStr = handleReplyStr(autoReplySet.getReply());
         // 替换%NAME%参数
-        if (!autoReplySet.getReply().equals("%NAME%")) {
-            replyString = StringUtils.replace(autoReplySet.getReply(), "%NAME%", autoReply.getName());
+        if (!handledAutoReplyStr.equals("%NAME%")) {
+            replyString = StringUtils.replace(handledAutoReplyStr, "%NAME%", autoReply.getName());
         } else {
             replyString = autoReply.getName();
         }
@@ -812,6 +814,18 @@ public class AutoReplyThread extends Thread {
             }
         }
         return is_send;
+    }
+
+
+    public String handleReplyStr(String replyStr) {
+        String replyStrs[] = null;
+        if (StringUtils.indexOf(replyStr, "\n") != -1) {
+            replyStrs = StringUtils.split(replyStr, "\n");
+        }
+        if(replyStrs!=null&&replyStrs.length>1) {
+            return replyStrs[(int) Math.ceil(Math.random() * replyStrs.length)-1];
+        }
+        return replyStr;
     }
 
 

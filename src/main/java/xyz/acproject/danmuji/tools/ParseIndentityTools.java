@@ -1,7 +1,6 @@
 package xyz.acproject.danmuji.tools;
 
 import org.apache.commons.lang3.StringUtils;
-
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.danmu_data.Barrage;
 

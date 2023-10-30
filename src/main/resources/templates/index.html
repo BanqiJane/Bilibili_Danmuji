@@ -54,7 +54,10 @@
                             th:text="${ROOMID}" class="room-id"></span>，<span><a
                             th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
                             th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
-                            th:text="${POPU}" class="popu"></span><span th:if="${MANAGER}" class="room-manager">，<a
+                            th:text="${POPU}" class="popu _description" data-bs-toggle="tooltip"
+                            data-bs-placement="top" data-bs-html="true"
+                            title="部分人可能不能正确获取人气值（所以该值仅供参考）"></span>，多少人看过：<span
+                            th:text="${ROOM_WATCHER}" class="room_watcher"></span><span th:if="${MANAGER}" class="room-manager">，<a
                             href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wel-model">房间管理</a></span></span>
                         <span class="room-data"
                               th:if="${ROOMID}==null">未连接到任何房间</span>
@@ -81,49 +84,49 @@
                                 </div>
 
                             </div>
-                            <div id="danmu">
-                                <!-- <div class="danmu-child" uid="0">
-                                    <span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span
-                                        class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span
-                                        class="danmu-vip">爷</span><span class="danmu-manager">管</span><span
-                                        class="danmu-ul">UL19</span><a href="javasript:void(0)"><span
-                                        class="danmu-name name-guard">名字</span>:</a><span
-                                        class="danmu-text">哈哈哈哈</span>
-                                        <div class="danmu-tips">
-                                        <ul class="danmu-tips-ul">
-                                        <li class="danmu-tips-li">禁言</li>
-                                        <li class="danmu-tips-li">查看</li>
-                                        <li class="danmu-tips-li">关闭</li>
-                                        </ul>
-                                        </div>
-                                </div>
-                                <div class="danmu-child" uid="0">
-                                    <span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a
-                                        href="javasript:void(0)"><span
-                                        class="danmu-name name-guard">名字</span></a><span
-                                        class="danmu-text">赠送了 辣条 x 10</span>
-                                </div>
-                                <div class="danmu-child" uid="0">
-                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a
-                                        href="javasript:void(0)"><span
-                                        class="danmu-name name-guard">名字</span></a><span
-                                        class="danmu-text">已被禁言</span>
-                                </div>
-                                <div class="danmu-child" uid="0">
-                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>
-                                    <span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span
-                                        class="danmu-name name-guard">名字</span></a><span
-                                        class="danmu-text">进入直播间</span>
-                                </div>
-                                <div class="danmu-child" uid="0">
-                                    <span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>
-                                    <a href="javasript:void(0)"><span
-                                        class="danmu-name name-guard">名字</span></a><span
-                                        class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>
-                                </div> -->
-                                <!-- 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏
-                                    它说:那个框是对面拉比克偷的</div> -->
-                            </div>
+<!--                            <div id="danmu">-->
+<!--                                &lt;!&ndash; <div class="danmu-child" uid="0">-->
+<!--                                    <span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span-->
+<!--                                        class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span-->
+<!--                                        class="danmu-vip">爷</span><span class="danmu-manager">管</span><span-->
+<!--                                        class="danmu-ul">UL19</span><a href="javasript:void(0)"><span-->
+<!--                                        class="danmu-name name-guard">名字</span>:</a><span-->
+<!--                                        class="danmu-text">哈哈哈哈</span>-->
+<!--                                        <div class="danmu-tips">-->
+<!--                                        <ul class="danmu-tips-ul">-->
+<!--                                        <li class="danmu-tips-li">禁言</li>-->
+<!--                                        <li class="danmu-tips-li">查看</li>-->
+<!--                                        <li class="danmu-tips-li">关闭</li>-->
+<!--                                        </ul>-->
+<!--                                        </div>-->
+<!--                                </div>-->
+<!--                                <div class="danmu-child" uid="0">-->
+<!--                                    <span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a-->
+<!--                                        href="javasript:void(0)"><span-->
+<!--                                        class="danmu-name name-guard">名字</span></a><span-->
+<!--                                        class="danmu-text">赠送了 辣条 x 10</span>-->
+<!--                                </div>-->
+<!--                                <div class="danmu-child" uid="0">-->
+<!--                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a-->
+<!--                                        href="javasript:void(0)"><span-->
+<!--                                        class="danmu-name name-guard">名字</span></a><span-->
+<!--                                        class="danmu-text">已被禁言</span>-->
+<!--                                </div>-->
+<!--                                <div class="danmu-child" uid="0">-->
+<!--                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>-->
+<!--                                    <span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span-->
+<!--                                        class="danmu-name name-guard">名字</span></a><span-->
+<!--                                        class="danmu-text">进入直播间</span>-->
+<!--                                </div>-->
+<!--                                <div class="danmu-child" uid="0">-->
+<!--                                    <span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>-->
+<!--                                    <a href="javasript:void(0)"><span-->
+<!--                                        class="danmu-name name-guard">名字</span></a><span-->
+<!--                                        class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>-->
+<!--                                </div> &ndash;&gt;-->
+<!--                                &lt;!&ndash; 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏-->
+<!--                                    它说:那个框是对面拉比克偷的</div> &ndash;&gt;-->
+<!--                            </div>-->
                         </div>
                     </div>
                     <!-- web弹幕显示end -->
@@ -342,7 +345,7 @@
                                         <label class="form-check-label col-form-label"> <input
                                                 type="checkbox" class="form-check-input advert_is_live_open live-save">
                                             <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播中有效">直播</span>
+                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -394,7 +397,15 @@
                                                 type="checkbox"
                                                 class="form-check-input thankgift_is_live_open live-save"> <span
                                                 class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="仅在直播中有效">直播</span>
+                                                data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox" class="form-check-input thankgift_is_open_self live-save">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top" data-bs-html="true"
+                                                  title="是否识别来着自己的弹幕（默认不识别来着自己的弹幕）">自己</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -403,7 +414,7 @@
                                                 class="form-check-input thankgift_is_tx_shield live-save"> <span
                                                 class="_description" data-bs-toggle="tooltip"
                                                 data-bs-placement="top"
-                                                title="是否屏蔽天选时刻赠送的礼物">屏蔽天选</span>
+                                                title="是否屏蔽天选时刻赠送的礼物">天选</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -411,7 +422,7 @@
                                                 type="checkbox" class="form-check-input thankgift_is_num live-save">
                                             <span class="_description" data-bs-toggle="tooltip"
                                                   data-bs-placement="top" data-bs-html="true"
-                                                  title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">显示礼物数量</span>
+                                                  title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">数量</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -580,7 +591,7 @@
                                         <label class="form-check-label"> <input
                                                 type="checkbox" class="form-check-input follow_is_live_open live-save">
                                             <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播中有效">直播</span>
+                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -589,6 +600,14 @@
                                             <span class="_description" data-bs-toggle="tooltip"
                                                   data-bs-placement="top"
                                                   title="是否屏蔽天选状态下的关注">天选</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox" class="form-check-input follow_rd_shield live-save">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top"
+                                                  title="是否屏蔽红包状态下的关注">红包</span>
                                         </label>
                                     </div>
                                     <div
@@ -643,7 +662,7 @@
                                         <label class="form-check-label"> <input
                                                 type="checkbox" class="form-check-input welcome_is_live_open live-save">
                                             <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播中有效">直播</span>
+                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
@@ -652,6 +671,14 @@
                                             <span class="_description" data-bs-toggle="tooltip"
                                                   data-bs-placement="top"
                                                   title="是否屏蔽天选状态下的欢迎">天选</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox" class="form-check-input welcome_rd_shield live-save">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top"
+                                                  title="是否屏蔽红包状态下的欢迎">红包</span>
                                         </label>
                                     </div>
                                     <div
@@ -718,7 +745,15 @@
                                                 type="checkbox" class="form-check-input replys_is_live_open live-save">
                                             <span class="_description" data-bs-toggle="tooltip"
                                                   data-bs-placement="top" data-bs-html="true"
-                                                  title="仅在直播中有效">直播</span>
+                                                  title="仅在直播（开播）中有效">直播</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
+                                                type="checkbox" class="form-check-input replys_is_open_self live-save">
+                                            <span class="_description" data-bs-toggle="tooltip"
+                                                  data-bs-placement="top" data-bs-html="true"
+                                                  title="是否识别来着自己的弹幕（默认不识别来着自己的弹幕）">自己</span>
                                         </label>
                                     </div>
                                     <div
@@ -1172,7 +1207,7 @@
                                       data-bs-html="true"></textarea></li>
                         <li><textarea class="reply_rs_i reply-sync" placeholder="回复语句"
                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                      title="回复语句<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"
+                                      title="回复语句<br/>多个回复请换行<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"
                                       data-bs-html="true"></textarea></li>
                         <li>
                             <button type="button"
@@ -1321,6 +1356,7 @@
         if (!initWebCheck.init_edition) {
             $("#checkupdate").click();
         }
+
     });
 </script>
 </body>

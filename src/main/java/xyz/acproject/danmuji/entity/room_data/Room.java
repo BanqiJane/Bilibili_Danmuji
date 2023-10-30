@@ -3,7 +3,6 @@ package xyz.acproject.danmuji.entity.room_data;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import xyz.acproject.danmuji.utils.FastJsonUtils;
 
 import java.io.Serializable;
 

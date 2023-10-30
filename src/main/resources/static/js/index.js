@@ -326,26 +326,28 @@ $(document)
 						<input type='checkbox' class='reply_oc live-save'
 						data-bs-toggle='tooltip' tabindex="0" data-bs-placement='top' title='是否精确匹配<br/>更多信息点进去编辑查看'
 						data-bs-html='true' data-original-title='是否精确匹配'> 
+				
 						<span tabindex="0" placeholder='关键字'
 						data-bs-toggle='tooltip' data-bs-placement='top' title='外部不能编辑:多个关键字,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
 						data-bs-html='true' data-original-title='关键字'>
-						<input class='small-input reply_keywords live-save' tabindex="0" placeholder='关键字'
-						data-bs-toggle='tooltip' data-bs-placement='top' title='外部不能编辑:多个关键字,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
-						data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
+							<textarea class='small-input reply_keywords live-save' placeholder='关键字'
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' style='height: 2rem' disabled></textarea>
 						</span>
 						<span tabindex="0" placeholder='屏蔽词'
 						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:多个屏蔽词,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
 						data-bs-html='true' data-original-title='关键字'>
-						<input class='small-input reply_shields live-save' tabindex="0" placeholder='屏蔽词'
-						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:多个屏蔽词,以中文逗号隔开<br/>更多信息点编辑进去查看或编辑'
-						data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
+						<textarea class='small-input reply_shields live-save' placeholder='屏蔽词'
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' style='height: 2rem' disabled></textarea>
 						</span>
 						<span placeholder='回复语句'
 						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称<br/>更多信息点编辑进去查看或编辑'
 						data-bs-html='true' data-original-title='回复语句'>
-						<input class='big-input reply_rs live-save'tabindex="0" placeholder='回复语句'
-						data-bs-toggle='tooltip'  data-bs-placement='top' title='外部不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称<br/>更多信息点编辑进去查看或编辑'
-						data-bs-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+		      	<textarea class='big-input reply_rs live-save' placeholder='回复语句'
+					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
+					data-bs-html='true' data-original-title='回复语句' readonly='readonly' style='height: 2rem' disabled>
+					</textarea>
 						</span>
 						<span class='reply-btns'>
 						<button type='button' class='btn btn-success btn-sm reply_edit'  data-bs-toggle='modal' data-bs-target='#reply-model-edit'>编辑</button>
@@ -679,6 +681,9 @@ const danmuku = {
             case "follow":
                 type_index=4;
                 return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text">关注了直播间</span>` + danmuku.tips(d) + `</div>`;
+            case "welcome":
+                type_index=4;
+                return `<div class="danmu-child" uid="` + d.uid + `">` + danmuku.type(type_index) + danmuku.time(d,type_index) + `<a href="javascript:;"><span class="danmu-name">` + d.uname + `</span></a><span class="danmu-text"> 进入了直播间</span>` + danmuku.tips(d) + `</div>`;
             default:
                 return "";
         }
@@ -753,6 +758,8 @@ const method = {
         set.thank_gift.is_open = $(".thankgift_is_open").is(':checked');
         set.thank_gift.is_live_open = $(".thankgift_is_live_open").is(
             ':checked');
+        set.thank_gift.is_open_self = $(".thankgift_is_open_self").is(
+            ':checked');
         set.thank_gift.is_tx_shield = $(".thankgift_is_tx_shield").is(
             ':checked');
         set.thank_gift.is_num = $(".thankgift_is_num").is(':checked');
@@ -785,7 +792,7 @@ const method = {
                 var shield = $(".reply_shields").eq(i).val();
                 var reply = $(".reply_rs").eq(i).val();
                 if (keyword === null || keyword === "") {
-                    ;
+
                 } else {
                     autoReplySet.keywords = method.giftStrings_handle(keywords, keyword);
                     autoReplySet.shields = method.giftStrings_handle(shields, shield);
@@ -819,12 +826,14 @@ const method = {
         set.follow.is_open = $(".follow_is_open").is(':checked');
         set.follow.is_live_open = $(".follow_is_live_open").is(':checked');
         set.follow.is_tx_shield = $(".follow_tx_shield").is(':checked');
+        set.follow.is_rd_shield = $(".follow_rd_shield").is(':checked');
         set.follow.num = Number($(".follow_num").val());
         set.follow.follows = $(".follow_follows").val();
         set.follow.delaytime = Number($(".thankfollow_delaytime").val());
         set.welcome.is_open = $(".welcome_is_open").is(':checked');
         set.welcome.is_live_open = $(".welcome_is_live_open").is(':checked');
         set.welcome.is_tx_shield = $(".welcome_tx_shield").is(':checked');
+        set.welcome.is_rd_shield = $(".welcome_rd_shield").is(':checked');
         set.welcome.num = Number($(".welcome_num").val());
         set.welcome.welcomes = $(".welcome_welcomes").val();
         set.welcome.delaytime = Number($(".thankwelcome_delaytime").val());
@@ -832,6 +841,7 @@ const method = {
             .find("option:selected").val()) - 1;
         set.reply.is_open = $(".replys_is_open").is(':checked');
         set.reply.is_live_open = $(".replys_is_live_open").is(':checked');
+        set.reply.is_open_self = $(".replys_is_open_self").is(':checked');
         set.reply.time = Number($(".replys_time").val());
         set.reply.list_people_shield_status = Number($(".replys_list_people_shield_status")
             .find("option:selected").val()) - 1;
@@ -1062,6 +1072,8 @@ const method = {
             $(".thankgift_is_open").prop('checked', set.thank_gift.is_open);
             $(".thankgift_is_live_open").prop('checked',
                 set.thank_gift.is_live_open);
+            $(".thankgift_is_open_self").prop('checked',
+                set.thank_gift.is_open_self);
             $(".thankgift_is_tx_shield").prop('checked',
                 set.thank_gift.is_tx_shield);
             $(".thankgift_is_num").prop('checked',
@@ -1100,12 +1112,14 @@ const method = {
             $(".follow_is_open").prop('checked', set.follow.is_open);
             $(".follow_is_live_open").prop('checked', set.follow.is_live_open);
             $(".follow_tx_shield").prop('checked', set.follow.is_tx_shield);
+            $(".follow_rd_shield").prop('checked', set.follow.is_rd_shield);
             $(".follow_num").val(set.follow.num);
             $(".follow_follows").val(set.follow.follows);
             $(".thankfollow_delaytime").val(set.follow.delaytime);
             $(".welcome_is_open").prop('checked', set.welcome.is_open);
             $(".welcome_is_live_open").prop('checked', set.welcome.is_live_open);
             $(".welcome_tx_shield").prop('checked', set.welcome.is_tx_shield);
+            $(".welcome_rd_shield").prop('checked', set.welcome.is_rd_shield);
             $(".welcome_num").val(set.welcome.num);
             $(".welcome_welcomes").val(set.welcome.welcomes);
             $(".thankwelcome_delaytime").val(set.welcome.delaytime);
@@ -1115,6 +1129,8 @@ const method = {
                 set.reply.is_open);
             $(".replys_is_live_open").prop('checked',
                 set.reply.is_live_open);
+            $(".replys_is_open_self").prop('checked',
+                set.reply.is_open_self);
             $(".replys_time").val(set.reply.time);
             $(".replys_list_people_shield_status").find("option").eq(
                 set.reply.list_people_shield_status).prop('selected', true);
@@ -1244,6 +1260,7 @@ const method = {
                 $(".is_sh").attr("disabled", true);
                 $(".thankgift_is_open").attr("disabled", true);
                 $(".thankgift_is_live_open").attr("disabled", true);
+                $(".thankgift_is_open_self").attr("disabled", true);
                 $(".thankgift_is_tx_shield").attr("disabled", true);
                 $(".thankgift_shield_status").attr("disabled", true);
                 $(".thankgift_list_gift_shield_status").attr("disabled", true);
@@ -1270,12 +1287,14 @@ const method = {
                 $(".follow_num").attr("disabled", true);
                 $(".follow_follows").attr("disabled", true);
                 $(".follow_tx_shield").attr("disabled", true);
+                $(".follow_rd_shield").attr("disabled", true);
                 $(".thankfollow_delaytime").attr("disabled", true);
                 $(".welcome_is_open").attr("disabled", true);
                 $(".welcome_is_live_open").attr("disabled", true);
                 $(".welcome_num").attr("disabled", true);
                 $(".welcome_welcomes").attr("disabled", true);
                 $(".welcome_tx_shield").attr("disabled", true);
+                $(".welcome_rd_shield").attr("disabled", true);
                 $(".thankwelcome_delaytime").attr("disabled", true);
                 $(".welcome_list_people_shield_status").attr("disabled", true);
                 $(".shieldgift_delete").attr("disabled", true);
@@ -1283,6 +1302,7 @@ const method = {
                 $(".thankgift_is_num").attr("disabled", true);
                 $(".replys_is_open").attr("disabled", true);
                 $(".replys_is_live_open").attr("disabled", true);
+                $(".replys_is_open_self").attr("disabled", true);
                 $(".replys_time").attr("disabled", true);
                 $(".replys_list_people_shield_status").attr("disabled", true);
                 $("#replys-btn").attr("disabled", true);
@@ -1408,15 +1428,15 @@ const method = {
 					<input type='checkbox' class='reply_oc live-save'
 						data-bs-toggle='tooltip' data-bs-placement='top' title='是否精确匹配'
 						data-original-title='是否精确匹配'> 
-					<input class='small-input reply_keywords live-save' placeholder='关键字'
+					<textarea class='small-input reply_keywords live-save' placeholder='关键字'
 					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个关键字,以中文逗号隔开'
-					data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
-					<input class='small-input reply_shields live-save' placeholder='屏蔽词'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' style='height: 2rem' disabled></textarea>
+					<textarea class='small-input reply_shields live-save' placeholder='屏蔽词'
 					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:多个屏蔽词,以中文逗号隔开'
-					data-bs-html='true' data-original-title='关键字' readonly='readonly' disabled>
-					<input class='big-input reply_rs live-save' placeholder='回复语句'
+					data-bs-html='true' data-original-title='关键字' readonly='readonly' style='height: 2rem' disabled></textarea>
+					<textarea class='big-input reply_rs live-save' placeholder='回复语句'
 					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
-					data-bs-html='true' data-original-title='回复语句' readonly='readonly' disabled>
+					data-bs-html='true' data-original-title='回复语句' readonly='readonly' style='height: 2rem' disabled></textarea>
 					<span class='reply-btns'>
 					<button type='button' class='btn btn-success btn-sm reply_edit' data-bs-toggle='modal' data-bs-target='#reply-model-edit'>编辑</button>
 					<button type='button' class='btn btn-danger btn-sm reply_delete live-save'>删除</button>

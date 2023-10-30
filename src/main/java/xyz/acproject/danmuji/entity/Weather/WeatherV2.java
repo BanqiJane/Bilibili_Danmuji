@@ -3,10 +3,7 @@ package xyz.acproject.danmuji.entity.Weather;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
-import xyz.acproject.danmuji.utils.JodaTimeUtils;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

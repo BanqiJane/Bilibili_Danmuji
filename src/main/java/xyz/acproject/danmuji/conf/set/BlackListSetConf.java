@@ -2,8 +2,6 @@ package xyz.acproject.danmuji.conf.set;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
-import xyz.acproject.danmuji.conf.base.OpenSetConf;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;

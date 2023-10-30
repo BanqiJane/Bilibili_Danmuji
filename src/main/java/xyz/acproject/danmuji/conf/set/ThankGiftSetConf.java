@@ -32,9 +32,11 @@ public class ThankGiftSetConf extends ThankLiveSetConf implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -418947096472064467L;
+	//是否开启本人
+	@JSONField(name = "is_open_self")
+	private boolean is_open_self = false;
 	//礼物屏蔽模式 0 自定义 1 免费 2 低价 3 规则
 	private short shield_status =0;
-
 	//礼物名单限制模式 0黑名单 1白名单  默认黑
 	@JSONField(name = "list_gift_shield_status")
 	private short list_gift_shield_status = 0;

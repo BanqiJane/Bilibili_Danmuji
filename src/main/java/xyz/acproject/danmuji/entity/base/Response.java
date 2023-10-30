@@ -1,11 +1,10 @@
 package xyz.acproject.danmuji.entity.base;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import javax.servlet.http.HttpServletRequest;
 
 ;
 

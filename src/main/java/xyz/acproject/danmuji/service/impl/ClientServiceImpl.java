@@ -8,20 +8,20 @@ import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.BarrageHeadHandle;
 import xyz.acproject.danmuji.entity.FristSecurityData;
-import xyz.acproject.danmuji.entity.room_data.CheckTx;
+import xyz.acproject.danmuji.entity.room_data.LotteryInfoWeb;
 import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.entity.room_data.RoomInfoAnchor;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
-import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ClientService;
 import xyz.acproject.danmuji.service.SetService;
 import xyz.acproject.danmuji.tools.CurrencyTools;
-import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
+import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.utils.ByteUtils;
 import xyz.acproject.danmuji.utils.HexUtils;
+import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -98,48 +98,70 @@ public class ClientServiceImpl implements ClientService {
         PublicDataConf.webSocketProxy.send(HexUtils.fromHexString(PublicDataConf.heartByte));
         threadComponent.startHeartByteThread();
         setService.holdSet(PublicDataConf.centerSetConf);
-        CheckTx checkTx = null;
-        // 登录发现天选屏蔽礼物
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().is_tx_shield()) {
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-               checkTx = HttpRoomData.httpGetCheckTX();
-                if (checkTx != null) {
-                    if (StringUtils.isNotBlank(checkTx.getGift_name())) {
-                        if (checkTx.getTime() > 0) {
-                            threadComponent.startGiftShieldThread(checkTx.getGift_name(), checkTx.getTime());
-                        }
-                    }
-                }
-            }
+        //检查红包+天选
+        LotteryInfoWeb lotteryInfoWeb =null;
+        //检查红包
+        if((PublicDataConf.centerSetConf.getThank_gift().hasRdShield())
+                ||(PublicDataConf.centerSetConf.getWelcome().hasRdShield())
+                ||(PublicDataConf.centerSetConf.getFollow().hasRdShield())) {
+            lotteryInfoWeb = HttpRoomData.httpGetLotteryInfoWeb();
+            CurrencyTools.handleLotteryInfoWebByRedPackage(PublicDataConf.ROOMID, lotteryInfoWeb);
         }
-        // 登录发现天选屏蔽关注
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().is_tx_shield()) {
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-                if(checkTx==null) {
-                    checkTx = HttpRoomData.httpGetCheckTX();
-                }
-                if (checkTx != null) {
-                    if (checkTx.getTime() > 0) {
-                        // do something
-                        threadComponent.startFollowShieldThread(checkTx.getTime());
-                    }
-                }
+        if(PublicDataConf.centerSetConf.getThank_gift().hasTxShield()
+                ||PublicDataConf.centerSetConf.getWelcome().hasTxShield()
+                ||PublicDataConf.centerSetConf.getFollow().hasTxShield()) {
+            //检查天选
+            if(lotteryInfoWeb==null) {
+                lotteryInfoWeb = HttpRoomData.httpGetLotteryInfoWeb();
             }
+            CurrencyTools.handleLotteryInfoWebByTx(PublicDataConf.ROOMID, lotteryInfoWeb);
         }
-        // 登录发现天选屏蔽欢迎
-        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().is_tx_shield()) {
-            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-                if(checkTx==null) {
-                   checkTx = HttpRoomData.httpGetCheckTX();
-                }
-                if (checkTx != null) {
-                    if (checkTx.getTime() > 0) {
-                        // do something
-                        threadComponent.startWelcomeShieldThread(checkTx.getTime());
-                    }
-                }
-            }
-        }
+
+//        //检查天选
+//        CheckTx checkTx = null;
+//        // 登录发现天选屏蔽礼物
+//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getThank_gift().is_tx_shield()) {
+//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+//               checkTx = HttpRoomData.httpGetCheckTX();
+//                if (checkTx != null) {
+//                    if (StringUtils.isNotBlank(checkTx.getGift_name())) {
+//                        if (checkTx.getTime() > 0) {
+//                            threadComponent.startGiftShieldThread(checkTx.getGift_name(), checkTx.getTime());
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // 登录发现天选屏蔽关注
+//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getFollow().is_tx_shield()) {
+//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+//                if(checkTx==null) {
+//                    checkTx = HttpRoomData.httpGetCheckTX();
+//                }
+//                if (checkTx != null) {
+//                    if (checkTx.getTime() > 0) {
+//                        // do something
+//                        threadComponent.startFollowShieldThread(checkTx.getTime());
+//                    }
+//                }
+//            }
+//        }
+//        // 登录发现天选屏蔽欢迎
+//        if (PublicDataConf.centerSetConf != null && PublicDataConf.centerSetConf.getWelcome().is_tx_shield()) {
+//            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+//                if(checkTx==null) {
+//                   checkTx = HttpRoomData.httpGetCheckTX();
+//                }
+//                if (checkTx != null) {
+//                    if (checkTx.getTime() > 0) {
+//                        // do something
+//                        threadComponent.startWelcomeShieldThread(checkTx.getTime());
+//                    }
+//                }
+//            }
+//        }
+        //舰长本地存储处理
         if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             if (PublicDataConf.centerSetConf != null
                     && PublicDataConf.centerSetConf.getThank_gift().is_guard_local()) {

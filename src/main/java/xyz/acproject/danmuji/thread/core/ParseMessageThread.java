@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.component.black.BlackParseComponent;
+import xyz.acproject.danmuji.conf.CacheConf;
 import xyz.acproject.danmuji.conf.CenterSetConf;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.conf.set.ThankGiftRuleSet;
@@ -15,26 +16,25 @@ import xyz.acproject.danmuji.controller.DanmuWebsocket;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeGuard;
 import xyz.acproject.danmuji.entity.Welcome.WelcomeVip;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
+import xyz.acproject.danmuji.entity.base.WsPackage;
 import xyz.acproject.danmuji.entity.danmu_data.*;
 import xyz.acproject.danmuji.entity.high_level_danmu.Hbarrage;
+import xyz.acproject.danmuji.entity.room_data.LotteryInfoWeb;
 import xyz.acproject.danmuji.entity.superchat.MedalInfo;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
 import xyz.acproject.danmuji.enums.ListPeopleShieldStatus;
 import xyz.acproject.danmuji.enums.ShieldGift;
-import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.http.HttpUserData;
-import xyz.acproject.danmuji.entity.base.WsPackage;
 import xyz.acproject.danmuji.service.SetService;
-import xyz.acproject.danmuji.thread.FollowShieldThread;
-import xyz.acproject.danmuji.thread.GiftShieldThread;
-import xyz.acproject.danmuji.thread.WelcomeShieldThread;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.ParseIndentityTools;
 import xyz.acproject.danmuji.tools.ParseSetStatusTools;
 import xyz.acproject.danmuji.tools.ShieldGiftTools;
+import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Vector;
@@ -713,68 +713,77 @@ public class ParseMessageThread extends Thread {
 
                         // 本房间主播开启了天选时刻
                         case "ANCHOR_LOT_START":
+//                            LOGGER.info("本房间主播开启了天选时刻:::" + message);
                             if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                                 try {
                                     //屏蔽礼物
-                                    if (getCenterSetConf().getThank_gift().is_tx_shield()) {
-                                        if (PublicDataConf.parsethankGiftThread != null
-                                                && !PublicDataConf.parsethankGiftThread.TFLAG
-                                                && !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
-                                            String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
-                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-                                            if (StringUtils.isNotBlank(giftName)) {
-                                                if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
-                                                        || PublicDataConf.giftShieldThread.getState().toString()
-                                                        .equals("NEW")) {
-                                                    PublicDataConf.giftShieldThread = new GiftShieldThread();
-                                                    PublicDataConf.giftShieldThread.FLAG = false;
-                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
-                                                    PublicDataConf.giftShieldThread
-                                                            .setTime(ParseIndentityTools.parseTime(time));
-                                                    PublicDataConf.giftShieldThread.start();
-                                                } else {
-                                                    PublicDataConf.giftShieldThread.setTime(time);
-                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
-                                                }
-                                            }
-                                        }
+                                    if(PublicDataConf.centerSetConf.getThank_gift().hasTxShield()
+                                            ||PublicDataConf.centerSetConf.getWelcome().hasTxShield()
+                                            ||PublicDataConf.centerSetConf.getFollow().hasTxShield()) {
+                                        //检查天选
+                                        String giftName = ((JSONObject) jsonObject.get("data")).getString("award_name");
+                                        int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+                                        CurrencyTools.handleLotteryInfoWebByTx(PublicDataConf.ROOMID,giftName,time);
                                     }
-                                    //开启天选 屏蔽关注
-                                    if (getCenterSetConf().getFollow().is_tx_shield()) {
-                                        if (PublicDataConf.parsethankFollowThread != null
-                                                && !PublicDataConf.parsethankFollowThread.FLAG
-                                                && !PublicDataConf.followShieldThread.getState().toString()
-                                                .equals("RUNNABLE")) {
-                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-                                            if (PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")
-                                                    || PublicDataConf.followShieldThread.getState().toString().equals("NEW")) {
-                                                PublicDataConf.followShieldThread = new FollowShieldThread();
-                                                PublicDataConf.followShieldThread.FLAG = false;
-                                                PublicDataConf.followShieldThread.setTime(time);
-                                                PublicDataConf.followShieldThread.start();
-                                            } else {
-                                                PublicDataConf.followShieldThread.setTime(time);
-                                            }
-                                        }
-                                    }
-                                    //开启天选 屏蔽欢迎
-                                    if (getCenterSetConf().getWelcome().is_tx_shield()) {
-                                        if (PublicDataConf.parseThankWelcomeThread != null
-                                                && !PublicDataConf.parseThankWelcomeThread.FLAG
-                                                && !PublicDataConf.welcomeShieldThread.getState().toString()
-                                                .equals("RUNNABLE")) {
-                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-                                            if (PublicDataConf.welcomeShieldThread.getState().toString().equals("TERMINATED")
-                                                    || PublicDataConf.welcomeShieldThread.getState().toString().equals("NEW")) {
-                                                PublicDataConf.welcomeShieldThread = new WelcomeShieldThread();
-                                                PublicDataConf.welcomeShieldThread.FLAG = false;
-                                                PublicDataConf.welcomeShieldThread.setTime(time);
-                                                PublicDataConf.welcomeShieldThread.start();
-                                            } else {
-                                                PublicDataConf.welcomeShieldThread.setTime(time);
-                                            }
-                                        }
-                                    }
+//                                    if (getCenterSetConf().getThank_gift().is_tx_shield()) {
+//                                        if (PublicDataConf.parsethankGiftThread != null
+//                                                && !PublicDataConf.parsethankGiftThread.TFLAG
+//                                                && !PublicDataConf.giftShieldThread.getState().toString().equals("RUNNABLE")) {
+//                                            String giftName = ((JSONObject) jsonObject.get("data")).getString("gift_name");
+//                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+//                                            if (StringUtils.isNotBlank(giftName)) {
+//                                                if (PublicDataConf.giftShieldThread.getState().toString().equals("TERMINATED")
+//                                                        || PublicDataConf.giftShieldThread.getState().toString()
+//                                                        .equals("NEW")) {
+//                                                    PublicDataConf.giftShieldThread = new GiftShieldThread();
+//                                                    PublicDataConf.giftShieldThread.FLAG = false;
+//                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
+//                                                    PublicDataConf.giftShieldThread
+//                                                            .setTime(ParseIndentityTools.parseTime(time));
+//                                                    PublicDataConf.giftShieldThread.start();
+//                                                } else {
+//                                                    PublicDataConf.giftShieldThread.setTime(time);
+//                                                    PublicDataConf.giftShieldThread.setGiftName(giftName);
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                    //开启天选 屏蔽关注
+//                                    if (getCenterSetConf().getFollow().is_tx_shield()) {
+//                                        if (PublicDataConf.parsethankFollowThread != null
+//                                                && !PublicDataConf.parsethankFollowThread.FLAG
+//                                                && !PublicDataConf.followShieldThread.getState().toString()
+//                                                .equals("RUNNABLE")) {
+//                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+//                                            if (PublicDataConf.followShieldThread.getState().toString().equals("TERMINATED")
+//                                                    || PublicDataConf.followShieldThread.getState().toString().equals("NEW")) {
+//                                                PublicDataConf.followShieldThread = new FollowShieldThread();
+//                                                PublicDataConf.followShieldThread.FLAG = false;
+//                                                PublicDataConf.followShieldThread.setTime(time);
+//                                                PublicDataConf.followShieldThread.start();
+//                                            } else {
+//                                                PublicDataConf.followShieldThread.setTime(time);
+//                                            }
+//                                        }
+//                                    }
+//                                    //开启天选 屏蔽欢迎
+//                                    if (getCenterSetConf().getWelcome().is_tx_shield()) {
+//                                        if (PublicDataConf.parseThankWelcomeThread != null
+//                                                && !PublicDataConf.parseThankWelcomeThread.FLAG
+//                                                && !PublicDataConf.welcomeShieldThread.getState().toString()
+//                                                .equals("RUNNABLE")) {
+//                                            int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
+//                                            if (PublicDataConf.welcomeShieldThread.getState().toString().equals("TERMINATED")
+//                                                    || PublicDataConf.welcomeShieldThread.getState().toString().equals("NEW")) {
+//                                                PublicDataConf.welcomeShieldThread = new WelcomeShieldThread();
+//                                                PublicDataConf.welcomeShieldThread.FLAG = false;
+//                                                PublicDataConf.welcomeShieldThread.setTime(time);
+//                                                PublicDataConf.welcomeShieldThread.start();
+//                                            } else {
+//                                                PublicDataConf.welcomeShieldThread.setTime(time);
+//                                            }
+//                                        }
+//                                    }
 
                                 } catch (Exception e) {
                                     // TODO: handle exception
@@ -1064,17 +1073,20 @@ public class ParseMessageThread extends Thread {
                             }
                             //关注感谢
                             if (getCenterSetConf().getFollow().is_followThank()) {
-                                if (!PublicDataConf.ISSHIELDFOLLOW) {
-                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                                    if (msg_type == 2) {
-                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-                                        try {
-                                            parseFollowSetting(interact);
-                                        } catch (Exception e) {
-                                            // TODO 自动生成的 catch 块
-                                            e.printStackTrace();
+                                //天选屏蔽&&红包屏蔽
+                                if (!getCenterSetConf().getFollow()
+                                        .boolTxAndRdShield(
+                                                CacheConf.existTx(PublicDataConf.ROOMID),CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                        msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                        if (msg_type == 2) {
+                                            interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                            try {
+                                                parseFollowSetting(interact);
+                                            } catch (Exception e) {
+                                                // TODO 自动生成的 catch 块
+                                                e.printStackTrace();
+                                            }
                                         }
-                                    }
                                 }
                             }
                             //欢迎进入直播间
@@ -1096,36 +1108,39 @@ public class ParseMessageThread extends Thread {
                                         }
                                     }
                                     //前端显示
-                                    //						try {
-                                    //							danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short)0, interact));
-                                    //						} catch (Exception e) {
-                                    //							// TODO 自动生成的 catch 块
-                                    //							e.printStackTrace();
-                                    //						}
+                                    try {
+                                        danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short)0, interact));
+                                    } catch (Exception e) {
+                                        // TODO 自动生成的 catch 块
+                                        e.printStackTrace();
+                                    }
                                     stringBuilder.delete(0, stringBuilder.length());
                                 }
                             }
                             //欢迎感谢
                             if (getCenterSetConf().getWelcome().is_welcomeThank()) {
-                                if (!PublicDataConf.ISSHIELDWELCOME) {
-                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                                    if (msg_type == 1) {
-                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-                                        try {
-                                            parseWelcomeSetting(interact);
-                                        } catch (Exception e) {
-                                            // TODO 自动生成的 catch 块
-                                            e.printStackTrace();
+                                //天选屏蔽&&红包屏蔽
+                                if (!getCenterSetConf().getWelcome()
+                                        .boolTxAndRdShield(
+                                                CacheConf.existTx(PublicDataConf.ROOMID),CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                        msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                        if (msg_type == 1) {
+                                            interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                            try {
+                                                parseWelcomeSetting(interact);
+                                            } catch (Exception e) {
+                                                // TODO 自动生成的 catch 块
+                                                e.printStackTrace();
+                                            }
                                         }
-                                    }
                                 }
                             }
 
                             //打印测试用
-//                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-//                            if (msg_type != 3 && msg_type != 2) {
-//                                LOGGER.info("直播间信息:::" + message);
-//                            }
+                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                            if (msg_type != 3 && msg_type != 2 && msg_type != 1) {
+                                LOGGER.info("直播间信息:::" + message);
+                            }
                             break;
                         // 礼物bag bot
                         case "GIFT_BAG_DOT":
@@ -1176,7 +1191,6 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.info("警告信息推送（例如任务快完成之类的）:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_NEW":
-//                            LOGGER.info("红包抽奖推送:::" + message);
                             //{"cmd":"POPULARITY_RED_POCKET_NEW",
                             // "data":{"lot_id":8677977,"start_time":1674572461,"current_time":1674572461,
                             // "wait_num":0,"uname":"直播小电视","uid":1407831746,"action":"送出",
@@ -1271,7 +1285,23 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.info("粉丝勋章消息盒子推送:::" + message);
                             break;
                         case "POPULARITY_RED_POCKET_START":
-                            //					LOGGER.info("礼物推送:::" + message);
+//                        {"cmd":"POPULARITY_RED_POCKET_START", "data":{"lot_id":15279655,
+//                                "sender_uid":300700903,"sender_name":"肉嘟嘟喽","sender_face":"https://i1.hdslb.com/bfs/face/3af2996893e1c77561fd9422e42bfb7a06292b23.jpg",
+//                                "join_requirement":1,"danmu":"中奖喷雾！中奖喷雾！","current_time":1698408158,"start_time":1698408158,"end_time":1698408338,
+//                                "last_time":180,"remove_time":1698408353,"replace_time":1698408348,"lot_status":1,
+//                                "h5_url":"https://live.bilibili.com/p/html/live-app-red-envelope/popularity.html?is_live_half_webview=1\u0026hybrid_half_ui=1,5,100p,100p,000000,0,50,0,0,1;2,5,100p,100p,000000,0,50,0,0,1;3,5,100p,100p,000000,0,50,0,0,1;4,5,100p,100p,000000,0,50,0,0,1;5,5,100p,100p,000000,0,50,0,0,1;6,5,100p,100p,000000,0,50,0,0,1;7,5,100p,100p,000000,0,50,0,0,1;8,5,100p,100p,000000,0,50,0,0,1\u0026hybrid_rotate_d=1\u0026hybrid_biz=popularityRedPacket\u0026lotteryId=15279655",
+//                                "user_status":2,"awards":[{"gift_id":31212,"gift_name":"打call","gift_pic":"https://s1.hdslb.com/bfs/live/461be640f60788c1d159ec8d6c5d5cf1ef3d1830.png",
+//                                "num":2},{"gift_id":31214,"gift_name":"牛哇","gift_pic":"https://s1.hdslb.com/bfs/live/91ac8e35dd93a7196325f1e2052356e71d135afb.png","num":3},{"gift_id":31216,
+//                                "gift_name":"小花花","gift_pic":"https://s1.hdslb.com/bfs/live/5126973892625f3a43a8290be6b625b5e54261a5.png","num":3}],"lot_config_id":3,"total_price":1600,"wait_num":7}}
+//                        LOGGER.info("红包详细信息推送:::" + message);
+                            if((PublicDataConf.centerSetConf.getThank_gift().hasRdShield())
+                                    ||(PublicDataConf.centerSetConf.getWelcome().hasRdShield())
+                                    ||(PublicDataConf.centerSetConf.getFollow().hasRdShield())) {
+                                LotteryInfoWeb.PopularityRedPocket popularityRedPocket = jsonObject.getJSONObject("data").toJavaObject(LotteryInfoWeb.PopularityRedPocket.class);
+                                LotteryInfoWeb lotteryInfoWeb = new LotteryInfoWeb();
+                                lotteryInfoWeb.setPopularity_red_pocket(Arrays.asList(popularityRedPocket));
+                                CurrencyTools.handleLotteryInfoWebByRedPackage(PublicDataConf.ROOMID, lotteryInfoWeb);
+                            }
                             break;
                         case "LITTLE_MESSAGE_BOX":
                             //					LOGGER.info("小消息box推送:::" + message);
@@ -1295,7 +1325,7 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.info("CARD_MSG:::" + message);
                             break;
                         case "USER_PANEL_RED_ALARM":
-                            //					LOGGER.info("USER_PANEL_RED_ALARM:::" + message);
+//                            					LOGGER.info("USER_PANEL_RED_ALARM:::" + message);
                             break;
                         case "TRADING_SCORE":
                             //					LOGGER.info("TRADING_SCORE:::" + message);
@@ -1310,7 +1340,25 @@ public class ParseMessageThread extends Thread {
                             //					LOGGER.info("AREA_RANK_CHANGED:::" + message);
                             break;
                         case "PLAY_TAG":
-                            //					LOGGER.info("PLAY_tAG:::" + message);
+                            //					LOGGER.info("PLAY_TAG:::" + message);
+                            break;
+                        case "PK_BATTLE_PROCESS_NEW":
+                            //					LOGGER.info("PK_BATTLE_PROCESS_NEW:::" + message);
+                            break;
+                        case "PK_BATTLE_SETTLE_NEW":
+                            //					LOGGER.info("PK_BATTLE_SETTLE_NEW:::" + message);
+                            break;
+                        case "PK_BATTLE_PUNISH_END":
+                            //					LOGGER.info("PK_BATTLE_PUNISH_END:::" + message);
+                            break;
+                        case "PK_BATTLE_PRE_NEW":
+                            //					LOGGER.info("PK_BATTLE_PRE_NEW:::" + message);
+                            break;
+                        case "PK_BATTLE_START_NEW":
+                            //					LOGGER.info("PK_BATTLE_START_NEW:::" + message);
+                            break;
+                        case "INTERACTIVE_USER":
+                            //					LOGGER.info("INTERACTIVE_USER:::" + message);
                             break;
                         default:
 //                            LOGGER.info("其他未处理消息:" + message);
@@ -1345,6 +1393,12 @@ public class ParseMessageThread extends Thread {
     }
 
     public boolean parseAutoReplySetting(Barrage barrage) {
+        //判断是否开启自己
+        if (!getCenterSetConf().getReply().is_open_self()) {
+            if(PublicDataConf.USER.getUid().equals(barrage.getUid())){
+                return false;
+            }
+        }
         ListPeopleShieldStatus listPeopleShieldStatus = ParseSetStatusTools.getListPeopleShieldStatus(getCenterSetConf().getReply().getList_people_shield_status());
         //先人员
         switch (listPeopleShieldStatus) {
@@ -1411,29 +1465,37 @@ public class ParseMessageThread extends Thread {
     }
 
     public synchronized void parseGiftSetting(Gift gift) throws Exception {
+        //屏蔽自己
+        if (!getCenterSetConf().getThank_gift().is_open_self()) {
+            if(PublicDataConf.USER.getUid().equals(gift.getUid())){
+                return;
+            }
+        }
         //天选礼物屏蔽
-        if (StringUtils.isNotBlank(PublicDataConf.SHIELDGIFTNAME)) {
-            if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
+//        if (StringUtils.isNotBlank(PublicDataConf.SHIELDGIFTNAME)) {
+//            if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
+//                gift = null;
+//            }
+       if (getCenterSetConf().getThank_gift().boolTxShield(CacheConf.existTx(PublicDataConf.ROOMID))) {
+            if (StringUtils.equals(gift.getGiftName(), CacheConf.getTx(PublicDataConf.ROOMID))) {
                 gift = null;
             }
-        } else {
+        }
             //礼物屏蔽过滤
-            if (blackParseComponent.gift_parse(gift)) {
-                if (ParseSetStatusTools.getGiftShieldStatus(
-                        getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
-                    gift = ShieldGiftTools.shieldGift(gift,
+        if (blackParseComponent.gift_parse(gift)) {
+           if (ParseSetStatusTools.getGiftShieldStatus(
+           getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
+                     gift = ShieldGiftTools.shieldGift(gift,
                             ParseSetStatusTools.getListGiftShieldStatus(
-                                    getCenterSetConf().getThank_gift().getList_gift_shield_status()),
-                            ParseSetStatusTools.getListPeopleShieldStatus(
-                                    getCenterSetConf().getThank_gift().getList_people_shield_status()),
-                            ParseSetStatusTools
-                                    .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
-                            getCenterSetConf().getThank_gift().getGiftStrings(), null);
-                }
-            } else {
-                gift = null;
-            }
-
+                            getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                    ParseSetStatusTools.getListPeopleShieldStatus(
+                            getCenterSetConf().getThank_gift().getList_people_shield_status()),
+                    ParseSetStatusTools
+                            .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                    getCenterSetConf().getThank_gift().getGiftStrings(), null);
+           }
+        } else {
+           gift = null;
         }
         Vector<Gift> gifts = null;
         if (gift != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
