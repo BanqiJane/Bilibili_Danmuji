@@ -37,35 +37,24 @@ public class SendBarrageThread extends Thread {
                 if (PublicDataConf.USERBARRAGEMESSAGE != null) {
                     maxLength = PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getLength();
                 }
+                //大于就分割发送
                 if (strLength > maxLength) {
                     int num = (int) Math.ceil((float) strLength / (float) maxLength);
-                    for (int i = 0; i <= num; i++) {
-                        if (!PublicDataConf.TEST_MODE) {
-                            try {
-                                if (HttpUserData.httpPostSendBarrage(StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength)) != 0) {
+                    for (int i = 0; i < num; i++) {
+                        try {
+                            String barrageStr_split = StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength);
+                            if (!PublicDataConf.TEST_MODE) {
+                                if (HttpUserData.httpPostSendBarrage(barrageStr_split) != 0) {
                                     break;
                                 }
-                            } catch (Exception e) {
-//								LOGGER.error("发送弹幕线程抛出:" + e);
-                                // TODO: handle exception
+                            } else {
+                                LOGGER.info(barrageStr_split);
                             }
-                        } else {
-                            LOGGER.info(StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength));
-                        }
-                        try {
                             Thread.sleep(1455);
-                        } catch (InterruptedException e) {
-                            // TODO 自动生成的 catch 块
-//							LOGGER.info("发送弹幕线程关闭:" + e);
+                        } catch (Exception e) {
+                            System.err.println("发送弹幕线程抛出:" + e);
+                            // TODO: handle exception
                         }
-//						if (i > 1 && i < num) {
-//							try {
-//								Thread.sleep(1300);
-//							} catch (InterruptedException e) {
-//								// TODO 自动生成的 catch 块
-//								LOGGER.info("发送弹幕线程关闭:" + e);
-//							}
-//						}
                     }
                 } else {
 

@@ -348,6 +348,10 @@ public class HttpUserData {
         if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             headers.put("cookie", PublicDataConf.USERCOOKIE);
         }
+        if(StringUtils.isBlank(msg)){
+            LOGGER.error("发送弹幕失败,原因:弹幕非空");
+            return -400;
+        }
         params = new HashMap<>(10);
         params.put("color", PublicDataConf.USERBARRAGEMESSAGE.getDanmu().getColor().toString());
         params.put("fontsize", "25");
