@@ -2,6 +2,7 @@ package xyz.acproject.danmuji.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,12 +82,18 @@ public class SetServiceImpl implements SetService {
         // window用默认浏览器打开网页
         if(PublicDataConf.centerSetConf.isWin_auto_openSet()) {
             try {
-                Runtime.getRuntime()
-                        .exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:" + serverAddressComponent.getPort());
+                if(SystemUtils.IS_OS_WINDOWS){
+                    Runtime.getRuntime()
+                            .exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:" + serverAddressComponent.getPort());
+                }else if(SystemUtils.IS_OS_MAC){
+                    Runtime.getRuntime()
+                            .exec("open " + "http://localhost:" + serverAddressComponent.getPort());
+                }else {
+                    System.out.println(
+                            "自动打开浏览器错误:当前系统缺少rundll32 url.dll组件或者不是window,mac系统，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+                }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                System.out.println(
-                        "自动打开浏览器错误:当前系统缺少rundll32 url.dll组件或者不是window系统，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+                LOGGER.error("自动打开浏览器错误: 错误信息为: ",e);
             }
         }
     }
