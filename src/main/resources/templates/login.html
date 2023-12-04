@@ -20,6 +20,12 @@
     <script type="text/javascript" src="../../js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
     <script type="text/javascript">
         $(function () {
+            $('#loader').hide();
+            getQrImg(1);
+            time = setInterval(getApi, 3000);
+        });
+        function getQrImg(init){
+            $('#loader').show();
             $.ajax({
                 url: '../qrcodeUrl',
                 async: false,
@@ -29,12 +35,22 @@
                 success: function (data) {
                     if (data.code == "200") {
                         var url = data.result;
-                        $('#qrcodeImg').attr('src', '../qrcode?url=' + url);
+                        $('#qrcodeImg').attr('src', '../qrcode?url=' + encodeURIComponent(url));
+                        $('#loader').hide();
+                        // 显示刷新成功的消息
+                        if(!init) {
+                            showMessage("二维码刷新成功！", "success",2);
+                        }// 显示消息，然后在2秒后消失
+                    }else{
+                        showMessage("二维码请求错误！", "danger",2);
                     }
+                },
+                error: function () {
+                    $('#loader').hide();  // 当AJAX请求失败时，隐藏载入图标
+                    showMessage("二维码请求错误！", "danger",2);
                 }
             });
-            time = setInterval(getApi, 3000);
-        });
+        }
 
         function getApi() {
             //设置时间 5-秒  1000-毫秒  这里设置你自己想要的时间
@@ -46,29 +62,43 @@
                 type: 'POST',
                 dataType: 'json',
                 success: function (data) {
-                    var status = data.status;
-                    if (status == true) {
+                    var code = data.data.code;
+                    if (code == 0) {
                         clearInterval(time);
                         window.location.replace("/");
+                        //二维码失效
+                    }else if(code==86038){
+                        showMessage("二维码过期自动刷新！", "warning",2);
+                        getQrImg(0)
+                    }else{
+                        showMessage("二维码请求错误！"+code, "danger",2);
                     }
                 }
             })
         }
 
-        $(document).on('click', '#qrcodeImg', function () {
-            $.ajax({
-                url: '../qrcodeUrl',
-                async: false,
-                cache: false,
-                type: 'POST',
-                dataType: 'json',
-                success: function (data) {
-                    if (data.code == "200") {
-                        var url = data.result;
-                        $('#qrcodeImg').attr('src', '../qrcode?url=' + url);
-                    }
+        function showMessage(message, type,timeout) {
+            var id = 'message-' + Date.now(); // 使用当前时间戳创建一个独特的ID
+            var countdownId = 'countdown-' + Date.now();
+
+            var div = $('<div id="'+ id +'" class="alert alert-'+ type +'" style="position:relative;">'+ message +
+                '<span id="'+ countdownId +'" style="position:absolute; right:10px; top:50%; transform: translateY(-50%);"></span> </div>');// 创建一个新的div元素
+
+            $('#top-message').append(div); // 将新消息添加到容器中
+
+            var countdown = timeout; // 倒计时开始
+
+            var intervalId = setInterval(function() {
+                $('#' + countdownId).text(countdown + 's');
+                if (--countdown < 0) {
+                    clearInterval(intervalId); // 在倒计时结束时清除计时器
+                    $('#' + id).fadeOut().remove(); // 在倒计时结束时移除这条消息
                 }
-            });
+            }, 1000);
+        }
+
+        $(document).on('click', '#qrcodeImg', function () {
+            getQrImg(0);
         });
     </script>
 </head>
@@ -84,6 +114,10 @@
                     <div class="login-qrcode-wrapper">
                         <div class="qrcode-image">
                             <img id="qrcodeImg" src="#" data-url="null" alt>
+                            <!-- 新增：当二维码在刷新时，显示载入图标 -->
+                            <div id="loader" class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                             <span class="qrcode-text">登录二维码，点击刷新</span>
                         </div>
                     </div>
@@ -91,6 +125,10 @@
             </div>
         </div>
     </div>
+</div>
+<!-- 用于显示信息的元素 -->
+<div id="top-message">
+
 </div>
 </body>
 </html>

@@ -10,5 +10,5 @@
        ## hh      wwww      hh ##           \ \_______\\ \__\\ \_______\\ \__\\ \_______\\ \__\\ \_______\\ \__\
        ## hh                hh ##            \|_______| \|__| \|_______| \|__| \|_______| \|__| \|_______| \|__|
        ## MMMMMMMMMMMMMMMMMMMM ##                      
-       ##MMMMMMMMMMMMMMMMMMMMMM#                 Danmuji Release ${danmuji.version} Powered by BanQiJane(zjianf2014@outlook.com)
+       ##MMMMMMMMMMMMMMMMMMMMMM#                 Danmuji Release ${danmuji.version} Powered by https://github.com/BanqiJane/Bilibili_Danmuji
             \/            \/

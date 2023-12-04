@@ -267,19 +267,20 @@ $(document).on('click', '.btn-block', function () {
     const time = $(".block-input").val();
     if (time !== "" && time !== null && time.indexOf(".") < 0 && Number(time) > 0 && Number(time) <= 720) {
         if (Number(time) > 720 && Number(time) < 1) {
-            alert("禁言时间错误")
+            // alert("禁言时间错误")
+            showMessage("禁言时间错误", "danger","3");
         } else {
             const code = method.block(uid, time);
             if (code === 0) {
-                alert("禁言成功");
+                showMessage("禁言成功", "success","2");
                 $("#block-model").modal('hide');
             } else {
-                alert("禁言失败");
+                showMessage("禁言失败，纠错码:"+code, "danger","3");
                 console.log("禁言纠错码:" + code)
             }
         }
     } else {
-        alert("请输入正确的时间")
+        showMessage("禁言时间错误", "danger","3");
     }
 });
 $(document)
@@ -346,8 +347,7 @@ $(document)
 						data-bs-html='true' data-original-title='回复语句'>
 		      	<textarea class='big-input reply_rs live-save' placeholder='回复语句'
 					data-bs-toggle='tooltip' data-bs-placement='top' title='不能编辑:回复语句,提供%AT%参数,以打印:@提问问题人名称'
-					data-bs-html='true' data-original-title='回复语句' readonly='readonly' style='height: 2rem' disabled>
-					</textarea>
+					data-bs-html='true' data-original-title='回复语句' readonly='readonly' style='height: 2rem' disabled></textarea>
 						</span>
 						<span class='reply-btns'>
 						<button type='button' class='btn btn-success btn-sm reply_edit'  data-bs-toggle='modal' data-bs-target='#reply-model-edit'>编辑</button>
@@ -393,7 +393,7 @@ $(document).on('click', '.block-pre-page', function () {
         method.getBlocks(Number(page) - 1);
         $(".block-page").text(Number(page) - 1);
     } else {
-        alert("没有上一页了");
+        showMessage("没有上一页了", "warning","3");
     }
 });
 $(document).on('click', '.block-next-page', function () {
@@ -401,7 +401,7 @@ $(document).on('click', '.block-next-page', function () {
     if (method.getBlocks(Number(page) + 1)) {
         $(".block-page").text(Number(page) + 1);
     } else {
-        alert("没有更多数据了");
+        showMessage("没有更多数据了", "warning","3");
     }
 });
 // $('#reply-btns').delegate('.reply_edit','click', function () {
@@ -791,14 +791,13 @@ const method = {
                 var keyword = $(".reply_keywords").eq(i).val();
                 var shield = $(".reply_shields").eq(i).val();
                 var reply = $(".reply_rs").eq(i).val();
-                if (keyword === null || keyword === "") {
-
-                } else {
-                    autoReplySet.keywords = method.giftStrings_handle(keywords, keyword);
-                    autoReplySet.shields = method.giftStrings_handle(shields, shield);
-                    autoReplySet.reply = reply;
-                    set.reply.autoReplySets.push(autoReplySet);
+                if (keyword === null) {
+                    keyword="";
                 }
+                autoReplySet.keywords = method.giftStrings_handle(keywords, keyword);
+                autoReplySet.shields = method.giftStrings_handle(shields, shield);
+                autoReplySet.reply = reply;
+                set.reply.autoReplySets.push(autoReplySet);
                 autoReplySet = {};
             });
 
@@ -870,15 +869,13 @@ const method = {
                 && $(".follow_follows").val().trim() !== "") {
             } else {
                 c1 = true;
-                method.delay_method(".notice-message", "感谢关注语不能为空");
-                alert("感谢关注语不能为空");
+                showMessage("感谢关注语不能为空！配置保存失败!", "danger",3);
             }
             if (Number($(".follow_num").val()) > 0) {
 
             } else {
                 c5 = true;
-                method.delay_method(".notice-message", "感谢关注必须大于0");
-                alert("感谢关注必须大于0");
+                showMessage("感谢关注必须大于0！配置保存失败!", "danger",3);
             }
         }
         if ($(".welcome_is_open").is(':checked')) {
@@ -886,15 +883,13 @@ const method = {
                 && $(".welcome_welcomes").val().trim() !== "") {
             } else {
                 c9 = true;
-                method.delay_method(".notice-message", "感谢欢迎语不能为空");
-                alert("感谢欢迎语不能为空");
+                showMessage("感谢欢迎语不能为空！配置保存失败!", "danger",3);
             }
             if (Number($(".welcome_num").val()) > 0) {
 
             } else {
                 c10 = true;
-                method.delay_method(".notice-message", "感谢欢迎必须大于0");
-                alert("感谢欢迎必须大于0");
+                showMessage("感谢欢迎必须大于0！配置保存失败!", "danger",3);
             }
         }
         if ($(".thankgift_is_open").is(':checked')) {
@@ -903,22 +898,18 @@ const method = {
 
             } else {
                 c2 = true;
-                method.delay_method(".notice-message", "感谢礼物语不能为空");
-                alert("感谢礼物语不能为空");
+                showMessage("感谢礼物语不能为空！配置保存失败!", "danger",3);
             }
             if ($(".thankgift_is_guard_report").is(':checked')) {
                 if ($(".thankgift_report").val().trim() !== null
                     && $(".thankgift_report").val().trim() !== "") {
                     if ($(".thankgift_report").val().length >= 500) {
                         c6 = true;
-                        method.delay_method(".notice-message",
-                            "上舰回复语不能超过500字");
-                        alert("上舰回复语不能超过500字");
+                        showMessage("上舰回复语不能超过500字！配置保存失败!", "danger",3);
                     }
                 } else {
                     c3 = true;
-                    method.delay_method(".notice-message", "上舰回复语不能为空");
-                    alert("上舰回复语不能为空");
+                    showMessage("上舰回复语不能为空！配置保存失败!", "danger",3);
                 }
             }
         }
@@ -927,8 +918,7 @@ const method = {
                 && $(".advert_adverts").val().trim() !== "") {
             } else {
                 c4 = true;
-                method.delay_method(".notice-message", "广告语不能为空");
-                alert("广告语不能为空");
+                showMessage("广告语不能为空！配置保存失败!", "danger",3);
             }
 
         }
@@ -938,14 +928,13 @@ const method = {
             }
         })
         if (c7) {
-            method.delay_method(".notice-message", "自定义规则不能为空");
-            alert("自定义规则不能为空");
+            showMessage("自定义规则不能为空！配置保存失败!", "danger",3);
         }
         $(".replys-ul").children("li").each(function (i, v) {
             if ($(".reply_keywords").eq(i).val() === "") {
                 // c8 = true;
                 // v.remove();
-                method.delay_method(".notice-message", "自动回复姬的关键字不能为空！！！");
+                showMessage("自动回复姬的关键字不能为空！", "warning",3);
             } else {
 
             }
@@ -953,8 +942,7 @@ const method = {
         if ($(".is_autoGift_open").is(':checked')) {
             if ($(".autoGift_roomids").val() == null || $(".autoGift_roomids").val().trim() === "") {
                 c11 = true;
-                method.delay_method(".notice-message", "礼物自动赠送姬房间号不能为空！！！");
-                alert("礼物自动赠送姬房间号不能为空！！！");
+                showMessage("礼物自动赠送姬房间号不能为空！配置保存失败!", "danger",3);
             }
         }
         if ($(".card-body").find(".logined").length > 0) {
@@ -964,23 +952,24 @@ const method = {
                 set.edition = edition;
                 var result = method.sendSet(set);
                 if (result==1) {
-                    method.delay_method(".success-message", "保存配置成功");
                     if (!publicData.set.auto_save_set) {
-                        alert("修改配置成功");
+                        showMessage("保存配置成功!", "success",3);
+                    }else{
+                        showMessage("保存配置成功!", "success",2);
                     }
                 }else if(result==2){
                     location.reload();
                 }else {
-                    method.delay_method(".notice-message", "修改配置失败");
-                    if (!publicData.set.auto_save_set) {
-                        alert("修改配置失败");
-                    }
+                    showMessage("修改配置失败!", "danger",3);
+                    // if (!publicData.set.auto_save_set) {
+                    //     alert("修改配置失败");
+                    // }
                 }
             } else {
-                method.delay_method(".notice-message", "修改配置失败");
-                if (!publicData.set.auto_save_set) {
-                    alert("修改配置失败")
-                }
+                // if (!publicData.set.auto_save_set) {
+                //     alert("修改配置失败")
+                // }
+                showMessage("修改配置失败!", "danger",3);
             }
         } else {
             method.initSet(set);
@@ -988,13 +977,11 @@ const method = {
             set.edition = edition;
             var result = method.sendSet(set);
             if (result == 1) {
-                method.delay_method(".success-message", "保存配置成功");
-                alert("修改配置成功");
+                showMessage("保存配置成功!", "success",3);
             }else if(result==2){
                 location.reload();
             }else {
-                method.delay_method(".notice-message", "修改配置失败");
-                alert("修改配置失败");
+                showMessage("修改配置失败!", "danger",3);
             }
         }
     },
@@ -1369,7 +1356,7 @@ const method = {
         return s;
     },
     giftStrings_handle: function (lists, s) {
-        if (s != "") {
+        if (s !=null && s != "") {
             if (s.indexOf("，") >= 0) {
                 let ss = s.split("，");
                 for (let gs in ss) {
@@ -1384,7 +1371,7 @@ const method = {
         return lists;
     },
     codeStrings_handle: function (lists, s) {
-        if (s != "") {
+        if (s !=null && s != "") {
             if (s.indexOf("\n") >= 0) {
                 let ss = s.split("\n");
                 for (let gs in ss) {
@@ -1493,10 +1480,11 @@ const method = {
             dataType: 'json',
             success: function (data) {
                 if (data.result == 0) {
-                    alert("撤销禁言成功");
+                    showMessage("撤销禁言成功!", "success",2);
                     method.getBlocks(1);
                 } else {
-                    alert("撤销禁言失败");
+                    showMessage("撤销禁言成功!", "danger",3);
+                    // alert("撤销禁言失败");
                 }
             }
         });
@@ -1542,9 +1530,9 @@ const method = {
             dataType: 'json',
             success: function (data) {
                 if (data.result == 0) {
-                    alert("配置导出成功,位置位于弹幕姬目录set文件夹下");
+                    showMessage("配置导出成功!位置位于弹幕姬目录set文件夹下", "success",2);
                 } else {
-                    alert("配置导出失败,请联系开发人员");
+                    showMessage("配置导出失败!", "danger",3);
                 }
             }
         });
@@ -1566,11 +1554,11 @@ const method = {
             data: formData,
             success: function (data) {
                 if (data.result == 0) {
-                    alert("配置导入成功");
+                    showMessage("配置导入成功!", "success",2);
                 } else if (data.result == 2) {
-                    alert("配置导入失败文件名称应为.json结尾");
+                    showMessage("配置导入失败文件名称应为.json结尾!", "danger",3);
                 } else {
-                    alert("配置导入失败,请联系开发人员");
+                    showMessage("配置导入失败!未知原因", "danger",3);
                 }
             },
             error: function (data) {
@@ -1668,7 +1656,7 @@ const method = {
 
 function openSocket(ip, sliceh) {
     if (typeof (WebSocket) == "undefined") {
-        alert("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用");
+        showMessage("您的浏览器不支持WebSocket，显示弹幕功能异常，请升级你的浏览器版本，推荐谷歌，网页显示弹幕失败 但不影响其他功能使用!", "warning",2);
     } else {
         console.log("弹幕服务器正在连接");
         let socketUrl = ip;
@@ -1771,4 +1759,24 @@ function format(timestamp, flag) {
 
 function getTimestamp() {
     return (new Date()).getTime();
+}
+
+function showMessage(message, type,timeout) {
+    var id = 'message-' + Date.now(); // 使用当前时间戳创建一个独特的ID
+    var countdownId = 'countdown-' + Date.now();
+
+    var div = $('<div id="'+ id +'" class="alert alert-'+ type +'" style="position:relative;">'+ message +
+        '<span id="'+ countdownId +'" style="position:absolute; right:10px; top:50%; transform: translateY(-50%);"></span> </div>');// 创建一个新的div元素
+
+    $('#top-message').append(div); // 将新消息添加到容器中
+
+    var countdown = timeout; // 倒计时开始
+
+    var intervalId = setInterval(function() {
+        $('#' + countdownId).text(countdown + 's');
+        if (--countdown < 0) {
+            clearInterval(intervalId); // 在倒计时结束时清除计时器
+            $('#' + id).fadeOut().remove(); // 在倒计时结束时移除这条消息
+        }
+    }, 1000);
 }

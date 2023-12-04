@@ -79,18 +79,21 @@ public class SetServiceImpl implements SetService {
                 e.printStackTrace();
             }
         }
-        // window用默认浏览器打开网页
+        // 默认浏览器打开网页
         if(PublicDataConf.centerSetConf.isWin_auto_openSet()) {
             try {
+                Runtime rt = Runtime.getRuntime();
                 if(SystemUtils.IS_OS_WINDOWS){
-                    Runtime.getRuntime()
-                            .exec("rundll32 url.dll,FileProtocolHandler " + "http://localhost:" + serverAddressComponent.getPort());
+                    rt.exec("rundll32 url.dll,FileProtocolHandler " + serverAddressComponent.getLocalAddress());
                 }else if(SystemUtils.IS_OS_MAC){
-                    Runtime.getRuntime()
-                            .exec("open " + "http://localhost:" + serverAddressComponent.getPort());
-                }else {
+                    rt.exec("open " +  serverAddressComponent.getLocalAddress());
+                }else if(SystemUtils.IS_OS_UNIX) {
+                    rt.exec("xdg-open " + serverAddressComponent.getLocalAddress());
+                }else{
                     System.out.println(
-                            "自动打开浏览器错误:当前系统缺少rundll32 url.dll组件或者不是window,mac系统，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+                            "自动打开浏览器错误:当前系统未知，无法自动启动默认浏览器打开配置页面，请手动打开浏览器地址栏输入http://127.0.0.1:23333进行配置");
+                    LOGGER.error("自动打开浏览器错误:当前系统未知,打印系统:{}",System.getProperty("os.name").toLowerCase());
+
                 }
             } catch (IOException e) {
                 LOGGER.error("自动打开浏览器错误: 错误信息为: ",e);
@@ -184,14 +187,10 @@ public class SetServiceImpl implements SetService {
             //每日签到
             if (PublicDataConf.centerSetConf.is_dosign()) {
                 //判断签到
-                boolean flag = CurrencyTools.signNow();
-                if (flag) {
+                boolean isSign = CurrencyTools.signNow();
+                if (isSign) {
                     changeSet(PublicDataConf.centerSetConf);
                 }
-//                if (PublicDataConf.is_sign) {
-//                    HttpUserData.httpGetDoSign();
-//                    PublicDataConf.is_sign = true;
-//                }
                 if (!taskRegisterComponent.hasTask(task)) {
                     taskRegisterComponent.addTask(task, CurrencyTools.dateStringToCron(centerSetConf.getSign_time()));
                 }
@@ -205,15 +204,6 @@ public class SetServiceImpl implements SetService {
             }
             //每日打卡
             if (centerSetConf.getClock_in().is_open()) {
-                //移除
-                //这里开启一个匿名线程用于打卡
-//                new Thread(() -> {
-//                    List<UserMedal> userMedals = CurrencyTools.getAllUserMedals();
-//                    int max = CurrencyTools.clockIn(userMedals);
-//                    if (max == userMedals.size()) {
-//                        HttpOtherData.httpPOSTSetClockInRecord();
-//                    }
-//                }).start();
                 if (!taskRegisterComponent.hasTask(dakatask)) {
                     taskRegisterComponent.addTask(dakatask, CurrencyTools.dateStringToCron(centerSetConf.getClock_in().getTime()));
                 }
@@ -260,46 +250,8 @@ public class SetServiceImpl implements SetService {
             if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                 // advertthread
                 centerSetConf.getAdvert().start(threadComponent);
-//            if (centerSetConf.getAdvert().is_live_open()) {
-//                if (PublicDataConf.lIVE_STATUS != 1) {
-//                    threadComponent.closeAdvertThread();
-//                } else {
-//                    if (centerSetConf.getAdvert().is_open()) {
-//                        threadComponent.startAdvertThread(centerSetConf);
-//                    } else {
-//                        threadComponent.setAdvertThread(centerSetConf);
-//                        threadComponent.closeAdvertThread();
-//                    }
-//                }
-//            } else {
-//                if (centerSetConf.getAdvert().is_open()) {
-//                    threadComponent.startAdvertThread(centerSetConf);
-//                } else {
-//                    threadComponent.setAdvertThread(centerSetConf);
-//                    threadComponent.closeAdvertThread();
-//                }
-//            }
                 // autoreplythread
                 centerSetConf.getReply().start(threadComponent);
-//            if (centerSetConf.getReply().is_live_open()) {
-//                if (PublicDataConf.lIVE_STATUS != 1) {
-//                    threadComponent.closeAutoReplyThread();
-//                } else {
-//                    if (centerSetConf.getReply().is_open()) {
-//                        threadComponent.startAutoReplyThread(centerSetConf);
-//                    } else {
-//                        threadComponent.setAutoReplyThread(centerSetConf);
-//                        threadComponent.closeAutoReplyThread();
-//                    }
-//                }
-//            } else {
-//                if (centerSetConf.getReply().is_open()) {
-//                    threadComponent.startAutoReplyThread(centerSetConf);
-//                } else {
-//                    threadComponent.setAutoReplyThread(centerSetConf);
-//                    threadComponent.closeAutoReplyThread();
-//                }
-//            }
                 // useronlinethread && smallHeartThread 移除在线心跳 接口已经不可用
 //                if (centerSetConf.is_online()) {
 //                    threadComponent.startUserOnlineThread();

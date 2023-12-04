@@ -1,5 +1,6 @@
 package xyz.acproject.danmuji.http;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.Headers;
@@ -64,10 +65,11 @@ public class HttpUserData {
     }
 
     /**
-     * 获取登陆二维码
+     * 获取登陆二维码 旧版本 已废弃
      *
      * @return
      */
+    @Deprecated
     public static Qrcode httpGetQrcode() {
         String data = null;
         JSONObject jsonObject = null;
@@ -96,12 +98,42 @@ public class HttpUserData {
         return qrcode;
     }
 
+    public static Qrcode httpGenerateQrcode() {
+        String data = null;
+        JSONObject jsonObject = null;
+        Qrcode qrcode = null;
+        Map<String, String> headers = null;
+        headers = new HashMap<>(3);
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        headers.put("Referer", "https://www.bilibili.com/");
+        try {
+            data = OkHttp3Utils.getHttp3Utils()
+                    .httpGet("https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header", headers, null).body().string();
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            data = null;
+        }
+        if (data == null)
+            return qrcode;
+        jsonObject = JSONObject.parseObject(data);
+        short code = jsonObject.getShort("code");
+        if (code == 0) {
+            qrcode = JSONObject.parseObject(jsonObject.getString("data"), Qrcode.class);
+        } else {
+            LOGGER.error("获取二维码失败,未知错误,原因未知" + jsonObject.toString());
+        }
+        return qrcode;
+    }
+
     /**
-     * 判断扫码状态 扫码确定后 获取用户cookie
+     * 判断扫码状态 扫码确定后 获取用户cookie 旧版本 已废弃
      *
      * @param logindata
      * @return
      */
+    @Deprecated
     public static String httpPostCookie(LoginData logindata) {
         if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             return "";
@@ -138,6 +170,8 @@ public class HttpUserData {
                 }
                 PublicDataConf.USERCOOKIE = stringBuilder.toString();
                 if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+                    //处理token
+                    CurrencyTools.parseCookie(PublicDataConf.USERCOOKIE);
                     if (PublicDataConf.ROOMID != null) {
                         httpGetUserBarrageMsg();
                     }
@@ -150,6 +184,99 @@ public class HttpUserData {
         }
 
         return data;
+    }
+
+    /**
+     * HTTP 二维码轮询
+     * 86101 未扫
+     * 86090 扫了未确认
+     *
+     * @param key 钥匙
+     * @return {@link String}
+     */
+    public static String httpQrcodePoll(String key) {
+        String data = null;
+        JSONObject jsonObject = null;
+        Response response = null;
+        Map<String, String> headers = null;
+        Map<String, String> params = null;
+        headers = new HashMap<>(3);
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        headers.put("Referer", "https://www.bilibili.com/");
+        params = new HashMap<>(3);
+        params.put("qrcode_key", key);
+        params.put("source", "main-fe-header");
+        try {
+            response = OkHttp3Utils.getHttp3Utils()
+                    .httpGet("https://passport.bilibili.com/x/passport-login/web/qrcode/poll", headers, params);
+            data = response.body().string();
+            if (JSONObject.parseObject(data).getJSONObject("data").getIntValue("code")==0) {
+                Headers headers2 = response.headers();
+                List<String> cookies = headers2.values("Set-Cookie");
+                Set<String> cookieSet = new HashSet<>();
+                for (String string : cookies) {
+                    cookieSet.add(string.substring(0, string.indexOf(";")));
+                }
+                StringBuilder stringBuilder = new StringBuilder(100);
+                Iterator<String> iterable = cookieSet.iterator();
+                while (iterable.hasNext()) {
+                    stringBuilder.append(iterable.next());
+                    if (iterable.hasNext()) {
+                        stringBuilder.append(";");
+                    }
+                }
+                PublicDataConf.USERCOOKIE = stringBuilder.toString();
+                if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+                    //处理token
+                    CurrencyTools.parseCookie(PublicDataConf.USERCOOKIE);
+                    //房间号非空则去获取用户弹幕长度
+                    if (PublicDataConf.ROOMID != null) {
+                        httpGetUserBarrageMsg();
+                    }
+                    LOGGER.info("扫码登录成功");
+                }
+            }
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            data = null;
+        }
+        return data;
+    }
+
+    /**
+     * 单点登录系统获取
+     */
+    public static List<String> httpPostSsoList() {
+        String data = null;
+        JSONObject jsonObject = null;
+        List<String> ssoList = new ArrayList<>();
+        Map<String, String> headers = null;
+        headers = new HashMap<>(3);
+        Map<String, String> params = null;
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            headers.put("cookie", PublicDataConf.USERCOOKIE);
+        }
+        headers.put("Referer", "https://www.bilibili.com/");
+        params = new HashMap<>(2);
+        params.put("csrf", "");
+        try {
+            data = OkHttp3Utils.getHttp3Utils().httpPostForm("https://passport.bilibili.com/x/passport-login/web/sso/list", headers, null)
+                    .body().string();
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            data = null;
+        }
+        if (data == null)
+            return ssoList;
+        jsonObject = JSONObject.parseObject(data);
+        JSONObject dataObject = jsonObject.getJSONObject("data");
+        List<String> ssos = JSONArray.parseArray(dataObject.getString("sso"), String.class);
+        return ssos!=null?ssos:ssoList;
     }
 
     /**
@@ -275,6 +402,9 @@ public class HttpUserData {
             PublicDataConf.USERMANAGER.set_manager(manager != null ? manager : false);
             PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
             PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
+            if(ObjectUtil.equal(PublicDataConf.USER.getUid(),PublicDataConf.AUID)){
+                PublicDataConf.USERMANAGER.set_manager(true);
+            }
         } else if (code == -101) {
             LOGGER.info("未登录，请登录:" + jsonObject.toString());
         } else if (code == -400) {

@@ -1,29 +1,31 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta name="referrer" content="never">
-    <meta name="renderer" content="webkit">
+    <meta content="never" name="referrer">
+    <meta content="webkit" name="renderer">
     <meta
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
             name="viewport">
     <title>弹幕姬-主页</title>
-    <link rel="apple-touch-icon-precomposed"
-          href="../../img/headlogo.png" th:href="@{/img/favicon.png}">
-    <link rel="shortcut icon" href="../../img/headlogo.png"
+    <link href="../../img/headlogo.png"
+          rel="apple-touch-icon-precomposed" th:href="@{/img/favicon.png}">
+    <link href="../../img/headlogo.png" rel="shortcut icon"
           th:href="@{/img/favicon.png}">
-    <link rel="stylesheet" href="../../css/bootstrap.min.css"
-          th:href="@{/css/bootstrap.min.css}" type="text/css" media="all">
-    <link rel="stylesheet" href="../../css/style.css"
-          th:href="@{/css/style.css}" type="text/css" media="all">
-    <script type="text/javascript" src="../../js/jquery-3.7.0.min.js"
-            th:src="@{/js/jquery-3.7.0.min.js}"></script>
-    <script type="text/javascript" src="../../js/popper.min.js"
-            th:src="@{/js/popper.min.js}"></script>
-    <script type="text/javascript" src="../../js/bootstrap.min.js"
-            th:src="@{/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" src="../../js/index.js"
-            th:src="@{/js/index.js}"></script>
+    <link href="../../css/bootstrap.min.css" media="all"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}" type="text/css">
+    <link href="../../css/style.css" media="all"
+          rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <script src="../../js/jquery-3.7.0.min.js" th:src="@{/js/jquery-3.7.0.min.js}"
+            type="text/javascript"></script>
+    <script src="../../js/popper.min.js" th:src="@{/js/popper.min.js}"
+            type="text/javascript"></script>
+    <script src="../../js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"
+            type="text/javascript"></script>
+    <script src="../../js/index.js" th:src="@{/js/index.js}"
+            type="text/javascript"></script>
+    <script type="text/javascript" src="../../js/style.js"
+            th:src="@{/js/connect.js}"></script>
 </head>
 
 <body>
@@ -31,170 +33,278 @@
 <div class="app">
     <div
             class="row align-items-center justify-content-center center-wrapper">
-        <div class="col-md-9 m-3">
+        <div class="col-md-11 m-3">
             <div class="card border-primary">
                 <div class="card-header">
                     <h2>
-                        <span>弹幕姬web控制面板</span><span class="connect-title"><a
-                            th:href="@{/connect}">房间连接</a>&nbsp;&nbsp;&nbsp;<a
-                            th:href="@{/cookie_set}">自定义cookie</a></span>
+                        <span>弹幕姬web控制面板</span>
+                        <iframe
+                                src="https://ghbtns.com/github-btn.html?user=BanqiJane&amp;repo=Bilibili_Danmuji&amp;type=star&amp;count=true&amp;size=large"
+                                frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
                     </h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body pt-0 px-3 pb-3">
                     <!-- 信息展示start  -->
-                    <div class="input-group mb-3">
-							<span class="unlogin" th:if="!(${USER}?exists)">你还没有登陆，<a
-                                    th:href="@{/login}">去登陆</a>
-							</span><span class="logined" th:if="${USER}?exists">用户名：<a
-                            th:text="${USER.uname}" class="user-name"
-                            th:href="@{'https://space.bilibili.com/'+${USER.uid}}"></a>，uid：<span
-                            th:text="${USER.uid}" class="user-id"></span>；<a
-                            th:href="@{/quit}">退出登录</a>
-							</span>&nbsp;&nbsp; <span class="room-data" th:if="${ROOMID}!=null">已连接至主播房间：<span
-                            th:text="${ROOMID}" class="room-id"></span>，<span><a
-                            th:href="@{'https://live.bilibili.com/'+${ROOMID}}"
-                            th:text="${ANAME}" class="ar-name"></a></span>，人气值：<span
-                            th:text="${POPU}" class="popu _description" data-bs-toggle="tooltip"
-                            data-bs-placement="top" data-bs-html="true"
-                            title="部分人可能不能正确获取人气值（所以该值仅供参考）"></span>，多少人看过：<span
-                            th:text="${ROOM_WATCHER}" class="room_watcher"></span><span th:if="${MANAGER}" class="room-manager">，<a
-                            href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#wel-model">房间管理</a></span></span>
-                        <span class="room-data"
-                              th:if="${ROOMID}==null">未连接到任何房间</span>
+                    <div class="col-md-12 m-1 my-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <a class="extends-father-a" data-bs-toggle="collapse" data-target="#account-set"
+                                       href="#account-set">
+                                    <div class="card-header">
+                                        <h7>
+                                            <span>账号设置</span>
+                                        </h7>
+                                    </div>
+                                    </a>
+                                    <div class="card-body p-1 collapse show" id="account-set">
+                                        <ul class="ps-1">
+                                            <li class="ps-1 py-1">
+                                                <a data-bs-toggle="collapse" data-target="#custom-cookie"
+                                                   href="#custom-cookie">自定义cookie</a>
+                                            </li>
+                                            <li class="ps-1 py-1 collapse" id="custom-cookie">
+                                                <div class="input-group">
+                                                <input type="text" id="cookie_data" class="form-control"
+                                                       placeholder="自定义cookie" data-bs-toggle="tooltip"
+                                                       data-bs-placement="top" data-bs-html="true"
+                                                       title="B站的cookie,通常在浏览器按f12找某个接口复制<br>必要:<span class='red-font'>bili_jct,SESSDATA</span>"
+                                                >
+                                                <button type="button" class="btn btn-success" id="cookie_set_send">设定</button>
+                                                </div>
+                                            </li>
+                                            <li class="unlogin ps-1 py-1" th:if="!(${USER}?exists)">
+                                            你还没有登陆，<a th:href="@{/login}">去扫码</a>，或去<a th:href="@{/cookie_set}">自定义cookie</a>
+                                            </li>
+                                            <li class="logined ps-1 py-1" th:if="${USER}?exists">
+                                             用户名：<a class="user-name window-open-x" th:href="@{'https://space.bilibili.com/'+${USER.uid}}"
+                                                     th:text="${USER.uname}" target="_blank"></a>
+                                            </li>
+                                            <li class="logined ps-1 py-1" th:if="${USER}?exists">
+                                            uid：<span class="user-id" th:text="${USER.uid}"></span>
+                                            </li>
+                                            <li class="logined ps-1 py-1" th:if="${USER}?exists">
+                                                <a th:href="@{/quit}">退出登录</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <a class="extends-father-a" data-bs-toggle="collapse" data-target="#connect-room-set"
+                                       href="#connect-room-set">
+                                    <div class="card-header">
+                                        <h7>
+                                            <span>房间设置</span>
+                                        </h7>
+                                    </div>
+                                    </a>
+                                    <div class="card-body p-1 collapse show" id="connect-room-set">
+                                        <ul class="ps-1">
+                                            <li class="ps-1 py-1">
+                                                <a data-bs-toggle="collapse" data-target="#connect-room"
+                                                   href="#connect-room">房间连接</a>
+                                            </li>
+                                            <li class="ps-1 py-1 collapse" id="connect-room">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">房间号</span>
+                                                    </div>
+                                                    <input type="number" id="room_id" class="form-control"
+                                                           placeholder="需要连接的房间号" min="1"
+                                                           οninput="if(value.length>5)value=value.slice(0,5)"
+                                                           style="ime-mode: Disabled"
+                                                           onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                                           th:value="${ROOMID}!=null?${ROOMID}:${HROOMID}">
+                                                    <button type="button" class="btn btn-info" id="connect">加载中</button>
+                                                </div>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}==null">
+                                                 <span class="room-data">未连接到任何房间</span>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}!=null">
+                                                已连接至房间：<a class="room-id window-open-x" th:text="${ROOMID}"  th:href="@{'https://live.bilibili.com/'+${ROOMID}}" target="_blank"></a>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}!=null">
+                                                <a data-bs-toggle="collapse" data-target="#web-danmu-show"
+                                                   href="#web-danmu-show">网页实时弹幕显示</a>
+                                            </li>
+                                            <li class="ps-1 py-1 collapse" th:if="${ROOMID}!=null" id="web-danmu-show">
+                                                <div class="input-group">
+                                                    <div class="form-group connect-set">
+                                                        <input class="form-control connect-docket"
+                                                               data-bs-html="true" data-bs-placement="top"
+                                                               data-bs-toggle="tooltip" placeholder="要连接的端口地址"
+                                                               title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换"
+                                                               value="ws://localhost:23333/danmu/sub">
+
+                                                    </div>
+                                                    <div class="form-group connect-button">
+                                                        <button class="btn btn-primary btn-connect-d" type="button">连接</button>
+                                                    </div>
+
+                                                </div>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${MANAGER}">
+                                                <span class="room-manager">
+                                                    <a data-bs-target="#wel-model" data-bs-toggle="modal"
+                                                        href="javascript:void(0)">房间管理</a></span>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}!=null">
+                                                主播：<a
+                                                    th:href="@{'https://space.bilibili.com/'+${AUID}}"
+                                                    th:text="${ANAME}" class="ar-name window-open-x" target="_blank"></a>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}!=null">
+                                                人气值：<span
+                                                    class="popu _description" data-bs-html="true" data-bs-placement="top"
+                                                    data-bs-toggle="tooltip" th:text="${POPU}"
+                                                    title="部分人可能不能正确获取人气值（所以该值仅供参考）"></span>
+                                            </li>
+                                            <li class="ps-1 py-1" th:if="${ROOMID}!=null">
+                                                多少人看过：<span class="room_watcher" th:text="${ROOM_WATCHER}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- 信息展示end  -->
                     <!-- web弹幕显示start -->
-                    <div class="input-group mb-3">
-                        <button href="#danmuw" class="btn btn-secondary" id="danmu_open"
-                                data-bs-toggle="collapse" data-bs-target="#danmuw" aria-expanded="false"
-                                aria-controls="danmuw">显示控制台弹幕
+<!--                    <div class="input-group mb-3">
+                        <button aria-controls="danmuw" aria-expanded="false" class="btn btn-secondary"
+                                data-bs-target="#danmuw" data-bs-toggle="collapse" href="#danmuw"
+                                id="danmu_open">显示控制台弹幕
                         </button>
-                        <div id="danmuw" class="collapse multi-collapse">
+                        <div class="collapse multi-collapse" id="danmuw">
                             <div class="input-group mb-3" style="margin-top: 15px;">
                                 <div class="form-group connect-set" style="padding-right: 5px;">
                                     <input class="form-control connect-docket"
-                                           placeholder="要连接的端口地址" data-bs-toggle="tooltip"
-                                           data-bs-placement="top" data-bs-html="true"
-                                           value="ws://localhost:23333/danmu/sub"
-                                           title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换">
+                                           data-bs-html="true" data-bs-placement="top"
+                                           data-bs-toggle="tooltip" placeholder="要连接的端口地址"
+                                           title="连接网页显示弹幕服务器：通常本地为127.0.0.1或localhost<br/>远程服务器请以远程服务器ip替换"
+                                           value="ws://localhost:23333/danmu/sub">
 
                                 </div>
                                 <div class="form-group connect-button">
-                                    <button type="button" class="btn btn-primary btn-connect-d">连接</button>
+                                    <button class="btn btn-primary btn-connect-d" type="button">连接</button>
                                 </div>
 
                             </div>
-<!--                            <div id="danmu">-->
-<!--                                &lt;!&ndash; <div class="danmu-child" uid="0">-->
-<!--                                    <span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span-->
-<!--                                        class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span-->
-<!--                                        class="danmu-vip">爷</span><span class="danmu-manager">管</span><span-->
-<!--                                        class="danmu-ul">UL19</span><a href="javasript:void(0)"><span-->
-<!--                                        class="danmu-name name-guard">名字</span>:</a><span-->
-<!--                                        class="danmu-text">哈哈哈哈</span>-->
-<!--                                        <div class="danmu-tips">-->
-<!--                                        <ul class="danmu-tips-ul">-->
-<!--                                        <li class="danmu-tips-li">禁言</li>-->
-<!--                                        <li class="danmu-tips-li">查看</li>-->
-<!--                                        <li class="danmu-tips-li">关闭</li>-->
-<!--                                        </ul>-->
-<!--                                        </div>-->
-<!--                                </div>-->
-<!--                                <div class="danmu-child" uid="0">-->
-<!--                                    <span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a-->
-<!--                                        href="javasript:void(0)"><span-->
-<!--                                        class="danmu-name name-guard">名字</span></a><span-->
-<!--                                        class="danmu-text">赠送了 辣条 x 10</span>-->
-<!--                                </div>-->
-<!--                                <div class="danmu-child" uid="0">-->
-<!--                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a-->
-<!--                                        href="javasript:void(0)"><span-->
-<!--                                        class="danmu-name name-guard">名字</span></a><span-->
-<!--                                        class="danmu-text">已被禁言</span>-->
-<!--                                </div>-->
-<!--                                <div class="danmu-child" uid="0">-->
-<!--                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>-->
-<!--                                    <span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span-->
-<!--                                        class="danmu-name name-guard">名字</span></a><span-->
-<!--                                        class="danmu-text">进入直播间</span>-->
-<!--                                </div>-->
-<!--                                <div class="danmu-child" uid="0">-->
-<!--                                    <span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>-->
-<!--                                    <a href="javasript:void(0)"><span-->
-<!--                                        class="danmu-name name-guard">名字</span></a><span-->
-<!--                                        class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>-->
-<!--                                </div> &ndash;&gt;-->
-<!--                                &lt;!&ndash; 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏-->
-<!--                                    它说:那个框是对面拉比克偷的</div> &ndash;&gt;-->
-<!--                            </div>-->
+                            &lt;!&ndash;                            <div id="danmu">&ndash;&gt;
+                            &lt;!&ndash;                                &lt;!&ndash; <div class="danmu-child" uid="0">&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-type">弹幕</span><span class="danmu-time">17:02:46</span><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-medal">九头蛇 2</span><span class="danmu-guard">舰</span><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-vip">爷</span><span class="danmu-manager">管</span><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-ul">UL19</span><a href="javasript:void(0)"><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-name name-guard">名字</span>:</a><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-text">哈哈哈哈</span>&ndash;&gt;
+                            &lt;!&ndash;                                        <div class="danmu-tips">&ndash;&gt;
+                            &lt;!&ndash;                                        <ul class="danmu-tips-ul">&ndash;&gt;
+                            &lt;!&ndash;                                        <li class="danmu-tips-li">禁言</li>&ndash;&gt;
+                            &lt;!&ndash;                                        <li class="danmu-tips-li">查看</li>&ndash;&gt;
+                            &lt;!&ndash;                                        <li class="danmu-tips-li">关闭</li>&ndash;&gt;
+                            &lt;!&ndash;                                        </ul>&ndash;&gt;
+                            &lt;!&ndash;                                        </div>&ndash;&gt;
+                            &lt;!&ndash;                                </div>&ndash;&gt;
+                            &lt;!&ndash;                                <div class="danmu-child" uid="0">&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-type">礼物</span><span class="danmu-time">17:02:46</span><a&ndash;&gt;
+                            &lt;!&ndash;                                        href="javasript:void(0)"><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-name name-guard">名字</span></a><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-text">赠送了 辣条 x 10</span>&ndash;&gt;
+                            &lt;!&ndash;                                </div>&ndash;&gt;
+                            &lt;!&ndash;                                <div class="danmu-child" uid="0">&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span><a&ndash;&gt;
+                            &lt;!&ndash;                                        href="javasript:void(0)"><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-name name-guard">名字</span></a><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-text">已被禁言</span>&ndash;&gt;
+                            &lt;!&ndash;                                </div>&ndash;&gt;
+                            &lt;!&ndash;                                <div class="danmu-child" uid="0">&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-type">消息</span><span class="danmu-time">17:02:46</span>&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-text">欢迎</span><a href="javasript:void(0)"><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-name name-guard">名字</span></a><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-text">进入直播间</span>&ndash;&gt;
+                            &lt;!&ndash;                                </div>&ndash;&gt;
+                            &lt;!&ndash;                                <div class="danmu-child" uid="0">&ndash;&gt;
+                            &lt;!&ndash;                                    <span class="danmu-type">留言</span><span class="danmu-time">17:02:46</span>&ndash;&gt;
+                            &lt;!&ndash;                                    <a href="javasript:void(0)"><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-name name-guard">名字</span></a><span&ndash;&gt;
+                            &lt;!&ndash;                                        class="danmu-text">留言了30秒说:我昨天才进入直播见哈哈哈进入直播间</span>&ndash;&gt;
+                            &lt;!&ndash;                                </div> &ndash;&gt;&ndash;&gt;
+                            &lt;!&ndash;                                &lt;!&ndash; 					<div class="danmu-child">2020-06-18 17:48:59:收到弹幕:九烟慕夏&ndash;&gt;
+                            &lt;!&ndash;                                    它说:那个框是对面拉比克偷的</div> &ndash;&gt;&ndash;&gt;
+                            &lt;!&ndash;                            </div>&ndash;&gt;
                         </div>
-                    </div>
+                    </div>-->
                     <!-- web弹幕显示end -->
                     <div class="input-group mb-3">
-                        <button href="#set" class="btn btn-secondary" id="set_open"
-                                data-bs-toggle="collapse" data-bs-target="#set" aria-expanded="false"
-                                aria-controls="set">设置
+                        <button aria-controls="set" aria-expanded="false" class="btn btn-secondary"
+                                data-bs-target="#set" data-bs-toggle="collapse" href="#set"
+                                id="set_open">设置
                         </button>
                     </div>
                     <!--设置-->
-                    <div id="set" class="collapse multi-collapse">
+                    <div class="collapse multi-collapse" id="set">
                         <!-- 通用设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#common-set"
-                             data-target="#common-set">
-                            <h5>通用设置</h5>
-                        </div>
+                        <a data-bs-toggle="collapse" data-target="#common-set"
+                           href="#common-set"><div class="input-group mb-1" >
+                             <h5>通用设置</h5>
+                        </div></a>
                         <div class="row input-group mb-3 common-set collapse" id="common-set">
                             <div class="col-auto">
-                                <label class="form-check-label"> <input type="checkbox"
-                                                                        class="form-check-input auto_save_set"> <span
-                                        class="_description" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" data-bs-html="true"
+                                <label class="form-check-label"> <input class="form-check-input auto_save_set"
+                                                                        type="checkbox"> <span
+                                        class="_description" data-bs-html="true"
+                                        data-bs-placement="top" data-bs-toggle="tooltip"
                                         title="是否自动保存配置，<span class='red-font'>每修改一次触发保存</span>">自动保存</span>
                                 </label>
                             </div>
                             <div class="col-auto">
-                                <label class="form-check-label"> <input type="checkbox"
-                                                                        class="form-check-input is_autoStart live-save">
+                                <label class="form-check-label"> <input class="form-check-input is_autoStart live-save"
+                                                                        type="checkbox">
                                     <span
-                                            class="_description" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-html="true"
+                                            class="_description" data-bs-html="true"
+                                            data-bs-placement="top" data-bs-toggle="tooltip"
                                             title="是否开启下次自动连接上次连接的房间，<span class='red-font'>开启该设置下次启动弹幕姬将会自动连接最后一次连接的房间</span>">自动连接</span>
                                 </label>
                             </div>
                             <div class="col-auto">
-                                <label class="form-check-label"> <input type="checkbox"
-                                                                        class="form-check-input win_auto_openSet live-save">
+                                <label class="form-check-label"> <input
+                                        class="form-check-input win_auto_openSet live-save"
+                                        type="checkbox">
                                     <span
-                                            class="_description" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-html="true"
-                                            title="window系统下是否开启自动打开配置页面，<span class='red-font'>开启该设置下次启动弹幕姬将会自动使用系统默认浏览器打开配置页面</span>">设置页面</span>
+                                            class="_description" data-bs-html="true"
+                                            data-bs-placement="top" data-bs-toggle="tooltip"
+                                            title="mac/window系统下是否开启自动打开web网页配置页面，<span class='red-font'>开启该设置下次启动弹幕姬将会自动使用系统默认浏览器打开web网页配置页面</span>">设置页面</span>
                                 </label>
                             </div>
                             <div class="col-auto">
-                                <label class="form-check-label"> <input type="checkbox"
-                                                                        class="form-check-input is_log live-save"> <span
-                                        class="_description" data-bs-toggle="tooltip"
-                                        data-bs-placement="top" data-bs-html="true"
+                                <label class="form-check-label"> <input class="form-check-input is_log live-save"
+                                                                        type="checkbox"> <span
+                                        class="_description" data-bs-html="true"
+                                        data-bs-placement="top" data-bs-toggle="tooltip"
                                         title="弹幕是否保存本地<br/>本地弹幕文件夹位置：<br/>本项目根目录下Danmuji_log文件夹">弹幕记录</span>
                                 </label>
                             </div>
                         </div>
                         <!-- 通用设置结束 -->
                         <!-- 弹幕设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#cmd-set" data-target="#cmd-set">
+                        <a data-bs-toggle="collapse" data-target="#cmd-set" href="#cmd-set"><div class="input-group mb-1">
                             <h5>显示设置</h5>
-                        </div>
+                        </div></a>
                         <div class="row input-group mb-3 cmd-set collapse" id="cmd-set">
                             <div class="input-group mb-1">
                                 <h6>主要显示</h6>
                             </div>
                             <div class="row input-group mb-3">
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_cmd live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_cmd live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="cmd控制台是否显示">控制台</span>
                                     </label>
                                 </div>
@@ -204,61 +314,68 @@
                             </div>
                             <div class="row input-group mb-3">
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="是否显示弹幕">弹幕</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="是否显示弹幕">弹幕</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_guard live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_guard live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="弹幕是否显示舰长图标">舰长</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="弹幕是否显示舰长图标">舰长</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_vip live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_vip live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="弹幕是否显示老爷图标">老爷</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="弹幕是否显示老爷图标">老爷</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_manager live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_manager live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="弹幕是否显示房管主播图标">房管</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_medal live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_medal live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="弹幕是否显示勋章图标">勋章</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="弹幕是否显示勋章图标">勋章</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_ul live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_ul live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="弹幕是否显示用户UL等级图标">等级</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_barrage_anchor_shield live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_barrage_anchor_shield live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="弹幕是否屏蔽非佩戴连接房间勋章的用户">勋章屏蔽</span>
                                     </label>
                                 </div>
@@ -268,19 +385,20 @@
                             </div>
                             <div class="row input-group mb-3">
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_gift live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_gift live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="是否显示礼物消息">礼物</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="是否显示礼物消息">礼物</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_gift_free live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_gift_free live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="是否显示免费礼物消息">免费</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="是否显示免费礼物消息">免费</span>
                                     </label>
                                 </div>
                             </div>
@@ -289,148 +407,152 @@
                             </div>
                             <div class="row input-group mb-3">
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_block live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_block live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否显示房管禁言消息">禁言</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_welcome live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_welcome live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否显示欢迎老爷舰长进入直播间消息">欢迎</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_welcome_all live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_welcome_all live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否显示用户进入直播间消息">进入</span>
                                     </label>
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_follow live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_follow live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="是否显示关注消息">关注</span>
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="是否显示关注消息">关注</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <!-- 弹幕设置结束 -->
                         <!-- 广告姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#advert-set"
-                             data-target="#advert-set">
+                        <a data-bs-toggle="collapse" data-target="#advert-set"
+                           href="#advert-set"><div class="input-group mb-1">
                             <h5>广告姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 advert-set collapse" id="advert-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input advert_is_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="是否打开">开关</span>
+                                                class="form-check-input advert_is_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="是否打开">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label col-form-label"> <input
-                                                type="checkbox" class="form-check-input advert_is_live_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
+                                                class="form-check-input advert_is_live_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <select class="form-select form-select-sm advert_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="选择发送条件<br/>①:顺序是按你输入的顺序自上到下循环发送<br/>②:随机就是随机发送其中一条">
-                                            <option value="1" selected="selected">顺序</option>
+                                            <option selected="selected" value="1">顺序</option>
                                             <option value="2">随机</option>
                                         </select>
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="1" class="small-input advert_time live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
+                                        <input class="small-input advert_time live-save" data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="1"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="time(s)" data-bs-toggle="tooltip"
-                                               data-bs-placement="top" title="多少秒发送一次"
-                                               value="1">
+                                               placeholder="time(s)"
+                                               style="ime-mode: Disabled" title="多少秒发送一次"
+                                               type="number" value="1"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control advert_adverts live-save"
-                                              placeholder="多条语句下请以回车为分割每条语句" data-bs-toggle="tooltip"
-                                              data-bs-placement="top" data-bs-html="true"
+                                              data-bs-html="true" data-bs-placement="top"
+                                              data-bs-toggle="tooltip" placeholder="多条语句下请以回车为分割每条语句"
                                               title="多条语句时候注意以回车为分割每条语句<br/>注意每条语句不要超出自己能发送的弹幕长度<br/>超出长度弹幕姬会自动分段发送"></textarea>
                             </div>
                         </div>
                         <!-- 广告姬设置结束 -->
                         <!-- 送礼姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#thankGift-set"
-                             data-target="#thankGift-set">
+                        <a data-bs-toggle="collapse" data-target="#thankGift-set"
+                           href="#thankGift-set"><div class="input-group mb-1">
                             <h5>感谢礼物姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 thankGift-set collapse" id="thankGift-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input thankgift_is_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="是否打开">开关</span>
+                                                class="form-check-input thankgift_is_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="是否打开">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input thankgift_is_live_open live-save"> <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
+                                                class="form-check-input thankgift_is_live_open live-save"
+                                                type="checkbox"> <span
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input thankgift_is_open_self live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input thankgift_is_open_self live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否识别来着自己的弹幕（默认不识别来着自己的弹幕）">自己</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input thankgift_is_tx_shield live-save"> <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                                class="form-check-input thankgift_is_tx_shield live-save"
+                                                type="checkbox"> <span
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否屏蔽天选时刻赠送的礼物">天选</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input thankgift_is_num live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input thankgift_is_num live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否显示礼物数量，默认为显示<br/><span class='red-font'>仅在单人多种和多人多种模式下使用，单人单种如果要屏蔽礼物数量请去除%Num参数%</span>">数量</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm thankgift_shield_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
 
                                                 title="屏蔽：<br/>①:自定义为(根据礼物名字屏蔽，空为不屏蔽)；<br/>②:免费为屏蔽所有免费礼物(不要钱的)<br/>③:低价为目前默认屏蔽单价低于礼花的电池礼物；<br/>④:规则为自定义规则；">
-                                            <option value="1" selected>自定义</option>
+                                            <option selected value="1">自定义</option>
                                             <option value="2">免费</option>
                                             <option value="3">低价</option>
                                             <option value="4">规则</option>
@@ -438,19 +560,19 @@
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm thankgift_list_gift_shield_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
 
                                                 title="自定义礼物屏蔽模式选择（模式自定义）：<br/>①:黑名单（默认）；<br/>②:白名单（仅感谢叫这个名字的礼物）；">
-                                            <option value="1" selected>黑名单</option>
+                                            <option selected value="1">黑名单</option>
                                             <option value="2">白名单</option>
                                         </select>
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm thankgift_thank_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
                                                 id="thankgift_thank_status"
                                                 title="感谢礼物模式<br/><span class='red-font'>切换模式注意修改参数!</span><br/>①:单人单种就是一个人对应一种礼物感谢<br/>②:单人多种是合并感谢一个人延迟时间内赠送的多少种礼物(可修改)，默认合并2种<br/>③:多人多种就是延迟时间内合并多少个人(可修改)他们的多少种礼物(可修改)，默认合并2个人他们的2种<br/><span class='red-font'>切换模式注意修改参数!</span>">
-                                            <option value="1" selected>单人单种</option>
+                                            <option selected value="1">单人单种</option>
                                             <option value="2">单人多种</option>
                                             <!-- 2.6.0之后暂时去掉 因为不符合当初设计需求 -->
                                             <!--       <option value="3">多人多种</option>-->
@@ -458,56 +580,61 @@
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="2" class="small-input thankgift_num live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
+                                        <input class="small-input thankgift_num live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="2"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="多少种" data-bs-toggle="tooltip" data-bs-placement="top"
-                                               data-bs-html="true"
+                                               placeholder="多少种" style="ime-mode: Disabled"
                                                title="每次感谢同一个人最多可以多少种礼物或每次感谢多少个人与礼物<br/><span class='red-font'>仅在单人多种和多人多种模式下使用</span>"
-                                               value="2">
+                                               type="number"
+                                               value="2"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="0"
-                                               class="small-input thankgift_delaytime live-save"
-                                               placeholder="delay time(s)" data-bs-toggle="tooltip"
-                                               data-bs-placement="top" data-bs-html="true"
+                                        <input class="small-input thankgift_delaytime live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip" min="0"
+                                               placeholder="delay time(s)"
                                                title="延迟多少秒发送<br/>最小值为0,默认为3,可以小数点,例如3.5<br/><span class='red-font'>PS:可统计延时内赠送的礼物[包括礼物数量]合并感谢,一旦延时内有新礼物或数量变动就会重新刷新延时</span>"
+                                               type="number"
                                                value="0">
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm thankgift_list_people_shield_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
 
                                                 title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅舰长；注：所有舰长（不仅限于本房间舰长）">
-                                            <option value="1" selected>不屏蔽</option>
+                                            <option selected value="1">不屏蔽</option>
                                             <option value="2">仅勋章</option>
                                             <option value="3">仅舰长</option>
                                         </select>
                                     </div>
                                     <div class="col-auto">
-                                        <button class="btn btn-primary btn-sm" id="gift-shield-btn"
-                                                data-bs-toggle='modal' data-bs-target='#giftshield-model'>礼物自定义规则屏蔽设置
+                                        <button class="btn btn-primary btn-sm" data-bs-target='#giftshield-model'
+                                                data-bs-toggle='modal' id="gift-shield-btn">礼物自定义规则屏蔽设置
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_shield live-save"
+                                              data-bs-html="true"
+                                              data-bs-placement="top" data-bs-toggle="tooltip"
                                               placeholder="自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：&#10;辣条，亿圆，友谊的小船&#10;注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用&#10;默认黑名单，相反白名单（仅感谢填写的）"
-                                              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                               title="这里填写自定义屏蔽礼物名字，以 中文逗号(，)为分割；示例：<br/>辣条，亿圆，友谊的小船<br/><span class='red-font'>注意：为空那时候是什么都不屏蔽，仅在自定义模式下有用<br/>默认黑名单，相反白名单（仅感谢填写的）</span>"
                                     ></textarea>
                                 <textarea class="form-control input-margin-b thankgift_thank live-save"
-                                          id="thankgift_thank"
+                                          data-bs-html="true"
+                                          data-bs-placement="top"
+                                          data-bs-toggle="tooltip" id="thankgift_thank"
                                           placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
-                                          data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                           title="模式:单人单种<br/>多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class='red-font'>%uName%</span>送礼人名称<br/><span class='red-font'>%Type%</span>赠送类型<br/><span class='red-font'>%GiftName%</span>礼物名称<br/><span class='red-font'>%Num%</span>礼物数量"></textarea>
                                 <!-- 					<input
                                     class="form-control one_people input-margin-b thankgift_thank"
                                     placeholder="感謝 %uName%%Type%的%GiftName% x%Num%~"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
                                     data-bs-html="true"
                                     title="感谢语，单人单种，可选参数<br/> %uName%送礼人名称<br/>%Type%赠送类型<br/>%GiftName%礼物名称<br/>%Num%礼物数量"> -->
                                 <!-- <input class="form-control some_people input-margin-b thankgift_thank" placeholder="感謝%uName%贈送的%Gifts%~" data-bs-toggle="tooltip"
@@ -516,8 +643,8 @@
                                         data-bs-placement="top"  data-bs-html="true" title="感谢语，多人多种，可选参数<br/> %uNames%送礼人名称集合<br/>%Gifts%礼物和数量的集合以逗号隔开"> -->
 
                             </div>
-                            <h6 data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-html="true"
+                            <h6 data-bs-html="true" data-bs-placement="top"
+                                data-bs-toggle="tooltip"
                                 title="上舰私信姬<br/>1.0.6后独立于礼物感谢姬<br/>既不受感谢姬开关影响<br/><span class='red-font'>现在某些破站up主有破站官方的私聊，请开启前询问自己的up主有没有开启这个功能</span>">
                                 上舰私信姬<span class="red-font">(开启前请指这里看必要解释)</span>
                             </h6>
@@ -525,28 +652,28 @@
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label is_guard_report_click">
-                                            <input type="checkbox"
-                                                   class="form-check-input thankgift_is_guard_local live-save"> <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                            <input class="form-check-input thankgift_is_guard_local live-save"
+                                                   type="checkbox"> <span
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="是否开启舰长储存在本地<br/>如在开启上舰私信的情况下：不开启既为有人上舰都私信<br/>主要用于防止重复发送私信<br/>本地文件夹guardFile下<br/><span class='red-font'>注意变动该配置都需要重启弹幕姬</span>">舰长存储本地</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label is_guard_report_click">
-                                            <input type="checkbox"
-                                                   class="form-check-input thankgift_is_guard_report live-save"> <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                            <input class="form-check-input thankgift_is_guard_report live-save"
+                                                   type="checkbox"> <span
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否开启上舰后发送私信">上舰长私信(需要登录)</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label is_guard_code_click">
-                                            <input type="checkbox"
-                                                   class="form-check-input thankgift_is_gift_code live-save"> <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
+                                            <input class="form-check-input thankgift_is_gift_code live-save"
+                                                   type="checkbox"> <span
+                                                class="_description" data-bs-placement="top"
+                                                data-bs-toggle="tooltip"
                                                 title="是否开启礼品码模式,需要开启上舰私信">礼品码</span>
                                         </label>
                                     </div>
@@ -554,79 +681,83 @@
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b thankgift_report live-save"
+                                              data-bs-html="true"
+                                              data-bs-placement="top" data-bs-toggle="tooltip"
                                               placeholder="回车为换行，不能超过破站官方规定的500字&#10;可选参数%uName%，刚刚上舰的人的名称&#10;可选参数%guardLevel%，舰队等级&#10;可选参数%giftCode%，礼品码"
-                                              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
 
                                               title="回车为换行，不能超过破站官方规定的500字<br/>可选参数<span class='red-font'>%uName%</span>，刚刚上舰的人的名称<br/>可选参数<span class='red-font'>%guardLevel%</span>，舰队等级<br/>可选参数<span class='red-font'>%giftCode%</span>，礼品码"></textarea>
                                 <input
                                         class="form-control input-margin-b thankgift_barrageReport live-save"
-                                        placeholder="上舰私信发送成功后，发送的自定义弹幕，默认空不发送"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
                                         data-bs-html="true"
+                                        data-bs-placement="top" data-bs-toggle="tooltip"
+                                        placeholder="上舰私信发送成功后，发送的自定义弹幕，默认空不发送"
                                         title="上舰私信发送成功后，发送的自定义弹幕，默认空不发送">
                                 <textarea class="form-control input-margin-b thankgift_codeStrings live-save"
+                                          data-bs-html="true"
+                                          data-bs-placement="top" data-bs-toggle="tooltip"
                                           placeholder="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份&#10;以舰长-开头表示赠送给舰长，提督-开头，总督-开头；例如： 舰长-code&#10;没有特殊开头表示全部舰队等级都会赠送"
-                                          data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
 
                                           title="礼品码区域，多个礼品码以回车为分割礼品码，礼品码发送会自动删除，请做好备份<br/>以舰长-开头表示赠送给舰长，提督-开头，总督-开头；例如： 舰长-code<br/>没有特殊开头表示全部舰队等级都会赠送"></textarea>
                             </div>
                         </div>
                         <!-- 送礼姬设置结束 -->
                         <!-- 关注姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#thankFollow-set"
-                             data-target="#thankFollow-set">
+                        <a data-bs-toggle="collapse" data-target="#thankFollow-set"
+                           href="#thankFollow-set"><div class="input-group mb-1">
                             <h5>感谢关注姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 thankFollow-set collapse" id="thankFollow-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input follow_is_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="是否打开">开关</span>
+                                                class="form-check-input follow_is_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="是否打开">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input follow_is_live_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
+                                                class="form-check-input follow_is_live_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input follow_tx_shield live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top"
+                                                class="form-check-input follow_tx_shield live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip"
                                                   title="是否屏蔽天选状态下的关注">天选</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input follow_rd_shield live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top"
+                                                class="form-check-input follow_rd_shield live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip"
                                                   title="是否屏蔽红包状态下的关注">红包</span>
                                         </label>
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="1" class="small-input follow_num live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
+                                        <input class="small-input follow_num live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="1"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="多少人" data-bs-toggle="tooltip" data-bs-placement="top"
-                                               data-bs-html="true" title="每次感谢多少个人"
-                                               value="1">
+                                               placeholder="多少人" style="ime-mode: Disabled" title="每次感谢多少个人"
+                                               type="number" value="1"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="0"
-                                               class="small-input thankfollow_delaytime live-save"
-                                               placeholder="delay time(s)" data-bs-toggle="tooltip"
-                                               data-bs-placement="top" data-bs-html="true"
+                                        <input class="small-input thankfollow_delaytime live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip" min="0"
+                                               placeholder="delay time(s)"
                                                title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+                                               type="number"
                                                value="0">
                                     </div>
                                 </div>
@@ -637,75 +768,77 @@
                                     data-bs-placement="top"  data-bs-html="true"
                                     title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
                                 <textarea class="form-control input-margin-b follow_follows live-save"
-                                          placeholder="谢谢 %uNames% 的关注~" data-bs-toggle="tooltip"
                                           data-bs-html="true" data-bs-placement="top"
+                                          data-bs-toggle="tooltip" placeholder="谢谢 %uNames% 的关注~"
                                           title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class='red-font'>%uNames%</span>关注人名称集合"></textarea>
                             </div>
                         </div>
                         <!--关注姬设置结束 -->
                         <!-- 欢迎姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#welcome-set"
-                             data-target="#welcome-set">
+                        <a data-bs-toggle="collapse" data-target="#welcome-set"
+                           href="#welcome-set"><div class="input-group mb-1">
                             <h5>欢迎姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 thankFollow-set collapse" id="welcome-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input welcome_is_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="是否打开">开关</span>
+                                                class="form-check-input welcome_is_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="是否打开">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input welcome_is_live_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" title="仅在直播（开播）中有效">直播</span>
+                                                class="form-check-input welcome_is_live_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip" title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input welcome_tx_shield live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top"
+                                                class="form-check-input welcome_tx_shield live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip"
                                                   title="是否屏蔽天选状态下的欢迎">天选</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input welcome_rd_shield live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top"
+                                                class="form-check-input welcome_rd_shield live-save" type="checkbox">
+                                            <span class="_description" data-bs-placement="top"
+                                                  data-bs-toggle="tooltip"
                                                   title="是否屏蔽红包状态下的欢迎">红包</span>
                                         </label>
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="1" class="small-input welcome_num live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
+                                        <input class="small-input welcome_num live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="1"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="多少人" data-bs-toggle="tooltip" data-bs-placement="top"
-                                               data-bs-html="true" title="每次欢迎多少个人"
-                                               value="1">
+                                               placeholder="多少人" style="ime-mode: Disabled" title="每次欢迎多少个人"
+                                               type="number" value="1"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="0"
-                                               class="small-input thankwelcome_delaytime live-save"
-                                               placeholder="delay time(s)" data-bs-toggle="tooltip"
-                                               data-bs-placement="top" data-bs-html="true"
+                                        <input class="small-input thankwelcome_delaytime live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip" min="0"
+                                               placeholder="delay time(s)"
                                                title="延迟多少秒发送 <br/>最小值为0<br/><span class='red-font'>PS:可统计延时内的关注,一旦延时内有新关注就会重新刷新延时，推荐在多人感谢下使用</span>"
+                                               type="number"
                                                value="0">
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm welcome_list_people_shield_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
 
                                                 title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅舰长；注：所有舰长（不仅限于本房间舰长）">
-                                            <option value="1" selected>不屏蔽</option>
+                                            <option selected value="1">不屏蔽</option>
                                             <option value="2">仅勋章</option>
                                             <option value="3">仅舰长</option>
                                         </select>
@@ -718,69 +851,71 @@
                                     data-bs-placement="top"  data-bs-html="true"
                                     title="感谢语，可选参数<br/> %uNames%关注人名称集合"> -->
                                 <textarea class="form-control input-margin-b welcome_welcomes live-save"
-                                          placeholder="欢迎 %uNames% 进入直播间~" data-bs-toggle="tooltip"
                                           data-bs-html="true" data-bs-placement="top"
+                                          data-bs-toggle="tooltip" placeholder="欢迎 %uNames% 进入直播间~"
                                           title="多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条<br/>感谢语，可选参数<br/> <span class='red-font'>%uNames%</span>欢迎人名称集合"></textarea>
                             </div>
                         </div>
                         <!-- 欢迎姬设置结束 -->
                         <!-- 自动回复姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#autoReply-set"
-                             data-target="#autoReply-set">
+                        <a data-bs-toggle="collapse" data-target="#autoReply-set"
+                           href="#autoReply-set"><div class="input-group mb-1">
                             <h5>自动回复姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 autoReply-set collapse" id="autoReply-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input replys_is_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input replys_is_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否打开">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input replys_is_live_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input replys_is_live_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="仅在直播（开播）中有效">直播</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input replys_is_open_self live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input replys_is_open_self live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否识别来着自己的弹幕（默认不识别来着自己的弹幕）">自己</span>
                                         </label>
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="1" class="small-input replys_time live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
+                                        <input class="small-input replys_time live-save" data-bs-html="true"
+                                               data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="1"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="间隔" data-bs-toggle="tooltip" data-bs-placement="top"
-                                               data-bs-html="true"
+                                               placeholder="间隔" style="ime-mode: Disabled"
                                                title="<span class='red-font'>间隔多少秒才识别弹幕并自动回复</span><br/>默认为3秒"
-                                               value="3">
+                                               type="number"
+                                               value="3"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                     <div class="col-auto">
                                         <select class="custom-select-sm replys_list_people_shield_status live-save"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                                data-bs-html="true" data-bs-placement="top" data-bs-toggle="tooltip"
 
                                                 title="用户类型过滤：<br/>①:不屏蔽；<br/>②:仅佩戴本房间勋章；<br/>③:仅本房间舰长；">
-                                            <option value="1" selected>不屏蔽</option>
+                                            <option selected value="1">不屏蔽</option>
                                             <option value="2">仅勋章</option>
                                             <option value="3">仅舰长</option>
                                         </select>
                                     </div>
                                     <div class="col-auto">
                                         <!--      <button class="btn btn-primary btn-sm" id="replys-btn">自定义回复设置</button>-->
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#reply-model" id="replys-btn">自定义回复设置
+                                        <button class="btn btn-primary btn-sm" data-bs-target="#reply-model"
+                                                data-bs-toggle="modal" id="replys-btn">自定义回复设置
                                         </button>
                                     </div>
                                 </div>
@@ -788,102 +923,103 @@
                         </div>
                         <!-- 自动回复姬设置结束 -->
                         <!-- 礼物自动赠送姬设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#autoGift-set"
-                             data-target="#autoGift-set">
+                        <a data-bs-toggle="collapse" data-target="#autoGift-set"
+                           href="#autoGift-set"><div class="input-group mb-1">
                             <h5>礼物自动赠送姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 autoGift-set collapse" id="autoGift-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input is_autoGift_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input is_autoGift_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否打开礼物自动赠送">开关</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
-                                        <input class="big-input autoGift_time live-save" type="time"
-                                               pattern="[0-9]{2}:[0-9]{2}"
+                                        <input class="big-input autoGift_time live-save" data-bs-html="true"
+                                               data-bs-placement="top"
                                                data-bs-toggle="tooltip"
-                                               data-bs-placement="top" data-bs-html="true"
-                                               title="每天自动赠送礼物的时间(默认：晚上11：45)">
+                                               pattern="[0-9]{2}:[0-9]{2}"
+                                               title="每天自动赠送礼物的时间(默认：晚上11：45)"
+                                               type="time">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group footer-set">
                                 <input
                                         class="form-control input-margin-b autoGift_roomids live-save"
-                                        placeholder="要赠送礼物的房间号集" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-html="true"
+                                        data-bs-html="true" data-bs-placement="top"
+                                        data-bs-toggle="tooltip"
+                                        placeholder="要赠送礼物的房间号集"
                                         title="要赠送礼物的房间号，多房间号以<span class='red-font'>中文逗号(，)</span>隔开(短号长号都可以,尽量使用短号-避免去请求)">
                             </div>
                         </div>
                         <!-- 礼物自动赠送姬设置结束 -->
                         <!-- 黑名单模式设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#black-set"
-                             data-target="#black-set">
+                        <a data-bs-toggle="collapse" data-target="#black-set"
+                           href="#black-set"><div class="input-group mb-1">
                             <h5>黑名单姬设置(需要登录)</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 black-set collapse" id="black-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <!-- 模糊模式 -->
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input is_fuzzy_query live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input is_fuzzy_query live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否全局模糊匹配用户名(意思是用户名只要包含就屏蔽)">模糊</span>
                                         </label>
                                     </div>
                                     <!-- 全局 -->
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input black_flag_parent is_black_all live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input black_flag_parent is_black_all live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否全局生效黑名单模式">全局</span>
                                         </label>
                                     </div>
                                     <!-- 子选项 -->
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input black_flag_child is_black_gift live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input black_flag_child is_black_gift live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否仅礼物感谢姬生效">礼物</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input black_flag_child is_black_welcome live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input black_flag_child is_black_welcome live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否仅欢迎姬生效">欢迎</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input black_flag_child is_black_follow live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input black_flag_child is_black_follow live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否仅关注姬生效">关注</span>
                                         </label>
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox"
-                                                class="form-check-input black_flag_child is_black_reply live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input black_flag_child is_black_reply live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否仅自动回复姬生效">回复</span>
                                         </label>
                                     </div>
@@ -891,70 +1027,73 @@
                             </div>
                             <div class="form-group footer-set">
 									<textarea class="form-control input-margin-b black_names live-save"
+                                              data-bs-html="true"
+                                              data-bs-placement="top" data-bs-toggle="tooltip"
                                               placeholder="这里填写自定义屏蔽用户名字，多个请以 中文逗号(，)为分割；&#10;%表示模糊匹配，例如：%你好，表示你好结尾的人；%你好%，表示包含你好的。&#10;模糊匹配模式表示全为包含并不需要％号"
-                                              data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                               title="这里填写自定义屏蔽用户名字，多个请以 中文逗号(，)为分割；<br/>%表示模糊匹配，例如：%你好，表示你好结尾的人；%你好%，表示包含你好的。<br/>模糊匹配模式表示全为包含并不需要％号"
                                     ></textarea>
                                 <textarea class="form-control input-margin-b black_uids live-save"
+                                          data-bs-html="true"
+                                          data-bs-placement="top" data-bs-toggle="tooltip"
                                           placeholder="自定义屏蔽用户uid，以 中文逗号(，)为分割"
-                                          data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top"
                                           title="这里填写自定义屏蔽用户uid，以 中文逗号(，)为分割"
                                 ></textarea>
                             </div>
                         </div>
                         <!-- 弹幕姬登录设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#managerLogin-set"
-                             data-target="#managerLogin-set">
-                            <h5>弹幕姬登录设置</h5>
-                        </div>
+                        <a data-bs-toggle="collapse" data-target="#managerLogin-set"
+                           href="#managerLogin-set"><div class="input-group mb-1">
+                            <h5>弹幕姬web网页操作面板安全设置</h5>
+                        </div></a>
                         <div class="input-group mb-3 managerLogin-set collapse" id="managerLogin-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input is_manager_login live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
-                                                  title="是否打开弹幕姬登录,<span class='red-font'>开启关闭都需要重启弹幕姬予以生效</span>">开关</span>
+                                                class="form-check-input is_manager_login live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
+                                                  title="是否打开弹幕姬web登录检验,<span class='red-font'>开启关闭都需要重启弹幕姬予以生效</span>">开关</span>
                                         </label>
                                     </div>
                                     <div
                                             class="col-auto small-input-wrap">
-                                        <input type="number" min="1" class="small-input manager_maxSize live-save"
-                                               οninput="if(value.length>5)value=value.slice(0,5)"
-                                               style="ime-mode: Disabled"
-                                               onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-                                               placeholder="最大登陆错误次数" data-bs-toggle="tooltip"
+                                        <input class="small-input manager_maxSize live-save" data-bs-html="true"
                                                data-bs-placement="top"
-                                               data-bs-html="true"
+                                               data-bs-toggle="tooltip"
+                                               min="1"
+                                               onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                               placeholder="最大登陆错误次数" style="ime-mode: Disabled"
                                                title="<span class='red-font'>最大登陆错误次数</span><br/>默认为10次<br/>登录成功后会刷新(包括重启弹幕姬)"
-                                               value="10">
+                                               type="number"
+                                               value="10"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group footer-set">
                                 <input
                                         class="form-control input-margin-b manager_key live-save"
-                                        placeholder="登录时候需要输入的暗号" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-html="true"
+                                        data-bs-html="true" data-bs-placement="top"
+                                        data-bs-toggle="tooltip"
+                                        placeholder="登录时候需要输入的暗号"
                                         title="暗号本体(初始为123)；注:使用md5加密<br/>只要进入设置页面就可以随便改<br/>忘记密码目前唯一方式只能删除弹幕姬配置文件(或者查看弹幕姬日志去解密网站)">
                             </div>
                         </div>
                         <!-- 弹幕姬登录设置结束 -->
                         <!-- 隐私模式设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#privacy-set"
-                             data-target="#privacy-set">
+                        <a data-bs-toggle="collapse" data-target="#privacy-set"
+                           href="#privacy-set"><div class="input-group mb-1">
                             <h5>隐私模式</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 privacy-set collapse" id="privacy-set">
                             <div class="header-set">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
-                                                type="checkbox" class="form-check-input is_privacy_open live-save">
-                                            <span class="_description" data-bs-toggle="tooltip"
-                                                  data-bs-placement="top" data-bs-html="true"
+                                                class="form-check-input is_privacy_open live-save" type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
                                                   title="是否打开隐私模式,<span class='red-font'>部分功能需要重启弹幕姬生效</span>">开关</span>
                                         </label>
                                     </div>
@@ -963,92 +1102,95 @@
                             <div class="form-group footer-set no-use-hide">
                                 <input
                                         class="form-control input-margin-b privacy_heart_url live-save"
-                                        placeholder="小心心s参数加密地址" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-html="true"
+                                        data-bs-html="true" data-bs-placement="top"
+                                        data-bs-toggle="tooltip"
+                                        placeholder="小心心s参数加密地址"
                                         title="<span class='red-font'>小心心s参数加密地址</span><br/>默认为http://biliheart-1.herokuapp.com/enc<br/>如失效请自行设置 建议部署:https://github.com/BanqiJane/biliheart_heroku<br/>">
                             </div>
                         </div>
                         <!-- 隐私模式设置结束 -->
                         <!-- 实验性设置开始 -->
-                        <div class="input-group mb-1" data-bs-toggle="collapse" href="#othser-set"
-                             data-target="#othser-set">
+                        <a data-bs-toggle="collapse" data-target="#othser-set"
+                           href="#othser-set"><div class="input-group mb-1">
                             <h5>实验性设置</h5>
-                        </div>
+                        </div></a>
                         <div class="input-group mb-3 othser-set collapse" id="othser-set">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_dosign live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_dosign live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="是否自动直播签到，默认每天凌晨0点30分检查签到">自动签到</span>
                                     </label>
-                                    <input class="big-input sign_time live-save" type="time" pattern="[0-9]{2}:[0-9]{2}"
+                                    <input class="big-input sign_time live-save" data-bs-html="true"
+                                           data-bs-placement="top"
                                            data-bs-toggle="tooltip"
-                                           data-bs-placement="top" data-bs-html="true"
-                                           title="每天自动签到的时间">
+                                           pattern="[0-9]{2}:[0-9]{2}" title="每天自动签到的时间"
+                                           type="time">
                                 </div>
                                 <div class="col-auto">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_clockin live-save">
+                                    <label class="form-check-label"> <input
+                                            class="form-check-input is_clockin live-save"
+                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="是否自动打卡，默认每天凌晨0点35分自动打卡向现有勋章列表的直播间发送任意自定义弹幕">自动打卡</span>
                                     </label>
-                                    <input class="big-input clockin_time live-save" type="time"
-                                           pattern="[0-9]{2}:[0-9]{2}"
+                                    <input class="big-input clockin_time live-save" data-bs-html="true"
+                                           data-bs-placement="top"
                                            data-bs-toggle="tooltip"
-                                           data-bs-placement="top" data-bs-html="true"
-                                           title="每天自动签到的时间">
+                                           pattern="[0-9]{2}:[0-9]{2}" title="每天自动签到的时间"
+                                           type="time">
                                 </div>
                                 <div class="col-auto no-use-hide">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_online live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_online live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="是否打开用户在线心跳">在线心跳</span>
                                     </label>
                                 </div>
                                 <div class="col-auto no-use-hide">
-                                    <label class="form-check-label"> <input type="checkbox"
-                                                                            class="form-check-input is_sh live-save">
+                                    <label class="form-check-label"> <input class="form-check-input is_sh live-save"
+                                                                            type="checkbox">
                                         <span
-                                                class="_description" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-html="true"
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
                                                 title="是否打开获取在线小心心，不知道什么时候失效且用且珍惜 PS:<span class='red-font'>此功能需要开启用户在线心跳</span>">小心心</span>
                                     </label>
                                 </div>
                                 <div class="form-group footer-set footer-header-margin clock_in_barrage live-save">
 									<textarea class="form-control input-margin-b clockin_barrage"
-                                              placeholder="打卡姬自定义发送弹幕,多条回车" data-bs-toggle="tooltip"
                                               data-bs-html="true" data-bs-placement="top"
+                                              data-bs-toggle="tooltip" placeholder="打卡姬自定义发送弹幕,多条回车"
                                               title="打卡姬自定义发送弹幕,多条回车,多条语句时候注意以回车为分割每条语句,多条语句会随机发送其中一条"></textarea>
                                 </div>
                             </div>
                         </div>
                         <!-- 实验性设置结束 -->
                         <!-- 底部按钮开始 -->
-                        <div class="input-group mb-3 set-control">
+<!--                        <div class="input-group mb-3 set-control">
                             <div class="col-auto">
-                                <button type="button" class="btn btn-danger set-hold">保存设置</button>
+                                <button class="btn btn-danger set-hold" type="button">保存设置</button>
                             </div>
-                            <div class="col-auto"><span class="notice-message">成功</span> <span
-                                    class="success-message">成功</span></div>
-                        </div>
+&lt;!&ndash;                            <div class="col-auto"><span class="notice-message">成功</span> <span&ndash;&gt;
+&lt;!&ndash;                                    class="success-message">成功</span></div>&ndash;&gt;
+                        </div>-->
                         <div class="input-group mb-3 set-control">
                             <div class="col-auto">
-                                <input type="file" value="上传文件" id="file" style="display: none;"/>
-                                <button type="button" class="btn btn-warning export-set"
-                                        title="导出设置到本地，弹幕姬配置文件夹set底下">导出设置
+                                <input id="file" style="display: none;" type="file" value="上传文件"/>
+                                <button class="btn btn-warning export-set"
+                                        title="导出设置到本地，弹幕姬配置文件夹set底下"
+                                        type="button">导出设置
                                 </button>
-                                <button type="button" class="btn btn-success export-set-web" title="网页实时下载配置">
+                                <button class="btn btn-success export-set-web" title="网页实时下载配置" type="button">
                                     下载设置
                                 </button>
-                                <button type="button" class="btn btn-info import-set" title="导入配置文件">导入设置
+                                <button class="btn btn-info import-set" title="导入配置文件" type="button">导入设置
                                 </button>
                             </div>
                         </div>
@@ -1059,20 +1201,24 @@
                 <div class="card-footer">
                     <div class="author-message">
                         B站直播java版弹幕姬 © 2020-2023 <a href="https://space.bilibili.com/17418088"
-                                                           target="_blank"> SaKazaKi(坂崎简) </a>|<a
-                            href="https://github.com/BanqiJane/Bilibili_Danmuji"
-                            target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           target="_blank"> B站 </a>|<a
+                            data-bs-placement="top"
+                            data-bs-toggle="tooltip" href="https://github.com/BanqiJane/Bilibili_Danmuji"
+                            target="_blank"
 
                             title="https://github.com/BanqiJane/Bilibili_Danmuji">
-                        GitHub仓库(查看更新) </a>|<a href="mailto:zjianf2014@outlook.com"
-                                                     data-bs-toggle="tooltip" data-bs-placement="top"
-                                                     title="zjianf2014@outlook.com(有什么建议或反馈bug)">
-                        联系我 </a>| <a href="https://live.bilibili.com/1000" target="_blank"
-                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="破站直播间1000(坂本叔)">破站常驻 </a>| <a
-                            href="javascript:;" data-bs-toggle="tooltip" id="checkupdate"
-                            data-bs-placement="top" th:data-version = "${EDITION}"
-                            th:title="'版本号:'+${EDITION}+'beta'">版本号(检查更新)</a><!-- -->
+                        GitHub </a>|<a data-bs-placement="top"
+                                       data-bs-toggle="tooltip" href="mailto:zjianf2014@outlook.com"
+                                       title="zjianf2014@outlook.com(有什么建议或反馈bug)">
+                        联系我 </a>| <a data-bs-placement="top" data-bs-toggle="tooltip"
+                                        href="https://blog.csdn.net/BanQIJane/article/details/107337263" target="_blank"
+                                        title="使用教程">WIKI</a>|
+                        <a data-bs-placement="top" data-bs-toggle="tooltip"
+                           href="https://live.bilibili.com/1000" target="_blank"
+                           title="破站直播间1000(坂本叔)">常驻 </a>| <a
+                            data-bs-placement="top" data-bs-toggle="tooltip" href="javascript:;"
+                            id="checkupdate" th:data-version="${EDITION}"
+                            th:title="'当前版本号:'+${EDITION}+'beta'">检查更新</a><!-- -->
                     </div>
                 </div>
                 <!-- 底部展示结束  -->
@@ -1090,11 +1236,11 @@
             <div class="modal-header">
                 <!-- <div class="t">-->
                 <h4 class="modal-title">请自定义需要屏蔽的礼物规则</h4>
-                <a href="javascript:;" class="shieldgift_add"
-                   id="shieldgift_add"
-                   data-bs-toggle="tooltip" data-bs-placement="top"
-                   data-bs-html="true" title="新增规则">⊕</a>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <a class="shieldgift_add" data-bs-html="true"
+                   data-bs-placement="top"
+                   data-bs-toggle="tooltip" href="javascript:;"
+                   id="shieldgift_add" title="新增规则">⊕</a>
+                <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 <!--               </div>-->
             </div>
 
@@ -1150,17 +1296,17 @@
             <!-- 模态框头部 -->
             <div class="modal-header">
                 <h4 class="modal-title">请自定义弹幕姬自动回复规则</h4>
-                <a href="javascript:;" class="replys_add"
-                   id="replys_add"
-                   data-bs-toggle="tooltip" data-bs-placement="top"
-                   data-bs-html="true" title="新增回复规则">⊕</a>
-                <button type="button" class="btn-close btn-closer"></button>
+                <a class="replys_add" data-bs-html="true"
+                   data-bs-placement="top"
+                   data-bs-toggle="tooltip" href="javascript:;"
+                   id="replys_add" title="新增回复规则">⊕</a>
+                <button class="btn-close btn-closer" type="button"></button>
             </div>
 
             <!-- 模态框内容 -->
             <div class="modal-body">
                 <div class="con">
-                    <ul class="replys-ul" id="replys-ul" data-role="listview">
+                    <ul class="replys-ul" data-role="listview" id="replys-ul">
 
                     </ul>
                 </div>
@@ -1180,38 +1326,42 @@
             <!-- 模态框头部 -->
             <div class="modal-header">
                 <h4 class="modal-title">修改当前规则(关闭既为设置完成,别忘了最后保存配置)</h4>
-                <button type="button" class="btn-close btn-closeri" data-bs-toggle="tooltip" data-bs-placement="top"
-                        data-bs-html="true"
-                        title="关闭既为设置完成<br/>别忘了保存配置"></button>
+                <button class="btn-close btn-closeri" data-bs-html="true" data-bs-placement="top"
+                        data-bs-toggle="tooltip"
+                        title="关闭既为设置完成<br/>别忘了保存配置"
+                        type="button"></button>
             </div>
 
             <!-- 模态框内容 -->
             <div class="modal-body">
                 <div class="con">
                     <ul>
-                        <li><input type="checkbox" class="reply_open_i reply-sync live-save"
-                                   data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="是否开启"></li>
-                        <li><input type="checkbox" class="reply_oc_i reply-sync live-save"
-                                   data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="是否精确匹配，仅在只有一个关键字且没有屏蔽词的情况下使用(也可以在 含有 || 号条件下使用)">
+                        <li><input class="reply_open_i reply-sync live-save" data-bs-placement="top"
+                                   data-bs-toggle="tooltip" title="是否开启"
+                                   type="checkbox"></li>
+                        <li><input class="reply_oc_i reply-sync live-save" data-bs-placement="top"
+                                   data-bs-toggle="tooltip"
+                                   title="是否精确匹配，仅在只有一个关键字且没有屏蔽词的情况下使用(也可以在 含有 || 号条件下使用)"
+                                   type="checkbox">
                         </li>
-                        <li><textarea class="reply_keywords_i reply-sync" placeholder="关键字"
-                                      data-bs-toggle="tooltip" data-bs-placement="top"
-                                      data-bs-html="true"
+                        <li><textarea class="reply_keywords_i reply-sync" data-bs-html="true"
+                                      data-bs-placement="top" data-bs-toggle="tooltip"
+                                      placeholder="关键字"
                                       title="关键字既为当弹幕包含所有关键字时才回复；多个关键字时请以中文逗号隔开，<span class='orange-font'>想实现满足条件A或条件B 发送内容C的功能请在关键字中用 || 号分割或者不同关键字(即使在多关键字情况下依旧生效)</span><br/><span class='red-font'>注意不能为空</span>"></textarea>
                         </li>
-                        <li><textarea class="reply_shields_i reply-sync" placeholder="屏蔽词"
-                                      data-bs-toggle="tooltip" data-bs-placement="top"
-                                      title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"
-                                      data-bs-html="true"></textarea></li>
-                        <li><textarea class="reply_rs_i reply-sync" placeholder="回复语句"
-                                      data-bs-toggle="tooltip" data-bs-placement="top"
-                                      title="回复语句<br/>多个回复请换行<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"
-                                      data-bs-html="true"></textarea></li>
+                        <li><textarea class="reply_shields_i reply-sync" data-bs-html="true"
+                                      data-bs-placement="top" data-bs-toggle="tooltip"
+                                      placeholder="屏蔽词"
+                                      title="屏蔽词既为当弹幕包含有一项或者多项屏蔽词时则不回复；多个屏蔽词时请以中文逗号隔开,为空既为不开启屏蔽词"></textarea>
+                        </li>
+                        <li><textarea class="reply_rs_i reply-sync" data-bs-html="true"
+                                      data-bs-placement="top" data-bs-toggle="tooltip"
+                                      placeholder="回复语句"
+                                      title="回复语句<br/>多个回复请换行<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"></textarea>
+                        </li>
                         <li>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm reply_delete_i">删除
+                            <button class="btn btn-danger btn-sm reply_delete_i"
+                                    type="button">删除
                             </button>
                         </li>
                     </ul>
@@ -1234,12 +1384,13 @@
             <div class="con">
                 <div class="input-group mb-3">
                     <div class="form-group block-set">
-                        <input class="form-control form-control-sm block-input" type="number" min="1" max="720"
-                               placeholder="禁言时间1-720小时" data-bs-toggle="tooltip" data-bs-placement="top"
-                               data-bs-html="true" value="">
+                        <input class="form-control form-control-sm block-input" data-bs-html="true"
+                               data-bs-placement="top" data-bs-toggle="tooltip"
+                               max="720" min="1" placeholder="禁言时间1-720小时"
+                               type="number" value="">
                     </div>
                     <div class="form-group block-button">
-                        <button type="button" class="btn btn-sm btn-primary btn-block">禁言</button>
+                        <button class="btn btn-sm btn-primary btn-block" type="button">禁言</button>
                     </div>
 
                 </div>
@@ -1259,9 +1410,9 @@
                     <table class="user-list">
                         <thead>
                         <tr class="list-head">
-                            <th width="35%" class="list-head-text list-unit">用户名称</th>
-                            <th width="44%" class="list-head-text list-unit">解禁时间</th>
-                            <th width="17%" class="list-head-text list-unit">操作</th>
+                            <th class="list-head-text list-unit" width="35%">用户名称</th>
+                            <th class="list-head-text list-unit" width="44%">解禁时间</th>
+                            <th class="list-head-text list-unit" width="17%">操作</th>
                         </tr>
                         </thead>
                         <tbody class="list-body ps ps--theme_default">
@@ -1274,9 +1425,9 @@
                         </tbody>
                     </table>
                     <div class="block-btn">
-                        <div class="block-btn-body"><a href="javascript:void(0)" class="block-pre-page">上一页</a><span
-                                class="block-page">1</span><a href="javascript:void(0)"
-                                                              class="block-next-page">下一页</a>
+                        <div class="block-btn-body"><a class="block-pre-page" href="javascript:void(0)">上一页</a><span
+                                class="block-page">1</span><a class="block-next-page"
+                                                              href="javascript:void(0)">下一页</a>
                         </div>
                     </div>
                 </div>
@@ -1288,36 +1439,40 @@
 <div class="tips-wrap">
     <div class="tips-t"></div>
 </div>
-<div aria-live="polite" aria-atomic="true" class="position-relative">
+<div aria-atomic="true" aria-live="polite" class="position-relative">
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 3">
-        <div class="toast hide" id="announceEle" role="alert" aria-live="assertive" aria-atomic="true"
-             data-bs-autohide="false"
+        <div aria-atomic="true" aria-live="assertive" class="toast hide" data-bs-autohide="false" id="announceEle"
+             role="alert"
              style="z-index: 9999;">
             <div class="toast-header">
-                <img src="../../img/tips_head.png" th:src="@{/img/tips_head.png}" class="rounded me-2"
-                     style="width:20px;height:20px;">
+                <img class="rounded me-2" src="../../img/tips_head.png" style="width:20px;height:20px;"
+                     th:src="@{/img/tips_head.png}">
                 <strong class="me-auto">最新公告</strong>
                 <small class="text-muted">编写:Jane</small><!--先写死.. 反正....-->
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="toast" type="button"></button>
             </div>
             <div class="toast-body" id="announce_content">
             </div>
         </div>
         <!-- Then put toasts within -->
-        <div class="toast hide" id="updateEle" role="alert" aria-live="assertive" aria-atomic="true"
-             data-bs-delay="7000" style="z-index: 9999;">
+        <div aria-atomic="true" aria-live="assertive" class="toast hide" data-bs-delay="7000" id="updateEle"
+             role="alert" style="z-index: 9999;">
             <div class="toast-header">
-                <img src="../../img/tips_head.png" th:src="@{/img/tips_head.png}" class="rounded me-2"
-                     style="width:20px;height:20px;">
+                <img class="rounded me-2" src="../../img/tips_head.png" style="width:20px;height:20px;"
+                     th:src="@{/img/tips_head.png}">
                 <strong class="me-auto">版本更新提示</strong>
                 <small class="text-muted" th:text="'当前版本'+${EDITION}"></small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="toast" type="button"></button>
             </div>
             <div class="toast-body" id="edition_content" th:text="'最新版本：'+${NEW_EDITION}">
             </div>
         </div>
     </div>
 </div>
+<!-- 用于显示信息的元素 -->
+<div id="top-message"></div>
+<div id="floating-button" class="set-hold">保存</div>
+<!-- 提示框和检查更新 -->
 <script type="text/javascript">
     $(function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -1356,7 +1511,111 @@
         if (!initWebCheck.init_edition) {
             $("#checkupdate").click();
         }
+        // open new window not tab
+        function customOpen(event) {
+            event.preventDefault();
+            window.open(this.href, '_blank', 'height=500,width=500');
+        }
 
+        // 获取所有类名为 'customOpen' 的 a 标签
+        var links = document.getElementsByClassName('window-open-x');
+
+        // 为每个 a 标签添加点击事件处理器
+        for (var i = 0; i < links.length; i++) {
+            links[i].addEventListener('click', customOpen, false);
+        }
+    });
+</script>
+<!-- 按钮悬浮js -->
+<script type="text/javascript">
+    //保存按钮悬浮
+    let floatingButton = document.getElementById('floating-button');
+    let isDown = false;
+    let offset = [0, 0];
+    let mousePosition;
+
+    // Event listeners for mouse events
+    floatingButton.addEventListener('mousedown', function (e) {
+        isDown = true;
+        offset = [
+            floatingButton.offsetLeft - e.clientX,
+            floatingButton.offsetTop - e.clientY
+        ];
+    }, true);
+
+    document.addEventListener('mouseup', function () {
+        isDown = false;
+    }, true);
+
+    document.addEventListener('mousemove', function (event) {
+        event.preventDefault();
+        if (isDown) {
+            mousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+            floatingButton.style.left = (mousePosition.x + offset[0]) + 'px';
+            floatingButton.style.top  = (mousePosition.y + offset[1]) + 'px';
+        }
+    }, true);
+
+    // Event listeners for touch events
+    floatingButton.addEventListener('touchstart', function (e) {
+        isDown = true;
+        offset = [
+            floatingButton.offsetLeft - e.touches[0].clientX,
+            floatingButton.offsetTop - e.touches[0].clientY
+        ];
+    }, true);
+
+    document.addEventListener('touchend', function () {
+        isDown = false;
+    }, true);
+
+    document.addEventListener('touchmove', function (event) {
+        event.preventDefault();
+        if (isDown) {
+            mousePosition = {
+                x: event.touches[0].clientX,
+                y: event.touches[0].clientY
+            };
+            floatingButton.style.left = (mousePosition.x + offset[0]) + 'px';
+            floatingButton.style.top  = (mousePosition.y + offset[1]) + 'px';
+        }
+    }, true);
+
+</script>
+<!-- 自定义cookie -->
+<script type="text/javascript">
+    function cookie_set(key) {
+        $.ajax({
+            url: '../customCookie',
+            async: false,
+            cache: false,
+            type: 'POST',
+            data: {
+                cookie: key
+            },
+            dataType: 'json',
+            success: function (data) {
+                const flag = data.result;
+                if (flag == true) {
+                    showMessage("cookie设定成功", "success","2");
+                    $("#cookie_data").val("");
+                    // 延迟1秒后执行页面刷新
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showMessage("cookie错误", "danger","3");
+                }
+            }
+        })
+    }
+
+    $(document).on('click', '#cookie_set_send', function () {
+        const cookie_data = $("#cookie_data").val();
+        cookie_set(cookie_data);
     });
 </script>
 </body>

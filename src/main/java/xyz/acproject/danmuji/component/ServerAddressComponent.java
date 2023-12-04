@@ -30,6 +30,10 @@ public class ServerAddressComponent implements ApplicationListener<WebServerInit
 		}
 		return "http://"+ addressStr +":"+this.serverPort;
 	}
+
+	public String getLocalAddress() {
+		return "http://localhost:" +this.serverPort;
+	}
 	/**
 	 * @return
 	 */

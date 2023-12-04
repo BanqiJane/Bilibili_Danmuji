@@ -1,7 +1,31 @@
+.border-pink{
+    border-color: #FFC0CB;
+}
+
+a.extends-father-a{
+    color: black;
+}
+
+a.extends-father-a:visited{
+    color: inherit;
+}
+
+ul {
+    list-style-type: none;
+}
+
+a.no-underline {
+    text-decoration: none;
+}
+
 .no-use-hide {
     display: none;
 }
 
+#top-message .alert {
+    margin-bottom: 0.2em;
+    z-index: 99999;
+}
 .row .col-auto {
     padding-top: 0.2em;
     padding-bottom: 0.2em;
@@ -55,7 +79,7 @@ input {
 }
 
 .center-wrapper {
-    margin-top: 20vh !important;
+    margin-top: 2.5vh !important;
 }
 
 .login-body {
@@ -141,7 +165,7 @@ a#danmu_open {
 
 div#danmu {
     width: 100%;
-    height: 400px;
+    height: 87vh;
     z-index: 9;
     border: 1px solid pink;
     overflow-y: auto;
@@ -382,27 +406,27 @@ div#danmu .danmu-child a {
     }
 }
 
-/* 当页面宽度大于1200px*/
-@media screen and (min-width:1200px) {
-    div#danmu{
-    }
-}
+/*!* 当页面宽度大于1200px*!*/
+/*@media screen and (min-width:1200px) {*/
+/*    div#danmu{*/
+/*    }*/
+/*}*/
 
 
 
 
-/* 当页面宽度大于960px小于1200px */
-@media screen and (min-width:960px) and (max-width:1200px){
-    div#danmu{
-    }
-}
+/*!* 当页面宽度大于960px小于1200px *!*/
+/*@media screen and (min-width:960px) and (max-width:1200px){*/
+/*    div#danmu{*/
+/*    }*/
+/*}*/
 
-/* 当页面宽度大于600px小于960px */
-@media screen and (min-width:600px) and (max-width:960px){
-    div#danmu{
-        height: 680px;
-    }
-}
+/*!* 当页面宽度大于600px小于960px *!*/
+/*@media screen and (min-width:600px) and (max-width:960px){*/
+/*    div#danmu{*/
+/*        height: 680px;*/
+/*    }*/
+/*}*/
 
 
 /* 当页面宽度大于300px小于600px */
@@ -414,11 +438,11 @@ div#danmu .danmu-child a {
 
 
 /* 当页面宽度小于300px*/
-@media screen and (max-width:300px) {
-    div#danmu{
-       height: 580px;
-    }
-}
+/*@media screen and (max-width:300px) {*/
+/*    div#danmu{*/
+/*       height: 580px;*/
+/*    }*/
+/*}*/
 
 #set_open {
     width: 100%;
@@ -1117,4 +1141,76 @@ div .link-popup-panel .popup-content-ctnr p {
 
 .block-btn .block-btn-body .block-next-page {
     margin-left: 10px;
+}
+
+
+#floating-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 80px;
+    height: 80px;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 80px;
+    z-index: 99999;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    transition: all 0.3s ease 0s; /* 将所有的改变平滑过渡*/
+}
+
+#floating-button:hover {
+    background-color: #0069D9;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.2); /* hover时更改阴影效果 */
+    transform: scale(1.05); /* 鼠标悬停时，按钮稍微放大 */
+}
+
+
+/* For mobile phones: */
+@media screen and (max-width: 400px) {
+    #floating-button {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+}
+
+/* For phablets: */
+@media screen and (min-width: 401px) and (max-width: 600px) {
+    #floating-button {
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+    }
+}
+
+/* For tablets: */
+@media screen and (min-width: 601px) and (max-width: 768px) {
+    #floating-button {
+        width: 70px;
+        height: 70px;
+        line-height: 70px;
+    }
+}
+
+/* For small laptops and larger tablets */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    #floating-button {
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+    }
+}
+
+/* For desktops and laptops */
+@media screen and (min-width: 1025px) {
+    #floating-button {
+        width: 90px;
+        height: 90px;
+        line-height: 90px;
+    }
 }

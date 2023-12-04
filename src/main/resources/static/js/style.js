@@ -7,7 +7,7 @@ $(function() {
 			var roomid = $('#room_id').val();
 			if (roomid !== null && roomid !== "") {
 				$('.notice-message').html("<span>连接中<img src='../img/loading-1.gif'></span>");
-				$.when(method.connectRoom(roomid)).done(function(data) {
+				$.when(connect_method.connectRoom(roomid)).done(function(data) {
 					if (data.code === "200") {
 						if (data.result) {
 							$('#connect').addClass('disabled');
@@ -35,7 +35,7 @@ $(function() {
 
 	$(document).on('click', '#disconnect', function() {
 		if (!$(this).hasClass('disabled')) {
-			if (method.disconnectRoom()) {
+			if (connect_method.disconnectRoom()) {
 				$('#disconnect').addClass('disabled');
 				$('#connect').removeClass('disabled');
 				alert("断开成功");
@@ -47,7 +47,7 @@ $(function() {
 	});
 
 	if ($('.card-header').children('h2').children('span').html() === "弹幕姬连接") {
-		if (method.connectCheck()) {
+		if (connect_method.connectCheck()) {
 			$('#connect').addClass('disabled');
 			$('#disconnect').removeClass('disabled');
 		} else {
@@ -59,7 +59,7 @@ $(function() {
 
 });
 
-const method = {
+const connect_method = {
 	connectRoom : function(roomid) {
 		"use strict";
 		var deferred = $.Deferred();

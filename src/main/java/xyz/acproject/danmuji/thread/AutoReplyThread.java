@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 /**
  * @author BanqiJane
@@ -829,4 +830,13 @@ public class AutoReplyThread extends Thread {
     }
 
 
+    public HashSet<AutoReplySet> getAutoReplySets() {
+        if(!CollectionUtils.isEmpty(autoReplySets)){
+            //过滤非空的关键字和回复语句
+            return autoReplySets.stream()
+                    .filter(autoReplySet -> !CollectionUtils.isEmpty(autoReplySet.getKeywords())&&StringUtils.isNotBlank(StringUtils.trim(autoReplySet.getReply())))
+                    .collect(Collectors.toCollection(HashSet::new));
+        }
+        return autoReplySets;
+    }
 }

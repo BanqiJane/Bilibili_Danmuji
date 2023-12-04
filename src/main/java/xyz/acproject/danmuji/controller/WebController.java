@@ -67,9 +67,11 @@ public class WebController {
             }
         }
         model.addAttribute("ANAME", PublicDataConf.ANCHOR_NAME);
+        model.addAttribute("AUID", PublicDataConf.AUID);
         model.addAttribute("EDITION", PublicDataConf.EDITION);
         model.addAttribute("NEW_EDITION", PublicDataConf.NEW_EDITION);
         model.addAttribute("ROOMID", PublicDataConf.ROOMID);
+        model.addAttribute("HROOMID", PublicDataConf.centerSetConf.getRoomid());
         model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
         model.addAttribute("MANAGER", PublicDataConf.USERMANAGER != null ? PublicDataConf.USERMANAGER.is_manager() : false);
         if (PublicDataConf.USER != null) {
@@ -130,8 +132,8 @@ public class WebController {
     public Response<?> qrcodeUrl(HttpServletRequest req) {
         if (req.getSession().getAttribute("status") != null)
             return null;
-        Qrcode qrcode = HttpUserData.httpGetQrcode();
-        req.getSession().setAttribute("auth", qrcode.getOauthKey());
+        Qrcode qrcode = HttpUserData.httpGenerateQrcode();
+        req.getSession().setAttribute("auth", qrcode.getQrcode_key());
         return Response.success(qrcode.getUrl(), req);
     }
 
@@ -144,10 +146,10 @@ public class WebController {
         String oauthKey = (String) req.getSession().getAttribute("auth");
         LoginData loginData = new LoginData();
         loginData.setOauthKey(oauthKey);
-        String jsonString = HttpUserData.httpPostCookie(loginData);
+        String jsonString = HttpUserData.httpQrcodePoll(oauthKey);
         jsonObject = JSONObject.parseObject(jsonString);
         if (jsonObject != null) {
-            if (jsonObject.getBoolean("status")) {
+            if (jsonObject.getJSONObject("data").getIntValue("code")==0) {
                 danmujiInitService.init();
 //                checkService.init();
                 if (PublicDataConf.USER != null) {
