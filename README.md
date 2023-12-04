@@ -260,7 +260,7 @@ java version "1.8.0_121"
 项目目录下控制台执行：
 
 ```bash
-$ java -jar BiliBili_Danmuji-2.0beta.jar
+$ java -jar BiliBili_Danmuji-2.6.5beta.jar
 ```
 
 如果Window系统还可以：<br/>
@@ -292,7 +292,7 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 - **自从2.4.5增加说明文件readme.txt和启动配置run.bat的端口参数 旧版本也可以自己加上去**<br/>
 - **--server.port=23333 修改即可修改端口启动**<br/>
-- **完整命令行：java -jar BiliBili_Danmuji-2.4.5beta.jar --server.port=23333**<br/>
+- **完整命令行：java -jar BiliBili_Danmuji-2.6.5beta.jar --server.port=23333**<br/>
 - **以上方法均兼容旧版本**
   <br/><br/>
   <br/>
@@ -301,8 +301,8 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 
 - **自从2.4.7增加说明文件readme.txt和启动配置run.bat的内存参数 旧版本也可以自己加上去**<br/>
 - **-Xms64m -Xmx128m**<br/>
-- **完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.4.7beta.jar**<br/>
-- **加上修改端口的完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.4.7beta.jar --server.port=23333**<br/>
+- **完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.6.5beta.jar**<br/>
+- **加上修改端口的完整命令行：java -jar -Xms64m -Xmx128m BiliBili_Danmuji-2.6.5beta.jar --server.port=23333**<br/>
 - **以上方法均兼容旧版本**
   <br/><br/>
   <br/>
