@@ -4,9 +4,6 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
 
 
-
-# 说明：**本软件永久开源（开源即永久免费） 不存在任何收费 请各位谨慎识别**
-
 # 运行环境
 
 **可在所有主要操作系统上运行，并且仅需要安装Java JDK或JRE版本8或更高版本。要检查，请运行java -version：**
@@ -599,3 +596,10 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 </blockquote>
 </blockquote>  
 
+## SUPPORT
+
+JetBrains OPEN SOURCE SUPPORT
+
+<a href="https://jb.gg/OpenSourceSupport">
+  <img src="https://user-images.githubusercontent.com/8643542/160519107-199319dc-e1cf-4079-94b7-01b6b8d23aa6.png" align="left" height="150" width="150" alt="JetBrains">
+</a>
