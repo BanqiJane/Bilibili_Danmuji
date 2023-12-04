@@ -150,9 +150,9 @@ public class PublicDataConf {
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
 
-	public final static String EDITION ="2.6.5";
+	public final static String EDITION ="2.7.0.0";
 
-	public static String NEW_EDITION ="2.6.5";
+	public static String NEW_EDITION ="2.7.0.0";
 	public static String ANNOUNCE = null;
 
 	public final static String PROFILE_NAME = "DanmujiProfile";
