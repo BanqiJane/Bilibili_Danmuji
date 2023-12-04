@@ -36,7 +36,7 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          GITHUB_VERSION=$(curl -sX GET "https://api.github.com/repos/BanqiJane/Bilibili_Danmuji/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
+          GITHUB_VERSION=$(curl -sX GET "https://api.github.com/repos/zzcabc/Bilibili_Danmuji/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
           echo "github_version=${GITHUB_VERSION}" >> $GITHUB_OUTPUT
           
           sed -n 7p build.gradle > version
@@ -52,8 +52,9 @@ jobs:
 
           echo "TAG=弹幕姬发行版${TAG_VERSION}(含绿色版本)" >> $GITHUB_OUTPUT
 
+          echo ${GITHUB_VERSION}
           echo ${FILE_NAME}
-          echo ${TAG}
+          echo ${TAG_VERSION}
 
       # 初始化 JDK8 环境
       - name: Set up JDK 8
@@ -152,7 +153,7 @@ jobs:
           echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
           sed -i 's/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新MD文档URL"
-          sed -i 's/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.0${{ steps.prepare.outputs.tag_version }}/g' README.md
+          sed -i 's/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新文档中java运行"
           sed -i 's/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g' README.md
           git add README.md
