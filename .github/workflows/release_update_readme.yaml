@@ -151,14 +151,14 @@ jobs:
           git config --global user.name zhaocheng
           git config --global user.email zhaocheng990105@gmail.com
           echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
-          sed -i 's/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g' README.md
+          sed -i "s/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g" README.md
           echo "更新MD文档URL"
-          sed -i 's/github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}/g' README.md
+          sed -i "s|releases/tag/${{ steps.prepare.outputs.github_version }}|github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}|g" README.md
           echo "更新文档中java运行"
-          sed -i 's/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g' README.md
+          sed -i "s/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g" README.md
           git add README.md
           git commit -m "${{ steps.prepare.outputs.tag_version }} update" -a
-      
+
       # 推送版本号到GitHub 
       - name: Push changes
         uses: ad-m/github-push-action@master
