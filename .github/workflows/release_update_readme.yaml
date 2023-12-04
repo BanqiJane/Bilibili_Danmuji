@@ -36,7 +36,7 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          GITHUB_VERSION=$(curl -sX GET "https://api.github.com/repos/zzcabc/Bilibili_Danmuji/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
+          GITHUB_VERSION=$(curl -sX GET "https://api.github.com/repos/BanqiJane/Bilibili_Danmuji/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
           echo "github_version=${GITHUB_VERSION}" >> $GITHUB_OUTPUT
           
           sed -n 7p build.gradle > version
@@ -148,16 +148,18 @@ jobs:
       # 初始化版本号与git 
       - name: commit
         run: |
-          git config --global user.name zhaocheng
-          git config --global user.email zhaocheng990105@gmail.com
+          git config --global user.name 
+          git config --global user.email 
+
+
           echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
           sed -i "s/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g" README.md
           echo "更新MD文档URL"
-          sed -i "s|releases/tag/${{ steps.prepare.outputs.github_version }}|github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}|g" README.md
+          sed -i "s|releases/tag/${{ steps.prepare.outputs.github_version }}|releases/tag/${{ steps.prepare.outputs.tag_version }}|g" README.md
           echo "更新文档中java运行"
           sed -i "s/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g" README.md
           git add README.md
-          git commit -m "${{ steps.prepare.outputs.tag_version }} update" -a
+          git commit -m "${{ steps.prepare.outputs.tag_version }} update"
 
       # 推送版本号到GitHub 
       - name: Push changes
