@@ -59,11 +59,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.6.5
+# 版本2.7.0.0
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.5 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.0 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.6.5 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.0 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -353,6 +353,15 @@ $ java -jar BiliBili_Danmuji-2.0beta.jar
 # 版本详细<br/>
 
 <blockquote>
+<blockquote>
+<h2>Beta2.7.0.0</h2>
+<p>小改弹幕姬控制面板ui</p>
+<p>添加mac系统打开和unix系系统弹幕姬启动打开浏览器控制面板</p>
+<p>自动回复新增屏蔽自己的选项</p>  
+<p>稍微调整一下弹幕姬的自动回复姬自动保存逻辑</p>  
+<p>修改扫码登录接口为破站最新</p>  
+<p>修复部分已知bug</p>
+</blockquote>
       <blockquote>
 <h2>Beta2.6.5</h2>
 <p>未登录带*号问题待解决</p>
