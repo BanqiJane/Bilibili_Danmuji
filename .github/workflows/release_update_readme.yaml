@@ -1,5 +1,5 @@
 # 利用GitHub Action自动构建多框架的docker镜像
-name: release_test
+name: release_update_readme
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
 
 
 jobs:
-  release_test:
+  release_update_readme:
     # 运行在Ubuntu系统上
     runs-on: ubuntu-latest
     # 步骤
@@ -153,7 +153,7 @@ jobs:
           echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
           sed -i 's/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新MD文档URL"
-          sed -i 's/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}/g' README.md
+          sed -i 's/github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新文档中java运行"
           sed -i 's/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g' README.md
           git add README.md
