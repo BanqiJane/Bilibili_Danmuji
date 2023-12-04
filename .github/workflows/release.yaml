@@ -50,7 +50,7 @@ jobs:
           echo "TAG=弹幕姬发行版${TAG_VERSION}(含绿色版本)" >> $GITHUB_OUTPUT
 
           echo ${FILE_NAME}
-          echo ${TAG}
+          echo ${TAG_VERSION}
 
       # 初始化 JDK8 环境
       - name: Set up JDK 8
