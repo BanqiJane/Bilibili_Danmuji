@@ -149,14 +149,14 @@ jobs:
         run: |
           git config --global user.name zhaocheng
           git config --global user.email zhaocheng990105@gmail.com
-          git add currentVersion
           echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
           sed -i 's/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新MD文档URL"
           sed -i 's/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/${{ steps.prepare.outputs.github_version }}/https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.0${{ steps.prepare.outputs.tag_version }}/g' README.md
           echo "更新文档中java运行"
           sed -i 's/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g' README.md
-          git commit -m "当前版本是:${{ steps.prepare.outputs.tag_version }}" -a
+          git add README.md
+          git commit -m "${{ steps.prepare.outputs.tag_version }} update" -a
       
       # 推送版本号到GitHub 
       - name: Push changes
