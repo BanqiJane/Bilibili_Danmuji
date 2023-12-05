@@ -1,5 +1,5 @@
 # 利用GitHub Action自动构建多框架的docker镜像
-name: release
+name: release_update_readme
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
 
 
 jobs:
-  release:
+  release_update_readme:
     # 运行在Ubuntu系统上
     runs-on: ubuntu-latest
     # 步骤
@@ -36,6 +36,9 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
+          GITHUB_VERSION=$(curl -sX GET "https://api.github.com/repos/BanqiJane/Bilibili_Danmuji/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
+          echo "github_version=${GITHUB_VERSION}" >> $GITHUB_OUTPUT
+          
           sed -n 7p build.gradle > version
           awk '{printf("%s",$0)}' version | sed 's/\ //g' $1 > new
           sed -i "s/'//g" new
@@ -49,6 +52,7 @@ jobs:
 
           echo "TAG=弹幕姬发行版${TAG_VERSION}(含绿色版本)" >> $GITHUB_OUTPUT
 
+          echo ${GITHUB_VERSION}
           echo ${FILE_NAME}
           echo ${TAG_VERSION}
 
@@ -140,3 +144,28 @@ jobs:
           tag_name: ${{ steps.prepare.outputs.tag_version }}
           token: ${{ secrets.GITHUB_TOKEN }}
           files: danmuji.tar,danmuji-green.rar,danmuji-green.zip,danmuji.rar,danmuji.zip
+
+      # 初始化版本号与git 
+      - name: commit
+        run: |
+          git config --global user.name 
+          git config --global user.email 
+
+
+          echo "更新MD文档 版本${{ steps.prepare.outputs.github_version }} 替换成 版本${{ steps.prepare.outputs.tag_version }}"
+          sed -i "s/版本${{ steps.prepare.outputs.github_version }}/版本${{ steps.prepare.outputs.tag_version }}/g" README.md
+
+          echo "更新MD文档URL"
+          sed -i "s|releases/tag/${{ steps.prepare.outputs.github_version }}|releases/tag/${{ steps.prepare.outputs.tag_version }}|g" README.md
+          
+          echo "更新文档中java运行"
+          sed -i "s/BiliBili_Danmuji-${{ steps.prepare.outputs.github_version }}beta/BiliBili_Danmuji-${{ steps.prepare.outputs.tag_version }}beta/g" README.md
+          
+          git add README.md
+          git commit -m "${{ steps.prepare.outputs.tag_version }} update"
+
+      # 推送版本号到GitHub 
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
