@@ -70,6 +70,10 @@
                     }else if(code==86038){
                         showMessage("二维码过期自动刷新！", "warning",2);
                         getQrImg(0)
+                    }else if(code==86101){
+                        console.log("未扫码");
+                    }else if(code==86090){
+                        console.log("已扫码,请在手机上确认登录");
                     }else{
                         showMessage("二维码请求错误！"+code, "danger",2);
                     }
