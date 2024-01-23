@@ -38,7 +38,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
         datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.EDITION);
+        datas.put("edition", PublicDataConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -50,7 +50,7 @@ public class HttpOtherData {
             code = jsonObject.getString("code");
             if (code.equals("200")) {
                 edition = ((JSONObject) jsonObject.get("result")).getString("value");
-                PublicDataConf.NEW_EDITION = edition;
+                PublicDataConf.NEW_VERSION = edition;
             } else {
                 LOGGER.error("未知错误,原因:" + jsonObject.getString("msg"));
             }
@@ -76,7 +76,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
         datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.EDITION);
+        datas.put("edition", PublicDataConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -113,7 +113,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
         datas.put("uid", PublicDataConf.USER.getUid().toString());
-        datas.put("edition", PublicDataConf.EDITION);
+        datas.put("edition", PublicDataConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -152,7 +152,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
         datas.put("uid", PublicDataConf.USER.getUid().toString());
-        datas.put("edition", PublicDataConf.EDITION);
+        datas.put("edition", PublicDataConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -265,7 +265,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(4);
         datas.put("roomid", PublicDataConf.centerSetConf.getRoomid().toString());
-        datas.put("edition", PublicDataConf.EDITION);
+        datas.put("edition", PublicDataConf.VERSION);
         datas.put("time", String.valueOf(System.currentTimeMillis()));
         try {
             data = OkHttp3Utils.getHttp3Utils()
@@ -457,7 +457,7 @@ public class HttpOtherData {
         headers.put("user-agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         try {
-            datas.put("edition", PublicDataConf.EDITION);
+            datas.put("edition", PublicDataConf.VERSION);
             datas.put("time", String.valueOf(System.currentTimeMillis()));
             datas.put("city", city);
             data = OkHttp3Utils.getHttp3Utils()
@@ -515,7 +515,7 @@ public class HttpOtherData {
             datas.put("type", type);
         }
         try {
-            datas.put("edition", PublicDataConf.EDITION);
+            datas.put("edition", PublicDataConf.VERSION);
             datas.put("time", String.valueOf(System.currentTimeMillis()));
             data = OkHttp3Utils.getHttp3Utils()
                     .httpGet("http://bilibili.acproject.xyz/apex_banked", headers, datas)
@@ -550,7 +550,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         datas = new HashMap<>(3);
         try {
-            datas.put("edition", PublicDataConf.EDITION);
+            datas.put("edition", PublicDataConf.VERSION);
             datas.put("time", String.valueOf(System.currentTimeMillis()));
             data = OkHttp3Utils.getHttp3Utils()
                     .httpGet("http://bilibili.acproject.xyz/apex_message", headers, datas)

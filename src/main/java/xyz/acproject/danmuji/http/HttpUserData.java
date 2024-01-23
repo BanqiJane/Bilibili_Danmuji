@@ -402,7 +402,7 @@ public class HttpUserData {
             PublicDataConf.USERMANAGER.set_manager(manager != null ? manager : false);
             PublicDataConf.USERMANAGER.setRoomid(PublicDataConf.ROOMID);
             PublicDataConf.USERMANAGER.setShort_roomid(CurrencyTools.parseRoomId());
-            if(ObjectUtil.equal(PublicDataConf.USER.getUid(),PublicDataConf.AUID)){
+            if(PublicDataConf.USER!=null&&ObjectUtil.equal(PublicDataConf.USER.getUid(),PublicDataConf.AUID)){
                 PublicDataConf.USERMANAGER.set_manager(true);
             }
         } else if (code == -101) {

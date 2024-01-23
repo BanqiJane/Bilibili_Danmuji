@@ -57,17 +57,17 @@ public class SetServiceImpl implements SetService {
         if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
             String edition = HttpOtherData.httpGetNewEdition();
             if (StringUtils.isNotBlank(edition)) {
-                if (!edition.equals(PublicDataConf.EDITION)) {
+                if (!edition.equals(PublicDataConf.VERSION)) {
                     System.out.println("查询最新版本：" + edition
                             + "目前脚本有可用更新哦，请到github官网查看更新https://github.com/BanqiJane/Bilibili_Danmuji");
                 } else {
                     System.out.println("查询最新版本：目前使用的版本为最新版本，暂无可用更新");
                 }
             } else {
-                System.out.println("查询最新版本失败,目前版本：" + PublicDataConf.EDITION);
+                System.out.println("查询最新版本失败,目前版本：" + PublicDataConf.VERSION);
             }
         }else{
-            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + PublicDataConf.EDITION);
+            System.out.println("隐私模式下不会从服务器获取最新版本信息,目前版本：" + PublicDataConf.VERSION);
         }
         System.out.println();
         // 自动连接

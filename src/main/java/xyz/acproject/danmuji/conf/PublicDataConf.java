@@ -1,5 +1,7 @@
 package xyz.acproject.danmuji.conf;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import xyz.acproject.danmuji.client.WebSocketProxy;
 import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.danmu_data.Gift;
@@ -31,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
  */
+@Configuration
 public class PublicDataConf {
 	//url 直播弹幕websocket地址
 	public static String URL = "wss://broadcastlv.chat.bilibili.com:2245/sub";
@@ -150,9 +153,10 @@ public class PublicDataConf {
 	public static String SMALLHEART_ADRESS = null;
 	public static boolean is_sign= false;
 
-	public final static String EDITION ="2.7.0.0";
+	public static String VERSION ="";
 
-	public static String NEW_EDITION ="2.7.0.0";
+	public static String NEW_VERSION ="";
+
 	public static String ANNOUNCE = null;
 
 	public final static String PROFILE_NAME = "DanmujiProfile";
@@ -225,5 +229,14 @@ public class PublicDataConf {
 		PublicDataConf.SHORTROOMID = null;
 		PublicDataConf.lIVE_STATUS = 0;
 		PublicDataConf.ROOM_POPULARITY = 1L;
+	}
+
+	@Value("${danmuji.version}")
+	public void setVERSION(String VERSION) {
+		PublicDataConf.VERSION = VERSION;
+	}
+	@Value("${danmuji.version}")
+	public void setNewVersion(String newVersion) {
+		PublicDataConf.NEW_VERSION = newVersion;
 	}
 }

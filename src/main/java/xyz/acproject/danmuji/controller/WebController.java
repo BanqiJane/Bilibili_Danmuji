@@ -68,8 +68,8 @@ public class WebController {
         }
         model.addAttribute("ANAME", PublicDataConf.ANCHOR_NAME);
         model.addAttribute("AUID", PublicDataConf.AUID);
-        model.addAttribute("EDITION", PublicDataConf.EDITION);
-        model.addAttribute("NEW_EDITION", PublicDataConf.NEW_EDITION);
+        model.addAttribute("EDITION", PublicDataConf.VERSION);
+        model.addAttribute("NEW_EDITION", PublicDataConf.NEW_VERSION);
         model.addAttribute("ROOMID", PublicDataConf.ROOMID);
         model.addAttribute("HROOMID", PublicDataConf.centerSetConf.getRoomid());
         model.addAttribute("POPU", PublicDataConf.ROOM_POPULARITY);
@@ -239,7 +239,7 @@ public class WebController {
         try {
             CenterSetConf centerSetConf = JSONObject.parseObject(set, CenterSetConf.class);
             //配置不一样 刷新页面
-            if(!StringUtils.equals(centerSetConf.getEdition(),PublicDataConf.EDITION))return Response.success(2,req);
+            if(!StringUtils.equals(centerSetConf.getEdition(),PublicDataConf.VERSION))return Response.success(2,req);
             //登录设置
             if (centerSetConf.is_manager_login() && StringUtils.isNotBlank(centerSetConf.getManager_key())) {
                 centerSetConf.setManager_key(DigestUtils.md5DigestAsHex(centerSetConf.getManager_key().getBytes()));
@@ -375,7 +375,7 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/checkupdate")
     public Response<?> checkUpdate(HttpServletRequest req) {
-        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.VERSION :HttpOtherData.httpGetNewEdition();
         EditionResult editionResult = new EditionResult();
         editionResult.setEdition(edition);
         if (StringUtils.isNotBlank(edition)) {
@@ -384,7 +384,7 @@ public class WebController {
                 return Response.success(editionResult, req);
             } else {
                 PublicDataConf.INIT_CHECK_EDITION=true;
-                if (!edition.equals(PublicDataConf.EDITION)) {
+                if (!edition.equals(PublicDataConf.VERSION)) {
                     editionResult.setStatus(0);
                     return Response.success(editionResult, req);
                 } else {
@@ -401,12 +401,12 @@ public class WebController {
     @ResponseBody
     @GetMapping(value = "/getNewEdition")
     public Response<?> getNewEdition(HttpServletRequest req) {
-        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.EDITION:HttpOtherData.httpGetNewEdition();
+        String edition = PublicDataConf.centerSetConf.getPrivacy().is_open()?PublicDataConf.VERSION :HttpOtherData.httpGetNewEdition();
         if (StringUtils.isNotBlank(edition)) {
             if (edition.equals("获取公告失败")) {
                 return Response.success(-1, req);
             } else {
-                if (!edition.equals(PublicDataConf.EDITION)) {
+                if (!edition.equals(PublicDataConf.VERSION)) {
                     return Response.success(edition, req);
                 } else {
                     return Response.success(-1, req);
