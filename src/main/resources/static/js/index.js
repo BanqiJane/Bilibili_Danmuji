@@ -744,7 +744,7 @@ const method = {
         set.is_welcome_ye = $(".is_welcome").is(':checked');
         set.is_welcome_all = $(".is_welcome_all").is(':checked');
         set.is_follow_dm = $(".is_follow").is(':checked');
-        set.is_log = $(".is_log").is(':checked');
+        set.log = $(".is_log").is(':checked');
         set.is_online = $(".is_online").is(':checked');
         /* 管理登录 */
         set.is_manager_login = $(".is_manager_login").is(':checked');
@@ -1047,7 +1047,7 @@ const method = {
             $(".is_welcome").prop('checked', set.is_welcome_ye);
             $(".is_welcome_all").prop('checked', set.is_welcome_all);
             $(".is_follow").prop('checked', set.is_follow_dm);
-            $(".is_log").prop('checked', set.is_log);
+            $(".is_log").prop('checked', set.log);
             /* 登录暗号                                      */
             $(".is_manager_login").prop('checked', set.is_manager_login);
             $(".manager_maxSize").val(set.manager_maxSize);
