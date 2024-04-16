@@ -63,28 +63,28 @@ public class ParseMessageThread extends Thread {
     public void run() {
         // TODO 自动生成的方法存根
         super.run();
-        try {
-            JSONObject jsonObject = null;
-            JSONArray array = null;
-            Barrage barrage = null;
-            Gift gift = null;
-            Interact interact = null;
+        JSONObject jsonObject = null;
+        JSONArray array = null;
+        Barrage barrage = null;
+        Gift gift = null;
+        Interact interact = null;
 //		Fans fans = null;
 //		Rannk rannk = null;
-            Guard guard = null;
-            SuperChat superChat = null;
-            BlockMessage blockMessage = null;
-            WelcomeGuard welcomeGuard = null;
-            WelcomeVip welcomeVip = null;
-            RedPackage redPackage = null;
+        Guard guard = null;
+        SuperChat superChat = null;
+        BlockMessage blockMessage = null;
+        WelcomeGuard welcomeGuard = null;
+        WelcomeVip welcomeVip = null;
+        RedPackage redPackage = null;
 //		GiftFile giftFile = null;
-            String message = "";
-            String cmd = "";
-            short msg_type = 0;
-            //high_level danmu
-            Hbarrage hbarrage = null;
-            StringBuilder stringBuilder = new StringBuilder(200);
-            while (!FLAG) {
+        String message = "";
+        String cmd = "";
+        short msg_type = 0;
+        //high_level danmu
+        Hbarrage hbarrage = null;
+        StringBuilder stringBuilder = new StringBuilder(200);
+        while (!FLAG) {
+            try {
                 if (FLAG) {
                     LOGGER.info("数据解析线程手动中止");
                     return;
@@ -125,29 +125,37 @@ public class ParseMessageThread extends Thread {
                         // 弹幕
                         case "DANMU_MSG":
                             array = jsonObject.getJSONArray("info");
-                            barrage = Barrage.getBarrage(((JSONArray) array.get(2)).getLong(0),
-                                    ((JSONArray) array.get(2)).getString(1), array.getString(1),
-                                    ((JSONArray) array.get(0)).getShort(9), ((JSONArray) array.get(0)).getShort(12),
-                                    ((JSONArray) array.get(0)).getLong(4),
-                                    ((JSONArray) array.get(2)).getShort(2), ((JSONArray) array.get(2)).getShort(3),
-                                    ((JSONArray) array.get(2)).getShort(4), ((JSONArray) array.get(2)).getInteger(5),
-                                    ((JSONArray) array.get(2)).getShort(6),
-                                    ((JSONArray) array.get(3)).size() <= 0 ? 0 : ((JSONArray) array.get(3)).getShort(0),
-                                    ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(1),
-                                    ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(2),
-                                    ((JSONArray) array.get(3)).size() <= 0 ? 0L : ((JSONArray) array.get(3)).getLong(3),
-                                    ((JSONArray) array.get(4)).getShort(0), ((JSONArray) array.get(4)).getString(3),
-                                    ((JSONArray) array.get(5)).getString(0), ((JSONArray) array.get(5)).getString(1),
-                                    array.getShort(7),
-                                    JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("emoticon_unique"),
-                                    JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("url"));
+                            try {
+                                barrage = Barrage.getBarrage(((JSONArray) array.get(2)).getLong(0),
+                                        ((JSONArray) array.get(2)).getString(1), array.getString(1),
+                                        ((JSONArray) array.get(0)).getShort(9), ((JSONArray) array.get(0)).getShort(12),
+                                        ((JSONArray) array.get(0)).getLong(4),
+                                        ((JSONArray) array.get(2)).getShort(2), ((JSONArray) array.get(2)).getShort(3),
+                                        ((JSONArray) array.get(2)).getShort(4), ((JSONArray) array.get(2)).getInteger(5),
+                                        ((JSONArray) array.get(2)).getShort(6),
+                                        ((JSONArray) array.get(3)).size() <= 0 ? 0 : ((JSONArray) array.get(3)).getShort(0),
+                                        ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(1),
+                                        ((JSONArray) array.get(3)).size() <= 0 ? "" : ((JSONArray) array.get(3)).getString(2),
+                                        ((JSONArray) array.get(3)).size() <= 0 ? 0L : ((JSONArray) array.get(3)).getLong(3),
+                                        ((JSONArray) array.get(4)).getShort(0), ((JSONArray) array.get(4)).getString(3),
+                                        ((JSONArray) array.get(5)).getString(0), ((JSONArray) array.get(5)).getString(1),
+                                        array.getShort(7),
+                                        JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("emoticon_unique"),
+                                        JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("url"));
+                            } catch (Exception e) {
+                                // TODO: handle exception
+                                LOGGER.error("弹幕体解析抛出解析异常体:{}" ,array);
+                                e.printStackTrace();
+                                break;
+                            }
+                            LOGGER.error("弹幕体解析体:{}", array);
                             //是否开启弹幕
                             boolean is_barrage = getCenterSetConf().is_barrage();
                             // 勋章弹幕
                             boolean is_xunzhang = true;
                             //是不是表情弹幕
                             boolean is_emoticon = barrage.getMsg_emoticon() != null && barrage.getMsg_emoticon() == 1;
-                            if (getCenterSetConf().is_barrage_anchor_shield()&& PublicDataConf.ROOMID!=null) {
+                            if (getCenterSetConf().is_barrage_anchor_shield() && PublicDataConf.ROOMID != null) {
                                 // 房管
                                 if (barrage.getMedal_room() != (long) PublicDataConf.ROOMID) is_xunzhang = false;
                             }
@@ -717,13 +725,13 @@ public class ParseMessageThread extends Thread {
                             if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
                                 try {
                                     //屏蔽礼物
-                                    if(PublicDataConf.centerSetConf.getThank_gift().hasTxShield()
-                                            ||PublicDataConf.centerSetConf.getWelcome().hasTxShield()
-                                            ||PublicDataConf.centerSetConf.getFollow().hasTxShield()) {
+                                    if (PublicDataConf.centerSetConf.getThank_gift().hasTxShield()
+                                            || PublicDataConf.centerSetConf.getWelcome().hasTxShield()
+                                            || PublicDataConf.centerSetConf.getFollow().hasTxShield()) {
                                         //检查天选
                                         String giftName = ((JSONObject) jsonObject.get("data")).getString("award_name");
                                         int time = ((JSONObject) jsonObject.get("data")).getInteger("time");
-                                        CurrencyTools.handleLotteryInfoWebByTx(PublicDataConf.ROOMID,giftName,time);
+                                        CurrencyTools.handleLotteryInfoWebByTx(PublicDataConf.ROOMID, giftName, time);
                                     }
 //                                    if (getCenterSetConf().getThank_gift().is_tx_shield()) {
 //                                        if (PublicDataConf.parsethankGiftThread != null
@@ -1076,17 +1084,17 @@ public class ParseMessageThread extends Thread {
                                 //天选屏蔽&&红包屏蔽
                                 if (!getCenterSetConf().getFollow()
                                         .boolTxAndRdShield(
-                                                CacheConf.existTx(PublicDataConf.ROOMID),CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
-                                        msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                                        if (msg_type == 2) {
-                                            interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-                                            try {
-                                                parseFollowSetting(interact);
-                                            } catch (Exception e) {
-                                                // TODO 自动生成的 catch 块
-                                                e.printStackTrace();
-                                            }
+                                                CacheConf.existTx(PublicDataConf.ROOMID), CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                    if (msg_type == 2) {
+                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                        try {
+                                            parseFollowSetting(interact);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
                                         }
+                                    }
                                 }
                             }
                             //欢迎进入直播间
@@ -1109,7 +1117,7 @@ public class ParseMessageThread extends Thread {
                                     }
                                     //前端显示
                                     try {
-                                        danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short)0, interact));
+                                        danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short) 0, interact));
                                     } catch (Exception e) {
                                         // TODO 自动生成的 catch 块
                                         e.printStackTrace();
@@ -1122,17 +1130,17 @@ public class ParseMessageThread extends Thread {
                                 //天选屏蔽&&红包屏蔽
                                 if (!getCenterSetConf().getWelcome()
                                         .boolTxAndRdShield(
-                                                CacheConf.existTx(PublicDataConf.ROOMID),CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
-                                        msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                                        if (msg_type == 1) {
-                                            interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
-                                            try {
-                                                parseWelcomeSetting(interact);
-                                            } catch (Exception e) {
-                                                // TODO 自动生成的 catch 块
-                                                e.printStackTrace();
-                                            }
+                                                CacheConf.existTx(PublicDataConf.ROOMID), CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                    msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+                                    if (msg_type == 1) {
+                                        interact = JSONObject.parseObject(jsonObject.getString("data"), Interact.class);
+                                        try {
+                                            parseWelcomeSetting(interact);
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
                                         }
+                                    }
                                 }
                             }
 
@@ -1294,9 +1302,9 @@ public class ParseMessageThread extends Thread {
 //                                "num":2},{"gift_id":31214,"gift_name":"牛哇","gift_pic":"https://s1.hdslb.com/bfs/live/91ac8e35dd93a7196325f1e2052356e71d135afb.png","num":3},{"gift_id":31216,
 //                                "gift_name":"小花花","gift_pic":"https://s1.hdslb.com/bfs/live/5126973892625f3a43a8290be6b625b5e54261a5.png","num":3}],"lot_config_id":3,"total_price":1600,"wait_num":7}}
 //                        LOGGER.info("红包详细信息推送:::" + message);
-                            if((PublicDataConf.centerSetConf.getThank_gift().hasRdShield())
-                                    ||(PublicDataConf.centerSetConf.getWelcome().hasRdShield())
-                                    ||(PublicDataConf.centerSetConf.getFollow().hasRdShield())) {
+                            if ((PublicDataConf.centerSetConf.getThank_gift().hasRdShield())
+                                    || (PublicDataConf.centerSetConf.getWelcome().hasRdShield())
+                                    || (PublicDataConf.centerSetConf.getFollow().hasRdShield())) {
                                 LotteryInfoWeb.PopularityRedPocket popularityRedPocket = jsonObject.getJSONObject("data").toJavaObject(LotteryInfoWeb.PopularityRedPocket.class);
                                 LotteryInfoWeb lotteryInfoWeb = new LotteryInfoWeb();
                                 lotteryInfoWeb.setPopularity_red_pocket(Arrays.asList(popularityRedPocket));
@@ -1376,12 +1384,11 @@ public class ParseMessageThread extends Thread {
                         }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error(e.getMessage());
         }
-
     }
 
     //获取发送礼物code
@@ -1395,7 +1402,7 @@ public class ParseMessageThread extends Thread {
     public boolean parseAutoReplySetting(Barrage barrage) {
         //判断是否开启自己
         if (!getCenterSetConf().getReply().is_open_self()) {
-            if(PublicDataConf.USER.getUid().equals(barrage.getUid())){
+            if (PublicDataConf.USER.getUid().equals(barrage.getUid())) {
                 return false;
             }
         }
@@ -1420,7 +1427,7 @@ public class ParseMessageThread extends Thread {
                 }
                 break;
             case GUARD:
-                if (barrage.getUguard()!=null&&barrage.getUguard() <= 0) {
+                if (barrage.getUguard() != null && barrage.getUguard() <= 0) {
                     //     LOGGER.info("自动回复姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(barrage.getUguard()));
                     return false;
                 }
@@ -1467,7 +1474,7 @@ public class ParseMessageThread extends Thread {
     public synchronized void parseGiftSetting(Gift gift) throws Exception {
         //屏蔽自己
         if (!getCenterSetConf().getThank_gift().is_open_self()) {
-            if(PublicDataConf.USER.getUid().equals(gift.getUid())){
+            if (PublicDataConf.USER.getUid().equals(gift.getUid())) {
                 return;
             }
         }
@@ -1476,26 +1483,26 @@ public class ParseMessageThread extends Thread {
 //            if (gift.getGiftName().equals(PublicDataConf.SHIELDGIFTNAME)) {
 //                gift = null;
 //            }
-       if (getCenterSetConf().getThank_gift().boolTxShield(CacheConf.existTx(PublicDataConf.ROOMID))) {
+        if (getCenterSetConf().getThank_gift().boolTxShield(CacheConf.existTx(PublicDataConf.ROOMID))) {
             if (StringUtils.equals(gift.getGiftName(), CacheConf.getTx(PublicDataConf.ROOMID))) {
                 gift = null;
             }
         }
-            //礼物屏蔽过滤
+        //礼物屏蔽过滤
         if (blackParseComponent.gift_parse(gift)) {
-           if (ParseSetStatusTools.getGiftShieldStatus(
-           getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
-                     gift = ShieldGiftTools.shieldGift(gift,
-                            ParseSetStatusTools.getListGiftShieldStatus(
-                            getCenterSetConf().getThank_gift().getList_gift_shield_status()),
-                    ParseSetStatusTools.getListPeopleShieldStatus(
-                            getCenterSetConf().getThank_gift().getList_people_shield_status()),
-                    ParseSetStatusTools
-                            .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
-                    getCenterSetConf().getThank_gift().getGiftStrings(), null);
-           }
+            if (ParseSetStatusTools.getGiftShieldStatus(
+                    getCenterSetConf().getThank_gift().getShield_status()) != ShieldGift.CUSTOM_RULE) {
+                gift = ShieldGiftTools.shieldGift(gift,
+                        ParseSetStatusTools.getListGiftShieldStatus(
+                                getCenterSetConf().getThank_gift().getList_gift_shield_status()),
+                        ParseSetStatusTools.getListPeopleShieldStatus(
+                                getCenterSetConf().getThank_gift().getList_people_shield_status()),
+                        ParseSetStatusTools
+                                .getGiftShieldStatus(getCenterSetConf().getThank_gift().getShield_status()),
+                        getCenterSetConf().getThank_gift().getGiftStrings(), null);
+            }
         } else {
-           gift = null;
+            gift = null;
         }
         Vector<Gift> gifts = null;
         if (gift != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
