@@ -231,7 +231,7 @@ public class ParseThankGiftThread extends Thread {
 		StringBuilder stringBuilderName = new StringBuilder(150);
 		StringBuilder stringBuilderGifts = new StringBuilder(200);
 		for (Iterator<Entry<String, Vector<Gift>>> iterator = hashMap.entrySet().iterator(); iterator.hasNext();) {
-			Map.Entry<String, Vector<Gift>> entryMap = iterator.next();
+			Entry<String, Vector<Gift>> entryMap = iterator.next();
 			stringBuilderName.append(entryMap.getKey()).append(",");
 			for (Gift gift : entryMap.getValue()) {
 				if (is_num()) {

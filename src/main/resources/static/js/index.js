@@ -367,6 +367,7 @@ $(document)
 
         });
 $(document).on('click', '.reply_delete', function () {
+
     $(this).parent().parent().remove();
     if ($(".auto_save_set").is(':checked')) {
         method.saveSet();
@@ -753,6 +754,7 @@ const method = {
         set.manager_key = $(".manager_key").val();
         /* 管理结束*/
         set.is_sh = $(".is_sh").is(':checked');
+        set.test_mode = $(".is_test_mode").is(':checked');
         set.is_dosign = $(".is_dosign").is(':checked');
         set.sign_time = method.time_parse($(".sign_time").val());
         set.thank_gift.is_open = $(".thankgift_is_open").is(':checked');
@@ -830,6 +832,7 @@ const method = {
         set.follow.follows = $(".follow_follows").val();
         set.follow.delaytime = Number($(".thankfollow_delaytime").val());
         set.welcome.is_open = $(".welcome_is_open").is(':checked');
+        set.welcome.is_open_self = $(".welcome_is_open_self").is(':checked');
         set.welcome.is_live_open = $(".welcome_is_live_open").is(':checked');
         set.welcome.is_tx_shield = $(".welcome_tx_shield").is(':checked');
         set.welcome.is_rd_shield = $(".welcome_rd_shield").is(':checked');
@@ -1048,6 +1051,7 @@ const method = {
             $(".is_welcome_all").prop('checked', set.is_welcome_all);
             $(".is_follow").prop('checked', set.is_follow_dm);
             $(".is_log").prop('checked', set.log);
+            $(".is_test_mode").prop('checked', set.test_mode);
             /* 登录暗号                                      */
             $(".is_manager_login").prop('checked', set.is_manager_login);
             $(".manager_maxSize").val(set.manager_maxSize);
@@ -1104,6 +1108,7 @@ const method = {
             $(".follow_follows").val(set.follow.follows);
             $(".thankfollow_delaytime").val(set.follow.delaytime);
             $(".welcome_is_open").prop('checked', set.welcome.is_open);
+            $(".welcome_is_open_self").prop('checked', set.welcome.is_open_self);
             $(".welcome_is_live_open").prop('checked', set.welcome.is_live_open);
             $(".welcome_tx_shield").prop('checked', set.welcome.is_tx_shield);
             $(".welcome_rd_shield").prop('checked', set.welcome.is_rd_shield);
@@ -1278,6 +1283,7 @@ const method = {
                 $(".thankfollow_delaytime").attr("disabled", true);
                 $(".welcome_is_open").attr("disabled", true);
                 $(".welcome_is_live_open").attr("disabled", true);
+                $(".welcome_is_open_self").attr("disabled", true);
                 $(".welcome_num").attr("disabled", true);
                 $(".welcome_welcomes").attr("disabled", true);
                 $(".welcome_tx_shield").attr("disabled", true);

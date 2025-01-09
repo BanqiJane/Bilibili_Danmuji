@@ -175,12 +175,6 @@ public class PublicDataConf {
 	public static Map<Integer,AutoSendGift> autoSendGiftMap = null;
 
 
-
-	//测试模式
-	public static boolean TEST_MODE = false;
-
-
-
 	//方法区
 
 	public static void init_user(){

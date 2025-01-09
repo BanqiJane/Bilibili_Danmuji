@@ -43,7 +43,7 @@ public class SendBarrageThread extends Thread {
                     for (int i = 0; i < num; i++) {
                         try {
                             String barrageStr_split = StringUtils.substring(barrageStr, i * maxLength, strLength > maxLength * (i + 1) ? maxLength * (i + 1) : strLength);
-                            if (!PublicDataConf.TEST_MODE) {
+                            if (!PublicDataConf.centerSetConf.isTest_mode()) {
                                 if (HttpUserData.httpPostSendBarrage(barrageStr_split) != 0) {
                                     break;
                                 }
@@ -58,7 +58,7 @@ public class SendBarrageThread extends Thread {
                     }
                 } else {
 
-                    if (!PublicDataConf.TEST_MODE) {
+                    if (!PublicDataConf.centerSetConf.isTest_mode()) {
                         try {
                             // TODO 自动生成的方法存根
                             HttpUserData.httpPostSendBarrage(barrageStr);

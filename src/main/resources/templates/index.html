@@ -798,6 +798,15 @@
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-check-label"> <input
+                                                class="form-check-input welcome_is_open_self live-save"
+                                                type="checkbox">
+                                            <span class="_description" data-bs-html="true"
+                                                  data-bs-placement="top" data-bs-toggle="tooltip"
+                                                  title="是否识别来着自己的欢迎（默认不识别来着自己的欢迎）">自己</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label class="form-check-label"> <input
                                                 class="form-check-input welcome_tx_shield live-save" type="checkbox">
                                             <span class="_description" data-bs-placement="top"
                                                   data-bs-toggle="tooltip"
@@ -1172,6 +1181,25 @@
                             </div>
                         </div>
                         <!-- 实验性设置结束 -->
+                        <!-- 开发人员设置开始 -->
+                        <a data-bs-toggle="collapse" data-target="#testmode-set"
+                           href="#testmode-set"><div class="input-group mb-1">
+                            <h5>开发人员设置</h5>
+                        </div></a>
+                        <div class="input-group mb-3 testmode-set collapse" id="testmode-set">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <label class="form-check-label"> <input class="form-check-input is_test_mode live-save"
+                                                                            type="checkbox">
+                                        <span
+                                                class="_description" data-bs-html="true"
+                                                data-bs-placement="top" data-bs-toggle="tooltip"
+                                                title="是否打开调试，弹幕将不会发送仅在控制台打印">调试</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 开发人员设置结束 -->
                         <!-- 底部按钮开始 -->
 <!--                        <div class="input-group mb-3 set-control">
                             <div class="col-auto">

@@ -126,6 +126,8 @@ public class ParseMessageThread extends Thread {
                         case "DANMU_MSG":
                             array = jsonObject.getJSONArray("info");
                             try {
+                                //[[0,7,100,16777215,1712992079355,0,0,"f4dbdf21",0,null,null,null,0,"{}","{}",{"mode":0,"extra":"{\"mode\":0,\"send_from_me\":false,\"color\":16777215,\"dm_type\":0,\"font_size\":100,\"player_mode\":7,\"content\":\"[1.0,0.0,\\\"0.8-0.5\\\",10.0,\\\"我\\\",0.0,0.0,0.0,0.0,10000,0,true,\\\"黑体\\\",1]\"}","show_player_type":0},null,null],"[1.0,0.0,\"0.8-0.5\",10.0,\"我\",0.0,0.0,0.0,0.0,10000,0,true,\"黑体\",1]",[0,"***",1,0,0,10000,1,""],null,[],[],0,0,null,{"ct":"B44D80B0","ts":1712992079},0,0,null,null,0,0,[0]]
+                                //[[0, 1, 25, 16777215, 1715735563613, 976713860, 0, 6e0a38fd, 0, 0, 0, , 0, {}, {}, {mode=0, extra={"send_from_me":false,"mode":0,"color":16777215,"dm_type":0,"font_size":25,"player_mode":1,"show_player_type":0,"content":"好看嘟","user_hash":"1846163709","emoticon_unique":"","bulge_display":0,"recommend_score":4,"main_state_dm_color":"","objective_state_dm_color":"","direction":0,"pk_direction":0,"quartet_direction":0,"anniversary_crowd":0,"yeah_space_type":"","yeah_space_url":"","jump_to_url":"","space_type":"","space_url":"","animation":{},"emots":null,"is_audited":false,"id_str":"5a78879192fe8d0b0b566fa89466440c1","icon":null,"show_reply":true,"reply_mid":0,"reply_uname":"","reply_uname_color":"","reply_is_mystery":false,"hit_combo":0}, show_player_type=0, user={wealth=null, uid=103031126, guard=null, medal=null, uhead_frame=null, guard_leader={is_guard_leader=false}, title={old_title_css_id=, title_css_id=}, base={origin_info={face=https://i2.hdslb.com/bfs/face/33dbd8d6e36f0ab184ef1adde4c4f618d0a1dedb.jpg, name=Qm-小柴}, risk_ctrl_info=null, face=https://i2.hdslb.com/bfs/face/33dbd8d6e36f0ab184ef1adde4c4f618d0a1dedb.jpg, is_mystery=false, name=Qm-小柴, name_color_str=, name_color=0, official_info={role=0, title=, type=-1, desc=}}}}, {activity_source=0, activity_identity=, not_show=0}, 0], 好看嘟, [103031126, Qm-小柴, 1, 0, 0, 10000, 1, ], [], [4, 0, 9868950, >50000, 0], [, ], 0, 0, null, {ct=ABE155CD, ts=1715735563}, 0, 0, null, null, 0, 364, [11], null]
                                 barrage = Barrage.getBarrage(((JSONArray) array.get(2)).getLong(0),
                                         ((JSONArray) array.get(2)).getString(1), array.getString(1),
                                         ((JSONArray) array.get(0)).getShort(9), ((JSONArray) array.get(0)).getShort(12),
@@ -144,11 +146,10 @@ public class ParseMessageThread extends Thread {
                                         JSONObject.parseObject(((JSONArray) array.get(0)).getString(13)).getString("url"));
                             } catch (Exception e) {
                                 // TODO: handle exception
-                                LOGGER.error("弹幕体解析抛出解析异常体:{}" ,array);
+                                LOGGER.error("弹幕体解析抛出解析异常体:{}" ,message);
                                 e.printStackTrace();
                                 break;
                             }
-                            LOGGER.error("弹幕体解析体:{}", array);
                             //是否开启弹幕
                             boolean is_barrage = getCenterSetConf().is_barrage();
                             // 勋章弹幕
@@ -424,7 +425,7 @@ public class ParseMessageThread extends Thread {
                                     report = StringUtils.replace(report, "%giftCode%", "");
                                 }
                                 try {
-                                    if (!PublicDataConf.TEST_MODE) {
+                                    if (!PublicDataConf.centerSetConf.isTest_mode()) {
                                         if (StringUtils.isNotBlank(getCenterSetConf().getThank_gift().getReport_barrage().trim())) {
                                             if (HttpUserData.httpPostSendMsg(guard.getUid(), report) == 0) {
                                                 PublicDataConf.barrageString.add(getCenterSetConf().getThank_gift().getReport_barrage());
@@ -1145,10 +1146,10 @@ public class ParseMessageThread extends Thread {
                             }
 
                             //打印测试用
-                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
-                            if (msg_type != 3 && msg_type != 2 && msg_type != 1) {
-                                LOGGER.info("直播间信息:::" + message);
-                            }
+//                            msg_type = JSONObject.parseObject(jsonObject.getString("data")).getShort("msg_type");
+//                            if (msg_type != 3 && msg_type != 2 && msg_type != 1) {
+//                                LOGGER.info("直播间信息:::" + message);
+//                            }
                             break;
                         // 礼物bag bot
                         case "GIFT_BAG_DOT":
@@ -1367,6 +1368,24 @@ public class ParseMessageThread extends Thread {
                             break;
                         case "INTERACTIVE_USER":
                             //					LOGGER.info("INTERACTIVE_USER:::" + message);
+                            break;
+                        case "WIDGET_GIFT_STAR_PROCESS":
+                            //					LOGGER.info("WIDGET_GIFT_STAR_PROCESS:::" + message);
+                            break;
+                        case "LIVE_MULTI_VIEW_NEW_INFO":
+                            //					LOGGER.info("LIVE_MULTI_VIEW_NEW_INFO:::" + message);
+                            break;
+                        case "PANEL_INTERACTIVE_NOTIFY_CHANGE":
+                            //					LOGGER.info("PANEL_INTERACTIVE_NOTIFY_CHANGE:::" + message);
+                            break;
+                        case "MULTI_VOICE_OPERATIN":
+                            //					LOGGER.info("MULTI_VOICE_OPERATIN:::" + message);
+                            break;
+                        case "DM_INTERACTION":
+                            //					LOGGER.info("DM_INTERACTION:::" + message);
+                            break;
+                        case "MULTI_VOICE_PK_HAT_STATUS":
+                            //					LOGGER.info("MULTI_VOICE_PK_HAT_STATUS:::" + message);
                             break;
                         default:
 //                            LOGGER.info("其他未处理消息:" + message);
@@ -1608,6 +1627,13 @@ public class ParseMessageThread extends Thread {
         if (!blackParseComponent.interact_parse(interact)) {
             interact = null;
         }
+        //屏蔽自己
+        if (!getCenterSetConf().getWelcome().is_open_self()) {
+            if (PublicDataConf.USER.getUid().equals(interact.getUid())) {
+                interact = null;
+            }
+        }
+//        LOGGER.info("欢迎信息2：{}" ,interact);
         if (interact != null && StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             //屏蔽设定
             ListPeopleShieldStatus listPeopleShieldStatus = ParseSetStatusTools.getListPeopleShieldStatus(getCenterSetConf().getWelcome().getList_people_shield_status());

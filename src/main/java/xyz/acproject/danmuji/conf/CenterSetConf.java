@@ -140,6 +140,11 @@ public class CenterSetConf implements Serializable {
     @JSONField(name = "edition",serialize = false)
     private String edition = "";
 
+
+
+    @JSONField(name = "test_mode")
+    private boolean test_mode = false;
+
     public static CenterSetConf getInitCenterSetConf(){
         CenterSetConf centerSetConf = new CenterSetConf();
         centerSetConf.setThank_gift(new ThankGiftSetConf());

@@ -24,7 +24,9 @@ import java.io.Serializable;
 public class ThankWelcomeSetConf extends ThankLiveSetConf implements Serializable {
 
     private static final long serialVersionUID = 3606170913548896208L;
-
+    //是否开启本人
+    @JSONField(name = "is_open_self")
+    private boolean is_open_self = false;
     //人员感谢过滤 0全部 1仅勋章 2仅舰长
     @JSONField(name = "list_people_shield_status")
     private short list_people_shield_status = 0;
