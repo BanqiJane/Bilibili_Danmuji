@@ -156,6 +156,7 @@ public class PublicDataConf {
 	public static String VERSION ="";
 
 	public static String NEW_VERSION ="";
+	public static String NEW_VERSION_DOWNLOAD_URL ="";
 
 	public static String ANNOUNCE = null;
 

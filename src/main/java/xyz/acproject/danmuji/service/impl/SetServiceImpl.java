@@ -55,7 +55,7 @@ public class SetServiceImpl implements SetService {
         PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
         System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
         if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
-            String edition = HttpOtherData.httpGetNewEdition();
+            String edition = HttpOtherData.httpGetNewEditionV2ByGitHub();
             if (StringUtils.isNotBlank(edition)) {
                 if (!edition.equals(PublicDataConf.VERSION)) {
                     System.out.println("查询最新版本：" + edition
