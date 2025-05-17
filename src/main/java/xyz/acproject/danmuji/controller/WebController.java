@@ -386,6 +386,7 @@ public class WebController {
                 PublicDataConf.INIT_CHECK_EDITION=true;
                 if (!edition.equals(PublicDataConf.VERSION)) {
                     editionResult.setStatus(0);
+                    editionResult.setUrl(PublicDataConf.NEW_VERSION_DOWNLOAD_URL);
                     return Response.success(editionResult, req);
                 } else {
                     editionResult.setStatus(1);

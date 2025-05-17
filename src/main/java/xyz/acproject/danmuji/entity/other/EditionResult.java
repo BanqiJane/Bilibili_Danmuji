@@ -20,4 +20,5 @@ public class EditionResult implements Serializable {
     private static final long serialVersionUID = 7338368414549319875L;
     private int status;
     private String edition;
+    private String url;
 }

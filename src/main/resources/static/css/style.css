@@ -24,8 +24,11 @@ a.no-underline {
 
 #top-message .alert {
     margin-bottom: 0.2em;
+    width: 50%;
+    margin:0 auto;
     z-index: 99999;
 }
+
 .row .col-auto {
     padding-top: 0.2em;
     padding-bottom: 0.2em;
@@ -536,6 +539,7 @@ div#danmu .danmu-child a {
     overflow: hidden;
     cursor: pointer;
     transition: all .3s;
+    z-index: 999999;
 }
 
 .shieldgifts-wrap .t .btn-close:before {
@@ -652,6 +656,7 @@ div#danmu .danmu-child a {
     overflow: hidden;
     cursor: pointer;
     transition: all .3s;
+    z-index: 999999;
 }
 
 .replys-wrap .t .btn-closer:before {

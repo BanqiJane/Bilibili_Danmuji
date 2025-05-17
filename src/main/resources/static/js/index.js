@@ -491,7 +491,8 @@ $(document).on('click', '#checkupdate', function () {
     $.when(method.checkUpdate()).done(function (data) {
         let num = Number(data.result.status);
         if (num === 0) {
-            $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:` + data.result.edition + `</span>)更新，请前往<a href="https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/` + data.result.edition + `">github</a>获取更新`);
+            // $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:` + data.result.edition + `</span>)更新，请前往<a href="https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/` + data.result.edition + `">github</a>获取更新`);
+            $("#edition_content").html(`有新版本(最新版本<span style="color:red;">:` + data.result.edition + `</span>)更新，请前往<a href="`+data.result.url+`">github</a>获取更新`);
         } else if (num === 1) {
             $("#edition_content").html("当前为最新版本，无需更新");
         } else {
