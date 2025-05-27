@@ -1,19 +1,27 @@
 package xyz.acproject.danmuji.http;
 
+import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.room_data.*;
 import xyz.acproject.danmuji.entity.server_data.Conf;
+import xyz.acproject.danmuji.entity.user_data.UserNav;
 import xyz.acproject.danmuji.entity.view.RoomGift;
 import xyz.acproject.danmuji.tools.CurrencyTools;
+import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.OkHttp3Utils;
+import xyz.acproject.danmuji.utils.UrlUtils;
+import xyz.acproject.danmuji.utils.WbiSignUtils;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +62,49 @@ public class HttpRoomData {
 		datas.put("id", PublicDataConf.ROOMID.toString());
 		datas.put("type", "0");
 		try {
+			data = OkHttp3Utils.getHttp3Utils()
+					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo", headers, datas)
+					.body().string();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			LOGGER.error(e);
+			data = null;
+		}
+		if (data == null)
+			return null;
+		jsonObject = JSONObject.parseObject(data);
+		code = jsonObject.getShort("code");
+		if (code == 0) {
+			conf = jsonObject.getObject("data", Conf.class);
+		} else {
+			LOGGER.error("未知错误,原因:" + jsonObject.getString("message"));
+		}
+		return conf;
+	}
+
+	public static Conf httpGetConf(UserNav userNav) {
+		String data = null;
+		JSONObject jsonObject = null;
+		Conf conf = null;
+		short code = -1;
+		Map<String, String> headers = null;
+		Map<String, String> datas = null;
+		headers = new HashMap<>(3);
+		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
+		headers.put("user-agent",
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
+		Long nowTimeStamp  =JodaTimeUtils.getTimestamp();
+		datas = new HashMap<>(5);
+		datas.put("id", PublicDataConf.ROOMID.toString());
+		datas.put("type", "0");
+		datas.put("wts", nowTimeStamp.toString());
+		datas.put("web_location", "444.8");
+		String wbiSign = WbiSignUtils.getWbiSign(datas, userNav.getWbiImg().getImgUrl().substring(userNav.getWbiImg().getImgUrl().lastIndexOf('/') + 1, userNav.getWbiImg().getImgUrl().lastIndexOf('.')), userNav.getWbiImg().getSubUrl().substring(userNav.getWbiImg().getSubUrl().lastIndexOf('/') + 1, userNav.getWbiImg().getSubUrl().lastIndexOf('.')));
+		try {
+			datas.put("w_rid",wbiSign);
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo", headers, datas)
 					.body().string();

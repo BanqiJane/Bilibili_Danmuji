@@ -11,10 +11,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.acproject.danmuji.conf.PublicDataConf;
 import xyz.acproject.danmuji.entity.login_data.LoginData;
 import xyz.acproject.danmuji.entity.login_data.Qrcode;
-import xyz.acproject.danmuji.entity.user_data.User;
-import xyz.acproject.danmuji.entity.user_data.UserBag;
-import xyz.acproject.danmuji.entity.user_data.UserManager;
-import xyz.acproject.danmuji.entity.user_data.UserMedal;
+import xyz.acproject.danmuji.entity.user_data.*;
 import xyz.acproject.danmuji.entity.user_in_room_barrageMsg.UserBarrageMsg;
 import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
@@ -63,6 +60,39 @@ public class HttpUserData {
             LOGGER.error("未知错误,原因未知" + jsonObject.toString());
         }
     }
+
+
+    public static UserNav httpGetUserNav() {
+        UserNav userNav = null;
+        String data = null;
+        JSONObject jsonObject = null;
+        Map<String, String> headers = null;
+        headers = new HashMap<>(2);
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            headers.put("cookie", PublicDataConf.USERCOOKIE);
+        }
+        try {
+            data = OkHttp3Utils.getHttp3Utils().httpGet("https://api.bilibili.com/x/web-interface/nav", headers, null)
+                    .body().string();
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            data = null;
+        }
+        if (data == null)
+            return null;
+        jsonObject = JSONObject.parseObject(data);
+        short code = jsonObject.getShort("code");
+        if (code == 0) {
+            userNav = JSONObject.parseObject(jsonObject.getString("data"), UserNav.class);
+        }  else {
+            LOGGER.error("获取用户nav信息失败：" + jsonObject.toString());
+        }
+        return userNav;
+    }
+
 
     /**
      * 获取登陆二维码 旧版本 已废弃

@@ -13,6 +13,7 @@ import xyz.acproject.danmuji.entity.room_data.Room;
 import xyz.acproject.danmuji.entity.room_data.RoomInfoAnchor;
 import xyz.acproject.danmuji.entity.room_data.RoomInit;
 import xyz.acproject.danmuji.entity.server_data.Conf;
+import xyz.acproject.danmuji.entity.user_data.UserNav;
 import xyz.acproject.danmuji.http.HttpRoomData;
 import xyz.acproject.danmuji.http.HttpUserData;
 import xyz.acproject.danmuji.service.ClientService;
@@ -21,6 +22,7 @@ import xyz.acproject.danmuji.tools.CurrencyTools;
 import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.utils.ByteUtils;
 import xyz.acproject.danmuji.utils.HexUtils;
+import xyz.acproject.danmuji.utils.WbiSignUtils;
 import xyz.acproject.danmuji.ws.HandleWebsocketPackage;
 
 import java.util.Map;
@@ -57,7 +59,13 @@ public class ClientServiceImpl implements ClientService {
             // TODO: handle exception
             return;
         }
-        Conf conf = HttpRoomData.httpGetConf();
+        Conf conf = null;
+        if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+            UserNav userNav = HttpUserData.httpGetUserNav();
+            conf = HttpRoomData.httpGetConf(userNav);
+        }else{
+            conf = HttpRoomData.httpGetConf();
+        }
         if (conf == null) {
             return;
         }
@@ -198,7 +206,13 @@ public class ClientServiceImpl implements ClientService {
                 PublicDataConf.SHORTROOMID = roomInit.getShort_id();
             }
             PublicDataConf.ROOMID = roomInit.getRoom_id();
-            Conf conf = HttpRoomData.httpGetConf();
+            Conf conf = null;
+            if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+                UserNav userNav = HttpUserData.httpGetUserNav();
+                conf = HttpRoomData.httpGetConf(userNav);
+            }else{
+                conf = HttpRoomData.httpGetConf();
+            }
             if (conf == null) {
                 return;
             }
