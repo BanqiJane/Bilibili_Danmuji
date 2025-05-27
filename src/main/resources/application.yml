@@ -28,4 +28,4 @@ server:
       enabled: true
 
 danmuji:
-  version: 2.7.0.2B
+  version: 2.7.0.2
