@@ -223,9 +223,9 @@ public class HttpRoomData {
 		headers.put("user-agent",
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
 		headers.put("referer", "https://live.bilibili.com/" + CurrencyTools.parseRoomId());
-//		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
-//			headers.put("cookie", PublicDataConf.USERCOOKIE);
-//		}
+		if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+			headers.put("cookie", PublicDataConf.USERCOOKIE);
+		}
 		try {
 			data = OkHttp3Utils.getHttp3Utils()
 					.httpGet("https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id="

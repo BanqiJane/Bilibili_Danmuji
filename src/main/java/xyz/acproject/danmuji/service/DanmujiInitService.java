@@ -61,6 +61,8 @@ public class DanmujiInitService {
             PublicDataConf.USERCOOKIE = null;
         } else {
             if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
+                PublicDataConf.COOKIE = HttpUserData.httpBuvid34(new UserCookie().parse(PublicDataConf.USERCOOKIE));
+                PublicDataConf.USERCOOKIE = PublicDataConf.COOKIE.getCookie();
                 profileMap.put(PublicDataConf.PROFILE_COOKIE_NAME, base64Encoder.encode(PublicDataConf.USERCOOKIE.getBytes()));
             }
         }
