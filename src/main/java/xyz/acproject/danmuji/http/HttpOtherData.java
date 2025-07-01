@@ -134,6 +134,32 @@ public class HttpOtherData {
         return announce;
     }
 
+    public static String httpGetNewAnnounceV2ByGitHub() {
+        String data = null;
+        JSONObject jsonObject = null;
+        String announce = null;
+        String code = "-1";
+        Map<String, String> headers = null;
+        Map<String, String> datas = null;
+        headers = new HashMap<>(2);
+        headers.put("user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
+        try {
+            data = OkHttp3Utils.getHttp3Utils()
+                    .httpGet("https://ghproxy.net/https://raw.githubusercontent.com/BanqiJane/Bilibili_Danmuji/master/.annonce", headers, null)
+                    .body().string();
+            return data;
+        } catch (Exception e) {
+            // TODO 自动生成的 catch 块
+            LOGGER.error(e);
+            announce = "获取最新公告失败";
+            LOGGER.error("请求服务器超时，获取最新公告失败");
+            data = null;
+        }
+        return announce;
+    }
+
+
     public static Long httpGetClockInRecord() {
         String data = null;
         JSONObject jsonObject = null;

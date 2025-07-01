@@ -52,7 +52,7 @@ public class SetServiceImpl implements SetService {
         System.out.println("参考局域网浏览器进入设置页面地址: 1、" + serverAddressComponent.getAddress());
         System.out.println("参考远程(无代理)浏览器进入设置页面地址: 1、" + serverAddressComponent.getRemoteAddress());
         System.out.println();
-        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounce();
+        PublicDataConf.ANNOUNCE = PublicDataConf.centerSetConf.getPrivacy().is_open()?"隐私模式下不会获取最新公告":HttpOtherData.httpGetNewAnnounceV2ByGitHub();
         System.out.println("最新公告：" +  PublicDataConf.ANNOUNCE);
         if(!PublicDataConf.centerSetConf.getPrivacy().is_open()) {
             String edition = HttpOtherData.httpGetNewEditionV2ByGitHub();
