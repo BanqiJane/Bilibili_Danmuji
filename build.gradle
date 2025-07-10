@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.7.0.3beta'
+version = '2.7.0.4beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -49,6 +49,10 @@ dependencies {
 	//=================================================Brotli=================================================
 	// https://mvnrepository.com/artifact/cn.hutool/hutool-cache
 	implementation group: 'cn.hutool', name: 'hutool-cache', version: '5.8.22'
+	// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+	implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '4.31.1'
+	// https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util
+	implementation group: 'com.google.protobuf', name: 'protobuf-java-util', version: '4.31.1'
 	implementation fileTree(dir: 'lib', includes: ['*.jar'])
 }
 configurations {

@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+message InteractWordV2 {
+  uint64 uid = 1;
+  string uname = 2;
+  string uname_color = 3;
+  repeated uint64 identities = 4;
+  uint64 msg_type = 5;
+  uint64 roomid = 6;
+  uint64 timestamp = 7;
+  uint64 score = 8;
+  FansMedalInfo fans_medal = 9;
+  uint64 is_spread = 10;
+  string spread_info = 11;
+  ContributionInfo contribution = 12;
+  string spread_desc = 13;
+  uint64 tail_icon = 14;
+  uint64 trigger_time = 15;
+  uint64 privilege_type = 16;
+  uint64 core_user_type = 17;
+  string tail_text = 18;
+  ContributionInfoV2 contribution_v2 = 19;
+  GroupMedalBrief group_medal = 20;
+  bool is_mystery = 21;
+  UserInfo uinfo = 22;
+  UserAnchorRelation relation_tail = 23;
+}
+message ContributionInfo { int64 grade = 1; }
+message ContributionInfoV2 {
+  uint64 grade = 1;
+  string rank_type = 2;
+  string text = 3;
+}
+message FansMedalInfo {
+  int64 target_id = 1;
+  int64 medal_level = 2;
+  string medal_name = 3;
+  int64 medal_color = 4;
+  int64 medal_color_start = 5;
+  int64 medal_color_end = 6;
+  int64 medal_color_border = 7;
+  int64 is_lighted = 8;
+  int64 guard_level = 9;
+  string special = 10;
+  int64 icon_id = 11;
+  int64 anchor_roomid = 12;
+  int64 score = 13;
+}
+message UserAnchorRelation {
+  string tail_icon = 1;
+  string tail_guide_text = 2;
+  uint64 tail_type = 3;
+}
+message GroupMedalBrief {
+  uint64 medal_id = 1;
+  string name = 2;
+  uint64 is_lighted = 3;
+}
+enum RiskPolicyEnum {
+  RP_NORMAL = 0;
+  RP_POLICY = 1;
+  RP_SILENCE = 2;
+  RP_CNY = 3;
+  RP_BIGEV = 4;
+}
+enum MedalType {
+  Medal_Wear = 0;
+  Medal_Spec = 1;
+}
+enum HaveMedalType {
+  Medal_Common = 0;
+  Medal_Group = 1;
+}
+enum RoomAnonTypeEnum {
+  RA_ALL = 0;
+  RA_With_Subject = 1;
+}
+message RiskCtrl {
+  int64 room_id = 1;
+  RiskPolicyEnum policy = 2;
+}
+message RoomAnonCtrl { RoomAnonTypeEnum type = 1; }
+message BaseOption {
+  bool need_mystery = 1;
+  RiskCtrl risk_ctrl = 2;
+  RoomAnonCtrl room_anon_ctrl = 3;
+  repeated RiskPolicyEnum risk_ctrl_handles = 4;
+}
+message GuardOption {
+  int64 ruid = 1;
+  bool use_local_cache = 2;
+  bool strong_depend = 3;
+}
+message WealthOption {
+  int64 roomid = 1;
+  int64 view_uid = 2;
+  int64 ruid = 3;
+  bool strong_depend = 4;
+}
+message MedalOption {
+  MedalType typ = 1;
+  int64 room_id = 2;
+  bool need_guard = 3;
+  bool strong_depend = 4;
+  bool need_group = 5;
+}
+message GuardLeaderOption {
+  int64 ruid = 1;
+  int64 room_id = 2;
+}
+message TitleOption {
+  int64 rooom_id = 1;
+  bool strong_depend = 2;
+}
+message RiskCtrlInfo {
+  string name = 1;
+  string face = 2;
+}
+message AccountInfo {
+  string name = 1;
+  string face = 2;
+}
+message OfficialInfo {
+  uint64 role = 1;
+  string title = 2;
+  string desc = 3;
+  uint64 type = 4;
+}
+message Base {
+  string name = 1;
+  string face = 2;
+  int32 name_color = 3;
+  bool is_mystery = 4;
+  RiskCtrlInfo risk_ctrl_info = 5;
+  AccountInfo origin_info = 6;
+  OfficialInfo official_info = 7;
+  string name_color_str = 8;
+}
+message UserInfo {
+  uint64 uid = 1;
+  Base base = 2;
+  Medal medal = 3;
+  Wealth wealth = 4;
+  Title title = 5;
+  Guard guard = 6;
+  UserHeadFrame uhead_frame = 7;
+  GuardLeader guard_leader = 8;
+}
+message Medal {
+  string name = 1;
+  int64 level = 2;
+  int64 color_start = 3;
+  int64 color_end = 4;
+  int64 color_border = 5;
+  int64 color = 6;
+  int64 id = 7;
+  HaveMedalType typ = 8;
+  int64 is_light = 9;
+  int64 ruid = 10;
+  int64 guard_level = 11;
+  int64 score = 12;
+  string guard_icon = 13;
+  string honor_icon = 14;
+  string v2_medal_color_start = 15;
+  string v2_medal_color_end = 16;
+  string v2_medal_color_border = 17;
+  string v2_medal_color_text = 18;
+  string v2_medal_color_level = 19;
+  int64 user_receive_count = 20;
+}
+message Wealth {
+  int64 level = 1;
+  string dm_icon_key = 2;
+}
+message Title {
+  string OldTitleCssId = 1;
+  string TitleCssId = 2;
+}
+message Guard {
+  int64 level = 1;
+  string expired_str = 2;
+}
+message UserHeadFrame {
+  int64 id = 1;
+  string frame_img = 2;
+}
+message GuardLeader { bool is_guard_leader = 1; }

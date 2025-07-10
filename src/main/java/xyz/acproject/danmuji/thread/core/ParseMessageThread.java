@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import xyz.acproject.danmuji.component.ThreadComponent;
 import xyz.acproject.danmuji.component.black.BlackParseComponent;
@@ -19,6 +20,7 @@ import xyz.acproject.danmuji.entity.auto_reply.AutoReply;
 import xyz.acproject.danmuji.entity.base.WsPackage;
 import xyz.acproject.danmuji.entity.danmu_data.*;
 import xyz.acproject.danmuji.entity.high_level_danmu.Hbarrage;
+import xyz.acproject.danmuji.entity.interactWordV2.INTERACTWORDV2;
 import xyz.acproject.danmuji.entity.room_data.LotteryInfoWeb;
 import xyz.acproject.danmuji.entity.superchat.MedalInfo;
 import xyz.acproject.danmuji.entity.superchat.SuperChat;
@@ -34,10 +36,7 @@ import xyz.acproject.danmuji.tools.file.GuardFileTools;
 import xyz.acproject.danmuji.utils.JodaTimeUtils;
 import xyz.acproject.danmuji.utils.SpringUtils;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -1151,6 +1150,118 @@ public class ParseMessageThread extends Thread {
 //                                LOGGER.info("直播间信息:::" + message);
 //                            }
                             break;
+                        case "INTERACT_WORD_V2":
+//                            LOGGER.info("INTERACT_WORD_V2:" + message);
+                            try {
+                                String pbBase64 = jsonObject.getJSONObject("data").getString("pb");
+                                INTERACTWORDV2.InteractWordV2 interactWordV2 = INTERACTWORDV2.InteractWordV2.parseFrom(Base64.getDecoder().decode(pbBase64));
+//                                LOGGER.info("INTERACT_WORD_V2_PARSE:" + JsonFormat.printer().print(interactWordV2));
+                                msg_type =(short) interactWordV2.getMsgType();
+                                interact = new Interact();
+                                interact.setUid(interactWordV2.getUid());
+                                interact.setUname(interactWordV2.getUname());
+                                interact.setUname_color("");
+                                interact.setIdentities(interactWordV2.getIdentitiesList().stream().map(Long::intValue)
+                                        .toArray(Integer[]::new));
+                                interact.setMsg_type((short)0);
+                                interact.setRoomid(interactWordV2.getRoomid());
+                                interact.setTimestamp(interactWordV2.getTimestamp());
+                                interact.setScore(interactWordV2.getScore());
+                                if(interact.getFans_medal()!=null) {
+                                    MedalInfo medalInfo = new MedalInfo();
+                                    BeanUtils.copyProperties(interactWordV2.getFansMedal(), medalInfo);
+                                    interact.setFans_medal(medalInfo);
+                                }
+
+                                // 关注
+                                //控制台打印处理
+                                if (getCenterSetConf().is_follow_dm()) {
+                                    if (msg_type == 2) {
+                                        stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的关注:")
+                                                .append(interact.getUname()).append(" 关注了直播间");
+                                        //控制台打印
+                                        if (getCenterSetConf().is_cmd()) {
+                                            System.out.println(stringBuilder.toString());
+                                        }
+                                        //日志
+                                        if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                            PublicDataConf.logString.add(stringBuilder.toString());
+                                            synchronized (PublicDataConf.logThread) {
+                                                PublicDataConf.logThread.notify();
+                                            }
+                                        }
+                                        //前端弹幕发送
+                                        try {
+                                            danmuWebsocket.sendMessage(WsPackage.toJson("follow", (short) 0, interact));
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                        stringBuilder.delete(0, stringBuilder.length());
+                                    }
+                                }
+                                //关注感谢
+                                if (getCenterSetConf().getFollow().is_followThank()) {
+                                    //天选屏蔽&&红包屏蔽
+                                    if (!getCenterSetConf().getFollow()
+                                            .boolTxAndRdShield(
+                                                    CacheConf.existTx(PublicDataConf.ROOMID), CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                        if (msg_type == 2) {
+                                            try {
+                                                parseFollowSetting(interact);
+                                            } catch (Exception e) {
+                                                // TODO 自动生成的 catch 块
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                }
+                                //欢迎进入直播间
+                                if (getCenterSetConf().is_welcome_all()) {
+                                    if (msg_type == 1) {
+                                        stringBuilder.append(JodaTimeUtils.formatDateTime(System.currentTimeMillis())).append(":新的访客:")
+                                                .append(interact.getUname()).append(" 进入了直播间");
+                                        //控制台打印
+                                        if (getCenterSetConf().is_cmd()) {
+                                            System.out.println(stringBuilder.toString());
+                                        }
+                                        //日志
+                                        if (PublicDataConf.logThread != null && !PublicDataConf.logThread.FLAG) {
+                                            PublicDataConf.logString.add(stringBuilder.toString());
+                                            synchronized (PublicDataConf.logThread) {
+                                                PublicDataConf.logThread.notify();
+                                            }
+                                        }
+                                        //前端显示
+                                        try {
+                                            danmuWebsocket.sendMessage(WsPackage.toJson("welcome", (short) 0, interact));
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                        }
+                                        stringBuilder.delete(0, stringBuilder.length());
+                                    }
+                                }
+                                //欢迎感谢
+                                if (getCenterSetConf().getWelcome().is_welcomeThank()) {
+                                    //天选屏蔽&&红包屏蔽
+                                    if (!getCenterSetConf().getWelcome()
+                                            .boolTxAndRdShield(
+                                                    CacheConf.existTx(PublicDataConf.ROOMID), CacheConf.existRedPackageCache(PublicDataConf.ROOMID))) {
+                                        if (msg_type == 1) {
+                                            try {
+                                                parseWelcomeSetting(interact);
+                                            } catch (Exception e) {
+                                                // TODO 自动生成的 catch 块
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
                         // 礼物bag bot
                         case "GIFT_BAG_DOT":
                             //					LOGGER.info("礼物bag" + message);
@@ -1386,6 +1497,15 @@ public class ParseMessageThread extends Thread {
                             break;
                         case "MULTI_VOICE_PK_HAT_STATUS":
                             //					LOGGER.info("MULTI_VOICE_PK_HAT_STATUS:::" + message);
+                            break;
+                        case "ONLINE_RANK_V3":
+                            //					LOGGER.info("ONLINE_RANK_V3:::" + message);
+                            break;
+                        case "RANK_CHANGED":
+                            //					LOGGER.info("RANK_CHANGED:::" + message);
+                            break;
+                        case "LIKE_INFO_V3_NOTICE":
+                            //					LOGGER.info("LIKE_INFO_V3_NOTICE:::" + message);
                             break;
                         default:
 //                            LOGGER.info("其他未处理消息:" + message);
