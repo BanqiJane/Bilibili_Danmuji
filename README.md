@@ -1,6 +1,5 @@
 [![Github](https://img.shields.io/github/stars/BanqiJane/Bilibili_Danmuji?logo=github&style=flat)](https://github.com/BanqiJane/Bilibili_Danmuji)
 [![GitHub release](https://img.shields.io/github/v/release/BanqiJane/Bilibili_Danmuji.svg)](https://github.com/BanqiJane/Bilibili_Danmuji/releases)
-[![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-%E6%94%AF%E6%8C%81-blue.svg)](https://www.jetbrains.com/?from=Bilibili_Danmuji)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)](https://opensource.org/licenses/GPL-3.0)
 
 
@@ -596,10 +595,3 @@ $ java -jar BiliBili_Danmuji-2.7.0.0beta.jar
 </blockquote>
 </blockquote>  
 
-## SUPPORT
-
-JetBrains OPEN SOURCE SUPPORT
-
-<a href="https://jb.gg/OpenSourceSupport">
-  <img src="https://user-images.githubusercontent.com/8643542/160519107-199319dc-e1cf-4079-94b7-01b6b8d23aa6.png" align="left" height="150" width="150" alt="JetBrains">
-</a>
