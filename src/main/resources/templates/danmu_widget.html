@@ -112,7 +112,30 @@
         <!-- web弹幕显示end -->
     </div>
 </div>
+<!-- 通用-禁言窗体 -->
+<div class="modal" id="block-model">
+    <div class="modal-dialog">
+        <div class="modal-content block-wrap" style="overflow: auto;resize: both;">
+            <div class="t">
+                禁言窗口 <i class="btn-close-block"></i>
+            </div>
+            <div class="con">
+                <div class="input-group mb-3">
+                    <div class="form-group block-set">
+                        <input class="form-control form-control-sm block-input" data-bs-html="true"
+                               data-bs-placement="top" data-bs-toggle="tooltip"
+                               max="720" min="1" placeholder="禁言时间1-720小时"
+                               type="number" value="">
+                    </div>
+                    <div class="form-group block-button">
+                        <button class="btn btn-sm btn-primary btn-block" type="button">禁言</button>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(function () {
         let sub_url = getParameterByName("sub")
