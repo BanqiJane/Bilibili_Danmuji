@@ -148,6 +148,9 @@ public class HttpOtherData {
             data = OkHttp3Utils.getHttp3Utils()
                     .httpGet("https://ghproxy.net/https://raw.githubusercontent.com/BanqiJane/Bilibili_Danmuji/master/.annonce", headers, null)
                     .body().string();
+            if(StringUtils.isNotBlank( data)){
+                data = data.replace("\n", "\r\n");
+            }
             return data;
         } catch (Exception e) {
             // TODO 自动生成的 catch 块

@@ -168,6 +168,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 			PublicDataConf.advertThread
 					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
 			PublicDataConf.advertThread.setTime(advertSetConf.getTime());
+			PublicDataConf.advertThread.setTime2(advertSetConf.getTime2());
 			PublicDataConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
 			return false;
 		}
@@ -176,6 +177,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 		PublicDataConf.advertThread
 				.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
 		PublicDataConf.advertThread.setTime(advertSetConf.getTime());
+		PublicDataConf.advertThread.setTime2(advertSetConf.getTime2());
 		PublicDataConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
 		PublicDataConf.advertThread.start();
 		startSendBarrageThread();
@@ -488,6 +490,7 @@ public class ThreadComponentImpl implements ThreadComponent {
 			PublicDataConf.advertThread
 					.setAdvertStatus(ParseSetStatusTools.getAdvertStatus(advertSetConf.getStatus()));
 			PublicDataConf.advertThread.setTime(advertSetConf.getTime());
+			PublicDataConf.advertThread.setTime2(advertSetConf.getTime2());
 			PublicDataConf.advertThread.setAdvertBarrage(advertSetConf.getAdverts());
 		}
 	}

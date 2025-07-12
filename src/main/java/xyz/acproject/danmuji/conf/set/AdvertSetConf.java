@@ -34,6 +34,7 @@ public class AdvertSetConf extends TimingLiveSetConf implements Serializable, St
 	//发送语
 	private String adverts;
 
+	private double time2=0;
 
 
 	//方法区

@@ -751,6 +751,7 @@ const method = {
         /* 管理登录 */
         set.is_manager_login = $(".is_manager_login").is(':checked');
         set.manager_maxSize = Number($(".manager_maxSize").val());
+        set.connect_docket = $(".connect-docket").val();
         //密码就不set给前端了
         set.manager_key = $(".manager_key").val();
         /* 管理结束*/
@@ -824,6 +825,7 @@ const method = {
         set.advert.status = Number($(".advert_status").find(
             "option:selected").val()) - 1;
         set.advert.time = Number($(".advert_time").val());
+        set.advert.time2 = Number($(".advert_time2").val());
         set.advert.adverts = $(".advert_adverts").val();
         set.follow.is_open = $(".follow_is_open").is(':checked');
         set.follow.is_live_open = $(".follow_is_live_open").is(':checked');
@@ -1056,6 +1058,7 @@ const method = {
             /* 登录暗号                                      */
             $(".is_manager_login").prop('checked', set.is_manager_login);
             $(".manager_maxSize").val(set.manager_maxSize);
+            $(".connect-docket").val(set.connect_docket);
             /**/
             $(".is_online").prop('checked', set.is_online);
             $(".is_sh").prop('checked', set.is_sh);
@@ -1100,6 +1103,7 @@ const method = {
             $(".advert_status").find("option").eq(set.advert.status).prop(
                 'selected', true)
             $(".advert_time").val(set.advert.time);
+            $(".advert_time2").val(set.advert.time2);
             $(".advert_adverts").val(set.advert.adverts);
             $(".follow_is_open").prop('checked', set.follow.is_open);
             $(".follow_is_live_open").prop('checked', set.follow.is_live_open);
@@ -1274,6 +1278,7 @@ const method = {
                 $(".advert_is_live_open").attr("disabled", true);
                 $(".advert_status").attr("disabled", true);
                 $(".advert_time").attr("disabled", true);
+                $(".advert_time2").attr("disabled", true);
                 $(".advert_adverts").attr("disabled", true);
                 $(".follow_is_open").attr("disabled", true);
                 $(".follow_is_live_open").attr("disabled", true);

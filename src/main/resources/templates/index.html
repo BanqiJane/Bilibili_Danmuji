@@ -484,7 +484,18 @@
                                                min="1"
                                                onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
                                                placeholder="time(s)"
-                                               style="ime-mode: Disabled" title="多少秒发送一次"
+                                               style="ime-mode: Disabled" title="多少秒发送一次（开始时间）"
+                                               type="number" value="1"
+                                               οninput="if(value.length>5)value=value.slice(0,5)">
+                                    </div>
+                                    <div
+                                            class="col-auto small-input-wrap">
+                                        <input class="small-input advert_time2 live-save" data-bs-placement="top"
+                                               data-bs-toggle="tooltip"
+                                               min="0"
+                                               onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                               placeholder="time(s)"
+                                               style="ime-mode: Disabled" title="多少秒发送一次（结束时间；0是关闭随机且固定开始时间）"
                                                type="number" value="1"
                                                οninput="if(value.length>5)value=value.slice(0,5)">
                                     </div>
@@ -1385,7 +1396,7 @@
                         <li><textarea class="reply_rs_i reply-sync" data-bs-html="true"
                                       data-bs-placement="top" data-bs-toggle="tooltip"
                                       placeholder="回复语句"
-                                      title="回复语句<br/>多个回复请换行<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"></textarea>
+                                      title="回复语句（支持随机词回复）<br/>随机回复：设置多个请换行即可<br/>1：参数%NAME%以替换提问的人的名字<br/>2：参数%BLOCK%表示该功能为禁言，将被替换为空,参数{{time}}定义被禁言时间,单位为整数小时，在有%BLOCK%参数下才生效，将被替换为空，例如要禁言一小时：<span class='red-font'>%BLOCK%{{1}}</span> ；<span class='red-font'>当只有这两个参数，不会发送回复弹幕，只会执行禁言，这两个参数 最终都会在回复语句中消除</span>，time最大720,最小1<br/>3：参数%FANS%以替换现在连接房间的最新关注数目<br/>4：参数%TIME%以替换当前时间<br/>5：参数%LIVETIME%以替换当前房间直播时间<br/>6：参数%HOT%以替换当前房间人气值<br/>更多参数请看github主页"></textarea>
                         </li>
                         <li>
                             <button class="btn btn-danger btn-sm reply_delete_i"
