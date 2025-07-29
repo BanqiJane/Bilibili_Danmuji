@@ -1794,8 +1794,11 @@ public class ParseMessageThread extends Thread {
                     if (interact.getFans_medal() == null) {
                         return;
                     }
-                    if (PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(interact.getFans_medal().getMedal_name())&&interact.getFans_medal().getGuard_level() <= 0) {
-//                        LOGGER.info("欢迎姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(interact.getFans_medal().getGuard_level()));
+                    if (!PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(interact.getFans_medal().getMedal_name())) {
+                        return;
+                    }
+                    if(interact.getFans_medal().getGuard_level() <= 0){
+                    //   LOGGER.info("欢迎姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(interact.getFans_medal().getGuard_level()));
                         return;
                     }
                 default:
