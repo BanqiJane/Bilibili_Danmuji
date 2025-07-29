@@ -351,6 +351,12 @@ $ java -jar BiliBili_Danmuji-2.7.0.0beta.jar
 <blockquote>
 <blockquote>
 <h2>Beta2.7.0.5</h2>
+<p>修复弹幕姬欢迎不了舰长问题</p>
+<p>欢迎姬欢迎舰长模式现在变成仅欢迎本房间舰长了</p>
+<p>更换公告地址</p>
+</blockquote>
+<blockquote>
+<h2>Beta2.7.0.4</h2>
 <p>可以保存弹幕网页连接websocket地址了</p> 
 <p>广告姬添加随机时间</p> 
 <p>修复禁言不生效的问题</p> 
