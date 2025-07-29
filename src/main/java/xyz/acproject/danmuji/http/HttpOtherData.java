@@ -146,7 +146,7 @@ public class HttpOtherData {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36");
         try {
             data = OkHttp3Utils.getHttp3Utils()
-                    .httpGet("https://ghproxy.net/https://raw.githubusercontent.com/BanqiJane/Bilibili_Danmuji/master/.annonce", headers, null)
+                    .httpGet("https://cdn.jsdelivr.net/gh/BanqiJane/Bilibili_Danmuji@master/.annonce", headers, null)
                     .body().string();
             if(StringUtils.isNotBlank( data)){
                 data = data.replace("\n", "\r\n");

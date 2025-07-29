@@ -99,7 +99,7 @@ public class AdvertThread extends Thread {
     private void threadSleep() {
         try {
             long delay_time = new BigDecimal(getTime()).multiply(new BigDecimal("1000")).longValue();
-            if (getTime2() != 0) {
+            if (getTime2() >0&&getTime2()>getTime()) {
                 long delay_time2 = new BigDecimal(getTime2()).multiply(new BigDecimal("1000")).longValue();
                 //取delay_time到delay_time2之间随机数
                 delay_time = (long) (Math.random() * (delay_time2 - delay_time + 1) + delay_time);

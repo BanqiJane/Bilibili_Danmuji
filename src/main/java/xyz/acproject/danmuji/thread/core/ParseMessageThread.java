@@ -2,6 +2,7 @@ package xyz.acproject.danmuji.thread.core;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1167,9 +1168,19 @@ public class ParseMessageThread extends Thread {
                                 interact.setRoomid(interactWordV2.getRoomid());
                                 interact.setTimestamp(interactWordV2.getTimestamp());
                                 interact.setScore(interactWordV2.getScore());
-                                if(interact.getFans_medal()!=null) {
+                                if(interactWordV2.hasFansMedal()) {
+//                                    LOGGER.info("INTERACT_WORD_V2_PARSE_FANS:" + JsonFormat.printer().print(interactWordV2));
                                     MedalInfo medalInfo = new MedalInfo();
-                                    BeanUtils.copyProperties(interactWordV2.getFansMedal(), medalInfo);
+                                    medalInfo.setIcon_id(interactWordV2.getFansMedal().getIconId());
+                                    medalInfo.setTarget_id(interactWordV2.getFansMedal().getTargetId());
+                                    medalInfo.setSpecial(interactWordV2.getFansMedal().getSpecial());
+                                    medalInfo.setAnchor_uname("");
+                                    medalInfo.setAnchor_roomid(String.valueOf(interactWordV2.getFansMedal().getAnchorRoomid()));
+                                    medalInfo.setMedal_level((short) interactWordV2.getFansMedal().getMedalLevel());
+                                    medalInfo.setMedal_name(interactWordV2.getFansMedal().getMedalName());
+                                    medalInfo.setMedal_color(String.valueOf(interactWordV2.getFansMedal().getMedalColor()));
+                                    medalInfo.setIs_lighted((int) interactWordV2.getFansMedal().getIsLighted());
+                                    medalInfo.setGuard_level((short) interactWordV2.getFansMedal().getGuardLevel());
                                     interact.setFans_medal(medalInfo);
                                 }
 
@@ -1764,11 +1775,11 @@ public class ParseMessageThread extends Thread {
                 case MEDAL:
                     if (PublicDataConf.MEDALINFOANCHOR != null) {
                         if (StringUtils.isBlank(PublicDataConf.MEDALINFOANCHOR.getMedal_name())) {
-                            break;
+                            return;
                         }
                         //舰长的这里是空的
                         if (interact.getFans_medal() == null) {
-                            break;
+                            return;
                         }
                         if (!PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(interact.getFans_medal().getMedal_name())) {
 //                           LOGGER.info("欢迎姬人员屏蔽[勋章模式]:{}", interact.getFans_medal().getMedal_name());
@@ -1777,7 +1788,13 @@ public class ParseMessageThread extends Thread {
                     }
                     break;
                 case GUARD:
-                    if (interact.getFans_medal().getGuard_level() <= 0) {
+                    if (StringUtils.isBlank(PublicDataConf.MEDALINFOANCHOR.getMedal_name())) {
+                        return;
+                    }
+                    if (interact.getFans_medal() == null) {
+                        return;
+                    }
+                    if (PublicDataConf.MEDALINFOANCHOR.getMedal_name().equals(interact.getFans_medal().getMedal_name())&&interact.getFans_medal().getGuard_level() <= 0) {
 //                        LOGGER.info("欢迎姬人员屏蔽[舰长模式]:{}", ParseIndentityTools.parseGuard(interact.getFans_medal().getGuard_level()));
                         return;
                     }
