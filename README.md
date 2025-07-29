@@ -55,11 +55,11 @@ java version "1.8.0_121"
   </tbody>
 </table>
 
-# 版本2.7.0.4
+# 版本2.7.0.5
 
-- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.4 "下载地址")**<br/><br/>
+- **danmuji(常规版本 需要java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.5 "下载地址")**<br/><br/>
 - **danmuji-green(
-  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.4 "下载地址")**<br/><br/>
+  window64绿色版本，不用配置安装java环境) [地址](https://github.com/BanqiJane/Bilibili_Danmuji/releases/tag/2.7.0.5 "下载地址")**<br/><br/>
 - ~~**danmuji-docker(docker版本,由B站用户[西凉君君](https://live.bilibili.com/101937 "B站主页地址")提供
   在此感谢) [地址](https://registry.hub.docker.com/r/xilianghe/danmuji "地址")**~~<br/><br/>
 - **danmuji-docker(全框架docker镜像构建版本,由github用户[zzcabc](https://github.com/zzcabc "GitHub主页")提供
@@ -350,7 +350,7 @@ $ java -jar BiliBili_Danmuji-2.7.0.0beta.jar
 
 <blockquote>
 <blockquote>
-<h2>Beta2.7.0.4</h2>
+<h2>Beta2.7.0.5</h2>
 <p>可以保存弹幕网页连接websocket地址了</p> 
 <p>广告姬添加随机时间</p> 
 <p>修复禁言不生效的问题</p> 
