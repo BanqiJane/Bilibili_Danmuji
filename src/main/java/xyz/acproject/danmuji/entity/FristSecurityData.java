@@ -29,10 +29,13 @@ public class FristSecurityData implements Serializable {
 	private Long roomid;
 	//协议版本 目前为2 3
 	private Integer protover=3;
-	//平台 可以为web android
-	private String platform="web";
 	//规则估计为UUID+固定字符串"infoc"
 	private String buvid="";
+	private Boolean support_ack = true;
+	private String queue_uuid = "";
+	private String scene="room";
+	//平台 可以为web android
+	private String platform="web";
 	//客户端版本 已知1.11.0 1.8.5 1.5.15 1.13.1 无用
 //	private String clientver="1.14.0";
 	//未知 可以是2

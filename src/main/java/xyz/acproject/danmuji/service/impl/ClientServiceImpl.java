@@ -89,6 +89,7 @@ public class ClientServiceImpl implements ClientService {
         if (StringUtils.isNotBlank(PublicDataConf.USERCOOKIE)) {
             fristSecurityData = new FristSecurityData(PublicDataConf.USER.getUid(), PublicDataConf.ROOMID,
                     conf.getToken());
+            fristSecurityData.setBuvid(PublicDataConf.COOKIE.getBuvid3());
         } else {
             //应付用户名称带星号问题
             fristSecurityData = new FristSecurityData(0l,PublicDataConf.ROOMID, conf.getToken());

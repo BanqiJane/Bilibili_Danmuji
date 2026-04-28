@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 /**
  * @ClassName WebSocketProxy
  * @Description TODO
- * @author BanqiJane
+ * @author BanqiJane&member573
  * @date 2020年8月10日 下午12:20:31
  *
  * @Copyright:2020 blogs.acproject.xyz Inc. All rights reserved.
@@ -23,6 +23,9 @@ public class WebSocketProxy extends Websocket {
 		LOGGER.info("Connectin(连接中)...........................................");
 		// TODO 自动生成的构造函数存根
 		super.connectBlocking();
+		//来源member573
+		// 业务层自己维护心跳，关闭库内置丢线检测，避免误判导致固定周期断开
+		super.setConnectionLostTimeout(0);
 		LOGGER.info("Connecting Success(连接成功)");
 	}
 

@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 group = 'xyz.acproject.danmuji'
-version = '2.7.0.5beta'
+version = '2.7.0.6beta'
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
@@ -26,7 +26,7 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
     // https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket
-	implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.3'
+	implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.6.0'
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
