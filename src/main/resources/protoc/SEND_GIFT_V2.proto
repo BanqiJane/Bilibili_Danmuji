@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option java_package = "xyz.acproject.danmuji.entity.danmu_data";
+option java_outer_classname = "SENDGIFTV2";
+
+// Wire schema used by blivedm/models/pb.py for SEND_GIFT_V2 data.pb.
+message SendGiftV2MedalInfo {
+  int64 target_id = 1;
+  int64 anchor_roomid = 4;
+  int64 medal_level = 5;
+  string medal_name = 6;
+}
+
+message SendGiftV2BlindGift {
+  string original_gift_name = 3;
+  int64 original_gift_price = 6;
+}
+
+message SendGiftV2GiftMaterialSnapShot {
+  string img_basic = 1;
+}
+
+message SendGiftV2GiftItem {
+  int64 gift_id = 1;
+  string gift_name = 2;
+  int64 num = 3;
+  int64 gift_type = 4;
+  int64 price = 5;
+  int64 total_coin = 7;
+  string coin_type = 8;
+  string tid = 9;
+  int64 timestamp = 10;
+  string rnd = 12;
+  string action = 18;
+  SendGiftV2GiftMaterialSnapShot gift_info = 35;
+}
+
+message SendGiftBroadcast {
+  int64 uid = 1;
+  string uname = 2;
+  string face = 3;
+  int64 guard_level = 5;
+  SendGiftV2MedalInfo medal_info = 8;
+  SendGiftV2BlindGift blind_gift = 9;
+  repeated SendGiftV2GiftItem gift_list = 10;
+}
